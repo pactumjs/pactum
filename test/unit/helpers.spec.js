@@ -17,7 +17,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     };
     const expected = {
       id: 1
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(true);
@@ -29,7 +29,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     };
     const expected = {
       id: 2
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -42,7 +42,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     };
     const expected = {
       id: '1'
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -55,7 +55,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     };
     const expected = {
       id: "1"
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(true);
@@ -67,7 +67,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     };
     const expected = {
       id: "2"
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -80,7 +80,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     };
     const expected = {
       id: true
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(true);
@@ -92,7 +92,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     };
     const expected = {
       id: true
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -105,7 +105,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     };
     const expected = {
       id: /\d+/
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(true);
@@ -117,7 +117,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     };
     const expected = {
       id: /\W+/
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -132,7 +132,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     const expected = {
       id: 1,
       name: 'hunt'
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(true);
@@ -146,7 +146,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     const expected = {
       id: 1,
       name: 'bent'
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -169,7 +169,7 @@ describe('JSON Like - Object - Equal Properties', () => {
         maths: 90,
         social: 80
       }
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(true);
@@ -191,7 +191,7 @@ describe('JSON Like - Object - Equal Properties', () => {
         maths: 90,
         social: 70
       }
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -222,7 +222,7 @@ describe('JSON Like - Object - Equal Properties', () => {
           chemistry: 45
         }
       }
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(true);
@@ -252,7 +252,7 @@ describe('JSON Like - Object - Equal Properties', () => {
           chemistry: 45
         }
       }
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -269,7 +269,7 @@ describe('JSON Like - Object - Extra Properties', () => {
     };
     const expected = {
       name: "2"
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -283,7 +283,7 @@ describe('JSON Like - Object - Extra Properties', () => {
     };
     const expected = {
       id: 1
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(true);
@@ -297,7 +297,7 @@ describe('JSON Like - Object - Extra Properties', () => {
     const expected = {
       id: 1,
       age: 26
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -318,7 +318,7 @@ describe('JSON Like - Object - Extra Properties', () => {
       scores: {
         social: 80,
       }
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(true);
@@ -341,7 +341,7 @@ describe('JSON Like - Object - Extra Properties', () => {
         social: 80,
         art: 12
       }
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);
@@ -369,7 +369,7 @@ describe('JSON Like - Object - Extra Properties', () => {
           physics: 40
         }
       }
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(true);
@@ -400,7 +400,7 @@ describe('JSON Like - Object - Extra Properties', () => {
           biology: 21
         }
       }
-    }
+    };
     const like = new Like();
     const res = like.json(actual, expected);
     expect(res.equal).equals(false);

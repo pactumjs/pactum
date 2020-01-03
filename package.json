@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha --timeout 10000 ./test/unit/"
+    "test": "mocha --timeout 10000 ./test/unit/",
+    "test:component": "mocha --timeout 10000 ./test/component/"
   },
   "keywords": [],
   "author": "",

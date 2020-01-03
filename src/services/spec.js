@@ -5,6 +5,8 @@ const helper = require('../helpers/helper');
 class Spec {
 
   constructor() {
+    this.server = null;
+    this.interactions = [];
     this._request = {};
     this._response = {};
     this._expect = new Expect();
@@ -97,6 +99,9 @@ class Spec {
   }
 
   async toss() {
+    for (let i = 0; i < this.interactions.length; i++) {
+      this.server.addInteraction(3000, this.interactions[i]);
+    }
     try {
       this._response = await this.fetch();
     } catch (error) {
