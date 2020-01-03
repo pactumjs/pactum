@@ -44,7 +44,7 @@ class Expect {
         if (expectedHeaderValue instanceof RegExp) {
           assert.ok(expectedHeaderValue.test(actualHeaderValue), `Header regex (${expectedHeaderValue}) did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
         } else {
-          assert.ok(expectedHeaderValue.toLowerCase() === actualHeaderValue.toLowerCase(), `Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`)
+          assert.ok(expectedHeaderValue.toLowerCase() === actualHeaderValue.toLowerCase(), `Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
         }
       }
     }
@@ -61,7 +61,7 @@ class Expect {
         if (expectedHeaderValue instanceof RegExp) {
           assert.ok(expectedHeaderValue.test(actualHeaderValue), `Header regex (${expectedHeaderValue}) did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
         } else {
-          assert.ok(actualHeaderValue.toLowerCase().includes(expectedHeaderValue.toLowerCase()), `Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`)
+          assert.ok(actualHeaderValue.toLowerCase().includes(expectedHeaderValue.toLowerCase()), `Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
         }
       }
     }
@@ -95,7 +95,7 @@ class Expect {
     for (let i = 0; i < this.jsonLike.length; i++) {
       const expectedJSON = this.jsonLike[i];
       const like = new Like();
-      const res = like.json(response.json, expectedJSON)
+      const res = like.json(response.json, expectedJSON);
       assert.ok(res.equal, res.message);
     }
   }
@@ -107,7 +107,7 @@ class Expect {
       if (typeof value === 'object') {
         assert.deepStrictEqual(value, jQ.value);
       } else {
-        assert.strictEqual(value, jQ.value)
+        assert.strictEqual(value, jQ.value);
       }
     }
   }

@@ -14,8 +14,6 @@ class Server {
       } else {
         const app = express();
         app.all('/*', (req, res) => {
-          console.log(req.method)
-          console.log(req.path)
           const mock = this.mockMap.get(req.app.port);
           const interactions = mock.interactions;
           let interactionExercised = false;
@@ -34,7 +32,7 @@ class Server {
             res.status(404);
             res.send('Interaction Not Found');
           }
-        })
+        });
         const server = app.listen(port, () => {
           console.log('App is listening on port', port);
           app.port = port;
@@ -43,7 +41,7 @@ class Server {
             server,
             running: true,
             interactions: []
-          })
+          });
           resolve();
         });
       }
