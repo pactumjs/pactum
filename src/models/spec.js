@@ -5,6 +5,7 @@ const helper = require('../helpers/helper');
 class Spec {
 
   constructor(server) {
+    this.id = helper.getRandomId();
     this.server = server;
     this.interactions = [];
     this._request = {};
@@ -13,6 +14,7 @@ class Spec {
   }
 
   addInteraction(interaction) {
+    interaction.id = helper.getRandomId();
     this.interactions.push(interaction);
     return this;
   }
