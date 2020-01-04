@@ -7,15 +7,14 @@ class Spec {
   constructor(server) {
     this.id = helper.getRandomId();
     this.server = server;
-    this.interactions = [];
+    this.interactions = new Map();
     this._request = {};
     this._response = {};
     this._expect = new Expect();
   }
 
   addInteraction(interaction) {
-    interaction.id = helper.getRandomId();
-    this.interactions.push(interaction);
+    this.interactions.set(helper.getRandomId(), interaction);
     return this;
   }
 
@@ -106,8 +105,8 @@ class Spec {
   }
 
   async toss() {
-    for (let i = 0; i < this.interactions.length; i++) {
-      this.server.addInteraction(this.interactions[i]);
+    for (let [id, interaction] of this.interactions) {
+      this.server.addInteraction(interaction);
     }
     try {
       this._response = await this.fetch();
