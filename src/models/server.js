@@ -68,7 +68,8 @@ class Server {
     });
   }
 
-  addInteraction(port = 3000, interaction) {
+  addInteraction(interaction) {
+    const port = interaction.port || 3000;
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
       mock.interactions.push(interaction);

@@ -4,7 +4,7 @@ const pactum = require('../../src/index');
 describe('Pact', () => {
 
   before(async () => {
-    await pactum.server.start();
+    await pactum.mock.start();
   });
 
   it('one interaction', async () => {
@@ -35,7 +35,7 @@ describe('Pact', () => {
   });
 
   after(async () => {
-    await pactum.server.stop();
+    await pactum.mock.stop();
   })
 
 });
