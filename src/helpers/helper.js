@@ -6,6 +6,10 @@ const helper = {
     } catch (error) {
       return null;
     }
+  },
+
+  getRandomId() {
+    return Math.random().toString(36).substr(2, 5);
   }
 
 }

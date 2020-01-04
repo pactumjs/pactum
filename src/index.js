@@ -1,16 +1,16 @@
-const Spec = require('./services/spec');
-const Server = require('./services/server');
+const Spec = require('./models/spec');
+const Server = require('./models/server');
 
-const server = {
-  
-  _server: new Server(),
+const server = new Server();
+
+const mock = {
 
   start(port = 3000) {
-    return this._server.start(port);
+    return server.start(port);
   },
 
   stop(port = 3000) {
-    return this._server.stop(port);
+    return server.stop(port);
   }
 
   // stop all servers
@@ -19,22 +19,15 @@ const server = {
 
 const pactum = {
 
-  server,
+  mock,
 
   addInteraction(interaction) {
-    if (!this.interactions) {
-      this.interactions = []
-    }
-    this.interactions.push(interaction);
-    return this;
+    const spec = new Spec(server);
+    return spec.addInteraction(interaction);
   },
 
   get(options) {
-    const spec = new Spec();
-    spec.server = server._server;
-    if (this.interactions && this.interactions.length > 0) {
-      spec.interactions.push(...this.interactions);
-    }
+    const spec = new Spec(server);
     return spec.get(options);
   }
 
