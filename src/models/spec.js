@@ -14,7 +14,10 @@ class Spec {
   }
 
   addInteraction(interaction) {
-    this.interactions.set(helper.getRandomId(), interaction);
+    const id = helper.getRandomId();
+    interaction.id = id;
+    interaction.port = interaction.port || 3000;
+    this.interactions.set(id, interaction);
     return this;
   }
 
@@ -106,12 +109,15 @@ class Spec {
 
   async toss() {
     for (let [id, interaction] of this.interactions) {
-      this.server.addInteraction(interaction);
+      this.server.addInteraction(id, interaction);
     }
     try {
       this._response = await this.fetch();
     } catch (error) {
       this._response = error;
+    }
+    for (let [id, interaction] of this.interactions) {
+      this.server.removeInteraction(interaction.port, id);
     }
     this._response.json = helper.getJson(this._response.body);
     this._expect.validate(this._response);

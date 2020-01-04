@@ -17,12 +17,12 @@ class Server {
           const mock = this.mockMap.get(req.app.port);
           const interactions = mock.interactions;
           let interactionExercised = false;
-          for (let i = 0; i < interactions.length; i++) {
-            const interaction = interactions[i];
+          for (let [id, interaction] of interactions) {
             const isValidMethod = (interaction.withRequest.method === req.method);
             const isValidPath = (interaction.withRequest.path === req.path);
             if (isValidMethod && isValidPath) {
               interactionExercised = true;
+              interaction.exercised = true;
               res.set(interaction.willRespondWith.headers);
               res.status(interaction.willRespondWith.status);
               res.send(interaction.willRespondWith.body);
@@ -40,7 +40,7 @@ class Server {
             app,
             server,
             running: true,
-            interactions: []
+            interactions: new Map()
           });
           resolve();
         });
@@ -68,25 +68,32 @@ class Server {
     });
   }
 
-  addInteraction(interaction) {
-    const port = interaction.port || 3000;
+  addInteraction(id, interaction) {
+    const port = interaction.port;
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
-      mock.interactions.push(interaction);
+      mock.interactions.set(id, interaction);
+    }
+  }
+
+  removeInteraction(port = 3000, id) {
+    if (this.mockMap.has(port)) {
+      const mock = this.mockMap.get(port);
+      mock.interactions.delete(id);
     }
   }
 
   removeInteractions(port = 3000) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
-      mock.interactions.length = 0;
+      mock.interactions.clear();
     }
   }
 
   removeAllInteractions() {
     for (const [port, mock] of this.mockMap.entries()) {
       console.log(`Removing interactions for ${port}`);
-      mock.interactions.length = 0;
+      mock.interactions.clear();
     }
   }
 
