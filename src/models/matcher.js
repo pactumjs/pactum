@@ -3,9 +3,7 @@ class Matcher {
   like(value) {
     return {
       contents: value,
-      getValue: () => {
-        return value
-      },
+      value,
       json_class: "Pact::SomethingLike"
     }
   }
@@ -21,9 +19,7 @@ class Matcher {
           s: matcher,
         },
       },
-      getValue: () => {
-        return generate
-      },
+      value: generate,
       json_class: "Pact::Term"
     }
   }
@@ -33,15 +29,13 @@ class Matcher {
     if (options && typeof options.min === 'number') {
       min = options.min;
     }
+    const data = [];
+    for (let i = 0; i < min; i++) {
+      data[i] = content;
+    }
     return {
       contents: content,
-      getValue: () => {
-        const data = []
-        for (let i = 0; i < min; i++) {
-          data[i] = content
-        }
-        return data
-      },
+      value: data,
       json_class: "Pact::ArrayLike",
       min,
     }

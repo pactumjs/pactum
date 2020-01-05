@@ -30,6 +30,23 @@ const helper = {
       }
     }
     return true;
+  },
+
+  setValueFromMatcher(data) {
+    if (typeof data === 'object') {
+      switch (data.json_class) {
+        case 'Pact::SomethingLike':
+        case 'Pact::Term':
+        case 'Pact::ArrayLike':
+          return data.value;
+        default:
+          for (const prop in data) {
+            data[prop] = this.setValueFromMatcher(data[prop]);
+          }
+          return data;
+      }
+    }
+    return data;
   }
 
 }

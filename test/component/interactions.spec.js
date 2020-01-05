@@ -1,4 +1,5 @@
 const pactum = require('../../src/index');
+const { like } = pactum.match;
 
 
 describe('Pact', () => {
@@ -90,6 +91,45 @@ describe('Pact', () => {
       .get('http://localhost:3000/api/projects/1')
       .withQuery('id', 1)
       .withQuery('name', 'fake')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss()
+  });
+
+  after(async () => {
+    await pactum.mock.stop();
+  });
+
+});
+
+describe('Pact - matchers', () => {
+
+  before(async () => {
+    await pactum.mock.start();
+  });
+
+  it('GET - one interaction', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: {
+            id: like(1),
+            name: like('fake')
+          }
+        }
+      })
+      .get('http://localhost:3000/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
