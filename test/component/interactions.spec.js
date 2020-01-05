@@ -119,7 +119,7 @@ describe('Pact - matchers', () => {
             favorite: {
               books: eachLike('Harry Porter')
             },
-            addresses: eachLike({ street: like('Road No. 60')})
+            addresses: eachLike({ street: like('Road No. 60') })
           }
         }
       })
@@ -131,7 +131,7 @@ describe('Pact - matchers', () => {
         gender: 'M',
         married: true,
         favorite: {
-          books: [ 'Harry Porter' ]
+          books: ['Harry Porter']
         },
         addresses: [
           {
@@ -139,6 +139,41 @@ describe('Pact - matchers', () => {
           }
         ]
       })
+      .toss()
+  });
+
+  it('GET - one interaction - array body', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: eachLike({
+            id: 1,
+            items: eachLike({
+              name: 'burger',
+              quantity: 2,
+              value: 100,
+            }),
+          })
+        }
+      })
+      .get('http://localhost:3000/api/projects')
+      .expectStatus(200)
+      .expectJsonLike([{
+        id: 1,
+        items: [{
+          name: 'burger',
+          quantity: 2,
+          value: 100
+        }]
+      }])
       .toss()
   });
 

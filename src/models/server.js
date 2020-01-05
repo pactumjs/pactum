@@ -31,7 +31,7 @@ class Server {
               interaction.exercised = true;
               res.set(interaction.willRespondWith.headers);
               res.status(interaction.willRespondWith.status);
-              helper.setValueFromMatcher(interaction.willRespondWith.body);
+              interaction.willRespondWith.body = helper.setValueFromMatcher(interaction.willRespondWith.body);
               res.send(interaction.willRespondWith.body);
             }
           }
