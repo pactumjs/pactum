@@ -1,5 +1,7 @@
 const express = require('express');
 
+const helper = require('../helpers/helper');
+
 class Server {
 
   constructor() {
@@ -20,7 +22,11 @@ class Server {
           for (let [id, interaction] of interactions) {
             const isValidMethod = (interaction.withRequest.method === req.method);
             const isValidPath = (interaction.withRequest.path === req.path);
-            if (isValidMethod && isValidPath) {
+            let isValidQuery = true;
+            if (interaction.withRequest.query) {
+              isValidQuery = helper.validateQuery(req.query, interaction.withRequest.query);
+            }
+            if (isValidMethod && isValidPath && isValidQuery) {
               interactionExercised = true;
               interaction.exercised = true;
               res.set(interaction.willRespondWith.headers);
@@ -54,15 +60,16 @@ class Server {
       if (app) {
         if (app.running) {
           app.server.close(() => {
+            console.log('App stopped on port', port);
             app.running = false;
             resolve();
           });
         } else {
-          console.log(`App is already stopped on port ${port}`);
+          console.log('App is already stopped on port', port);
           resolve();
         }
       } else {
-        console.log(`No App is running on port ${port}`);
+        console.log('No App is running on port', port);
         resolve();
       }
     });

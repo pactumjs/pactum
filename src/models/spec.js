@@ -1,5 +1,6 @@
 const rp = require('request-promise');
 const Expect = require('./expect');
+const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 
 class Spec {
@@ -13,11 +14,9 @@ class Spec {
     this._expect = new Expect();
   }
 
-  addInteraction(interaction) {
-    const id = helper.getRandomId();
-    interaction.id = id;
-    interaction.port = interaction.port || 3000;
-    this.interactions.set(id, interaction);
+  addInteraction(rawInteraction) {
+    const interaction = new Interaction(rawInteraction);
+    this.interactions.set(interaction.id, interaction);
     return this;
   }
 
@@ -120,6 +119,7 @@ class Spec {
       this.server.removeInteraction(interaction.port, id);
     }
     this._response.json = helper.getJson(this._response.body);
+    this._expect.validateInteractions(this.interactions);
     this._expect.validate(this._response);
   }
 

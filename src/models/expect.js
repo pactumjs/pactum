@@ -17,23 +17,29 @@ class Expect {
   }
 
   validate(response) {
-    this.validateStatus(response);
-    this.validateHeaders(response);
-    this.validateHeaderContains(response);
-    this.validateBody(response);
-    this.validateBodyContains(response);
-    this.validateJson(response);
-    this.validateJsonLike(response);
-    this.validateJsonQuery(response);
+    this._validateStatus(response);
+    this._validateHeaders(response);
+    this._validateHeaderContains(response);
+    this._validateBody(response);
+    this._validateBodyContains(response);
+    this._validateJson(response);
+    this._validateJsonLike(response);
+    this._validateJsonQuery(response);
   }
 
-  validateStatus(response) {
+  validateInteractions(interactions) {
+    for (let [id, interaction] of interactions) {
+      assert.ok(interaction.exercised, `Interaction not Exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+    }
+  }
+
+  _validateStatus(response) {
     if (this.statusCode !== null) {
       assert.strictEqual(response.statusCode, this.statusCode, `HTTP status ${response.statusCode} !== ${this.statusCode}`);
     }
   }
 
-  validateHeaders(response) {
+  _validateHeaders(response) {
     for (let i = 0; i < this.headers.length; i++) {
       const expectedHeaderObject = this.headers[i];
       const expectedHeader = expectedHeaderObject.key;
@@ -50,7 +56,7 @@ class Expect {
     }
   }
 
-  validateHeaderContains(response) {
+  _validateHeaderContains(response) {
     for (let i = 0; i < this.headerContains.length; i++) {
       const expectedHeaderObject = this.headerContains[i];
       const expectedHeader = expectedHeaderObject.key;
@@ -67,13 +73,13 @@ class Expect {
     }
   }
 
-  validateBody(response) {
+  _validateBody(response) {
     if (this.body !== null) {
       assert.strictEqual(response.body, this.body);
     }
   }
 
-  validateBodyContains(response) {
+  _validateBodyContains(response) {
     for (let i = 0; i < this.bodyContains.length; i++) {
       const expectedBodyValue = this.bodyContains[i];
       if (expectedBodyValue instanceof RegExp) {
@@ -84,14 +90,14 @@ class Expect {
     }
   }
 
-  validateJson(response) {
+  _validateJson(response) {
     for (let i = 0; i < this.json.length; i++) {
       const expectedJSON = this.json[i];
       assert.deepStrictEqual(response.json, expectedJSON);
     }
   }
 
-  validateJsonLike(response) {
+  _validateJsonLike(response) {
     for (let i = 0; i < this.jsonLike.length; i++) {
       const expectedJSON = this.jsonLike[i];
       const like = new Like();
@@ -100,7 +106,7 @@ class Expect {
     }
   }
 
-  validateJsonQuery(response) {
+  _validateJsonQuery(response) {
     for (let i = 0; i < this.jsonQuery.length; i++) {
       const jQ = this.jsonQuery[i];
       const value = jqy(jQ.path, { data: response.json }).value;
