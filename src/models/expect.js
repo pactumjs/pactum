@@ -27,6 +27,12 @@ class Expect {
     this._validateJsonQuery(response);
   }
 
+  validateInteractions(interactions) {
+    for (let [id, interaction] of interactions) {
+      assert.ok(interaction.exercised, `Interaction not Exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+    }
+  }
+
   _validateStatus(response) {
     if (this.statusCode !== null) {
       assert.strictEqual(response.statusCode, this.statusCode, `HTTP status ${response.statusCode} !== ${this.statusCode}`);

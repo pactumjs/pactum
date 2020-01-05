@@ -119,6 +119,7 @@ class Spec {
       this.server.removeInteraction(interaction.port, id);
     }
     this._response.json = helper.getJson(this._response.body);
+    this._expect.validateInteractions(this.interactions);
     this._expect.validate(this._response);
   }
 
