@@ -1,12 +1,8 @@
 const pactum = require('../../src/index');
-const { like } = pactum.matchers;
+const { like, term, eachLike } = pactum.matchers;
 
 
 describe('Pact', () => {
-
-  before(async () => {
-    await pactum.mock.start();
-  });
 
   it('GET - one interaction', async () => {
     await pactum
@@ -99,17 +95,9 @@ describe('Pact', () => {
       .toss()
   });
 
-  after(async () => {
-    await pactum.mock.stop();
-  });
-
 });
 
 describe('Pact - matchers', () => {
-
-  before(async () => {
-    await pactum.mock.start();
-  });
 
   it('GET - one interaction', async () => {
     await pactum
@@ -125,7 +113,12 @@ describe('Pact - matchers', () => {
           },
           body: {
             id: like(1),
-            name: like('fake')
+            name: like('fake'),
+            gender: term({ matcher: 'F|M', generate: 'M' }),
+            favorite: {
+              books: eachLike('Harry Porter')
+            },
+            addresses: eachLike({ street: like('Road No. 60')})
           }
         }
       })
@@ -133,13 +126,18 @@ describe('Pact - matchers', () => {
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
-        name: 'fake'
+        name: 'fake',
+        gender: 'M',
+        favorite: {
+          books: [ 'Harry Porter' ]
+        },
+        addresses: [
+          {
+            street: 'Road No. 60'
+          }
+        ]
       })
       .toss()
   });
-
-  after(async () => {
-    await pactum.mock.stop();
-  })
 
 });

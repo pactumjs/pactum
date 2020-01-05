@@ -42,6 +42,11 @@ const helper = {
         default:
           for (const prop in data) {
             data[prop] = this.setValueFromMatcher(data[prop]);
+            if (typeof data[prop] === 'object') {
+              for (const innerProp in data[prop]) {
+                data[prop][innerProp] = this.setValueFromMatcher(data[prop][innerProp]);
+              }
+            }
           }
           return data;
       }
