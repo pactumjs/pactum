@@ -1,5 +1,5 @@
 const pactum = require('../../src/index');
-const { like } = pactum.match;
+const { like } = pactum.matchers;
 
 
 describe('Pact', () => {
