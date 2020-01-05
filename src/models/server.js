@@ -10,7 +10,7 @@ class Server {
 
   start(port = 3000) {
     return new Promise((resolve) => {
-      if (this.mockMap.has(port)) {
+      if (this.mockMap.has(port) && this.mockMap.get(port).running) {
         console.log('App is already running');
         resolve();
       } else {
@@ -31,6 +31,7 @@ class Server {
               interaction.exercised = true;
               res.set(interaction.willRespondWith.headers);
               res.status(interaction.willRespondWith.status);
+              interaction.willRespondWith.body = helper.setValueFromMatcher(interaction.willRespondWith.body);
               res.send(interaction.willRespondWith.body);
             }
           }

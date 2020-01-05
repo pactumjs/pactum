@@ -1,11 +1,8 @@
 const pactum = require('../../src/index');
+const { like, term, eachLike } = pactum.matchers;
 
 
 describe('Pact', () => {
-
-  before(async () => {
-    await pactum.mock.start();
-  });
 
   it('GET - one interaction', async () => {
     await pactum
@@ -98,8 +95,86 @@ describe('Pact', () => {
       .toss()
   });
 
-  after(async () => {
-    await pactum.mock.stop();
-  })
+});
+
+describe('Pact - matchers', () => {
+
+  it('GET - one interaction', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: {
+            id: like(1),
+            name: like('fake'),
+            gender: term({ matcher: 'F|M', generate: 'M' }),
+            married: like(true),
+            favorite: {
+              books: eachLike('Harry Porter')
+            },
+            addresses: eachLike({ street: like('Road No. 60') })
+          }
+        }
+      })
+      .get('http://localhost:3000/api/projects/1')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake',
+        gender: 'M',
+        married: true,
+        favorite: {
+          books: ['Harry Porter']
+        },
+        addresses: [
+          {
+            street: 'Road No. 60'
+          }
+        ]
+      })
+      .toss()
+  });
+
+  it('GET - one interaction - array body', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: eachLike({
+            id: 1,
+            items: eachLike({
+              name: 'burger',
+              quantity: 2,
+              value: 100,
+            }),
+          })
+        }
+      })
+      .get('http://localhost:3000/api/projects')
+      .expectStatus(200)
+      .expectJsonLike([{
+        id: 1,
+        items: [{
+          name: 'burger',
+          quantity: 2,
+          value: 100
+        }]
+      }])
+      .toss()
+  });
 
 });

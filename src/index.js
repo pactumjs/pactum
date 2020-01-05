@@ -1,7 +1,9 @@
 const Spec = require('./models/spec');
 const Server = require('./models/server');
+const Matcher = require('./models/matcher');
 
 const server = new Server();
+const matchers = new Matcher();
 
 const mock = {
 
@@ -20,6 +22,7 @@ const mock = {
 const pactum = {
 
   mock,
+  matchers,
 
   addInteraction(interaction) {
     const spec = new Spec(server);
