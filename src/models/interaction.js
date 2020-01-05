@@ -5,6 +5,7 @@ class InteractionRequest {
   constructor(request) {
     this.method = request.method;
     this.path = request.path;
+    this.query = request.query;
   }
 
 }
