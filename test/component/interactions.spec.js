@@ -115,6 +115,7 @@ describe('Pact - matchers', () => {
             id: like(1),
             name: like('fake'),
             gender: term({ matcher: 'F|M', generate: 'M' }),
+            married: like(true),
             favorite: {
               books: eachLike('Harry Porter')
             },
@@ -128,6 +129,7 @@ describe('Pact - matchers', () => {
         id: 1,
         name: 'fake',
         gender: 'M',
+        married: true,
         favorite: {
           books: [ 'Harry Porter' ]
         },
