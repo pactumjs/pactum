@@ -26,6 +26,7 @@ class Interaction {
   constructor(rawInteraction) {
     this.id = helper.getRandomId();
     this.port = rawInteraction.port || 3000;
+    this.consumer = rawInteraction.consumer;
     this.provider = rawInteraction.provider;
     this.state = rawInteraction.state;
     this.uponReceiving = rawInteraction.uponReceiving;
