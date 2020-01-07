@@ -14,14 +14,63 @@ class Provider {
 
 }
 
+class PactInteraction {
+
+  constructor() {
+    this.description = '';
+    this.providerState = '';
+    this.request = new PactInteractionRequest();
+    this.response = new PactInteractionResponse();
+  }
+
+}
+
+class PactInteractionRequest {
+
+  constructor() {
+    this.method = '';
+    this.path = '';
+    this.query = '';
+  }
+
+}
+
+class PactInteractionResponse {
+
+  constructor() {
+    this.status = 0;
+    this.headers = {};
+    this.body = {};
+    this.matchingRules = {};
+  }
+
+}
+
+class Metadata {
+
+  constructor() {
+    this.pactSpecification = new PactSpecification();
+  }
+
+}
+
+class PactSpecification {
+
+  constructor() {
+    this.version = "2.0.0"
+  }
+
+}
+
 class Pact {
 
   constructor(consumer, provider) {
     this.consumer = new Consumer(consumer);
     this.provider = new Provider(provider);
     this.interactions = [];
+    this.metadata = new Metadata();
   }
 
 }
 
-module.exports = Pact;
+module.exports = { Pact, PactInteraction };
