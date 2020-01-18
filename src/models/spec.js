@@ -117,7 +117,7 @@ class Spec {
       this._response = error;
     }
     for (let [id, interaction] of this.interactions) {
-      store.saveInteraction(interaction);
+      store.addInteraction(interaction);
       this.server.removeInteraction(interaction.port, id);
     }
     this._response.json = helper.getJson(this._response.body);

@@ -6,4 +6,5 @@ before(async () => {
 
 after(async () => {
   await pactum.mock.stop();
+  pactum.pact.save();
 });

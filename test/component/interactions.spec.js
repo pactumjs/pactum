@@ -178,3 +178,38 @@ describe('Pact - matchers', () => {
   });
 
 });
+
+describe('Pact - VALID', () => {
+
+  it('GET - one interaction', async () => {
+    await pactum
+      .addInteraction({
+        consumer: 'c',
+        provider: 'p',
+        state: 'when there is a project with id 1',
+        uponReceiving: 'a request for project 1',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .get('http://localhost:3000/api/projects/1')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss()
+  });
+
+});
