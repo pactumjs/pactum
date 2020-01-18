@@ -1,4 +1,5 @@
 const fs = require('fs');
+const config = require('../config');
 const helper = require('./helper');
 const Interaction = require('../models/interaction');
 const { Pact, PactInteraction } = require('../models/pact');
@@ -36,8 +37,11 @@ const store = {
   },
 
   save() {
+    if (this.pacts.size > 0) {
+      fs.mkdirSync(config.pactFiles.dir, {recursive: true});
+    }
     for ([key, interaction] of this.pacts.entries()) {
-      fs.writeFileSync(`${key}.json`, JSON.stringify(interaction, null, 2));
+      fs.writeFileSync(`${config.pactFiles.dir}/${key}.json`, JSON.stringify(interaction, null, 2));
     }
   }
 
