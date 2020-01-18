@@ -30,7 +30,7 @@ const store = {
       pactInteraction.request.query = getPlainQuery(interaction.withRequest.query);
       pactInteraction.response.status = interaction.willRespondWith.status;
       pactInteraction.response.body = interaction.willRespondWith.body;
-      pactInteraction.response.matchingRules = helper.setMatchingRules({}, interaction.willRespondWith.rawBody, '$.body');
+      helper.setMatchingRules(pactInteraction.response.matchingRules, interaction.willRespondWith.rawBody, '$.body');
       pact.interactions.push(pactInteraction);
     }
   },
