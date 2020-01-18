@@ -1,14 +1,33 @@
 {
   "name": "pactum",
   "version": "1.0.0",
-  "description": "",
+  "description": "REST API endpoint testing tool with a mock server & compatible with pact.io for contract testing",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha --timeout 10000 ./test/unit/",
     "test:component": "mocha --timeout 10000 ./test/component/"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "api",
+    "REST",
+    "testing",
+    "component testing",
+    "contract testing",
+    "consumer driven testing",
+    "mock",
+    "pact",
+    "pact-js",
+    "pact.io"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ASaiAnudeep/pactum.git"
+  },
+  "homepage": "https://github.com/ASaiAnudeep/pactum#readme",
+  "bugs": {
+    "url": "https://github.com/ASaiAnudeep/pactum/issues"
+  },
+  "author": "Anudeep <asa.anudeep4@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
@@ -20,5 +39,8 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.2.2"
+  },
+  "engines": {
+    "node": ">=8"
   }
 }
