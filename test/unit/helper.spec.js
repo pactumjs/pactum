@@ -202,7 +202,7 @@ describe('helper - setValueFromMatcher', () => {
       items: [{
         name: 'burger',
         quantity: 2,
-        value: 100 
+        value: 100
       }]
     }]);
   });
@@ -227,9 +227,159 @@ describe('helper - setValueFromMatcher', () => {
       items: [{
         name: 'burger',
         quantity: 2,
-        value: 100 
+        value: 100
       }]
     }]);
   });
+
+});
+
+
+describe('helper - setMatchingRules', () => {
+
+  it('object', () => {
+    const data = {
+      id: {
+        contents: '1',
+        value: '1',
+        json_class: "Pact::SomethingLike"
+      },
+      name: 'fake',
+      gender: {
+        data: {
+          generate: 'M',
+          matcher: {
+            json_class: "Regexp",
+            o: 0,
+            s: 'M|F',
+          },
+        },
+        value: 'M',
+        json_class: "Pact::Term"
+      },
+      grades: {
+        physics: 60,
+        maths: {
+          contents: 100,
+          value: 100,
+          json_class: "Pact::SomethingLike"
+        },
+        sciences: {
+          chemistry: 45,
+          biology: {
+            data: {
+              generate: 'M',
+              matcher: {
+                json_class: "Regexp",
+                o: 0,
+                s: 'M|F',
+              },
+            },
+            value: 'M',
+            json_class: "Pact::Term"
+          }
+        }
+      },
+      items: {
+        contents: '1',
+        value: [1],
+        json_class: "Pact::ArrayLike",
+        min: 1,
+      },
+      components: {
+        value: [{
+          id: {
+            contents: '1',
+            value: '1',
+            json_class: "Pact::SomethingLike"
+          },
+          name: 'fake'
+        }],
+        json_class: "Pact::ArrayLike",
+        min: 1,
+      }
+    }
+    const mm = {}
+    helper.setMatchingRules(mm, data, '$.body');
+    expect(mm).deep.equals({
+      '$.body.id': { match: 'type' },
+      '$.body.gender': { match: 'regex', regex: 'M|F' },
+      '$.body.grades.maths': { match: 'type' },
+      '$.body.grades.sciences.biology': { match: 'regex', regex: 'M|F' },
+      '$.body.items': { min: 1 },
+      '$.body.items[*].*': { match: 'type' },
+      '$.body.components': { min: 1 },
+      '$.body.components[*].*': { match: 'type' },
+      '$.body.components[*].id': { match: 'type' }
+    });
+  });
+
+  it('object - like', () => {
+    const data = {
+      contents: '1',
+      value: '1',
+      json_class: "Pact::SomethingLike"
+    }
+    const mm = {}
+    helper.setMatchingRules(mm, data, '$.body');
+    expect(mm).deep.equals({
+      '$.body': { match: 'type' }
+    });
+  });
+
+  it('object - term', () => {
+    const data =  {
+      data: {
+        generate: 'M',
+        matcher: {
+          json_class: "Regexp",
+          o: 0,
+          s: 'M|F',
+        },
+      },
+      value: 'M',
+      json_class: "Pact::Term"
+    }
+    const mm = {}
+    helper.setMatchingRules(mm, data, '$.body');
+    expect(mm).deep.equals({
+      '$.body': { match: 'regex', regex: 'M|F' }
+    });
+  });
+
+  it('object - like array', () => {
+    const data = {
+      value: [{
+        id: {
+          contents: '1',
+          value: '1',
+          json_class: "Pact::SomethingLike"
+        },
+        name: 'fake'
+      }],
+      json_class: "Pact::ArrayLike",
+      min: 1
+    }
+    const mm = {}
+    helper.setMatchingRules(mm, data, '$.body');
+    expect(mm).deep.equals({
+      '$.body': { min: 1 },
+      '$.body[*].*': { match: 'type' },
+      '$.body[*].id': { match: 'type' }
+    });
+  });
+
+  it('array', () => {
+    const data = [{
+      contents: 100,
+      value: 100,
+      json_class: "Pact::SomethingLike"
+    }];
+    const mm = {}
+    helper.setMatchingRules(mm, data, '$.body');
+    expect(mm).deep.equals({
+      '$.body.[*]': { match: 'type' }
+    });
+  })
 
 });
