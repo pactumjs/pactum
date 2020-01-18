@@ -1,3 +1,5 @@
+const fs = require('fs');
+const config = require('../config');
 const helper = require('./helper');
 const Interaction = require('../models/interaction');
 const { Pact, PactInteraction } = require('../models/pact');
@@ -7,27 +9,40 @@ const store = {
   pacts: new Map(),
 
   /**
-   * saves interaction in the store
+   * add interaction in the store
    * @param {Interaction} interaction 
    */
-  saveInteraction(interaction) {
-    const { consumer, provider } = interaction;
-    const key = `${consumer}-${provider}`;
-    let pact;
-    if (this.pacts.has(key)) {
-      pact = this.pacts.get(key);
-    } else {
-      pact = new Pact(consumer, provider);
-      this.pacts.set(key, pact);
+  addInteraction(interaction) {
+    const { consumer, provider, state, uponReceiving } = interaction;
+    if (consumer && provider && state && uponReceiving) {
+      const key = `${consumer}-${provider}`;
+      let pact;
+      if (this.pacts.has(key)) {
+        pact = this.pacts.get(key);
+      } else {
+        pact = new Pact(consumer, provider);
+        this.pacts.set(key, pact);
+      }
+      const pactInteraction = new PactInteraction();
+      pactInteraction.providerState = state;
+      pactInteraction.description = uponReceiving;
+      pactInteraction.request.method = interaction.withRequest.method;
+      pactInteraction.request.path = interaction.withRequest.path;
+      pactInteraction.request.query = getPlainQuery(interaction.withRequest.query);
+      pactInteraction.response.status = interaction.willRespondWith.status;
+      pactInteraction.response.body = interaction.willRespondWith.body;
+      helper.setMatchingRules(pactInteraction.response.matchingRules, interaction.willRespondWith.rawBody, '$.body');
+      pact.interactions.push(pactInteraction);
     }
-    const pactInteraction = new PactInteraction();
-    pactInteraction.request.method = interaction.withRequest.method;
-    pactInteraction.request.path = interaction.withRequest.path;
-    pactInteraction.request.query = getPlainQuery(interaction.withRequest.query);
-    pactInteraction.response.status = interaction.willRespondWith.status;
-    pactInteraction.response.body = interaction.willRespondWith.body;
-    pactInteraction.response.matchingRules = helper.setMatchingRules({}, interaction.willRespondWith.rawBody, '$.body');
-    pact.interactions.push(pactInteraction);
+  },
+
+  save() {
+    if (this.pacts.size > 0) {
+      fs.mkdirSync(config.pactFiles.dir, {recursive: true});
+    }
+    for ([key, interaction] of this.pacts.entries()) {
+      fs.writeFileSync(`${config.pactFiles.dir}/${key}.json`, JSON.stringify(interaction, null, 2));
+    }
   }
 
 }
