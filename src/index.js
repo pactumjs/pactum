@@ -41,6 +41,51 @@ const pactum = {
   pact,
   configuration,
   
+  /**
+   * Add as an interaction to the mock server
+   * @param {object} interaction - interaction details
+   * @param {string} [interaction.consumer] - name of the consumer
+   * @param {string} [interaction.provider] - name of the provider
+   * @param {string} [interaction.state] - state of the provider
+   * @param {string} [interaction.uponReceiving] - description of the request
+   * @param {object} interaction.withRequest - interaction request details
+   * @param {string} interaction.withRequest.method - request method
+   * @param {string} interaction.withRequest.path - request path
+   * @param {object} [interaction.withRequest.query] - request query
+   * @param {object} interaction.willRespondWith - interaction response details
+   * @param {string} interaction.willRespondWith.status - response status code
+   * @param {string} [interaction.willRespondWith.headers] - response headers
+   * @param {object} [interaction.willRespondWith.body] - response body
+   * @example
+   * await pactum
+   *  .addInteraction({
+   *    consumer: 'our-little-consumer',
+   *    provider: 'project-provider',
+   *    state: 'when there is a project with id 1',
+   *    uponReceiving: 'a request for project 1',
+   *    withRequest: {
+   *      method: 'GET',
+   *      path: '/api/projects/1'
+   *    },
+   *    willRespondWith: {
+   *      status: 200,
+   *      headers: {
+   *        'Content-Type': 'application/json'
+   *      },
+   *      body: {
+   *        id: 1,
+   *        name: 'fake'
+   *      }
+   *    }
+   *  })
+   *  .get('https://jsonplaceholder.typicode.com/posts')
+   *  .expectStatus(200)
+   *  .expectJsonLike({
+   *    userId: 1,
+   *    id: 1
+   *   })
+   *  .toss();
+   */
   addInteraction(interaction) {
     const spec = new Spec(server);
     return spec.addInteraction(interaction);
