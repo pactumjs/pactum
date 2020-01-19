@@ -69,11 +69,23 @@ after(async () => {
 
 <details>
   
+  <summary>Basics</summary>
+
+  | Method       | Description                                  | Usage                                 |
+  | ----------   | -------------------------------------------- | ------------------------------------- |
+  | get          | performs a GET request on given resource     | `pactum.get('url')`                   |
+  | expectStatus | expects a status code from the resource      | `pactum.get('url').expectStatus(200)` |
+  | toss         | executes the test case and returns a promise | `await pactum.get('url').toss()`      |
+
+</details>
+
+<details>
+  
   <summary>HTTP Methods</summary>
 
   | Method     | Usage                 |
   | ---------- | --------------------- |
-  | get        | ```javascript pactum.get('')```      |
+  | get        | `pactum.get('')`      |
   | post       | `pactum.post('')`     |
   | put        | `pactum.get('')`      |
   | delete     | `pactum.get('')`      |
