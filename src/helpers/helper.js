@@ -4,7 +4,7 @@ const helper = {
     try {
       return JSON.parse(jsonString)
     } catch (error) {
-      return null;
+      return jsonString;
     }
   },
 
@@ -45,6 +45,18 @@ const helper = {
       }
     }
     return true;
+  },
+
+  validateBody(actual, expected) {
+    if (typeof actual === typeof expected) {
+      if (typeof actual === 'object') {
+        return (JSON.stringify(actual) === JSON.stringify(expected));
+      } else {
+        return (actual === expected);
+      }
+    } else {
+      return false;
+    }
   },
 
   setValueFromMatcher(data) {

@@ -1,6 +1,6 @@
 const pactum = require('../../src/index');
 
-describe('JSON Placeholder', () => {
+xdescribe('JSON Placeholder', () => {
 
   it('GET', async () => {
     await pactum

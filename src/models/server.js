@@ -15,6 +15,7 @@ class Server {
         resolve();
       } else {
         const app = express();
+        app.use(express.json());
         app.all('/*', (req, res) => {
           const mock = this.mockMap.get(req.app.port);
           const interactions = mock.interactions;
@@ -30,7 +31,11 @@ class Server {
             if (interaction.withRequest.headers) {
               isValidHeaders = helper.validateHeaders(req.headers, interaction.withRequest.headers);
             }
-            if (isValidMethod && isValidPath && isValidQuery && isValidHeaders) {
+            let isValidBody = true;
+            if (interaction.withRequest.body) {
+              isValidBody = helper.validateBody(req.body, interaction.withRequest.body);
+            }
+            if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
               interactionExercised = true;
               interaction.exercised = true;
               res.set(interaction.willRespondWith.headers);

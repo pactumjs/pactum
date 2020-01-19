@@ -14,7 +14,7 @@ describe('Pact', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: 1,
@@ -44,7 +44,7 @@ describe('Pact', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: 1,
@@ -76,7 +76,7 @@ describe('Pact', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: 1,
@@ -102,13 +102,13 @@ describe('Pact', () => {
           method: 'GET',
           path: '/api/projects/1',
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           }
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: 1,
@@ -118,12 +118,70 @@ describe('Pact', () => {
       })
       .get('http://localhost:3000/api/projects/1')
       .withHeaders({
-        'Content-Type': 'application/json'
+        'content-type': 'application/json'
       })
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
         name: 'fake'
+      })
+      .toss()
+  });
+
+  it('POST - one interaction', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/projects'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            message: 'ok'
+          }
+        }
+      })
+      .post('http://localhost:3000/api/projects')
+      .expectStatus(200)
+      .expectJson({
+        message: 'ok'
+      })
+      .toss()
+  });
+
+  it('POST - one interaction - with body', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/projects',
+          body: {
+            id: 1,
+            title: 'new fake'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            message: 'ok'
+          }
+        }
+      })
+      .post('http://localhost:3000/api/projects')
+      .withJson({
+        id: 1,
+        title: 'new fake'
+      })
+      .expectStatus(200)
+      .expectJson({
+        message: 'ok'
       })
       .toss()
   });
@@ -142,7 +200,7 @@ describe('Pact - matchers', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: like(1),
@@ -185,7 +243,7 @@ describe('Pact - matchers', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: eachLike({
             id: 1,
@@ -228,7 +286,7 @@ describe('Pact - VALID', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: 1,
@@ -259,7 +317,7 @@ describe('Pact - VALID', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: like(1),
@@ -306,7 +364,7 @@ describe('Pact - VALID', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: eachLike({
             id: 1,
