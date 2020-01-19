@@ -33,23 +33,45 @@ class Spec {
     }
   }
 
-  get(options) {
-    if (typeof options === 'string') {
-      this._request.uri = options;
-    } else {
-      this._request = options;
-    }
+  get(url) {
+    this._request.url = url;
     this._request.method = 'GET';
     return this;
   }
 
-  post(options) {
-    if (typeof options === 'string') {
-      this._request.uri = options;
-    } else {
-      this._request = options;
-    }
+  head(url) {
+    this._request.url = url;
+    this._request.method = 'HEAD';
+    return this;
+  }
+
+  options(url) {
+    this._request.url = url;
+    this._request.method = 'OPTIONS';
+    return this;
+  }
+
+  patch(url) {
+    this._request.url = url;
+    this._request.method = 'PATCH';
+    return this;
+  }
+
+  post(url) {
+    this._request.url = url;
     this._request.method = 'POST';
+    return this;
+  }
+
+  put(url) {
+    this._request.url = url;
+    this._request.method = 'PUT';
+    return this;
+  }
+
+  delete(url) {
+    this._request.url = url;
+    this._request.method = 'DELETE';
     return this;
   }
 
@@ -59,6 +81,10 @@ class Spec {
     }
     this._request.qs[key] = value;
     return this;
+  }
+
+  withJson(json) {
+    this._request.json = json;
   }
 
   expectStatus(statusCode) {

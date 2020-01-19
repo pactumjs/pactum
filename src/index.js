@@ -46,9 +46,32 @@ const pactum = {
     return spec.addInteraction(interaction);
   },
 
-  get(options) {
-    const spec = new Spec(server);
-    return spec.get(options);
+  get(url) {
+    return new Spec(server).get(url);
+  },
+
+  head(url) {
+    return new Spec(server).head(url);
+  },
+
+  options(url) {
+    return new Spec(server).options(url);
+  },
+
+  patch(url) {
+    return new Spec(server).patch(url);
+  },
+
+  post(url) {
+    return new Spec(server).post(url);
+  },
+
+  put(url) {
+    return new Spec(server).put(url);
+  },
+
+  delete(url) {
+    return new Spec(server).delete(url);
   }
 
 };
