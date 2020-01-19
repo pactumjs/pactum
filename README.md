@@ -71,6 +71,8 @@ after(async () => {
   
   <summary>Basics</summary>
 
+  #### Basics
+
   | Method       | Description                                  | Usage                                 |
   | ----------   | -------------------------------------------- | ------------------------------------- |
   | get          | performs a GET request on the resource       | `pactum.get('url')`                   |
@@ -83,7 +85,9 @@ after(async () => {
   
   <summary>HTTP Methods</summary>
 
-  | Method     | Description                              | Usage                 |
+  #### HTTP Methods
+
+  | Method   | Description                                | Usage                 |
   | -------- | ------------------------------------------ | --------------------- |
   | get      | performs a GET request on the resource     | `pactum.get('')`      |
   | post     | performs a POST request on the resource    | `pactum.post('')`     |
