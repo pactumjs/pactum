@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "REST API endpoint testing tool with a mock server & compatible with pact.io for contract testing",
   "main": "src/index.js",
+  "files": [
+    "/src"
+  ],
   "scripts": {
     "test": "mocha --timeout 10000 ./test/unit/",
     "test:component": "mocha --timeout 10000 ./test/component/"
