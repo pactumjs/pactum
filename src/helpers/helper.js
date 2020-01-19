@@ -34,13 +34,13 @@ const helper = {
 
   validateHeaders(actual, expected) {
     for (const prop in expected) {
-      if (!expected.hasOwnProperty(prop)) {
+      if (!expected.hasOwnProperty(prop.toLowerCase())) {
         continue;
       }
-      if (!actual.hasOwnProperty(prop)) {
+      if (!actual.hasOwnProperty(prop.toLowerCase())) {
         return false;
       }
-      if(expected[prop] != actual[prop]) {
+      if(expected[prop]  != actual[prop.toLowerCase()]) {
         return false;
       }
     }

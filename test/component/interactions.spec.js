@@ -95,6 +95,39 @@ describe('Pact', () => {
       .toss()
   });
 
+  it.only('GET - one interaction - with headers', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .get('http://localhost:3000/api/projects/1')
+      .withHeaders({
+        'Content-Type': 'application/json'
+      })
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss()
+  });
+
 });
 
 describe('Pact - matchers', () => {

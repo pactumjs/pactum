@@ -11,7 +11,7 @@ class Server {
   start(port = 3000) {
     return new Promise((resolve) => {
       if (this.mockMap.has(port) && this.mockMap.get(port).running) {
-        console.log('App is already running');
+        console.log('PACTUM mock server is already running');
         resolve();
       } else {
         const app = express();
@@ -27,6 +27,7 @@ class Server {
               isValidQuery = helper.validateQuery(req.query, interaction.withRequest.query);
             }
             let isValidHeaders = true;
+            console.log(req.headers)
             if (interaction.withRequest.headers) {
               isValidHeaders = helper.validateHeaders(req.headers, interaction.withRequest.headers);
             }
@@ -44,7 +45,7 @@ class Server {
           }
         });
         const server = app.listen(port, () => {
-          console.log('App is listening on port', port);
+          console.log('PACTUM mock server is listening on port', port);
           app.port = port;
           this.mockMap.set(port, {
             app,
@@ -64,16 +65,16 @@ class Server {
       if (app) {
         if (app.running) {
           app.server.close(() => {
-            console.log('App stopped on port', port);
+            console.log('PACTUM mock server stopped on port', port);
             app.running = false;
             resolve();
           });
         } else {
-          console.log('App is already stopped on port', port);
+          console.log('PACTUM mock server is already stopped on port', port);
           resolve();
         }
       } else {
-        console.log('No App is running on port', port);
+        console.log('No PACTUM mock server is running on port', port);
         resolve();
       }
     });

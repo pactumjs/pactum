@@ -51,9 +51,9 @@ const pactum = {
    * @param {object} interaction.withRequest - interaction request details
    * @param {string} interaction.withRequest.method - request method
    * @param {string} interaction.withRequest.path - request path
-   * @param {object} [rawInteraction.withRequest.headers] - request headers
+   * @param {object} [interaction.withRequest.headers] - request headers
    * @param {object} [interaction.withRequest.query] - request query
-   * @param {object} [rawInteraction.withRequest.body] - request body
+   * @param {object} [interaction.withRequest.body] - request body
    * @param {object} interaction.willRespondWith - interaction response details
    * @param {string} interaction.willRespondWith.status - response status code
    * @param {string} [interaction.willRespondWith.headers] - response headers
