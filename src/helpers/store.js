@@ -40,7 +40,7 @@ const store = {
 
   save() {
     for ([key, pact] of this.pacts.entries()) {
-      const dir = `${config.pactFiles.dir}/${pact.consumer.name}`;
+      const dir = `${config.pact.dir}/${pact.consumer.name}`;
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, {recursive: true});
       }

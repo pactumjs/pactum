@@ -10,12 +10,16 @@ const matchers = new Matcher();
 
 const mock = {
 
-  start(port = 3000) {
+  start(port = config.mock.port) {
     return server.start(port);
   },
 
-  stop(port = 3000) {
+  stop(port = config.mock.port) {
     return server.stop(port);
+  },
+
+  setDefaultPort(port) {
+    config.mock.port = port;
   }
 
   // stop all servers
@@ -23,15 +27,21 @@ const mock = {
 }
 
 const pact = {
+
+  setPactFilesDirectory(path) {
+    config.pact.dir = path;
+  },
+
+  setConsumerName(name) {
+    config.pact.consumer = name;
+  },
+
   save() {
     store.save();
   }
-}
 
-const configuration = {
-  setPactFilesDirectory(path) {
-    config.pactFiles.dir = path;
-  }
+  // publish pacts
+
 }
 
 const pactum = {
@@ -39,7 +49,6 @@ const pactum = {
   mock,
   matchers,
   pact,
-  configuration,
   
   /**
    * Add as an interaction to the mock server

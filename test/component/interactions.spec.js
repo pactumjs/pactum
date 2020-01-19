@@ -22,7 +22,7 @@ describe('Pact', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -52,7 +52,7 @@ describe('Pact', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .withQuery('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
@@ -84,7 +84,7 @@ describe('Pact', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .withQuery('id', 1)
       .withQuery('name', 'fake')
       .expectStatus(200)
@@ -116,7 +116,7 @@ describe('Pact', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .withHeaders({
         'content-type': 'application/json'
       })
@@ -145,7 +145,7 @@ describe('Pact', () => {
           }
         }
       })
-      .post('http://localhost:3000/api/projects')
+      .post('http://localhost:9393/api/projects')
       .expectStatus(200)
       .expectJson({
         message: 'ok'
@@ -174,7 +174,7 @@ describe('Pact', () => {
           }
         }
       })
-      .post('http://localhost:3000/api/projects')
+      .post('http://localhost:9393/api/projects')
       .withJson({
         id: 1,
         title: 'new fake'
@@ -214,7 +214,7 @@ describe('Pact - matchers', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -255,7 +255,7 @@ describe('Pact - matchers', () => {
           })
         }
       })
-      .get('http://localhost:3000/api/projects')
+      .get('http://localhost:9393/api/projects')
       .expectStatus(200)
       .expectJsonLike([{
         id: 1,
@@ -294,7 +294,7 @@ describe('Pact - VALID', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -331,7 +331,7 @@ describe('Pact - VALID', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -376,7 +376,7 @@ describe('Pact - VALID', () => {
           })
         }
       })
-      .get('http://localhost:3000/api/projects')
+      .get('http://localhost:9393/api/projects')
       .expectStatus(200)
       .expectJsonLike([{
         id: 1,

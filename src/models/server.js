@@ -1,6 +1,7 @@
 const express = require('express');
 
 const helper = require('../helpers/helper');
+const config = require('../config');
 
 class Server {
 
@@ -8,7 +9,7 @@ class Server {
     this.mockMap = new Map();
   }
 
-  start(port = 3000) {
+  start(port = config.mock.port) {
     return new Promise((resolve) => {
       if (this.mockMap.has(port) && this.mockMap.get(port).running) {
         console.log('PACTUM mock server is already running');
@@ -63,7 +64,7 @@ class Server {
     });
   }
 
-  stop(port = 3000) {
+  stop(port = config.mock.port) {
     return new Promise((resolve) => {
       const app = this.mockMap.get(port);
       if (app) {
@@ -92,14 +93,14 @@ class Server {
     }
   }
 
-  removeInteraction(port = 3000, id) {
+  removeInteraction(port = config.mock.port, id) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
       mock.interactions.delete(id);
     }
   }
 
-  removeInteractions(port = 3000) {
+  removeInteractions(port = config.mock.port) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
       mock.interactions.clear();
