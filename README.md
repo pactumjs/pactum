@@ -73,7 +73,7 @@ after(async () => {
 
   | Method     | Usage                 |
   | ---------- | --------------------- |
-  | get        | `pactum.get('')`      |
+  | get        | ```javascript pactum.get('')```      |
   | post       | `pactum.post('')`     |
   | put        | `pactum.get('')`      |
   | delete     | `pactum.get('')`      |
