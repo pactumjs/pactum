@@ -68,11 +68,14 @@ after(async () => {
 ## API
 
 <details>
+  
   <summary>HTTP Methods</summary>
-| Method     | Usage                 |
-| ---------- | --------------------- |
-| get        | `pactum.get('')`      |
-| post       | `pactum.post('')`     |
-| put        | `pactum.get('')`      |
-| delete     | `pactum.get('')`      |
+
+  | Method     | Usage                 |
+  | ---------- | --------------------- |
+  | get        | `pactum.get('')`      |
+  | post       | `pactum.post('')`     |
+  | put        | `pactum.get('')`      |
+  | delete     | `pactum.get('')`      |
+
 </details>
