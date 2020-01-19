@@ -14,7 +14,7 @@ describe('Pact', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: 1,
@@ -22,7 +22,7 @@ describe('Pact', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -44,7 +44,7 @@ describe('Pact', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: 1,
@@ -52,7 +52,7 @@ describe('Pact', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .withQuery('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
@@ -76,7 +76,7 @@ describe('Pact', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: 1,
@@ -84,13 +84,104 @@ describe('Pact', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .withQuery('id', 1)
       .withQuery('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
         name: 'fake'
+      })
+      .toss()
+  });
+
+  it('GET - one interaction - with headers', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1',
+          headers: {
+            'content-type': 'application/json'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .withHeaders({
+        'content-type': 'application/json'
+      })
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss()
+  });
+
+  it('POST - one interaction', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/projects'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            message: 'ok'
+          }
+        }
+      })
+      .post('http://localhost:9393/api/projects')
+      .expectStatus(200)
+      .expectJson({
+        message: 'ok'
+      })
+      .toss()
+  });
+
+  it('POST - one interaction - with body', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/projects',
+          body: {
+            id: 1,
+            title: 'new fake'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            message: 'ok'
+          }
+        }
+      })
+      .post('http://localhost:9393/api/projects')
+      .withJson({
+        id: 1,
+        title: 'new fake'
+      })
+      .expectStatus(200)
+      .expectJson({
+        message: 'ok'
       })
       .toss()
   });
@@ -109,7 +200,7 @@ describe('Pact - matchers', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: like(1),
@@ -123,7 +214,7 @@ describe('Pact - matchers', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -152,7 +243,7 @@ describe('Pact - matchers', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: eachLike({
             id: 1,
@@ -164,7 +255,7 @@ describe('Pact - matchers', () => {
           })
         }
       })
-      .get('http://localhost:3000/api/projects')
+      .get('http://localhost:9393/api/projects')
       .expectStatus(200)
       .expectJsonLike([{
         id: 1,
@@ -195,7 +286,7 @@ describe('Pact - VALID', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: 1,
@@ -203,7 +294,7 @@ describe('Pact - VALID', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -226,7 +317,7 @@ describe('Pact - VALID', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: {
             id: like(1),
@@ -240,7 +331,7 @@ describe('Pact - VALID', () => {
           }
         }
       })
-      .get('http://localhost:3000/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -273,7 +364,7 @@ describe('Pact - VALID', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: eachLike({
             id: 1,
@@ -285,7 +376,7 @@ describe('Pact - VALID', () => {
           })
         }
       })
-      .get('http://localhost:3000/api/projects')
+      .get('http://localhost:9393/api/projects')
       .expectStatus(200)
       .expectJsonLike([{
         id: 1,

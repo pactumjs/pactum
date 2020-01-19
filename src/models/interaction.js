@@ -1,11 +1,14 @@
 const helper = require('../helpers/helper');
+const config = require('../config');
 
 class InteractionRequest {
 
   constructor(request) {
     this.method = request.method;
     this.path = request.path;
+    this.headers = request.headers;
     this.query = request.query;
+    this.body = request.body;
   }
 
 }
@@ -25,7 +28,7 @@ class Interaction {
 
   constructor(rawInteraction) {
     this.id = helper.getRandomId();
-    this.port = rawInteraction.port || 3000;
+    this.port = rawInteraction.port || config.mock.port;
     this.consumer = rawInteraction.consumer;
     this.provider = rawInteraction.provider;
     this.state = rawInteraction.state;

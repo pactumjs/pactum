@@ -31,6 +31,8 @@ class PactInteractionRequest {
     this.method = '';
     this.path = '';
     this.query = '';
+    this.headers = null;
+    this.body = null;
   }
 
 }

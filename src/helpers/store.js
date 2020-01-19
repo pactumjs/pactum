@@ -29,6 +29,8 @@ const store = {
       pactInteraction.request.method = interaction.withRequest.method;
       pactInteraction.request.path = interaction.withRequest.path;
       pactInteraction.request.query = getPlainQuery(interaction.withRequest.query);
+      pactInteraction.request.headers = interaction.withRequest.headers;
+      pactInteraction.request.body = interaction.withRequest.body;
       pactInteraction.response.status = interaction.willRespondWith.status;
       pactInteraction.response.body = interaction.willRespondWith.body;
       helper.setMatchingRules(pactInteraction.response.matchingRules, interaction.willRespondWith.rawBody, '$.body');
@@ -37,11 +39,12 @@ const store = {
   },
 
   save() {
-    if (this.pacts.size > 0) {
-      fs.mkdirSync(config.pactFiles.dir, {recursive: true});
-    }
-    for ([key, interaction] of this.pacts.entries()) {
-      fs.writeFileSync(`${config.pactFiles.dir}/${key}.json`, JSON.stringify(interaction, null, 2));
+    for ([key, pact] of this.pacts.entries()) {
+      const dir = `${config.pact.dir}/${pact.consumer.name}`;
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, {recursive: true});
+      }
+      fs.writeFileSync(`${dir}/${key}.json`, JSON.stringify(pact, null, 2));
     }
   }
 

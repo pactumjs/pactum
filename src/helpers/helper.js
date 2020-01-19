@@ -4,7 +4,7 @@ const helper = {
     try {
       return JSON.parse(jsonString)
     } catch (error) {
-      return null;
+      return jsonString;
     }
   },
 
@@ -30,6 +30,33 @@ const helper = {
       }
     }
     return true;
+  },
+
+  validateHeaders(actual, expected) {
+    for (const prop in expected) {
+      if (!expected.hasOwnProperty(prop.toLowerCase())) {
+        continue;
+      }
+      if (!actual.hasOwnProperty(prop.toLowerCase())) {
+        return false;
+      }
+      if(expected[prop]  != actual[prop.toLowerCase()]) {
+        return false;
+      }
+    }
+    return true;
+  },
+
+  validateBody(actual, expected) {
+    if (typeof actual === typeof expected) {
+      if (typeof actual === 'object') {
+        return (JSON.stringify(actual) === JSON.stringify(expected));
+      } else {
+        return (actual === expected);
+      }
+    } else {
+      return false;
+    }
   },
 
   setValueFromMatcher(data) {

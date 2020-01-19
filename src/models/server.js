@@ -1,6 +1,7 @@
 const express = require('express');
 
 const helper = require('../helpers/helper');
+const config = require('../config');
 
 class Server {
 
@@ -8,13 +9,14 @@ class Server {
     this.mockMap = new Map();
   }
 
-  start(port = 3000) {
+  start(port = config.mock.port) {
     return new Promise((resolve) => {
       if (this.mockMap.has(port) && this.mockMap.get(port).running) {
-        console.log('App is already running');
+        console.log('PACTUM mock server is already running');
         resolve();
       } else {
         const app = express();
+        app.use(express.json());
         app.all('/*', (req, res) => {
           const mock = this.mockMap.get(req.app.port);
           const interactions = mock.interactions;
@@ -26,7 +28,15 @@ class Server {
             if (interaction.withRequest.query) {
               isValidQuery = helper.validateQuery(req.query, interaction.withRequest.query);
             }
-            if (isValidMethod && isValidPath && isValidQuery) {
+            let isValidHeaders = true;
+            if (interaction.withRequest.headers) {
+              isValidHeaders = helper.validateHeaders(req.headers, interaction.withRequest.headers);
+            }
+            let isValidBody = true;
+            if (interaction.withRequest.body) {
+              isValidBody = helper.validateBody(req.body, interaction.withRequest.body);
+            }
+            if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
               interactionExercised = true;
               interaction.exercised = true;
               res.set(interaction.willRespondWith.headers);
@@ -40,7 +50,7 @@ class Server {
           }
         });
         const server = app.listen(port, () => {
-          console.log('App is listening on port', port);
+          console.log('PACTUM mock server is listening on port', port);
           app.port = port;
           this.mockMap.set(port, {
             app,
@@ -54,22 +64,22 @@ class Server {
     });
   }
 
-  stop(port = 3000) {
+  stop(port = config.mock.port) {
     return new Promise((resolve) => {
       const app = this.mockMap.get(port);
       if (app) {
         if (app.running) {
           app.server.close(() => {
-            console.log('App stopped on port', port);
+            console.log('PACTUM mock server stopped on port', port);
             app.running = false;
             resolve();
           });
         } else {
-          console.log('App is already stopped on port', port);
+          console.log('PACTUM mock server is already stopped on port', port);
           resolve();
         }
       } else {
-        console.log('No App is running on port', port);
+        console.log('No PACTUM mock server is running on port', port);
         resolve();
       }
     });
@@ -83,14 +93,14 @@ class Server {
     }
   }
 
-  removeInteraction(port = 3000, id) {
+  removeInteraction(port = config.mock.port, id) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
       mock.interactions.delete(id);
     }
   }
 
-  removeInteractions(port = 3000) {
+  removeInteractions(port = config.mock.port) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
       mock.interactions.clear();

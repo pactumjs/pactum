@@ -1,5 +1,9 @@
 const config = {
-  pactFiles: {
+  mock: {
+    port: 9393
+  },
+  pact: {
+    consumer: '',
     dir: './pacts/'
   }
 };
