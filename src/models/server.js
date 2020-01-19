@@ -27,7 +27,6 @@ class Server {
               isValidQuery = helper.validateQuery(req.query, interaction.withRequest.query);
             }
             let isValidHeaders = true;
-            console.log(req.headers)
             if (interaction.withRequest.headers) {
               isValidHeaders = helper.validateHeaders(req.headers, interaction.withRequest.headers);
             }

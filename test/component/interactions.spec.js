@@ -95,7 +95,7 @@ describe('Pact', () => {
       .toss()
   });
 
-  it.only('GET - one interaction - with headers', async () => {
+  it('GET - one interaction - with headers', async () => {
     await pactum
       .addInteraction({
         withRequest: {
