@@ -24,7 +24,7 @@ it('should be a teapot', async () => {
 });
 ```
 
-Running a test with a mock server.
+Running a component test with a mock server. If the mock interaction is not exercised, the test will fail.
 
 ```javascript
 const pactum = require('pactum');
@@ -65,3 +65,14 @@ after(async () => {
 });
 ```
 
+## API
+
+<details>
+  <summary>HTTP Methods</summary>
+  | Method     | Usage                 |
+  | ---------- | --------------------- |
+  | get        | `pactum.get('')`      |
+  | post       | `pactum.post('')`     |
+  | put        | `pactum.get('')`      |
+  | delete     | `pactum.get('')`      |
+</details>
