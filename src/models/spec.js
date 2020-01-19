@@ -85,6 +85,12 @@ class Spec {
 
   withJson(json) {
     this._request.json = json;
+    return this;
+  }
+
+  withHeaders(headers) {
+    this._request.headers = headers;
+    return this
   }
 
   expectStatus(statusCode) {
