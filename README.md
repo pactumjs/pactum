@@ -19,7 +19,7 @@ const pactum = require('pactum');
 it('should be a teapot', async () => {
   await pactum
     .get('http://httpbin.org/status/418')
-    .expect('status', 418)
+    .expectStatus(418)
     .toss();
 });
 ```
@@ -73,7 +73,7 @@ after(async () => {
 
   | Method       | Description                                  | Usage                                 |
   | ----------   | -------------------------------------------- | ------------------------------------- |
-  | get          | performs a GET request on given resource     | `pactum.get('url')`                   |
+  | get          | performs a GET request on the resource       | `pactum.get('url')`                   |
   | expectStatus | expects a status code from the resource      | `pactum.get('url').expectStatus(200)` |
   | toss         | executes the test case and returns a promise | `await pactum.get('url').toss()`      |
 
@@ -83,11 +83,14 @@ after(async () => {
   
   <summary>HTTP Methods</summary>
 
-  | Method     | Usage                 |
-  | ---------- | --------------------- |
-  | get        | `pactum.get('')`      |
-  | post       | `pactum.post('')`     |
-  | put        | `pactum.get('')`      |
-  | delete     | `pactum.get('')`      |
+  | Method     | Description                              | Usage                 |
+  | -------- | ------------------------------------------ | --------------------- |
+  | get      | performs a GET request on the resource     | `pactum.get('')`      |
+  | post     | performs a POST request on the resource    | `pactum.post('')`     |
+  | put      | performs a PUT request on the resource     | `pactum.put('')`      |
+  | delete   | performs a DELETE request on the resource  | `pactum.delete('')`   |
+  | patch    | performs a PATCH request on the resource   | `pactum.patch('')`    |
+  | head     | performs a HEAD request on the resource    | `pactum.head('')`     |
+  | options  | performs a OPTIONS request on the resource | `pactum.options('')`  |
 
 </details>
