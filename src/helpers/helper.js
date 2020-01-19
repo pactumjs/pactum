@@ -32,6 +32,21 @@ const helper = {
     return true;
   },
 
+  validateHeaders(actual, expected) {
+    for (const prop in expected) {
+      if (!expected.hasOwnProperty(prop)) {
+        continue;
+      }
+      if (!actual.hasOwnProperty(prop)) {
+        return false;
+      }
+      if(expected[prop] != actual[prop]) {
+        return false;
+      }
+    }
+    return true;
+  },
+
   setValueFromMatcher(data) {
     if (Array.isArray(data)) {
       for (let i = 0; i < data.length; i++) {

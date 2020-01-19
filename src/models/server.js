@@ -26,7 +26,11 @@ class Server {
             if (interaction.withRequest.query) {
               isValidQuery = helper.validateQuery(req.query, interaction.withRequest.query);
             }
-            if (isValidMethod && isValidPath && isValidQuery) {
+            let isValidHeaders = true;
+            if (interaction.withRequest.headers) {
+              isValidHeaders = helper.validateHeaders(req.headers, interaction.withRequest.headers);
+            }
+            if (isValidMethod && isValidPath && isValidQuery && isValidHeaders) {
               interactionExercised = true;
               interaction.exercised = true;
               res.set(interaction.willRespondWith.headers);
