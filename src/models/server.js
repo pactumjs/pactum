@@ -56,7 +56,8 @@ class Server {
             app,
             server,
             running: true,
-            interactions: new Map()
+            interactions: new Map(),
+            defaultInteractions: new Map()
           });
           resolve();
         });
@@ -93,10 +94,25 @@ class Server {
     }
   }
 
+  addDefaultInteraction(id, interaction) {
+    const port = interaction.port;
+    if (this.mockMap.has(port)) {
+      const mock = this.mockMap.get(port);
+      mock.defaultInteractions.set(id, interaction);
+    }
+  }
+
   removeInteraction(port = config.mock.port, id) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
       mock.interactions.delete(id);
+    }
+  }
+
+  removeDefaultInteraction(port = config.mock.port, id) {
+    if (this.mockMap.has(port)) {
+      const mock = this.mockMap.get(port);
+      mock.defaultInteractions.delete(id);
     }
   }
 
@@ -107,10 +123,18 @@ class Server {
     }
   }
 
+  removeDefaultInteractions(port = config.mock.port) {
+    if (this.mockMap.has(port)) {
+      const mock = this.mockMap.get(port);
+      mock.defaultInteractions.clear();
+    }
+  }
+
   removeAllInteractions() {
     for (const [port, mock] of this.mockMap.entries()) {
-      console.log(`Removing interactions for ${port}`);
+      console.log(`Removing all interactions for ${port}`);
       mock.interactions.clear();
+      mock.defaultInteractions.clear();
     }
   }
 
