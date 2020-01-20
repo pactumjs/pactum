@@ -149,6 +149,34 @@ const helper = {
         }
       }
     }
+  },
+
+  getValidInteraction(req, interactions) {
+    for (let [id, interaction] of interactions) {
+      const isValidMethod = (interaction.withRequest.method === req.method);
+      const isValidPath = (interaction.withRequest.path === req.path);
+      let isValidQuery = true;
+      if (interaction.withRequest.query) {
+        isValidQuery = this.validateQuery(req.query, interaction.withRequest.query);
+      }
+      let isValidHeaders = true;
+      if (interaction.withRequest.headers) {
+        isValidHeaders = this.validateHeaders(req.headers, interaction.withRequest.headers);
+      }
+      let isValidBody = true;
+      if (interaction.withRequest.body) {
+        isValidBody = this.validateBody(req.body, interaction.withRequest.body);
+      }
+      if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
+        return interaction;
+        // interactionExercised = true;
+        // interaction.exercised = true;
+        // res.set(interaction.willRespondWith.headers);
+        // res.status(interaction.willRespondWith.status);
+        // res.send(interaction.willRespondWith.body);
+      }
+      return null;
+    }
   }
 
 }

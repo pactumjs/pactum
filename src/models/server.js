@@ -20,29 +20,18 @@ class Server {
         app.all('/*', (req, res) => {
           const mock = this.mockMap.get(req.app.port);
           const interactions = mock.interactions;
+          const defaultInteractions = mock.defaultInteractions;
           let interactionExercised = false;
-          for (let [id, interaction] of interactions) {
-            const isValidMethod = (interaction.withRequest.method === req.method);
-            const isValidPath = (interaction.withRequest.path === req.path);
-            let isValidQuery = true;
-            if (interaction.withRequest.query) {
-              isValidQuery = helper.validateQuery(req.query, interaction.withRequest.query);
-            }
-            let isValidHeaders = true;
-            if (interaction.withRequest.headers) {
-              isValidHeaders = helper.validateHeaders(req.headers, interaction.withRequest.headers);
-            }
-            let isValidBody = true;
-            if (interaction.withRequest.body) {
-              isValidBody = helper.validateBody(req.body, interaction.withRequest.body);
-            }
-            if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
-              interactionExercised = true;
-              interaction.exercised = true;
-              res.set(interaction.willRespondWith.headers);
-              res.status(interaction.willRespondWith.status);
-              res.send(interaction.willRespondWith.body);
-            }
+          let interaction = helper.getValidInteraction(req, interactions);
+          if (!interaction) {
+            interaction = helper.getValidInteraction(req, defaultInteractions);
+          }
+          if (interaction) {
+            interaction.exercised = true;
+            interactionExercised = true;
+            res.set(interaction.willRespondWith.headers);
+            res.status(interaction.willRespondWith.status);
+            res.send(interaction.willRespondWith.body);
           }
           if (!interactionExercised) {
             res.status(404);
@@ -139,5 +128,7 @@ class Server {
   }
 
 }
+
+
 
 module.exports = Server;
