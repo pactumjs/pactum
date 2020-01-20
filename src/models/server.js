@@ -109,7 +109,7 @@ class Server {
     }
   }
 
-  removeDefaultInteraction(port = config.mock.port, id) {
+  removeDefaultInteraction(id, port = config.mock.port) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
       mock.defaultInteractions.delete(id);
