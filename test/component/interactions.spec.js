@@ -6,7 +6,7 @@ describe('Pact', () => {
 
   it('GET - one interaction', async () => {
     await pactum
-      .addInteraction({
+      .addMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -33,7 +33,7 @@ describe('Pact', () => {
 
   it('GET - one interaction - with one query', async () => {
     await pactum
-      .addInteraction({
+      .addMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -64,7 +64,7 @@ describe('Pact', () => {
 
   it('GET - one interaction - with multiple queries', async () => {
     await pactum
-      .addInteraction({
+      .addMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -97,7 +97,7 @@ describe('Pact', () => {
 
   it('GET - one interaction - with headers', async () => {
     await pactum
-      .addInteraction({
+      .addMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -130,7 +130,7 @@ describe('Pact', () => {
 
   it('POST - one interaction', async () => {
     await pactum
-      .addInteraction({
+      .addMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects'
@@ -155,7 +155,7 @@ describe('Pact', () => {
 
   it('POST - one interaction - with body', async () => {
     await pactum
-      .addInteraction({
+      .addMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects',
@@ -188,7 +188,7 @@ describe('Pact', () => {
 
   it('POST - one interaction - with ignore body', async () => {
     await pactum
-      .addInteraction({
+      .addMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects',
@@ -222,7 +222,7 @@ describe('Pact - matchers', () => {
 
   it('GET - one interaction', async () => {
     await pactum
-      .addInteraction({
+      .addMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -265,7 +265,7 @@ describe('Pact - matchers', () => {
 
   it('GET - one interaction - array body', async () => {
     await pactum
-      .addInteraction({
+      .addMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects'
@@ -304,7 +304,7 @@ describe('Pact - VALID', () => {
 
   it('GET - one interaction', async () => {
     await pactum
-      .addInteraction({
+      .addPactInteraction({
         consumer: 'c',
         provider: 'p',
         state: 'when there is a project with id 1',
@@ -335,7 +335,7 @@ describe('Pact - VALID', () => {
 
   it('GET - one interaction', async () => {
     await pactum
-      .addInteraction({
+      .addPactInteraction({
         consumer: 'c',
         provider: 'p',
         state: 'when there is a project with id 1',
@@ -382,7 +382,7 @@ describe('Pact - VALID', () => {
 
   it('GET - one interaction - array body', async () => {
     await pactum
-      .addInteraction({
+      .addPactInteraction({
         consumer: 'c',
         provider: 'p2',
         state: 'when there is a project with id 1',

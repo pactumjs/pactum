@@ -3,7 +3,7 @@ const pactum = require('../../src/index');
 describe('Pact - Default Interaction', () => {
 
   before(() => {
-    pactum.mock.addDefaultInteraction({
+    pactum.mock.addDefaultMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -19,7 +19,7 @@ describe('Pact - Default Interaction', () => {
         }
       }
     });
-    pactum.mock.addDefaultInteraction({
+    pactum.mock.addDefaultMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/projects/1',
@@ -39,7 +39,7 @@ describe('Pact - Default Interaction', () => {
         }
       }
     });
-    pactum.mock.addDefaultInteraction({
+    pactum.mock.addDefaultMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/api/projects',
@@ -96,7 +96,7 @@ describe('Pact - Default Interaction', () => {
   });
 
   after(() => {
-    pactum.mock.removeDefaultInteractions();
+    pactum.mock.removeDefaultMockInteractions();
   })
 
 });
