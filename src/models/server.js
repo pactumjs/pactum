@@ -19,12 +19,11 @@ class Server {
         app.use(express.json());
         app.all('/*', (req, res) => {
           const mock = this.mockMap.get(req.app.port);
-          const interactions = mock.interactions;
-          const defaultInteractions = mock.defaultInteractions;
+          const { interactions, defaultMockInteractions } = mock;
           let interactionExercised = false;
           let interaction = helper.getValidInteraction(req, interactions);
           if (!interaction) {
-            interaction = helper.getValidInteraction(req, defaultInteractions);
+            interaction = helper.getValidInteraction(req, defaultMockInteractions);
           }
           if (interaction) {
             interaction.exercised = true;
@@ -46,7 +45,7 @@ class Server {
             server,
             running: true,
             interactions: new Map(),
-            defaultInteractions: new Map()
+            defaultMockInteractions: new Map()
           });
           resolve();
         });
@@ -83,11 +82,11 @@ class Server {
     }
   }
 
-  addDefaultInteraction(id, interaction) {
+  addDefaultMockInteraction(id, interaction) {
     const port = interaction.port;
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
-      mock.defaultInteractions.set(id, interaction);
+      mock.defaultMockInteractions.set(id, interaction);
     }
   }
 
@@ -98,10 +97,10 @@ class Server {
     }
   }
 
-  removeDefaultInteraction(id, port = config.mock.port) {
+  removeDefaultMockInteraction(id, port = config.mock.port) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
-      mock.defaultInteractions.delete(id);
+      mock.defaultMockInteractions.delete(id);
     }
   }
 
@@ -112,10 +111,10 @@ class Server {
     }
   }
 
-  removeDefaultInteractions(port = config.mock.port) {
+  removeDefaultMockInteractions(port = config.mock.port) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
-      mock.defaultInteractions.clear();
+      mock.defaultMockInteractions.clear();
     }
   }
 
@@ -123,12 +122,10 @@ class Server {
     for (const [port, mock] of this.mockMap.entries()) {
       console.log(`Removing all interactions for ${port}`);
       mock.interactions.clear();
-      mock.defaultInteractions.clear();
+      mock.defaultMockInteractions.clear();
     }
   }
 
 }
-
-
 
 module.exports = Server;

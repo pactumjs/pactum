@@ -4,6 +4,26 @@ const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const store = require('../helpers/store');
 
+/**
+ * interaction details
+ * @typedef {object} Interaction
+ * @property {string} [consumer] - name of the consumer
+ * @property {string} [provider] - name of the provider
+ * @property {string} [state] - state of the provider
+ * @property {string} [uponReceiving] - description of the request
+ * @property {object} withRequest - interaction request details
+ * @property {string} withRequest.method - request method
+ * @property {string} withRequest.path - request path
+ * @property {object} [withRequest.headers] - request headers
+ * @property {object} [withRequest.query] - request query
+ * @property {object} [withRequest.body] - request body
+ * @property {boolean} [withRequest.ignoreBody] - ignores request body while matching
+ * @property {object} willRespondWith - interaction response details
+ * @property {string} willRespondWith.status - response status code
+ * @property {string} [willRespondWith.headers] - response headers
+ * @property {object} [willRespondWith.body] - response body
+ */
+
 class Spec {
 
   constructor(server) {
@@ -29,22 +49,7 @@ class Spec {
 
   /**
    * Add as an interaction to the mock server
-   * @param {object} rawInteraction - interaction details
-   * @param {string} [rawInteraction.consumer] - name of the consumer
-   * @param {string} [rawInteraction.provider] - name of the provider
-   * @param {string} [rawInteraction.state] - state of the provider
-   * @param {string} [rawInteraction.uponReceiving] - description of the request
-   * @param {object} rawInteraction.withRequest - interaction request details
-   * @param {string} rawInteraction.withRequest.method - request method
-   * @param {string} rawInteraction.withRequest.path - request path
-   * @param {object} [rawInteraction.withRequest.headers] - request headers
-   * @param {object} [rawInteraction.withRequest.query] - request query
-   * @param {object} [rawInteraction.withRequest.body] - request body
-   * @param {boolean} [rawInteraction.withRequest.ignoreBody] - ignores request body while matching
-   * @param {object} rawInteraction.willRespondWith - interaction response details
-   * @param {string} rawInteraction.willRespondWith.status - response status code
-   * @param {string} [rawInteraction.willRespondWith.headers] - response headers
-   * @param {object} [rawInteraction.willRespondWith.body] - response body
+   * @param {Interaction} rawInteraction - interaction details
    * @example
    * await pactum
    *  .addInteraction({
@@ -76,6 +81,80 @@ class Spec {
    *  .toss();
    */
   addInteraction(rawInteraction) {
+    const interaction = new Interaction(rawInteraction);
+    this.interactions.set(interaction.id, interaction);
+    return this;
+  }
+
+  /**
+   * Add as an interaction to the mock server
+   * @param {Interaction} rawInteraction - interaction details
+   * @example
+   * await pactum
+   *  .addMockInteraction({
+   *    withRequest: {
+   *      method: 'GET',
+   *      path: '/api/projects/1'
+   *    },
+   *    willRespondWith: {
+   *      status: 200,
+   *      headers: {
+   *        'Content-Type': 'application/json'
+   *      },
+   *      body: {
+   *        id: 1,
+   *        name: 'fake'
+   *      }
+   *    }
+   *  })
+   *  .get('https://jsonplaceholder.typicode.com/posts')
+   *  .expectStatus(200)
+   *  .expectJsonLike({
+   *    userId: 1,
+   *    id: 1
+   *   })
+   *  .toss();
+   */
+  addMockInteraction(rawInteraction) {
+    const interaction = new Interaction(rawInteraction);
+    this.interactions.set(interaction.id, interaction);
+    return this;
+  }
+
+  /**
+   * Add as an interaction to the mock server
+   * @param {Interaction} rawInteraction - interaction details
+   * @example
+   * await pactum
+   *  .addPactInteraction({
+   *    consumer: 'our-little-consumer',
+   *    provider: 'project-provider',
+   *    state: 'when there is a project with id 1',
+   *    uponReceiving: 'a request for project 1',
+   *    withRequest: {
+   *      method: 'GET',
+   *      path: '/api/projects/1'
+   *    },
+   *    willRespondWith: {
+   *      status: 200,
+   *      headers: {
+   *        'Content-Type': 'application/json'
+   *      },
+   *      body: {
+   *        id: 1,
+   *        name: 'fake'
+   *      }
+   *    }
+   *  })
+   *  .get('https://jsonplaceholder.typicode.com/posts')
+   *  .expectStatus(200)
+   *  .expectJsonLike({
+   *    userId: 1,
+   *    id: 1
+   *   })
+   *  .toss();
+   */
+  addPactInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction);
     this.interactions.set(interaction.id, interaction);
     return this;

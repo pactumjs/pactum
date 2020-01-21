@@ -24,7 +24,7 @@ it('should be a teapot', async () => {
 });
 ```
 
-Running a component test with a mock server. If the mock interaction is not exercised, the test will fail.
+Running a component test with the help of mock server & a single mock interaction. If the mock interaction is not exercised, the test will fail.
 
 ```javascript
 const pactum = require('pactum');
@@ -35,7 +35,7 @@ before(async () => {
 
 it('GET - one interaction', async () => {
   await pactum
-    .addInteraction({
+    .addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -57,7 +57,52 @@ it('GET - one interaction', async () => {
       id: 1,
       name: 'fake'
     })
-    .toss()
+    .toss();
+});
+
+after(async () => {
+  await pactum.mock.stop();
+});
+```
+
+Running a component test with the help of mock server & a single pact interaction. If the mock interaction is not exercised, the test will fail.
+
+```javascript
+const pactum = require('pactum');
+
+before(async () => {
+  await pactum.mock.start();
+});
+
+it('GET - one interaction', async () => {
+  await pactum
+    .addPactInteraction({
+      consumer: 'little-consumer',
+      provider: 'projects-service',
+      state: 'when there is a project with id 1',
+      uponReceiving: 'a request for project 1',
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    })
+    .get('http://localhost:9393/api/projects/1')
+    .expectStatus(200)
+    .expectJsonLike({
+      id: 1,
+      name: 'fake'
+    })
+    .toss();
 });
 
 after(async () => {

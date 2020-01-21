@@ -6,6 +6,26 @@ const store = require('./helpers/store');
 
 const config = require('./config');
 
+/**
+ * interaction details
+ * @typedef {object} Interaction
+ * @property {string} [consumer] - name of the consumer
+ * @property {string} [provider] - name of the provider
+ * @property {string} [state] - state of the provider
+ * @property {string} [uponReceiving] - description of the request
+ * @property {object} withRequest - interaction request details
+ * @property {string} withRequest.method - request method
+ * @property {string} withRequest.path - request path
+ * @property {object} [withRequest.headers] - request headers
+ * @property {object} [withRequest.query] - request query
+ * @property {object} [withRequest.body] - request body
+ * @property {boolean} [withRequest.ignoreBody] - ignores request body while matching
+ * @property {object} willRespondWith - interaction response details
+ * @property {string} willRespondWith.status - response status code
+ * @property {string} [willRespondWith.headers] - response headers
+ * @property {object} [willRespondWith.body] - response body
+ */
+
 const server = new Server();
 const matchers = new Matcher();
 
@@ -23,18 +43,22 @@ const mock = {
     config.mock.port = port;
   },
 
-  addDefaultInteraction(interaction) {
+  /**
+   * add an mock interaction to default list
+   * @param {Interaction} interaction - mock interaction
+   */
+  addDefaultMockInteraction(interaction) {
     const interactionObj = new Interaction(interaction);
-    server.addDefaultInteraction(interactionObj.id, interactionObj);
+    server.addDefaultMockInteraction(interactionObj.id, interactionObj);
     return interactionObj.id;
   },
 
-  removeDefaultInteraction(interactionId, port = config.mock.port) {
-    server.removeDefaultInteraction(interactionId, port);
+  removeDefaultMockInteraction(interactionId, port = config.mock.port) {
+    server.removeDefaultMockInteraction(interactionId, port);
   },
 
-  removeDefaultInteractions(port = config.mock.port) {
-    server.removeDefaultInteractions(port);
+  removeDefaultMockInteractions(port = config.mock.port) {
+    server.removeDefaultMockInteractions(port);
   }
 
   // stop all servers
@@ -67,22 +91,7 @@ const pactum = {
   
   /**
    * Add as an interaction to the mock server
-   * @param {object} interaction - interaction details
-   * @param {string} [interaction.consumer] - name of the consumer
-   * @param {string} [interaction.provider] - name of the provider
-   * @param {string} [interaction.state] - state of the provider
-   * @param {string} [interaction.uponReceiving] - description of the request
-   * @param {object} interaction.withRequest - interaction request details
-   * @param {string} interaction.withRequest.method - request method
-   * @param {string} interaction.withRequest.path - request path
-   * @param {object} [interaction.withRequest.headers] - request headers
-   * @param {object} [interaction.withRequest.query] - request query
-   * @param {object} [interaction.withRequest.body] - request body
-   * @param {boolean} [interaction.withRequest.ignoreBody] - ignores request body while matching
-   * @param {object} interaction.willRespondWith - interaction response details
-   * @param {string} interaction.willRespondWith.status - response status code
-   * @param {string} [interaction.willRespondWith.headers] - response headers
-   * @param {object} [interaction.willRespondWith.body] - response body
+   * @param {Interaction} interaction - interaction details
    * @example
    * await pactum
    *  .addInteraction({
@@ -114,6 +123,78 @@ const pactum = {
    *  .toss();
    */
   addInteraction(interaction) {
+    const spec = new Spec(server);
+    return spec.addInteraction(interaction);
+  },
+
+  /**
+   * Add as an mock interaction to the mock server
+   * @param {Interaction} interaction - interaction details
+   * @example
+   * await pactum
+   *  .addMockInteraction({
+   *    withRequest: {
+   *      method: 'GET',
+   *      path: '/api/projects/1'
+   *    },
+   *    willRespondWith: {
+   *      status: 200,
+   *      headers: {
+   *        'Content-Type': 'application/json'
+   *      },
+   *      body: {
+   *        id: 1,
+   *        name: 'fake'
+   *      }
+   *    }
+   *  })
+   *  .get('https://jsonplaceholder.typicode.com/posts')
+   *  .expectStatus(200)
+   *  .expectJsonLike({
+   *    userId: 1,
+   *    id: 1
+   *   })
+   *  .toss();
+   */
+  addMockInteraction(interaction) {
+    const spec = new Spec(server);
+    return spec.addInteraction(interaction);
+  },
+
+  /**
+   * Add as an pact interaction to the mock server
+   * @param {Interaction} interaction - interaction details
+   * @example
+   * await pactum
+   *  .addPactInteraction({
+   *    consumer: 'our-little-consumer',
+   *    provider: 'project-provider',
+   *    state: 'when there is a project with id 1',
+   *    uponReceiving: 'a request for project 1',
+   *    withRequest: {
+   *      method: 'GET',
+   *      path: '/api/projects/1'
+   *    },
+   *    willRespondWith: {
+   *      status: 200,
+   *      headers: {
+   *        'Content-Type': 'application/json'
+   *      },
+   *      body: {
+   *        id: 1,
+   *        name: 'fake'
+   *      }
+   *    }
+   *  })
+   *  .get('https://jsonplaceholder.typicode.com/posts')
+   *  .expectStatus(200)
+   *  .expectJsonLike({
+   *    userId: 1,
+   *    id: 1
+   *   })
+   *  .toss();
+   */
+  addPactInteraction(interaction) {
     const spec = new Spec(server);
     return spec.addInteraction(interaction);
   },
