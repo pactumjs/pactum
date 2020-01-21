@@ -9,6 +9,10 @@ class InteractionRequest {
     this.headers = request.headers;
     this.query = request.query;
     this.body = request.body;
+    this.ignoreBody = false;
+    if (typeof request.ignoreBody === 'boolean') {
+      this.ignoreBody = request.ignoreBody;
+    }
   }
 
 }

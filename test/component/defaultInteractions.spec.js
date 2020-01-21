@@ -39,6 +39,22 @@ describe('Pact - Default Interaction', () => {
         }
       }
     });
+    pactum.mock.addDefaultInteraction({
+      withRequest: {
+        method: 'POST',
+        path: '/api/projects',
+        ignoreBody: true
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          message: 'ok'
+        }
+      }
+    });
   });
 
   it('GET - one interaction', async () => {
@@ -52,7 +68,7 @@ describe('Pact - Default Interaction', () => {
       .toss()
   });
 
-  xit('GET - one interaction - with multiple queries', async () => {
+  it('GET - one interaction - with multiple queries', async () => {
     await pactum
       .get('http://localhost:9393/api/projects/1')
       .withQuery('id', 1)
@@ -61,6 +77,20 @@ describe('Pact - Default Interaction', () => {
       .expectJsonLike({
         id: 1,
         name: 'bake'
+      })
+      .toss()
+  });
+
+  it('POST - one interaction - with ignore body', async () => {
+    await pactum
+      .post('http://localhost:9393/api/projects')
+      .withJson({
+        id: 1,
+        title: 'new fake'
+      })
+      .expectStatus(200)
+      .expectJson({
+        message: 'ok'
       })
       .toss()
   });

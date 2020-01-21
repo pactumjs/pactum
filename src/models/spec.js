@@ -40,6 +40,7 @@ class Spec {
    * @param {object} [rawInteraction.withRequest.headers] - request headers
    * @param {object} [rawInteraction.withRequest.query] - request query
    * @param {object} [rawInteraction.withRequest.body] - request body
+   * @param {boolean} [rawInteraction.withRequest.ignoreBody] - ignores request body while matching
    * @param {object} rawInteraction.willRespondWith - interaction response details
    * @param {string} rawInteraction.willRespondWith.status - response status code
    * @param {string} [rawInteraction.willRespondWith.headers] - response headers
