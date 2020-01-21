@@ -186,6 +186,36 @@ describe('Pact', () => {
       .toss()
   });
 
+  it('POST - one interaction - with ignore body', async () => {
+    await pactum
+      .addInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/projects',
+          ignoreBody: true
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            message: 'ok'
+          }
+        }
+      })
+      .post('http://localhost:9393/api/projects')
+      .withJson({
+        id: 1,
+        title: 'new fake'
+      })
+      .expectStatus(200)
+      .expectJson({
+        message: 'ok'
+      })
+      .toss()
+  });
+
 });
 
 describe('Pact - matchers', () => {

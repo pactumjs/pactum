@@ -1,6 +1,7 @@
 const Spec = require('./models/spec');
 const Server = require('./models/server');
 const Matcher = require('./models/matcher');
+const Interaction = require('./models/interaction');
 const store = require('./helpers/store');
 
 const config = require('./config');
@@ -20,6 +21,20 @@ const mock = {
 
   setDefaultPort(port) {
     config.mock.port = port;
+  },
+
+  addDefaultInteraction(interaction) {
+    const interactionObj = new Interaction(interaction);
+    server.addDefaultInteraction(interactionObj.id, interactionObj);
+    return interactionObj.id;
+  },
+
+  removeDefaultInteraction(interactionId, port = config.mock.port) {
+    server.removeDefaultInteraction(interactionId, port);
+  },
+
+  removeDefaultInteractions(port = config.mock.port) {
+    server.removeDefaultInteractions(port);
   }
 
   // stop all servers
@@ -63,6 +78,7 @@ const pactum = {
    * @param {object} [interaction.withRequest.headers] - request headers
    * @param {object} [interaction.withRequest.query] - request query
    * @param {object} [interaction.withRequest.body] - request body
+   * @param {boolean} [interaction.withRequest.ignoreBody] - ignores request body while matching
    * @param {object} interaction.willRespondWith - interaction response details
    * @param {string} interaction.willRespondWith.status - response status code
    * @param {string} [interaction.willRespondWith.headers] - response headers

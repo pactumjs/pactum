@@ -13,6 +13,9 @@ const helper = {
   },
 
   validateQuery(actual, expected) {
+    if (typeof actual !== 'object' || typeof expected !== 'object') {
+      return false;
+    }
     for (const prop in actual) {
       if (!actual.hasOwnProperty(prop)) {
         continue;
@@ -149,6 +152,36 @@ const helper = {
         }
       }
     }
+  },
+
+  getValidInteraction(req, interactions) {
+    for (let [id, interaction] of interactions) {
+      const isValidMethod = (interaction.withRequest.method === req.method);
+      const isValidPath = (interaction.withRequest.path === req.path);
+      let isValidQuery = true;
+      if (Object.keys(req.query).length > 0) {
+        isValidQuery = this.validateQuery(req.query, interaction.withRequest.query);
+      }
+      let isValidHeaders = true;
+      if (interaction.withRequest.headers) {
+        isValidHeaders = this.validateHeaders(req.headers, interaction.withRequest.headers);
+      }
+      let isValidBody = true;
+      if (typeof req.body === 'object') {
+        if (Object.keys(req.body).length > 0) {
+          isValidBody = this.validateBody(req.body, interaction.withRequest.body);
+        }
+      } else if (req.body) {
+        isValidBody = this.validateBody(req.body, interaction.withRequest.body);
+      }
+      if (interaction.withRequest.ignoreBody) {
+        isValidBody = true;
+      }
+      if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
+        return interaction;
+      }
+    }
+    return null;
   }
 
 }
