@@ -88,44 +88,6 @@ const pactum = {
   mock,
   matchers,
   pact,
-  
-  /**
-   * Add as an interaction to the mock server
-   * @param {Interaction} interaction - interaction details
-   * @example
-   * await pactum
-   *  .addInteraction({
-   *    consumer: 'our-little-consumer',
-   *    provider: 'project-provider',
-   *    state: 'when there is a project with id 1',
-   *    uponReceiving: 'a request for project 1',
-   *    withRequest: {
-   *      method: 'GET',
-   *      path: '/api/projects/1'
-   *    },
-   *    willRespondWith: {
-   *      status: 200,
-   *      headers: {
-   *        'Content-Type': 'application/json'
-   *      },
-   *      body: {
-   *        id: 1,
-   *        name: 'fake'
-   *      }
-   *    }
-   *  })
-   *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .expectStatus(200)
-   *  .expectJsonLike({
-   *    userId: 1,
-   *    id: 1
-   *   })
-   *  .toss();
-   */
-  addInteraction(interaction) {
-    const spec = new Spec(server);
-    return spec.addInteraction(interaction);
-  },
 
   /**
    * Add as an mock interaction to the mock server
@@ -158,7 +120,7 @@ const pactum = {
    */
   addMockInteraction(interaction) {
     const spec = new Spec(server);
-    return spec.addInteraction(interaction);
+    return spec.addMockInteraction(interaction);
   },
 
   /**
@@ -196,7 +158,7 @@ const pactum = {
    */
   addPactInteraction(interaction) {
     const spec = new Spec(server);
-    return spec.addInteraction(interaction);
+    return spec.addPactInteraction(interaction);
   },
 
   /**

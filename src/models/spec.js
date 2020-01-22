@@ -52,45 +52,6 @@ class Spec {
    * @param {Interaction} rawInteraction - interaction details
    * @example
    * await pactum
-   *  .addInteraction({
-   *    consumer: 'our-little-consumer',
-   *    provider: 'project-provider',
-   *    state: 'when there is a project with id 1',
-   *    uponReceiving: 'a request for project 1',
-   *    withRequest: {
-   *      method: 'GET',
-   *      path: '/api/projects/1'
-   *    },
-   *    willRespondWith: {
-   *      status: 200,
-   *      headers: {
-   *        'Content-Type': 'application/json'
-   *      },
-   *      body: {
-   *        id: 1,
-   *        name: 'fake'
-   *      }
-   *    }
-   *  })
-   *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .expectStatus(200)
-   *  .expectJsonLike({
-   *    userId: 1,
-   *    id: 1
-   *   })
-   *  .toss();
-   */
-  addInteraction(rawInteraction) {
-    const interaction = new Interaction(rawInteraction);
-    this.interactions.set(interaction.id, interaction);
-    return this;
-  }
-
-  /**
-   * Add as an interaction to the mock server
-   * @param {Interaction} rawInteraction - interaction details
-   * @example
-   * await pactum
    *  .addMockInteraction({
    *    withRequest: {
    *      method: 'GET',
