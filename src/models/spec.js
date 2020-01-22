@@ -77,7 +77,7 @@ class Spec {
    *  .toss();
    */
   addMockInteraction(rawInteraction) {
-    const interaction = new Interaction(rawInteraction);
+    const interaction = new Interaction(rawInteraction, true);
     this.interactions.set(interaction.id, interaction);
     return this;
   }
@@ -116,7 +116,7 @@ class Spec {
    *  .toss();
    */
   addPactInteraction(rawInteraction) {
-    const interaction = new Interaction(rawInteraction);
+    const interaction = new Interaction(rawInteraction, false);
     this.interactions.set(interaction.id, interaction);
     return this;
   }

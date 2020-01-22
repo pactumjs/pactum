@@ -48,7 +48,7 @@ const mock = {
    * @param {Interaction} interaction - mock interaction
    */
   addDefaultMockInteraction(interaction) {
-    const interactionObj = new Interaction(interaction);
+    const interactionObj = new Interaction(interaction, true);
     server.addDefaultMockInteraction(interactionObj.id, interactionObj);
     return interactionObj.id;
   },
