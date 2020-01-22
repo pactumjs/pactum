@@ -162,6 +162,9 @@ const helper = {
       if (Object.keys(req.query).length > 0) {
         isValidQuery = this.validateQuery(req.query, interaction.withRequest.query);
       }
+      if (interaction.withRequest.ignoreQuery) {
+        isValidQuery = true;
+      }
       let isValidHeaders = true;
       if (interaction.withRequest.headers) {
         isValidHeaders = this.validateHeaders(req.headers, interaction.withRequest.headers);

@@ -54,6 +54,7 @@ describe('Interaction', () => {
         "body": undefined,
         "headers": undefined,
         "ignoreBody": false,
+        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": undefined
@@ -181,6 +182,7 @@ describe('Interaction', () => {
         "body": undefined,
         "headers": undefined,
         "ignoreBody": false,
+        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": undefined

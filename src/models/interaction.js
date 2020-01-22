@@ -11,8 +11,12 @@ class InteractionRequest {
     this.query = request.query;
     this.body = request.body;
     this.ignoreBody = false;
+    this.ignoreQuery = false;
     if (typeof request.ignoreBody === 'boolean') {
       this.ignoreBody = request.ignoreBody;
+    }
+    if (typeof request.ignoreQuery === 'boolean') {
+      this.ignoreQuery = request.ignoreQuery;
     }
   }
 
