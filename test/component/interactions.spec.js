@@ -125,7 +125,7 @@ describe('Pact', () => {
         id: 1,
         name: 'fake'
       })
-      .toss()
+      .toss();
   });
 
   it('POST - one interaction', async () => {

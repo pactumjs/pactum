@@ -162,6 +162,9 @@ const helper = {
       if (Object.keys(req.query).length > 0) {
         isValidQuery = this.validateQuery(req.query, interaction.withRequest.query);
       }
+      if (interaction.withRequest.ignoreQuery) {
+        isValidQuery = true;
+      }
       let isValidHeaders = true;
       if (interaction.withRequest.headers) {
         isValidHeaders = this.validateHeaders(req.headers, interaction.withRequest.headers);
@@ -182,6 +185,14 @@ const helper = {
       }
     }
     return null;
+  },
+
+  /**
+   * validates if the value is string or not
+   * @param {string} value - value to be validated
+   */
+  isValidString(value) {
+    return (typeof value === 'string' && value)
   }
 
 }

@@ -3,6 +3,7 @@ const Expect = require('./expect');
 const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const store = require('../helpers/store');
+const { PactumRequestError } = require('../helpers/errors');
 
 /**
  * interaction details
@@ -40,50 +41,19 @@ class Spec {
     switch (this._request.method) {
       case 'GET':
         return rp.get(this._request);
+      case 'HEAD':
+        return rp.head(this._request);
+      case 'PATCH':
+        return rp.patch(this._request);
       case 'POST':
         return rp.post(this._request);
+      case 'PUT':
+        return rp.put(this._request);
+      case 'DELETE':
+        return rp.delete(this._request);
       default:
         return rp.get(this._request);
     }
-  }
-
-  /**
-   * Add as an interaction to the mock server
-   * @param {Interaction} rawInteraction - interaction details
-   * @example
-   * await pactum
-   *  .addInteraction({
-   *    consumer: 'our-little-consumer',
-   *    provider: 'project-provider',
-   *    state: 'when there is a project with id 1',
-   *    uponReceiving: 'a request for project 1',
-   *    withRequest: {
-   *      method: 'GET',
-   *      path: '/api/projects/1'
-   *    },
-   *    willRespondWith: {
-   *      status: 200,
-   *      headers: {
-   *        'Content-Type': 'application/json'
-   *      },
-   *      body: {
-   *        id: 1,
-   *        name: 'fake'
-   *      }
-   *    }
-   *  })
-   *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .expectStatus(200)
-   *  .expectJsonLike({
-   *    userId: 1,
-   *    id: 1
-   *   })
-   *  .toss();
-   */
-  addInteraction(rawInteraction) {
-    const interaction = new Interaction(rawInteraction);
-    this.interactions.set(interaction.id, interaction);
-    return this;
   }
 
   /**
@@ -116,7 +86,7 @@ class Spec {
    *  .toss();
    */
   addMockInteraction(rawInteraction) {
-    const interaction = new Interaction(rawInteraction);
+    const interaction = new Interaction(rawInteraction, true);
     this.interactions.set(interaction.id, interaction);
     return this;
   }
@@ -155,7 +125,7 @@ class Spec {
    *  .toss();
    */
   addPactInteraction(rawInteraction) {
-    const interaction = new Interaction(rawInteraction);
+    const interaction = new Interaction(rawInteraction, false);
     this.interactions.set(interaction.id, interaction);
     return this;
   }
@@ -175,6 +145,7 @@ class Spec {
    *  .toss();
    */
   get(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'GET';
     return this;
@@ -185,18 +156,9 @@ class Spec {
    * @param {string} url - HTTP url
    */
   head(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'HEAD';
-    return this;
-  }
-
-  /**
-   * The OPTIONS method is used to describe the communication options for the target resource.
-   * @param {string} url - HTTP url
-   */
-  options(url) {
-    this._request.url = url;
-    this._request.method = 'OPTIONS';
     return this;
   }
 
@@ -213,6 +175,7 @@ class Spec {
    *  .toss();
    */
   patch(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'PATCH';
     return this;
@@ -233,6 +196,7 @@ class Spec {
    *  .toss();
    */
   post(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'POST';
     return this;
@@ -254,6 +218,7 @@ class Spec {
    *  .toss();
    */
   put(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'PUT';
     return this;
@@ -269,12 +234,32 @@ class Spec {
    *  .toss();
    */
   delete(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'DELETE';
     return this;
   }
 
+  /**
+   * appends query param to the request url - /comments?postId=1
+   * @param {string} key - query parameter key
+   * @param {string} value - query parameter value
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/comments')
+   *  .withQuery('postId', '1')
+   *  .withQuery('userId', '2')
+   *  .expectStatus(200)
+   *  .toss();
+   * @summary generated url will look like - /comments?postId=1&userId=2
+   */
   withQuery(key, value) {
+    if (!helper.isValidString(key)) {
+      throw new PactumRequestError(`Invalid key in query parameter for request - ${key}`);
+    }
+    if (value === undefined || value === null) {
+      throw new PactumRequestError(`Invalid value in query parameter for request - ${value}`);
+    }
     if (this._request.qs === undefined) {
       this._request.qs = {};
     }
@@ -282,21 +267,78 @@ class Spec {
     return this;
   }
 
+  /**
+   * attaches json object to the request body
+   * @param {object} json - json object
+   * @example
+   * await pactum
+   *  .post('https://jsonplaceholder.typicode.com/posts')
+   *  .withJson({
+   *    title: 'foo',
+   *    body: 'bar',
+   *    userId: 1
+   *  })
+   *  .expectStatus(201)
+   *  .toss();
+   */
   withJson(json) {
+    if (typeof json !== 'object') {
+      throw new PactumRequestError(`Invalid json in request - ${json}`);
+    }
     this._request.json = json;
     return this;
   }
 
+  /**
+   * attaches headers to the request
+   * @param {object} headers - request headers with key-value pairs
+   * @example
+   * await pactum
+   *  .post('https://jsonplaceholder.typicode.com/posts')
+   *  .withHeaders({
+   *    'content-type': 'application/json'
+   *  })
+   *  .withJson({
+   *    title: 'foo',
+   *    body: 'bar',
+   *    userId: 1
+   *  })
+   *  .expectStatus(201)
+   *  .toss();
+   */
   withHeaders(headers) {
+    if (typeof headers !== 'object') {
+      throw new PactumRequestError(`Invalid headers in request - ${headers}`);
+    }
     this._request.headers = headers;
     return this
   }
 
+  /**
+   * expects a status code on the response
+   * @param {number} statusCode - expected HTTP stats code
+   * @example
+   * await pactum
+   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectStatus(200)
+   *  .toss();
+   */
   expectStatus(statusCode) {
     this._expect.statusCode = statusCode;
     return this;
   }
 
+  /**
+   * expects a header in the response
+   * @param {string} header - expected header key
+   * @param {string} value - expected header value
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectHeader('content-type', 'application/json; charset=utf-8')
+   *  .expectHeader('connection', /\w+/)
+   *  .toss();
+   */
   expectHeader(header, value) {
     this._expect.headers.push({
       key: header,
@@ -305,6 +347,16 @@ class Spec {
     return this;
   }
 
+  /**
+   * expects a header in the response
+   * @param {string} header - expected header value
+   * @param {string} value - expected header value
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/comments')
+   *  .expectHeaderContains('content-type', 'application/json')
+   *  .toss();
+   */
   expectHeaderContains(header, value) {
     this._expect.headerContains.push({
       key: header,
@@ -323,11 +375,36 @@ class Spec {
     return this;
   }
 
+  /**
+   * expects a exact json object in the response
+   * @param {object} json - expected json object
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectJson({
+   *    userId: 1,
+   *    user: 'frank'
+   *  })
+   *  .toss();
+   */
   expectJson(json) {
     this._expect.json.push(json);
     return this;
   }
 
+  /**
+   * expects a partial json object in the response
+   * @param {object} json - expected json object
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/comments')
+   *  .expectJsonLike([{
+   *    postId: 1,
+   *    id: 1,
+   *    name: /\w+/g
+   *  }])
+   *  .toss();
+   */
   expectJsonLike(json) {
     this._expect.jsonLike.push(json);
     return this;
@@ -338,7 +415,13 @@ class Spec {
     return this;
   }
 
+  /**
+   * executes the test case
+   */
   async toss() {
+    if (!helper.isValidString(this._request.url)) {
+      throw new PactumRequestError(`Invalid request url - ${request.url}`);
+    }
     for (let [id, interaction] of this.interactions) {
       this.server.addInteraction(id, interaction);
     }
@@ -356,6 +439,15 @@ class Spec {
     this._expect.validate(this._response);
   }
 
+}
+
+function validateRequestUrl(request, url) {
+  if (request.url && request.method) {
+    throw new PactumRequestError(`Duplicate request initiated. Existing request - ${request.method} ${request.url}`);
+  }
+  if (!helper.isValidString(url)) {
+    throw new PactumRequestError(`Invalid request url - ${url}`);
+  }
 }
 
 module.exports = Spec;
