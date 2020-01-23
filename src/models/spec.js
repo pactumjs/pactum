@@ -235,6 +235,19 @@ class Spec {
     return this;
   }
 
+  /**
+   * appends query param to the request url - /comments?postId=1
+   * @param {string} key - query parameter key
+   * @param {string} value - query parameter value
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/comments')
+   *  .withQuery('postId', '1')
+   *  .withQuery('userId', '2')
+   *  .expectStatus(200)
+   *  .toss();
+   * @summary generated url will look like - /comments?postId=1&userId=2
+   */
   withQuery(key, value) {
     if (this._request.qs === undefined) {
       this._request.qs = {};
@@ -243,21 +256,72 @@ class Spec {
     return this;
   }
 
+  /**
+   * attaches json object to the request body
+   * @param {object} json - json object
+   * @example
+   * await pactum
+   *  .post('https://jsonplaceholder.typicode.com/posts')
+   *  .withJson({
+   *    title: 'foo',
+   *    body: 'bar',
+   *    userId: 1
+   *  })
+   *  .expectStatus(201)
+   *  .toss();
+   */
   withJson(json) {
     this._request.json = json;
     return this;
   }
 
+  /**
+   * attaches headers to the request
+   * @param {object} headers - request headers with key-value pairs
+   * @example
+   * await pactum
+   *  .post('https://jsonplaceholder.typicode.com/posts')
+   *  .withHeaders({
+   *    'content-type': 'application/json'
+   *  })
+   *  .withJson({
+   *    title: 'foo',
+   *    body: 'bar',
+   *    userId: 1
+   *  })
+   *  .expectStatus(201)
+   *  .toss();
+   */
   withHeaders(headers) {
     this._request.headers = headers;
     return this
   }
 
+  /**
+   * expects a status code on the response
+   * @param {number} statusCode - expected HTTP stats code
+   * @example
+   * await pactum
+   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectStatus(200)
+   *  .toss();
+   */
   expectStatus(statusCode) {
     this._expect.statusCode = statusCode;
     return this;
   }
 
+  /**
+   * expects a header in the response
+   * @param {string} header - expected header key
+   * @param {string} value - expected header value
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectHeader('content-type', 'application/json; charset=utf-8')
+   *  .expectHeader('connection', /\w+/)
+   *  .toss();
+   */
   expectHeader(header, value) {
     this._expect.headers.push({
       key: header,
@@ -266,6 +330,16 @@ class Spec {
     return this;
   }
 
+  /**
+   * expects a header in the response
+   * @param {string} header - expected header value
+   * @param {string} value - expected header value
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/comments')
+   *  .expectHeaderContains('content-type', 'application/json')
+   *  .toss();
+   */
   expectHeaderContains(header, value) {
     this._expect.headerContains.push({
       key: header,
@@ -284,11 +358,36 @@ class Spec {
     return this;
   }
 
+  /**
+   * expects a exact json object in the response
+   * @param {object} json - expected json object
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectJson({
+   *    userId: 1,
+   *    user: 'frank'
+   *  })
+   *  .toss();
+   */
   expectJson(json) {
     this._expect.json.push(json);
     return this;
   }
 
+  /**
+   * expects a partial json object in the response
+   * @param {object} json - expected json object
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/comments')
+   *  .expectJsonLike([{
+   *    postId: 1,
+   *    id: 1,
+   *    name: /\w+/g
+   *  }])
+   *  .toss();
+   */
   expectJsonLike(json) {
     this._expect.jsonLike.push(json);
     return this;
@@ -299,6 +398,9 @@ class Spec {
     return this;
   }
 
+  /**
+   * executes the test case
+   */
   async toss() {
     for (let [id, interaction] of this.interactions) {
       this.server.addInteraction(id, interaction);

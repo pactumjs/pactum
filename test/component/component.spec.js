@@ -6,6 +6,8 @@ xdescribe('JSON Placeholder', () => {
     await pactum
       .get('https://jsonplaceholder.typicode.com/posts/1')
       .expectStatus(200)
+      .expectHeader('content-type', 'application/json; charset=utf-8')
+      .expectHeader('connection', /\w+/)
       .expectJsonLike({
         userId: 1,
         id: 1
@@ -18,6 +20,7 @@ xdescribe('JSON Placeholder', () => {
       .get('https://jsonplaceholder.typicode.com/comments')
       .withQuery('postId', 1)
       .expectStatus(200)
+      .expectHeaderContains('content-type', 'application/json')
       .expectJsonLike([
         {
           postId: 1,
