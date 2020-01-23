@@ -188,14 +188,6 @@ const pactum = {
   },
 
   /**
-   * The OPTIONS method is used to describe the communication options for the target resource.
-   * @param {string} url - HTTP url
-   */
-  options(url) {
-    return new Spec(server).options(url);
-  },
-
-  /**
    * The PATCH method is used to apply partial modifications to a resource.
    * @param {string} url - HTTP url
    * @example

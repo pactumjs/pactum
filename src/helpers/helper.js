@@ -185,6 +185,14 @@ const helper = {
       }
     }
     return null;
+  },
+
+  /**
+   * validates if the value is string or not
+   * @param {string} value - value to be validated
+   */
+  isValidString(value) {
+    return (typeof value === 'string' && value)
   }
 
 }

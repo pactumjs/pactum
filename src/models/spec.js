@@ -3,6 +3,7 @@ const Expect = require('./expect');
 const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const store = require('../helpers/store');
+const { PactumRequestError } = require('../helpers/errors');
 
 /**
  * interaction details
@@ -40,8 +41,16 @@ class Spec {
     switch (this._request.method) {
       case 'GET':
         return rp.get(this._request);
+      case 'HEAD':
+        return rp.head(this._request);
+      case 'PATCH':
+        return rp.patch(this._request);
       case 'POST':
         return rp.post(this._request);
+      case 'PUT':
+        return rp.put(this._request);
+      case 'DELETE':
+        return rp.delete(this._request);
       default:
         return rp.get(this._request);
     }
@@ -136,6 +145,7 @@ class Spec {
    *  .toss();
    */
   get(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'GET';
     return this;
@@ -146,18 +156,9 @@ class Spec {
    * @param {string} url - HTTP url
    */
   head(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'HEAD';
-    return this;
-  }
-
-  /**
-   * The OPTIONS method is used to describe the communication options for the target resource.
-   * @param {string} url - HTTP url
-   */
-  options(url) {
-    this._request.url = url;
-    this._request.method = 'OPTIONS';
     return this;
   }
 
@@ -174,6 +175,7 @@ class Spec {
    *  .toss();
    */
   patch(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'PATCH';
     return this;
@@ -194,6 +196,7 @@ class Spec {
    *  .toss();
    */
   post(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'POST';
     return this;
@@ -215,6 +218,7 @@ class Spec {
    *  .toss();
    */
   put(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'PUT';
     return this;
@@ -230,6 +234,7 @@ class Spec {
    *  .toss();
    */
   delete(url) {
+    validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'DELETE';
     return this;
@@ -249,6 +254,12 @@ class Spec {
    * @summary generated url will look like - /comments?postId=1&userId=2
    */
   withQuery(key, value) {
+    if (!helper.isValidString(key)) {
+      throw new PactumRequestError(`Invalid key in query parameter for request - ${key}`);
+    }
+    if (value === undefined || value === null) {
+      throw new PactumRequestError(`Invalid value in query parameter for request - ${value}`);
+    }
     if (this._request.qs === undefined) {
       this._request.qs = {};
     }
@@ -271,6 +282,9 @@ class Spec {
    *  .toss();
    */
   withJson(json) {
+    if (typeof json !== 'object') {
+      throw new PactumRequestError(`Invalid json in request - ${json}`);
+    }
     this._request.json = json;
     return this;
   }
@@ -293,6 +307,9 @@ class Spec {
    *  .toss();
    */
   withHeaders(headers) {
+    if (typeof headers !== 'object') {
+      throw new PactumRequestError(`Invalid headers in request - ${headers}`);
+    }
     this._request.headers = headers;
     return this
   }
@@ -402,6 +419,9 @@ class Spec {
    * executes the test case
    */
   async toss() {
+    if (!helper.isValidString(this._request.url)) {
+      throw new PactumRequestError(`Invalid request url - ${request.url}`);
+    }
     for (let [id, interaction] of this.interactions) {
       this.server.addInteraction(id, interaction);
     }
@@ -419,6 +439,15 @@ class Spec {
     this._expect.validate(this._response);
   }
 
+}
+
+function validateRequestUrl(request, url) {
+  if (request.url && request.method) {
+    throw new PactumRequestError(`Duplicate request initiated. Existing request - ${request.method} ${request.url}`);
+  }
+  if (!helper.isValidString(url)) {
+    throw new PactumRequestError(`Invalid request url - ${url}`);
+  }
 }
 
 module.exports = Spec;
