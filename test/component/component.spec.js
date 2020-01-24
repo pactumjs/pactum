@@ -58,6 +58,21 @@ xdescribe('JSON Placeholder', () => {
       .toss();
   });
 
+  it('POST - with body', async () => {
+    await pactum
+      .post('https://jsonplaceholder.typicode.com/posts')
+      .withHeaders({
+        "content-type": "application/json"
+      })
+      .withBody({
+        title: 'foo',
+        body: 'bar',
+        userId: 1
+      })
+      .expectStatus(201)
+      .toss();
+  });
+
   it('PUT', async () => {
     await pactum
       .put('https://jsonplaceholder.typicode.com/posts/1')

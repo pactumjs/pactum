@@ -315,6 +315,30 @@ class Spec {
   }
 
   /**
+   * attaches body to the request
+   * @param {string|Buffer} body - request body
+   * @example
+   * await pactum
+   *  .post('https://jsonplaceholder.typicode.com/posts')
+   *  .withBody(JSON.stringify({
+   *    title: 'foo',
+   *  }))
+   *  .expectStatus(201)
+   *  .toss();
+   */
+  withBody(body) {
+    if (typeof this._request.body !== 'undefined') {
+      throw new PactumRequestError(`Duplicate body in request - ${this._request.body}`);
+    }
+    if (typeof body === 'object') {
+      this._request.json = body;
+    } else {
+      this._request.body = body;
+    }
+    return this;
+  }
+
+  /**
    * expects a status code on the response
    * @param {number} statusCode - expected HTTP stats code
    * @example
