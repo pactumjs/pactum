@@ -2,9 +2,10 @@ const Spec = require('./models/spec');
 const Server = require('./models/server');
 const Matcher = require('./models/matcher');
 const Interaction = require('./models/interaction');
-const store = require('./helpers/store');
 
-const config = require('./config');
+const Mock = require('./exports/mock');
+const Pact = require('./exports/pact');
+
 
 /**
  * interaction details
@@ -28,60 +29,8 @@ const config = require('./config');
 
 const server = new Server();
 const matchers = new Matcher();
-
-const mock = {
-
-  start(port = config.mock.port) {
-    return server.start(port);
-  },
-
-  stop(port = config.mock.port) {
-    return server.stop(port);
-  },
-
-  setDefaultPort(port) {
-    config.mock.port = port;
-  },
-
-  /**
-   * add an mock interaction to default list
-   * @param {Interaction} interaction - mock interaction
-   */
-  addDefaultMockInteraction(interaction) {
-    const interactionObj = new Interaction(interaction, true);
-    server.addDefaultMockInteraction(interactionObj.id, interactionObj);
-    return interactionObj.id;
-  },
-
-  removeDefaultMockInteraction(interactionId, port = config.mock.port) {
-    server.removeDefaultMockInteraction(interactionId, port);
-  },
-
-  removeDefaultMockInteractions(port = config.mock.port) {
-    server.removeDefaultMockInteractions(port);
-  }
-
-  // stop all servers
-
-}
-
-const pact = {
-
-  setPactFilesDirectory(path) {
-    config.pact.dir = path;
-  },
-
-  setConsumerName(name) {
-    config.pact.consumer = name;
-  },
-
-  save() {
-    store.save();
-  }
-
-  // publish pacts
-
-}
+const mock = new Mock(server);
+const pact = new Pact();
 
 const pactum = {
 
