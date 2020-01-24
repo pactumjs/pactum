@@ -2,7 +2,7 @@ const fs = require('fs');
 const config = require('../config');
 const helper = require('./helper');
 const Interaction = require('../models/interaction');
-const { Pact, PactInteraction } = require('../models/pact');
+const { Contract, PactInteraction } = require('../models/contract');
 
 const store = {
 
@@ -20,7 +20,7 @@ const store = {
       if (this.pacts.has(key)) {
         pact = this.pacts.get(key);
       } else {
-        pact = new Pact(consumer, provider);
+        pact = new Contract(consumer, provider);
         this.pacts.set(key, pact);
       }
       const pactInteraction = new PactInteraction();

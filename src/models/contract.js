@@ -64,7 +64,7 @@ class PactSpecification {
 
 }
 
-class Pact {
+class Contract {
 
   constructor(consumer, provider) {
     this.consumer = new Consumer(consumer);
@@ -75,4 +75,4 @@ class Pact {
 
 }
 
-module.exports = { Pact, PactInteraction };
+module.exports = { Contract, PactInteraction };
