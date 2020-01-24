@@ -23,6 +23,18 @@ describe('JSON Like - Object - Equal Properties', () => {
     expect(res.equal).equals(true);
   });
 
+  it('object not equals - one property - null', () => {
+    const actual = {
+      id: null
+    };
+    const expected = {
+      id: null
+    };
+    const like = new Like();
+    const res = like.json(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
   it('object not equals - one property - number', () => {
     const actual = {
       id: 1

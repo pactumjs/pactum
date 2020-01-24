@@ -67,7 +67,7 @@ const helper = {
       for (let i = 0; i < data.length; i++) {
         data[i] = this.setValueFromMatcher(data[i]);
       }
-    } else if (typeof data === 'object') {
+    } else if (typeof data === 'object' && data !== null) {
         switch (data.json_class) {
           case 'Pact::SomethingLike':
           case 'Pact::Term':

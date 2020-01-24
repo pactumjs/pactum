@@ -33,7 +33,10 @@ class Server {
             res.send(interaction.willRespondWith.body);
           }
           if (!interactionExercised) {
-            console.log('PACTUM', 'Interaction Not Found', req.method, req.path, req.body);
+            console.log('PACTUM', 'Interaction not found for');
+            console.log('PACTUM', req.method, req.path);
+            console.log('PACTUM', 'Query', req.query);
+            console.log('PACTUM', 'Body', req.body);
             res.status(404);
             res.send('Interaction Not Found');
           }

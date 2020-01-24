@@ -7,6 +7,12 @@ const { like, term, eachLike } = matcher;
 
 describe('helper - setValueFromMatcher', () => {
 
+  it('null', () => {
+    let data = null;
+    data = helper.setValueFromMatcher(data);
+    expect(data).to.be.null;
+  });
+
   it('string', () => {
     let data = 'hello';
     data = helper.setValueFromMatcher(data);
@@ -48,6 +54,20 @@ describe('helper - setValueFromMatcher', () => {
       id: 1,
       name: 'fake',
       married: false
+    });
+  });
+
+  it('object with null properties', () => {
+    let data = {
+      id: 1,
+      name: 'fake',
+      married: null
+    };
+    data = helper.setValueFromMatcher(data);
+    expect(data).deep.equals({
+      id: 1,
+      name: 'fake',
+      married: null
     });
   });
 
