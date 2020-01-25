@@ -13,8 +13,8 @@ const store = {
    * @param {Interaction} interaction 
    */
   addInteraction(interaction) {
-    const { consumer, provider, state, uponReceiving } = interaction;
-    if (consumer && provider && state && uponReceiving) {
+    const { consumer, provider, state, uponReceiving, mock } = interaction;
+    if (consumer && provider && state && uponReceiving && !mock) {
       const key = `${consumer}-${provider}`;
       let pact;
       if (this.pacts.has(key)) {

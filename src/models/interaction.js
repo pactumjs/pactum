@@ -35,11 +35,12 @@ class InteractionResponse {
 
 class Interaction {
 
-  constructor(rawInteraction, mock) {
+  constructor(rawInteraction, mock = false) {
     this.validateInteraction(rawInteraction, mock);
     const { port, consumer, provider, state, uponReceiving, withRequest, willRespondWith } = rawInteraction;
     this.id = helper.getRandomId();
     this.port = port || config.mock.port;
+    this.mock = mock;
     this.consumer = consumer;
     this.provider = provider;
     this.state = state;

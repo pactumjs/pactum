@@ -24,6 +24,7 @@ const config = require('../config');
  */
 
 let _server;
+const interactions = new Map();
 
 class Mock {
 
@@ -73,7 +74,18 @@ class Mock {
    */
   addDefaultMockInteraction(interaction) {
     const interactionObj = new Interaction(interaction, true);
-    _server.addDefaultMockInteraction(interactionObj.id, interactionObj);
+    _server.addDefaultInteraction(interactionObj.id, interactionObj);
+    return interactionObj.id;
+  }
+
+  /**
+   * add an mock interaction to default list
+   * @param {Interaction} interaction - mock interaction
+   */
+  addDefaultPactInteraction(interaction) {
+    const interactionObj = new Interaction(interaction);
+    interactions.set(interactionObj.id, interactionObj);
+    _server.addDefaultInteraction(interactionObj.id, interactionObj);
     return interactionObj.id;
   }
 
@@ -82,22 +94,22 @@ class Mock {
    * @param {string} interactionId - id of the interaction
    * @param {number} port - port number of mock server 
    */
-  removeDefaultMockInteraction(interactionId, port = config.mock.port) {
+  removeDefaultInteraction(interactionId, port = config.mock.port) {
     if (typeof interactionId !== 'string' || !interactionId) {
       throw new PactumConfigurationError(`Invalid interaction id - ${interactionId}`)
     }
     if (typeof port !== 'number') {
       throw new PactumConfigurationError(`Invalid port number - ${port}`)
     }
-    _server.removeDefaultMockInteraction(interactionId, port);
+    _server.removeDefaultInteraction(interactionId, port);
   }
 
   /**
    * removes all default mock interactions
    * @param {number} port - port number of mock server
    */
-  removeDefaultMockInteractions(port = config.mock.port) {
-    _server.removeDefaultMockInteractions(port);
+  removeDefaultInteractions(port = config.mock.port) {
+    _server.removeDefaultInteractions(port);
   }
 
   // stop all _servers

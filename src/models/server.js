@@ -1,5 +1,7 @@
 const express = require('express');
 
+const Interaction = require('./interaction');
+
 const helper = require('../helpers/helper');
 const config = require('../config');
 
@@ -7,6 +9,8 @@ class Server {
 
   constructor() {
     this.mockMap = new Map();
+    this.remoteMockInteractions = new Map();
+    this.remotePactInteractions = new Map();
   }
 
   start(port = config.mock.port) {
@@ -17,6 +21,7 @@ class Server {
       } else {
         const app = express();
         app.use(express.json());
+        registerPactumRoutes(this, app);
         registerAllRoutes(this, app);
         const server = app.listen(port, () => {
           console.log('PACTUM mock server is listening on port', port);
@@ -70,7 +75,7 @@ class Server {
     }
   }
 
-  addDefaultMockInteraction(id, interaction) {
+  addDefaultInteraction(id, interaction) {
     const port = interaction.port;
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
@@ -90,7 +95,7 @@ class Server {
     }
   }
 
-  removeDefaultMockInteraction(id, port = config.mock.port) {
+  removeDefaultInteraction(id, port = config.mock.port) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
       mock.defaultInteractions.delete(id);
@@ -104,7 +109,7 @@ class Server {
     }
   }
 
-  removeDefaultMockInteractions(port = config.mock.port) {
+  removeDefaultInteractions(port = config.mock.port) {
     if (this.mockMap.has(port)) {
       const mock = this.mockMap.get(port);
       mock.defaultInteractions.clear();
@@ -135,6 +140,12 @@ function registerAllRoutes(server, app) {
     if (!interaction) {
       interaction = helper.getValidInteraction(req, defaultInteractions);
     }
+    if (!interaction) {
+      interaction = helper.getValidInteraction(req, server.remotePactInteractions);
+    }
+    if (!interaction) {
+      interaction = helper.getValidInteraction(req, server.remoteMockInteractions);
+    }
     if (interaction) {
       interaction.exercised = true;
       interactionExercised = true;
@@ -151,6 +162,90 @@ function registerAllRoutes(server, app) {
       res.status(404);
       res.send('Interaction Not Found');
     }
+  });
+}
+
+/**
+ * registers pactum interactions
+ * @param {Server} server - server object
+ * @param {Express} app - express app object
+ */
+function registerPactumRoutes(server, app) {
+  app.post('/api/pactum/mockInteraction', (req, res) => {
+    try {
+      const interaction = new Interaction(req.body, true);
+      server.remoteMockInteractions.set(interaction.id, interaction);
+      res.status(200);
+      res.send({ id: interaction.id });
+    } catch (error) {
+      console.log(`Error saving mock interaction - ${error}`);
+      res.status(400);
+      res.send({ error: error.message });
+    }
+  });
+  app.get('/api/pactum/mockInteraction/:id', (req, res) => {
+    const id = req.params.id;
+    if (server.remoteMockInteractions.has(id)) {
+      res.status(200);
+      res.send(server.remoteMockInteractions.get(id));
+    } else {
+      res.status(404);
+      res.send({ error: `Mock interaction not found - ${id}` });
+    }
+  });
+  app.get('/api/pactum/mockInteraction', (req, res) => {
+    const interactions = [];
+    for (let [id, interaction] of server.remoteMockInteractions) {
+      interactions.push(interaction);
+    }
+    res.status(200);
+    res.send(interactions);
+  });
+  app.delete('/api/pactum/mockInteraction/:id', (req, res) => {
+    const id = req.params.id;
+    if (server.remoteMockInteractions.has(id)) {
+      res.status(200);
+      server.remoteMockInteractions.delete(id)
+      res.send();
+    } else {
+      res.status(404);
+      res.send({ error: `Mock interaction not found - ${id}` });
+    }
+  });
+  app.delete('/api/pactum/mockInteraction', (req, res) => {
+    server.remoteMockInteractions.clear();
+    res.status(200);
+    res.send();
+  });
+  app.post('/api/pactum/pactInteraction', (req, res) => {
+    try {
+      const interaction = new Interaction(req.body);
+      server.remotePactInteractions.set(interaction.id, interaction);
+      res.status(200);
+      res.send({ id: interaction.id });
+    } catch (error) {
+      console.log(`Error saving pact interaction - ${error}`);
+      res.status(400);
+      res.send({ error: error.message });
+    }
+  });
+  app.get('/api/pactum/pactInteraction/:id', (req, res) => {
+    const id = req.params.id;
+    if (server.remotePactInteractions.has(id)) {
+      res.status(200);
+      res.send(server.remotePactInteractions.get(id));
+    } else {
+      res.status(404);
+      res.send({ error: `Pact interaction not found - ${id}` });
+    }
+  });
+  app.get('/api/pactum/pactInteraction', (req, res) => {
+    const interactions = [];
+    for (let [id, interaction] of server.remotePactInteractions) {
+      interactions.push(interaction);
+    }
+    res.status(200);
+    res.send(interactions);
   });
 }
 

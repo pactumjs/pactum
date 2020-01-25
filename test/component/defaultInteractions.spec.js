@@ -96,7 +96,7 @@ describe('Pact - Default Interaction', () => {
   });
 
   after(() => {
-    pactum.mock.removeDefaultMockInteractions();
+    pactum.mock.removeDefaultInteractions();
   })
 
 });
