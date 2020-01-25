@@ -461,6 +461,7 @@ class Spec {
     this._response.json = helper.getJson(this._response.body);
     this._expect.validateInteractions(this.interactions);
     this._expect.validate(this._response);
+    return this._response.json;
   }
 
 }
