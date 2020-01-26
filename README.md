@@ -6,10 +6,11 @@ pactum is a REST API Testing Tool that combines the implementation of consumer d
 ## Installation
 
 ```
-npm install pactum --save-dev
+npm install --save-dev pactum
+npm install --save-dev mocha
 ```
 
-## Creating Simple Tests
+## Usage
 
 Running a single component test expectation.
 
@@ -24,7 +25,12 @@ it('should be a teapot', async () => {
 });
 ```
 
-Running a component test with the help of mock server & a single mock interaction. If the mock interaction is not exercised, the test will fail.
+```bash
+# mocha is a test framework
+mocha /path/to/test
+```
+
+Running a component test with the help of a mock server & a single mock interaction. If the mock interaction is not exercised, the test will fail.
 
 ```javascript
 const pactum = require('pactum');
@@ -65,7 +71,7 @@ after(async () => {
 });
 ```
 
-Running a component test with the help of mock server & a single pact interaction. If the mock interaction is not exercised, the test will fail.
+Running a component test with the help of a mock server & a single pact interaction. If the mock interaction is not exercised, the test will fail.
 
 ```javascript
 const pactum = require('pactum');
@@ -110,36 +116,126 @@ after(async () => {
 });
 ```
 
-## API
+## Table of contents
 
-<details>
-  
-  <summary>Basics</summary>
+* [Introduction](#introduction)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Table of contents](#table-of-contents)
+* [Getting Started](#getting-started)
+  * [Basics](#basics)
+  * [HTTP Request](#http-request)
+    * [HTTP Methods](#http-methods)
 
-  #### Basics
 
-  | Method       | Description                                  | Usage                                 |
-  | ----------   | -------------------------------------------- | ------------------------------------- |
-  | get          | performs a GET request on the resource       | `pactum.get('url')`                   |
-  | expectStatus | expects a status code from the resource      | `pactum.get('url').expectStatus(200)` |
-  | toss         | executes the test case and returns a promise | `await pactum.get('url').toss()`      |
+## Getting Started
 
-</details>
+### Basics
 
-<details>
-  
-  <summary>HTTP Methods</summary>
+| Method       | Description                                  |
+| ----------   | -------------------------------------------- |
+| get          | performs a GET request on the resource       |
+| expectStatus | expects a status code on the response        |
+| toss         | executes the test case and returns a promise |
 
-  #### HTTP Methods
+Create a javascript file named `test.js`
 
-  | Method   | Description                                | Usage                 |
-  | -------- | ------------------------------------------ | --------------------- |
-  | get      | performs a GET request on the resource     | `pactum.get('')`      |
-  | post     | performs a POST request on the resource    | `pactum.post('')`     |
-  | put      | performs a PUT request on the resource     | `pactum.put('')`      |
-  | delete   | performs a DELETE request on the resource  | `pactum.delete('')`   |
-  | patch    | performs a PATCH request on the resource   | `pactum.patch('')`    |
-  | head     | performs a HEAD request on the resource    | `pactum.head('')`     |
-  | options  | performs a OPTIONS request on the resource | `pactum.options('')`  |
+```javascript
+// imports pactum library
+const pactum = require('pactum');
 
-</details>
+// this is a test step in mocha
+it('should be a teapot', async () => {
+  await pactum                              // pactum returns a promise
+    .get('http://httpbin.org/status/200')   // will fetch a response from the url
+    .expectStatus(200)                      // sets an expectation on the response
+    .toss();                                // executes the test case
+});
+```
+
+Running the test with [mocha](https://mochajs.org/#getting-started)
+```bash
+mocha /path/to/test.js
+```
+
+[Table of contents](#table-of-contents)
+
+### HTTP Request
+
+HTTP requests are messages sent by the client to initiate an action on the server.
+
+| Method                     | Description                                       |
+| -------------------------- | ------------------------------------------------- |
+| `get('url')`               | this is a HTTP method to be performed on resource |
+| `withQuery('postId', '1')` | set of parameters attached to the url             |
+| `withHeaders({})`          | request headers                                   |
+| `withBody('Hello')`        | request body                                      |
+| `withJson({id: 1})`        | request json object                               |
+
+```javascript
+const pactum = require('pactum');
+
+// performs a get request with query
+it('GET - with query', async () => {
+  await pactum
+    .get('https://jsonplaceholder.typicode.com/comments')
+    .withQuery('postId', 1)
+    .withQuery('id', 1)
+    .expectStatus(200)
+    .toss();
+});
+
+// performs a post request with JSON
+it('POST', async () => {
+  await pactum
+    .post('https://jsonplaceholder.typicode.com/posts')
+    .withJson({
+      title: 'foo',
+      body: 'bar',
+      userId: 1
+    })
+    .expectStatus(201)
+    .toss();
+});
+
+// performs a post request with headers & body
+it('POST - with body', async () => {
+  await pactum
+    .post('https://jsonplaceholder.typicode.com/posts')
+    .withHeaders({
+      "content-type": "application/json"
+    })
+    .withBody({
+      title: 'foo',
+      body: 'bar',
+      userId: 1
+    })
+    .expectStatus(201)
+    .toss();
+});
+```
+
+[Table of contents](#table-of-contents)
+
+#### HTTP Methods
+
+The request method indicates the method to be performed on the resource identified by the given Request-URI.
+
+| Method   | Description                                | Usage                                 |
+| -------- | ------------------------------------------ | ------------------------------------- |
+| get      | performs a GET request on the resource     | `await pactum.get('url').toss()`      |
+| post     | performs a POST request on the resource    | `await pactum.post('url').toss()`     |
+| put      | performs a PUT request on the resource     | `await pactum.put('url').toss()`      |
+| delete   | performs a DELETE request on the resource  | `await pactum.delete('url').toss()`   |
+| patch    | performs a PATCH request on the resource   | `await pactum.patch('url').toss()`    |
+| head     | performs a HEAD request on the resource    | `await pactum.head('url').toss()`     |
+
+```javascript
+// performs a delete request
+it('DELETE', async () => {
+  await pactum
+    .delete('https://jsonplaceholder.typicode.com/posts/1')
+    .expectStatus(200)
+    .toss();
+});
+```
