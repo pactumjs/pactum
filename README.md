@@ -158,7 +158,7 @@ Running the test with [mocha](https://mochajs.org/#getting-started)
 mocha /path/to/test.js
 ```
 
-[Table of contents](#table-of-contents)
+[^ Table of contents](#table-of-contents)
 
 ### HTTP Request
 
@@ -215,8 +215,6 @@ it('POST - with body', async () => {
 });
 ```
 
-[Table of contents](#table-of-contents)
-
 #### HTTP Methods
 
 The request method indicates the method to be performed on the resource identified by the given Request-URI.
@@ -236,6 +234,55 @@ it('DELETE', async () => {
   await pactum
     .delete('https://jsonplaceholder.typicode.com/posts/1')
     .expectStatus(200)
+    .toss();
+});
+```
+
+[^ Table of contents](#table-of-contents)
+
+### HTTP Expectations
+
+| Method                                  | Description                                                                       |
+| --------------------------------------- | --------------------------------------------------------------------------------- |
+| `expectStatus(201)`                     | check HTTP status                                                                 |
+| `expectHeader('key', 'value')`          | check HTTP header key + value (RegExp)                                            |
+| `expectHeaderContains('key', 'value')`  | check HTTP header key contains partial value (RegExp)                             |
+| `expectBody('value')`                   | check exact match of body                                                         |
+| `expectBodyContains('value')`           | check body contains the value (RegExp)                                            |
+| `expectJson({json})`                    | check exact match of json                                                         |
+| `expectJsonLike({json})`                | check json contains partial value (RegExp)                                        |
+| `expectJsonSchema({schema})`            | check json has given schema [json-schema](https://json-schema.org/learn/)         |
+| `expectJsonQuery('path', 'value')`      | check json at given path [json-query](https://www.npmjs.com/package/json-query)   |
+| `expectResponseTime(10)`                | check if request completes within a specified duration (ms)                       |
+
+```javascript
+const pactum = require('pactum');
+
+it('GET', async () => {
+  await pactum
+    .get('https://jsonplaceholder.typicode.com/posts/1')
+    .expectStatus(200)
+    .expectHeader('content-type', 'application/json; charset=utf-8')
+    .expectHeader('connection', /\w+/)
+    .expectHeaderContains('content-type', 'application/json')
+    .expectJson({
+      "userId": 1,
+      "id": 1,
+      "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+      "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet     architecto"
+    })
+    .expectJsonLike({
+      userId: 1,
+      id: 1
+    })
+    .expectJsonSchema({
+      "properties": {
+        "userId": {
+          "type": "number"
+        }
+      },
+      "required": ["userId", "id"]
+    })
     .toss();
 });
 ```

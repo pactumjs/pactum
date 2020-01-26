@@ -1,5 +1,6 @@
 const assert = require('assert');
 const jqy = require('json-query');
+const djv = require('djv');
 
 const Like = require('../helpers/like');
 
@@ -12,6 +13,7 @@ class Expect {
     this.json = [];
     this.jsonLike = [];
     this.jsonQuery = [];
+    this.jsonSchema = [];
     this.headers = [];
     this.headerContains = [];
     this.responseTime = null;
@@ -27,6 +29,7 @@ class Expect {
     this._validateJsonLike(response);
     this._validateJsonQuery(response);
     this._validateResponseTime(response);
+    this._validateJsonSchema(response);
   }
 
   validateInteractions(interactions) {
@@ -116,6 +119,18 @@ class Expect {
         assert.deepStrictEqual(value, jQ.value);
       } else {
         assert.strictEqual(value, jQ.value);
+      }
+    }
+  }
+
+  _validateJsonSchema(response) {
+    for (let i = 0; i < this.jsonSchema.length; i++) {
+      const jS = this.jsonSchema[i];
+      const jsv = new djv();
+      jsv.addSchema('test', {common: jS});
+      const validation = jsv.validate('test#/common', response.json);
+      if (validation) {
+        assert.fail(`Response doesn't match with JSON schema - ${JSON.stringify(validation, null, 2)}`);
       }
     }
   }

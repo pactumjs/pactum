@@ -12,6 +12,14 @@ xdescribe('JSON Placeholder', () => {
         userId: 1,
         id: 1
       })
+      .expectJsonSchema({
+        "properties": {
+          "userId": {
+            "type": "number"
+          }
+        },
+        "required": ["userId", "id"]
+      })
       .toss();
   });
 

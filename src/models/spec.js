@@ -434,6 +434,28 @@ class Spec {
     return this;
   }
 
+  /**
+   * expects the response to match with json schema
+   * @param {object} schema - expected JSON schema
+   * @see https://json-schema.org/learn/
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectJsonSchema({
+   *    "properties": {
+   *      "userId": {
+   *        "type": "number"
+   *      }
+   *    },
+   *    "required": ["userId", "id"]
+   *  })
+   *  .toss()
+   */
+  expectJsonSchema(schema) {
+    this._expect.jsonSchema.push(schema);
+    return this;
+  }
+
   expectJsonQuery(path, value) {
     this._expect.jsonQuery.push({path, value});
     return this;
