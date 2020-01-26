@@ -28,7 +28,7 @@ class Pact {
   }
 
   /**
-   * saves the pact files in the specified directory
+   * saves all the contracts(pact files) in the specified directory
    */
   save() {
     store.save();

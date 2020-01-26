@@ -277,6 +277,54 @@ describe('Interaction', () => {
     expect(function() { new Interaction(rawInteraction, false)}).to.throws('Invalid upon receiving description provided - undefined');
   });
 
+  it('invalid pact interaction - with ignore query', () => {
+    const rawInteraction = {
+      provider: 'pro',
+      state: 'a state',
+      uponReceiving: 'description',
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1',
+        ignoreQuery: true
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    }
+    expect(function() { new Interaction(rawInteraction, false)}).to.throws(`Pact interaction won't support ignore query`);
+  });
+
+  it('invalid pact interaction - with ignore body', () => {
+    const rawInteraction = {
+      provider: 'pro',
+      state: 'a state',
+      uponReceiving: 'description',
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1',
+        ignoreBody: true
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    }
+    expect(function() { new Interaction(rawInteraction, false)}).to.throws(`Pact interaction won't support ignore body`);
+  });
+
   after(() => {
     sandbox.restore();
   });

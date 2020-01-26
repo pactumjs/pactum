@@ -28,6 +28,7 @@ describe('Pact', () => {
         id: 1,
         name: 'fake'
       })
+      .expectResponseTime(100)
       .toss()
   });
 

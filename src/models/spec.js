@@ -440,6 +440,15 @@ class Spec {
   }
 
   /**
+   * expects request completes within a specified duration (ms)
+   * @param {number} value - response time in milliseconds
+   */
+  expectResponseTime(value) {
+    this._expect.responseTime = value;
+    return this;
+  }
+
+  /**
    * executes the test case
    */
   async toss() {
@@ -449,11 +458,13 @@ class Spec {
     for (let [id, interaction] of this.interactions) {
       this.server.addInteraction(id, interaction);
     }
+    const requestStartTime = Date.now();
     try {
       this._response = await this.fetch();
     } catch (error) {
       this._response = error;
     }
+    this._response.responseTime = Date.now() - requestStartTime;
     for (let [id, interaction] of this.interactions) {
       store.addInteraction(interaction);
       this.server.removeInteraction(interaction.port, id);

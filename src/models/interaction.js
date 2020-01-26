@@ -75,6 +75,14 @@ class Interaction {
     if (typeof withRequest.path !== 'string' || !withRequest.path) {
       throw new PactumInteractionError(`Invalid interaction request path provided - ${withRequest.path}`);
     }
+    if (!mock) {
+      if (withRequest.ignoreQuery) {
+        throw new PactumInteractionError(`Pact interaction won't support ignore query`);
+      }
+      if (withRequest.ignoreBody) {
+        throw new PactumInteractionError(`Pact interaction won't support ignore body`);
+      }
+    }
     if (typeof willRespondWith !== 'object') {
       throw new PactumInteractionError(`Invalid interaction request provided - ${willRespondWith}`);
     }

@@ -14,6 +14,7 @@ class Expect {
     this.jsonQuery = [];
     this.headers = [];
     this.headerContains = [];
+    this.responseTime = null;
   }
 
   validate(response) {
@@ -25,6 +26,7 @@ class Expect {
     this._validateJson(response);
     this._validateJsonLike(response);
     this._validateJsonQuery(response);
+    this._validateResponseTime(response);
   }
 
   validateInteractions(interactions) {
@@ -115,6 +117,12 @@ class Expect {
       } else {
         assert.strictEqual(value, jQ.value);
       }
+    }
+  }
+
+  _validateResponseTime(response) {
+    if (this.responseTime !== null) {
+      assert.ok(response.responseTime <= this.responseTime, `Request took longer than ${this.responseTime}ms: (${response.responseTime}ms).`)
     }
   }
 

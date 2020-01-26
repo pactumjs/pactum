@@ -3,6 +3,7 @@ const express = require('express');
 const Interaction = require('./interaction');
 
 const helper = require('../helpers/helper');
+const store = require('../helpers/store');
 const config = require('../config');
 
 class Server {
@@ -184,43 +185,68 @@ function registerPactumRoutes(server, app) {
     }
   });
   app.get('/api/pactum/mockInteraction/:id', (req, res) => {
-    const id = req.params.id;
-    if (server.remoteMockInteractions.has(id)) {
-      res.status(200);
-      res.send(server.remoteMockInteractions.get(id));
-    } else {
-      res.status(404);
-      res.send({ error: `Mock interaction not found - ${id}` });
+    try {
+      const id = req.params.id;
+      if (server.remoteMockInteractions.has(id)) {
+        res.status(200);
+        res.send(server.remoteMockInteractions.get(id).rawInteraction);
+      } else {
+        res.status(404);
+        res.send({ error: `Mock interaction not found - ${id}` });
+      }
+    } catch (error) {
+      console.error(`Error fetching mock interaction - ${error}`);
+      res.status(500);
+      res.send({ error: `Internal System Error` });
     }
   });
   app.get('/api/pactum/mockInteraction', (req, res) => {
-    const interactions = [];
-    for (let [id, interaction] of server.remoteMockInteractions) {
-      interactions.push(interaction);
+    try {
+      const interactions = [];
+      for (let [id, interaction] of server.remoteMockInteractions) {
+        interactions.push(interaction.rawInteraction);
+      }
+      res.status(200);
+      res.send(interactions);
+    } catch (error) {
+      console.error(`Error fetching mock interactions - ${error}`);
+      res.status(500);
+      res.send({ error: `Internal System Error` });
     }
-    res.status(200);
-    res.send(interactions);
   });
   app.delete('/api/pactum/mockInteraction/:id', (req, res) => {
-    const id = req.params.id;
-    if (server.remoteMockInteractions.has(id)) {
-      res.status(200);
-      server.remoteMockInteractions.delete(id)
-      res.send();
-    } else {
-      res.status(404);
-      res.send({ error: `Mock interaction not found - ${id}` });
+    try {
+      const id = req.params.id;
+      if (server.remoteMockInteractions.has(id)) {
+        res.status(200);
+        server.remoteMockInteractions.delete(id)
+        res.send();
+      } else {
+        res.status(404);
+        res.send({ error: `Mock interaction not found - ${id}` });
+      }
+    } catch (error) {
+      console.error(`Error deleting mock interaction - ${error}`);
+      res.status(500);
+      res.send({ error: `Internal System Error` });
     }
   });
   app.delete('/api/pactum/mockInteraction', (req, res) => {
-    server.remoteMockInteractions.clear();
-    res.status(200);
-    res.send();
+    try {
+      server.remoteMockInteractions.clear();
+      res.status(200);
+      res.send();
+    } catch (error) {
+      console.error(`Error deleting mock interactions - ${error}`);
+      res.status(500);
+      res.send({ error: `Internal System Error` });
+    }
   });
   app.post('/api/pactum/pactInteraction', (req, res) => {
     try {
       const interaction = new Interaction(req.body);
       server.remotePactInteractions.set(interaction.id, interaction);
+      store.addInteraction(interaction);
       res.status(200);
       res.send({ id: interaction.id });
     } catch (error) {
@@ -230,23 +256,75 @@ function registerPactumRoutes(server, app) {
     }
   });
   app.get('/api/pactum/pactInteraction/:id', (req, res) => {
-    const id = req.params.id;
-    if (server.remotePactInteractions.has(id)) {
-      res.status(200);
-      res.send(server.remotePactInteractions.get(id));
-    } else {
-      res.status(404);
-      res.send({ error: `Pact interaction not found - ${id}` });
+    try {
+      const id = req.params.id;
+      if (server.remotePactInteractions.has(id)) {
+        res.status(200);
+        res.send(server.remotePactInteractions.get(id).rawInteraction);
+      } else {
+        res.status(404);
+        res.send({ error: `Pact interaction not found - ${id}` });
+      }
+    } catch (error) {
+      console.error(`Error fetching pact interaction - ${error}`);
+      res.status(500);
+      res.send({ error: `Internal System Error` });
     }
   });
   app.get('/api/pactum/pactInteraction', (req, res) => {
-    const interactions = [];
-    for (let [id, interaction] of server.remotePactInteractions) {
-      interactions.push(interaction);
+    try {
+      const interactions = [];
+      for (let [id, interaction] of server.remotePactInteractions) {
+        interactions.push(interaction.rawInteraction);
+      }
+      res.status(200);
+      res.send(interactions);
+    } catch (error) {
+      console.error(`Error fetching pact interactions - ${error}`);
+      res.status(500);
+      res.send({ error: `Internal System Error` });
     }
-    res.status(200);
-    res.send(interactions);
   });
+  app.delete('/api/pactum/pactInteraction/:id', (req, res) => {
+    try {
+      const id = req.params.id;
+      if (server.remotePactInteractions.has(id)) {
+        res.status(200);
+        server.remotePactInteractions.delete(id)
+        res.send();
+      } else {
+        res.status(404);
+        res.send({ error: `Pact interaction not found - ${id}` });
+      }
+    } catch (error) {
+      console.error(`Error deleting mock interaction - ${error}`);
+      res.status(500);
+      res.send({ error: `Internal System Error` });
+    }
+  });
+  app.delete('/api/pactum/pactInteraction', (req, res) => {
+    try {
+      server.remotePactInteractions.clear();
+      res.status(200);
+      res.send();
+    } catch (error) {
+      console.error(`Error deleting pact interactions - ${error}`);
+      res.status(500);
+      res.send({ error: `Internal System Error` });
+    }
+  });
+  app.post('/api/pactum/pacts/save', (req, res) => {
+    try {
+      store.save();
+      res.status(200);
+      res.send();
+    } catch (error) {
+      console.log(`Error saving pacts - ${error}`);
+      res.status(500);
+      res.send({ error: error.message });
+    }
+  });
+  // publish pacts
 }
 
 module.exports = Server;

@@ -1,5 +1,6 @@
 const Interaction = require('../models/interaction');
 const { PactumConfigurationError } = require('../helpers/errors');
+const store = require('../helpers/store');
 
 const config = require('../config');
 
@@ -86,11 +87,12 @@ class Mock {
     const interactionObj = new Interaction(interaction);
     interactions.set(interactionObj.id, interactionObj);
     _server.addDefaultInteraction(interactionObj.id, interactionObj);
+    store.addInteraction(interactionObj);
     return interactionObj.id;
   }
 
   /**
-   * removes specified default mock interaction from server
+   * removes specified default interaction from server
    * @param {string} interactionId - id of the interaction
    * @param {number} port - port number of mock server 
    */
@@ -105,7 +107,7 @@ class Mock {
   }
 
   /**
-   * removes all default mock interactions
+   * removes all default interactions
    * @param {number} port - port number of mock server
    */
   removeDefaultInteractions(port = config.mock.port) {
