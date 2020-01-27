@@ -125,8 +125,6 @@ after(async () => {
 * [Getting Started](#getting-started)
   * [Basics](#basics)
   * [HTTP Request](#http-request)
-    * [HTTP Methods](#http-methods)
-
 
 ## Getting Started
 
@@ -158,7 +156,7 @@ Running the test with [mocha](https://mochajs.org/#getting-started)
 mocha /path/to/test.js
 ```
 
-[^ Table of contents](#table-of-contents)
+[^ TOC](#table-of-contents)
 
 ### HTTP Request
 
@@ -238,7 +236,7 @@ it('DELETE', async () => {
 });
 ```
 
-[^ Table of contents](#table-of-contents)
+[^ TOC](#table-of-contents)
 
 ### HTTP Expectations
 
@@ -268,12 +266,16 @@ it('GET', async () => {
     .expectJson({
       "userId": 1,
       "id": 1,
-      "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-      "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet     architecto"
+      "title": "some title",
+      "body": "some body"
     })
     .expectJsonLike({
       userId: 1,
       id: 1
+    })
+    .expectJsonLike({
+      title: "some title",
+      body: "some body"
     })
     .expectJsonSchema({
       "properties": {
@@ -283,6 +285,15 @@ it('GET', async () => {
       },
       "required": ["userId", "id"]
     })
+    .expectJsonSchema({
+      "properties": {
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": ["title", "body"]
+    })
+    .expectResponseTime(1000)
     .toss();
 });
 ```

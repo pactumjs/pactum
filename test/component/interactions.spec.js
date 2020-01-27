@@ -32,6 +32,32 @@ describe('Pact', () => {
       .toss()
   });
 
+  it('GET - one interaction - bad response', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 400,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            message: 'invalid request'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(400)
+      .expectJsonLike({
+        message: 'invalid request'
+      })
+      .expectResponseTime(100)
+      .toss()
+  });
+
   it('GET - one interaction - with one query', async () => {
     await pactum
       .addMockInteraction({

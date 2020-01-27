@@ -39,6 +39,14 @@ xdescribe('JSON Placeholder', () => {
       .toss();
   });
 
+  it('GET - invalid post', async () => {
+    await pactum
+      .get('https://jsonplaceholder.typicode.com/posts/-1')
+      .expectStatus(404)
+      .expectJson({})
+      .toss();
+  });
+
   it('POST', async () => {
     await pactum
       .post('https://jsonplaceholder.typicode.com/posts')

@@ -484,7 +484,12 @@ class Spec {
     try {
       this._response = await this.fetch();
     } catch (error) {
-      this._response = error;
+      if (error.response) {
+        this._response = error.response;
+      } else {
+        console.log('Error performing request', error);
+        this._response = error;
+      }
     }
     this._response.responseTime = Date.now() - requestStartTime;
     for (let [id, interaction] of this.interactions) {
