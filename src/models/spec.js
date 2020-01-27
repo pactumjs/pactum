@@ -502,6 +502,12 @@ class Spec {
     return this._response.json;
   }
 
+  then(resolve, reject) {
+    this.toss()
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  }
+
 }
 
 function validateRequestUrl(request, url) {
