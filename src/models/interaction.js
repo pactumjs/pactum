@@ -41,7 +41,7 @@ class Interaction {
     this.id = helper.getRandomId();
     this.port = port || config.mock.port;
     this.mock = mock;
-    this.consumer = consumer;
+    this.consumer = consumer || config.pact.consumer;
     this.provider = provider;
     this.state = state;
     this.uponReceiving = uponReceiving;

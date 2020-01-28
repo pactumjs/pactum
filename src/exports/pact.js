@@ -21,7 +21,7 @@ class Pact {
    * @param {string} name - name of the consumer
    */
   setConsumerName(name) {
-    if (typeof name !== 'string' || name) {
+    if (typeof name !== 'string' || !name) {
       throw new PactumConfigurationError(`Invalid consumer name - ${name}`);
     }
     config.pact.consumer = name;

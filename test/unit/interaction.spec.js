@@ -31,7 +31,7 @@ describe('Interaction', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "consumer": undefined,
+      "consumer": '',
       "port": 9393,
       "mock": true,
       "provider": undefined,
@@ -160,7 +160,7 @@ describe('Interaction', () => {
     const interaction = new Interaction(rawInteraction, false);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "consumer": undefined,
+      "consumer": '',
       "mock": false,
       "port": 9393,
       "provider": 'pro',

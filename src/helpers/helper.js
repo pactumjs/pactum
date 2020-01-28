@@ -23,7 +23,16 @@ const helper = {
       if (!expected.hasOwnProperty(prop)) {
         return false;
       }
-      if(actual[prop] != expected[prop]) {
+      if (actual[prop] === expected[prop]) {
+        continue;
+      }
+      if (actual[prop] === null) {
+        actual[prop] = 'null';
+      }
+      if (expected[prop] === null) {
+        expected[prop] = 'null';
+      }
+      if(actual[prop].toString() !== expected[prop].toString()) {
         return false;
       }
     }

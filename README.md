@@ -10,6 +10,21 @@ npm install --save-dev pactum
 npm install --save-dev mocha
 ```
 
+## Table of contents
+
+* [Introduction](#introduction)
+* [Installation](#installation)
+* [Table of contents](#table-of-contents)
+* [Usage](#usage)
+* [Getting Started](#getting-started)
+  * [Basics](#basics)
+  * [HTTP Request](#http-request)
+* [Component Testing](#component-testing)
+* [Component Testing with Mock Server](#component-testing-with-mock-server)
+  * [Mock Interaction](#mock-interaction)
+* [Contract Testing with Mock Server](#contract-testing-with-mock-server)
+  * [Pact Interaction](#pact-interaction)
+
 ## Usage
 
 Running a single component test expectation.
@@ -116,17 +131,6 @@ after(async () => {
 });
 ```
 
-## Table of contents
-
-* [Introduction](#introduction)
-* [Installation](#installation)
-* [Usage](#usage)
-* [Table of contents](#table-of-contents)
-* [Getting Started](#getting-started)
-  * [Basics](#basics)
-  * [HTTP Request](#http-request)
-* [Component Testing](#component-testing)
-* [Component Testing with Mock Server](#component-testing-with-mock-server)
 
 ## Getting Started
 
@@ -310,7 +314,8 @@ Read more about testing RESTFull services [here](#http-request)
 
 Component testing is defined as a software testing type, in which the testing is performed on each individual component separately without integrating with other components.
 
-Lets assume you have an order-service which is a RESTFull API service running on port 3000. Here if the order-service has external dependencies, they are mocked separately.
+Lets assume you have an order-service which is a RESTFull API service running on port 3000.
+Here if the order-service has external dependencies, they are mocked using different library.
 
 ```javascript
 const pactum = require('pactum');
@@ -346,15 +351,15 @@ Start the order-service & overwrite the endpoint of currency-service to http://l
 const pactum = require('pactum');
 
 before(async () => {
-  // start the mock service on port 9393 (port number can be modified)
+  // starts the mock service on port 9393 (port number can be modified)
   await pactum.mock.start();
 });
 
 it('should fetch order details', async () => {
   await pactum
-    // assume order-service makes a call to currency-service with method - GET & path - http://localhost:9393/api/currency/INR
     // here we are training the mock server to act as currency-service
-    // if the order-service fails to make a call to this endpoint, the test will fail with - Interaction Not Exercised
+    // if the order-service fails to make a call to this endpoint then
+    // the test will fail with - Interaction Not Exercised
     // after the execution of this spec, the mock interaction will be removed
     .addMockInteraction({
       withRequest: {
@@ -372,22 +377,18 @@ it('should fetch order details', async () => {
         }
       }
     })
-    // assume you have an order-service running locally on port 3000
     .get('http://localhost:3000/api/orders/123')
-    // set an expectation of 200
     .expectStatus(200)
-    // set an expectation on the response body
     .expectJson({
       orderId: '123',
       price: '3030',
       currency: 'INR'
     })
-    // execute the test case
     .toss();
 });
 
 after(async () => {
-  // stop the mock service on port 9393
+  // stops the mock service on port 9393 (port number can be modified)
   await pactum.mock.stop();
 });
 ```
@@ -398,13 +399,13 @@ If the order-service interacts with multiple services, we can add multiple mock 
 const pactum = require('pactum');
 
 before(async () => {
-  // start the mock service on port 9393 (port number can be modified)
   await pactum.mock.start();
 });
 
 it('should fetch order details', async () => {
   await pactum
-    // if the order-service fails to make a call to this endpoint, the test will fail with - Interaction Not Exercised
+    // if the order-service fails to make a call to this endpoint then
+    // the test will fail with - Interaction Not Exercised
     .addMockInteraction({
       withRequest: {
         method: 'GET',
@@ -421,7 +422,8 @@ it('should fetch order details', async () => {
         }
       }
     })
-    // if the order-service fails to make a call to this endpoint, the test will fail with - Interaction Not Exercised
+    // if the order-service fails to make a call to this endpoint then
+    // the test will fail with - Interaction Not Exercised
     .addMockInteraction({
       withRequest: {
         method: 'GET',
@@ -435,36 +437,31 @@ it('should fetch order details', async () => {
         body: [12, 13]
       }
     })
-    // assume you have an order-service running locally on port 3000
     .get('http://localhost:3000/api/orders/123')
-    // set an expectation of 200
     .expectStatus(200)
-    // set an expectation on the response body
     .expectJson({
       orderId: '123',
       price: '3030',
       currency: 'INR'
     })
-    // execute the test case
     .toss();
 });
 
 after(async () => {
-  // stop the mock service on port 9393
   await pactum.mock.stop();
 });
 ```
 
-Each mock interaction will be removed after the completion of the current spec. To add mock interactions that will intact for all the specs use `pactum.mock.addDefaultMockInteraction({})`
+The scope of each interaction added through `pactum.addMockInteraction()` will be restricted to current spec (`it` block)
+To add mock interactions that will be consumed in all the specs use - `pactum.mock.addDefaultMockInteraction()`
 
 ```javascript
 const pactum = require('pactum');
 
 before(async () => {
-  // start the mock service on port 9393 (port number can be modified)
   await pactum.mock.start();
 
-  // add a default mock interaction
+  // adds a default mock interaction
   pactum.mock.addDefaultMockInteraction({
     withRequest: {
       method: 'GET',
@@ -485,41 +482,199 @@ before(async () => {
 
 it('should fetch order details for id 123', async () => {
   await pactum
-    // assume you have an order-service running locally on port 3000
     .get('http://localhost:3000/api/orders/123')
-    // set an expectation of 200
     .expectStatus(200)
-    // set an expectation on the response body
     .expectJson({
       orderId: '123',
       price: '3030',
       currency: 'INR'
     })
-    // execute the test case
     .toss();
 });
 
 it('should fetch order details for id 124', async () => {
   await pactum
-    // assume you have an order-service running locally on port 3000
     .get('http://localhost:3000/api/orders/124')
-    // set an expectation of 200
     .expectStatus(200)
-    // set an expectation on the response body
     .expectJson({
       orderId: '124',
       price: '5643',
       currency: 'INR'
     })
-    // execute the test case
     .toss();
 });
 
 after(async () => {
   // removes all default interactions
   pactum.mock.removeDefaultInteractions();
-  
-  // stop the mock service on port 9393
   await pactum.mock.stop();
 });
 ```
+
+[^ TOC](#table-of-contents)
+
+### Mock Interaction
+
+Methods to add a mock interaction:
+
+* `pactum.addMockInteraction()`
+* `pactum.mock.addDefaultMockInteraction()`
+
+| Property                | Type    | Required | Description                |
+| ----------------------- | ------- | -------- | -------------------------- |
+| consumer                | string  | optional | name of the consumer       |
+| provider                | string  | optional | name of the provider       |
+| state                   | string  | optional | state of the provider      |
+| uponReceiving           | string  | optional | description of the request |
+| withRequest             | object  | required | request details            |
+| withRequest.method      | string  | required | HTTP method                |
+| withRequest.path        | string  | required | api path                   |
+| withRequest.headers     | object  | optional | request headers            |
+| withRequest.query       | object  | optional | query parameters           |
+| withRequest.body        | any     | optional | request body               |
+| withRequest.ignoreQuery | boolean | optional | ignore request query       |
+| withRequest.ignoreBody  | boolean | optional | ignore request body        |
+| willRespondWith         | object  | required | response details           |
+| willRespondWith.status  | number  | required | response status code       |
+| willRespondWith.headers | object  | optional | response headers           |
+| willRespondWith.body    | any     | required | response body              |
+
+## Contract Testing with Mock Server
+
+Contract testing is a technique for testing an integration point by checking each application in isolation to ensure the messages it sends or receives conform to a shared understanding that is documented in a **contract**.
+
+In a single spec we can use multiple mock interactions & multiple pact interactions.
+
+```javascript
+const pactum = require('pactum');
+
+before(async () => {
+  await pactum.mock.start();
+});
+
+it('should fetch order details', async () => {
+  await pactum
+    // here we are training the mock server to act as currency-service
+    // if the order-service fails to make a call to this endpoint then
+    // the test will fail with - Interaction Not Exercised
+    // after the execution of this spec, the pact interaction will be removed
+    .addPactInteraction({
+      consumer: 'order-service',
+      provider: 'currency-service',
+      state: 'there is INR currency',
+      uponReceiving: 'a request for INR currency',
+      withRequest: {
+        method: 'GET',
+        path: '/api/currency/INR'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 'INR',
+          description: 'Indian Rupee'
+        }
+      }
+    })
+    .get('http://localhost:3000/api/orders/123')
+    .expectStatus(200)
+    .expectJson({
+      orderId: '123',
+      price: '3030',
+      currency: 'INR'
+    })
+    .toss();
+});
+
+after(async () => {
+  await pactum.mock.stop();
+});
+```
+
+[^ TOC](#table-of-contents)
+
+### Pact Interaction
+
+Methods to add a pact interaction:
+
+* `pactum.addPactInteraction()`
+* `pactum.mock.addDefaultPactInteraction()`
+
+| Property                | Type    | Required | Description                |
+| ----------------------- | ------- | -------- | -------------------------- |
+| consumer                | string  | required | name of the consumer       |
+| provider                | string  | required | name of the provider       |
+| state                   | string  | required | state of the provider      |
+| uponReceiving           | string  | required | description of the request |
+| withRequest             | object  | required | request details            |
+| withRequest.method      | string  | required | HTTP method                |
+| withRequest.path        | string  | required | api path                   |
+| withRequest.headers     | object  | optional | request headers            |
+| withRequest.query       | object  | optional | query parameters           |
+| withRequest.body        | any     | optional | request body               |
+| willRespondWith         | object  | required | response details           |
+| willRespondWith.status  | number  | required | response status code       |
+| willRespondWith.headers | object  | optional | response headers           |
+| willRespondWith.body    | any     | required | response body              |
+
+[^ TOC](#table-of-contents)
+
+## Mock Server
+
+Pactum can also be used as a mock server
+
+```javascript
+// The below code will run the pactum server on port 3000
+const pactum = require('pactum');
+pactum.mock.setDefaultPort(3000);
+pactum.mock.start();
+```
+
+Use `addDefaultMockInteraction()` and `addDefaultPactInteraction()` to add default interactions to the mock server.
+
+```javascript
+// The below code will run the pactum server on port 3000 
+// with mock interaction & a pac interaction
+const pactum = require('pactum');
+pactum.mock.setDefaultPort(3000);
+pactum.mock.addDefaultMockInteraction({
+  withRequest: {
+    method: 'GET',
+    path: '/api/projects/1'
+  },
+  willRespondWith: {
+    status: 200,
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: {
+      id: 1,
+      name: 'fake'
+    }
+  }
+});
+pactum.mock.addDefaultPactInteraction({
+  consumer: 'consumer-service',
+  provider: 'project-service',
+  state: 'there is a project with id 1',
+  uponReceiving: 'a request for project 1',
+  withRequest: {
+    method: 'GET',
+    path: '/api/projects/1'
+  },
+  willRespondWith: {
+    status: 200,
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: {
+      id: 1,
+      name: 'fake'
+    }
+  }
+});
+pactum.mock.start();
+```
+

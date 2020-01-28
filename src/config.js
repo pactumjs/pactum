@@ -1,10 +1,10 @@
 const config = {
   mock: {
-    port: 9393
+    port: process.env.PACTUM_MOCK_PORT || 9393
   },
   pact: {
-    consumer: '',
-    dir: './pacts/'
+    consumer: process.env.PACTUM_PACT_CONSUMER_NAME || '',
+    dir: process.env.PACTUM_PACT_DIR || './pacts/'
   }
 };
 

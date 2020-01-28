@@ -403,3 +403,119 @@ describe('helper - setMatchingRules', () => {
   })
 
 });
+
+describe('helper - validateQuery', () => {
+
+  it('both null', () => {
+    const res = helper.validateQuery(null, null);
+    expect(res).equals(true);
+  });
+
+  it('empty objects', () => {
+    const res = helper.validateQuery({}, {});
+    expect(res).equals(true);
+  });
+
+  it('objects - single property', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {
+      id: 1
+    }
+    const res = helper.validateQuery(actual, expected);
+    expect(res).equals(true);
+  });
+
+  it('extra property in actual object', () => {
+    const actual = {
+      id: 1,
+      name: 'some'
+    };
+    const expected = {
+      id: 1
+    }
+    const res = helper.validateQuery(actual, expected);
+    expect(res).equals(false);
+  });
+
+  it('extra property in expected object', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {
+      id: 1,
+      name: 'some'
+    }
+    const res = helper.validateQuery(actual, expected);
+    expect(res).equals(false);
+  });
+
+  it('objects - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'some'
+    };
+    const expected = {
+      id: 1,
+      name: 'some'
+    }
+    const res = helper.validateQuery(actual, expected);
+    expect(res).equals(true);
+  });
+
+  it('objects - multiple properties - not equal', () => {
+    const actual = {
+      id: 1,
+      name: 'some'
+    };
+    const expected = {
+      id: 1,
+      name: 'fake'
+    }
+    const res = helper.validateQuery(actual, expected);
+    expect(res).equals(false);
+  });
+
+  it('objects - multiple properties - diff data types', () => {
+    const actual = {
+      id: 1,
+      name: 'some',
+      married: 'false'
+    };
+    const expected = {
+      id: '1',
+      name: 'some',
+      married: false
+    }
+    const res = helper.validateQuery(actual, expected);
+    expect(res).equals(true);
+  });
+
+  it('objects - multiple properties - diff data types - not equal', () => {
+    const actual = {
+      id: 1,
+      name: 'some',
+      married: 'false'
+    };
+    const expected = {
+      id: '1',
+      name: 'some',
+      married: true
+    }
+    const res = helper.validateQuery(actual, expected);
+    expect(res).equals(false);
+  });
+
+  it('objects - single property - null', () => {
+    const actual = {
+      id: null
+    };
+    const expected = {
+      id: 'null'
+    }
+    const res = helper.validateQuery(actual, expected);
+    expect(res).equals(true);
+  });
+
+});  
