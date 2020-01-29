@@ -32,6 +32,26 @@ describe('Pact', () => {
       .toss()
   });
 
+  it('GET - one interaction - without body', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 204,
+          headers: {
+            'content-type': 'application/json'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(204)
+      .expectResponseTime(100)
+      .toss()
+  });
+
   it('GET - one interaction - bad response', async () => {
     await pactum
       .addMockInteraction({

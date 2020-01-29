@@ -2,6 +2,8 @@ const helper = require('../helpers/helper');
 const config = require('../config');
 const { PactumInteractionError } = require('../helpers/errors');
 
+const ALLOWED_REQUEST_METHODS = new Set(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD']);
+
 class InteractionRequest {
 
   constructor(request) {
@@ -27,7 +29,11 @@ class InteractionResponse {
   constructor(response) {
     this.status = response.status;
     this.headers = response.headers;
-    this.rawBody = JSON.parse(JSON.stringify(response.body)); 
+    if (response.body && typeof response.body === 'object') {
+      this.rawBody = JSON.parse(JSON.stringify(response.body));
+    } else {
+      this.rawBody = response.body;
+    }
     this.body = helper.setValueFromMatcher(response.body);
   }
 
@@ -70,6 +76,9 @@ class Interaction {
       throw new PactumInteractionError(`Invalid interaction request provided - ${withRequest}`);
     }
     if (typeof withRequest.method !== 'string' || !withRequest.method) {
+      throw new PactumInteractionError(`Invalid interaction request method provided - ${withRequest.method}`);
+    }
+    if (!ALLOWED_REQUEST_METHODS.has(withRequest.method)) {
       throw new PactumInteractionError(`Invalid interaction request method provided - ${withRequest.method}`);
     }
     if (typeof withRequest.path !== 'string' || !withRequest.path) {

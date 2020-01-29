@@ -98,6 +98,26 @@ describe('Interaction', () => {
     expect(function() { new Interaction(rawInteraction, true)}).to.throws('Invalid interaction request method provided - undefined');
   });
 
+  it('invalid mock interaction - no request method', () => {
+    const rawInteraction = {
+      withRequest: {
+        method: 'get',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    }
+    expect(function() { new Interaction(rawInteraction, true)}).to.throws('Invalid interaction request method provided - get');
+  });
+
   it('invalid mock interaction - no request path', () => {
     const rawInteraction = {
       withRequest: {

@@ -26,7 +26,7 @@ describe('Remote- post single mock interaction', () => {
         id: /\w+/
       })
       .toss();
-    this.id = response.id;
+    this.id = response.json.id;
   });
 
   it('get all mock interactions', async () => {
@@ -114,7 +114,7 @@ describe('Remote- post single pact interaction', () => {
         id: /\w+/
       })
       .toss();
-    this.id = response.id;
+    this.id = response.json.id;
   });
 
   it('get all mock interactions', async () => {

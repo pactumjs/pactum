@@ -343,7 +343,7 @@ it('should fetch order details', async () => {
 
 Read more about component testing [here](#component-testing)
 
-Lets assume you have an order-service which is a RESTFull API service running on port 3000. Consider if order-service depends on a currency-service to fetch the prices. If you make a call to fetch the order details, order-service internally calls the currency-service to fetch price details.
+Lets assume you have an order-service which is a RESTFull API service running on port 3000. Consider if order-service depends on a currency-service to fetch the prices.
 
 Start the order-service & overwrite the endpoint of currency-service to http://localhost:9393
 
@@ -636,7 +636,7 @@ Use `addDefaultMockInteraction()` and `addDefaultPactInteraction()` to add defau
 
 ```javascript
 // The below code will run the pactum server on port 3000 
-// with mock interaction & a pac interaction
+// with a mock interaction & a pact interaction
 const pactum = require('pactum');
 pactum.mock.setDefaultPort(3000);
 pactum.mock.addDefaultMockInteraction({

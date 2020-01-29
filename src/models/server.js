@@ -152,14 +152,19 @@ function registerAllRoutes(server, app) {
       interactionExercised = true;
       res.set(interaction.willRespondWith.headers);
       res.status(interaction.willRespondWith.status);
-      res.send(interaction.willRespondWith.body);
+      if (interaction.willRespondWith.body) {
+        res.send(interaction.willRespondWith.body);
+      } else {
+        res.send();
+      }
     }
     if (!interactionExercised) {
       console.log();
       console.log('PACTUM', 'Interaction not found for');
       console.log('PACTUM', req.method, req.path);
-      console.log('PACTUM', 'Query', req.query);
-      console.log('PACTUM', 'Body', req.body);
+      console.log('PACTUM', 'Headers -', req.headers);
+      console.log('PACTUM', 'Query -', req.query);
+      console.log('PACTUM', 'Body -', req.body);
       res.status(404);
       res.send('Interaction Not Found');
     }

@@ -5,6 +5,11 @@ const store = require('../helpers/store');
 const config = require('../config');
 
 /**
+ * request method
+ * @typedef {('GET'|'POST'|'PUT'|'DELETE'|'PATCH'|'HEAD')} RequestMethod
+ */
+
+/**
  * interaction details
  * @typedef {object} Interaction
  * @property {string} [consumer] - name of the consumer
@@ -12,11 +17,12 @@ const config = require('../config');
  * @property {string} [state] - state of the provider
  * @property {string} [uponReceiving] - description of the request
  * @property {object} withRequest - interaction request details
- * @property {string} withRequest.method - request method
+ * @property {RequestMethod} withRequest.method - request method
  * @property {string} withRequest.path - request path
  * @property {object} [withRequest.headers] - request headers
  * @property {object} [withRequest.query] - request query
  * @property {object} [withRequest.body] - request body
+ * @property {boolean} [withRequest.ignoreQuery] - ignores request query while matching
  * @property {boolean} [withRequest.ignoreBody] - ignores request body while matching
  * @property {object} willRespondWith - interaction response details
  * @property {string} willRespondWith.status - response status code
