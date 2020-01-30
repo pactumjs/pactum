@@ -24,6 +24,7 @@ npm install --save-dev mocha
   * [Mock Interaction](#mock-interaction)
 * [Contract Testing with Mock Server](#contract-testing-with-mock-server)
   * [Pact Interaction](#pact-interaction)
+* [Mock Server](#mock-server)
 
 ## Usage
 
@@ -522,6 +523,7 @@ Methods to add a mock interaction:
 
 | Property                | Type    | Required | Description                |
 | ----------------------- | ------- | -------- | -------------------------- |
+| id                      | string  | optional | id of the interaction      |
 | consumer                | string  | optional | name of the consumer       |
 | provider                | string  | optional | name of the provider       |
 | state                   | string  | optional | state of the provider      |
@@ -604,6 +606,7 @@ Methods to add a pact interaction:
 
 | Property                | Type    | Required | Description                |
 | ----------------------- | ------- | -------- | -------------------------- |
+| id                      | string  | optional | id of the interaction      |
 | consumer                | string  | required | name of the consumer       |
 | provider                | string  | required | name of the provider       |
 | state                   | string  | required | state of the provider      |
@@ -633,6 +636,7 @@ pactum.mock.start();
 ```
 
 Use `addDefaultMockInteraction()` and `addDefaultPactInteraction()` to add default interactions to the mock server.
+To add multiple use `addDefaultMockInteractions()` and `addDefaultPactInteractions()`.
 
 ```javascript
 // The below code will run the pactum server on port 3000 

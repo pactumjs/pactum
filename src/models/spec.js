@@ -13,6 +13,7 @@ const { PactumRequestError } = require('../helpers/errors');
 /**
  * interaction details
  * @typedef {object} Interaction
+ * @property {string} [id] - unique id of the interaction
  * @property {string} [consumer] - name of the consumer
  * @property {string} [provider] - name of the provider
  * @property {string} [state] - state of the provider

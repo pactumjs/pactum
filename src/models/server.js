@@ -148,6 +148,7 @@ function registerAllRoutes(server, app) {
       interaction = helper.getValidInteraction(req, server.remoteMockInteractions);
     }
     if (interaction) {
+      store.updateInteractionExerciseCounter(interaction.id);
       interaction.exercised = true;
       interactionExercised = true;
       res.set(interaction.willRespondWith.headers);

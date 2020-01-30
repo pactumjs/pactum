@@ -12,6 +12,7 @@ const config = require('../config');
 /**
  * interaction details
  * @typedef {object} Interaction
+ * @property {string} [id] - unique id of the interaction
  * @property {string} [consumer] - name of the consumer
  * @property {string} [provider] - name of the provider
  * @property {string} [state] - state of the provider
@@ -76,7 +77,7 @@ class Mock {
   }
 
   /**
-   * add an mock interaction to default list
+   * add a mock interaction to default list
    * @param {Interaction} interaction - mock interaction
    */
   addDefaultMockInteraction(interaction) {
@@ -86,8 +87,26 @@ class Mock {
   }
 
   /**
-   * add an mock interaction to default list
-   * @param {Interaction} interaction - mock interaction
+   * add mock interactions to default list
+   * @param {Interaction[]} interactions - mock interactions array
+   */
+  addDefaultMockInteractions(interactions) {
+    if (!Array.isArray(interactions)) {
+      // use a new type of error
+      throw new PactumConfigurationError(`Invalid mock interactions array passed - ${interactions}`);
+    }
+    const ids = [];
+    for (let i = 0; i < interactions.length; i++) {
+      const interactionObj = new Interaction(interactions[i], true);
+      _server.addDefaultInteraction(interactionObj.id, interactionObj);
+      ids.push(interactionObj.id);
+    }
+    return ids;
+  }
+
+  /**
+   * add a pact interaction to default list
+   * @param {Interaction} interaction - pact interaction
    */
   addDefaultPactInteraction(interaction) {
     const interactionObj = new Interaction(interaction);
@@ -95,6 +114,24 @@ class Mock {
     _server.addDefaultInteraction(interactionObj.id, interactionObj);
     store.addInteraction(interactionObj);
     return interactionObj.id;
+  }
+
+  /**
+   * add pact interactions to default list
+   * @param {Interaction[]} interactions - mock interactions array
+   */
+  addDefaultPactInteractions(interactions) {
+    if (!Array.isArray(interactions)) {
+      // use a new type of error
+      throw new PactumConfigurationError(`Invalid pact interactions array passed - ${interactions}`);
+    }
+    const ids = [];
+    for (let i = 0; i < interactions.length; i++) {
+      const interactionObj = new Interaction(interactions[i], false);
+      _server.addDefaultInteraction(interactionObj.id, interactionObj);
+      ids.push(interactionObj.id);
+    }
+    return ids;
   }
 
   /**

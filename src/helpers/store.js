@@ -7,13 +7,28 @@ const { Contract, PactInteraction } = require('../models/contract');
 const store = {
 
   pacts: new Map(),
+  /** @type {Map<string, number>} */
+  interactionExerciseCounter: new Map(),
+
+  /**
+   * increments interaction exercise count
+   * @param {string} id - interaction id
+   */
+  updateInteractionExerciseCounter(id) {
+    if (this.interactionExerciseCounter.has(id)) {
+      const count = this.interactionExerciseCounter.get(id);
+      this.interactionExerciseCounter.set(id, ++count);
+    } else {
+      this.interactionExerciseCounter.set(id, 1);
+    }
+  },
 
   /**
    * add interaction in the store
    * @param {Interaction} interaction 
    */
   addInteraction(interaction) {
-    const { provider, state, uponReceiving, mock } = interaction;
+    const { id, provider, state, uponReceiving, mock } = interaction;
     const consumer = interaction.consumer || config.pact.consumer;
     if (consumer && provider && state && uponReceiving && !mock) {
       const key = `${consumer}-${provider}`;
@@ -25,6 +40,7 @@ const store = {
         this.pacts.set(key, pact);
       }
       const pactInteraction = new PactInteraction();
+      pactInteraction.id = id;
       pactInteraction.providerState = state;
       pactInteraction.description = uponReceiving;
       pactInteraction.request.method = interaction.withRequest.method;
@@ -44,6 +60,16 @@ const store = {
       const dir = `${config.pact.dir}/${pact.consumer.name}`;
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, {recursive: true});
+      }
+      for (let i = 0; i < pact.interactions.length; i++) {
+        const interaction = pact.interactions[i];
+        const id = interaction.id;
+        if (!this.interactionExerciseCounter.has(id)) {
+          console.log('PACTUM', 'Pact interaction not exercised');
+          console.log('PACTUM', 'Request', interaction.request);
+          console.log('PACTUM', 'Response', { status: interaction.response.status, body: interaction.response.body });
+        }
+        delete interaction.id;
       }
       fs.writeFileSync(`${dir}/${key}.json`, JSON.stringify(pact, null, 2));
     }

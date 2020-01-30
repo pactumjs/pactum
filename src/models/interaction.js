@@ -43,8 +43,8 @@ class Interaction {
 
   constructor(rawInteraction, mock = false) {
     this.validateInteraction(rawInteraction, mock);
-    const { port, consumer, provider, state, uponReceiving, withRequest, willRespondWith } = rawInteraction;
-    this.id = helper.getRandomId();
+    const { id, port, consumer, provider, state, uponReceiving, withRequest, willRespondWith } = rawInteraction;
+    this.id = id || helper.getRandomId();
     this.port = port || config.mock.port;
     this.mock = mock;
     this.consumer = consumer || config.pact.consumer;

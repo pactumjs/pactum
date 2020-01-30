@@ -101,6 +101,40 @@ describe('Mock', () => {
     expect(() => { mock.addDefaultMockInteraction(rawInteraction); }).throws('Invalid interaction request provided - undefined');
   });
 
+  it('addDefaultPactInteraction - valid', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      provider: 'pro',
+      state: 'a state',
+      uponReceiving: 'description',
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    }
+    const mock = new Mock(this.server);
+    const id = mock.addDefaultPactInteraction(rawInteraction);
+    expect(id).to.equals('random');
+    expect(this.serverAddDefaultInteractionStub.callCount).equals(1, 'should add a default pact interaction');
+  });
+
+  it('addDefaultPactInteraction - invalid', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {}
+    const mock = new Mock(this.server);
+    expect(() => { mock.addDefaultPactInteraction(rawInteraction); }).throws('Invalid provider name provided - undefined');
+  });
+
   it('removeDefaultMockInteraction - invalid interaction id', () => {
     const mock = new Mock(this.server);
     expect(() => { mock.removeDefaultInteraction(null); }).throws('Invalid interaction id - null');
@@ -147,6 +181,161 @@ describe('Mock', () => {
     mock.removeDefaultInteractions(2333);
     expect(this.serverRemoveDefaultInteractionsStub.callCount).equals(1, 'should remove default mock interactions');
     expect(this.serverRemoveDefaultInteractionsStub.args[0]).deep.equals([2333]);
+  });
+
+  it('addDefaultMockInteractions - single - valid', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteractions = [{
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    }];
+    const mock = new Mock(this.server);
+    const id = mock.addDefaultMockInteractions(rawInteractions);
+    expect(id).to.deep.equals(['random']);
+    expect(this.serverAddDefaultInteractionStub.callCount).equals(1, 'should add a default mock interaction');
+  });
+
+  it('addDefaultMockInteractions - multiples - valid', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteractions = [
+      {
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      },
+      {
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/2'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'bake'
+          }
+        }
+      }
+    ];
+    const mock = new Mock(this.server);
+    const id = mock.addDefaultMockInteractions(rawInteractions);
+    expect(id).to.deep.equals(['random', 'random']);
+    expect(this.serverAddDefaultInteractionStub.callCount).equals(2, 'should add two default mock interactions');
+  });
+
+  it('addDefaultMockInteractions - invalid', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {}
+    const mock = new Mock(this.server);
+    expect(() => { mock.addDefaultMockInteractions(rawInteraction); }).throws('Invalid mock interactions array passed');
+  });
+
+  it('addDefaultPactInteractions - single - valid', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteractions = [{
+      provider: 'pro',
+      state: 'a state',
+      uponReceiving: 'description',
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    }];
+    const mock = new Mock(this.server);
+    const id = mock.addDefaultPactInteractions(rawInteractions);
+    expect(id).to.deep.equals(['random']);
+    expect(this.serverAddDefaultInteractionStub.callCount).equals(1, 'should add a default pact interaction');
+  });
+
+  it('addDefaultPactInteractions - multiples - valid', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteractions = [
+      {
+        provider: 'pro',
+        state: 'a state',
+        uponReceiving: 'description',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      },
+      {
+        provider: 'pro',
+        state: 'a state',
+        uponReceiving: 'description',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/2'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'bake'
+          }
+        }
+      }
+    ];
+    const mock = new Mock(this.server);
+    const id = mock.addDefaultPactInteractions(rawInteractions);
+    expect(id).to.deep.equals(['random', 'random']);
+    expect(this.serverAddDefaultInteractionStub.callCount).equals(2, 'should add two default pact interactions');
+  });
+
+  it('addDefaultPactInteractions - invalid', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {}
+    const mock = new Mock(this.server);
+    expect(() => { mock.addDefaultPactInteractions(rawInteraction); }).throws('Invalid pact interactions array passed');
   });
 
   afterEach(() => {

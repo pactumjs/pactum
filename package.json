@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "REST API endpoint testing tool with a mock server & compatible with pact.io for contract testing",
   "main": "src/index.js",
   "files": [
@@ -20,7 +20,8 @@
     "mock",
     "pact",
     "pact-js",
-    "pact.io"
+    "pact.io",
+    "pactum"
   ],
   "repository": {
     "type": "git",
