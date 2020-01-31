@@ -46,7 +46,7 @@ const store = {
       pactInteraction.description = uponReceiving;
       pactInteraction.request.method = interaction.withRequest.method;
       pactInteraction.request.path = interaction.withRequest.path;
-      pactInteraction.request.query = getPlainQuery(interaction.withRequest.query);
+      pactInteraction.request.query = helper.getPlainQuery(interaction.withRequest.query);
       pactInteraction.request.headers = interaction.withRequest.headers;
       pactInteraction.request.body = interaction.withRequest.body;
       pactInteraction.response.status = interaction.willRespondWith.status;
@@ -76,17 +76,6 @@ const store = {
     }
   }
 
-}
-
-function getPlainQuery(query) {
-  let plainQuery = '';
-  for (const prop in query) {
-    if (plainQuery !== '') {
-      plainQuery = plainQuery + '&';
-    }
-    plainQuery = plainQuery + `${prop}=${query[prop]}`;
-  }
-  return plainQuery;
 }
 
 module.exports = store;

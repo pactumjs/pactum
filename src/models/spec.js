@@ -1,4 +1,4 @@
-const rp = require('request-promise');
+const phin = require('phin');
 const Expect = require('./expect');
 const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
@@ -44,23 +44,12 @@ class Spec {
   }
 
   fetch() {
-    this._request.resolveWithFullResponse = true;
-    switch (this._request.method) {
-      case 'GET':
-        return rp.get(this._request);
-      case 'HEAD':
-        return rp.head(this._request);
-      case 'PATCH':
-        return rp.patch(this._request);
-      case 'POST':
-        return rp.post(this._request);
-      case 'PUT':
-        return rp.put(this._request);
-      case 'DELETE':
-        return rp.delete(this._request);
-      default:
-        return rp.get(this._request);
+    const query = helper.getPlainQuery(this._request.qs);
+    if (query) {
+      this._request.url = this._request.url + '?' + query;
     }
+    this._request.timeout = 3000;
+    return phin(this._request);
   }
 
   /**
@@ -292,7 +281,7 @@ class Spec {
     if (typeof json !== 'object') {
       throw new PactumRequestError(`Invalid json in request - ${json}`);
     }
-    this._request.json = json;
+    this._request.data = json;
     return this;
   }
 
@@ -334,14 +323,10 @@ class Spec {
    *  .toss();
    */
   withBody(body) {
-    if (typeof this._request.body !== 'undefined') {
-      throw new PactumRequestError(`Duplicate body in request - ${this._request.body}`);
+    if (typeof this._request.data !== 'undefined') {
+      throw new PactumRequestError(`Duplicate body in request - ${this._request.data}`);
     }
-    if (typeof body === 'object') {
-      this._request.json = body;
-    } else {
-      this._request.body = body;
-    }
+    this._request.data = body;
     return this;
   }
 
@@ -464,7 +449,7 @@ class Spec {
   }
 
   expectJsonQuery(path, value) {
-    this._expect.jsonQuery.push({path, value});
+    this._expect.jsonQuery.push({ path, value });
     return this;
   }
 
@@ -488,12 +473,17 @@ class Spec {
       this.server.addInteraction(id, interaction);
     }
     const requestStartTime = Date.now();
+    let failed = false;
+    let err = null;
     try {
       this._response = await this.fetch();
     } catch (error) {
       if (error.response) {
+        console.log('Normal', error);
         this._response = error.response;
       } else {
+        failed = true;
+        err = error
         console.log('Error performing request', error);
         this._response = error;
       }
@@ -504,6 +494,9 @@ class Spec {
       this.server.removeInteraction(interaction.port, id);
     }
     this._response.json = helper.getJson(this._response.body);
+    if (failed) {
+      this._expect.fail(err);
+    }
     this._expect.validateInteractions(this.interactions);
     this._expect.validate(this._response);
     return this._response;

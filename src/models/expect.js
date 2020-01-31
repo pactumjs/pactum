@@ -80,7 +80,12 @@ class Expect {
 
   _validateBody(response) {
     if (this.body !== null) {
-      assert.strictEqual(response.body, this.body);
+      if (response.body instanceof Buffer) {
+        const text = response.body.toString();
+        assert.strictEqual(text, this.body);
+      } else {
+        assert.strictEqual(response.body, this.body);
+      }
     }
   }
 
@@ -88,9 +93,19 @@ class Expect {
     for (let i = 0; i < this.bodyContains.length; i++) {
       const expectedBodyValue = this.bodyContains[i];
       if (expectedBodyValue instanceof RegExp) {
-        assert.ok(expectedBodyValue.test(response.body), `Value '${expectedBodyValue}' not found in response body`);
+        if (response.body instanceof Buffer) {
+          const text = response.body.toString();
+          assert.ok(expectedBodyValue.test(text), `Value '${expectedBodyValue}' not found in response body`);
+        } else {
+          assert.ok(expectedBodyValue.test(response.body), `Value '${expectedBodyValue}' not found in response body`);
+        }
       } else {
-        assert.ok(response.body.indexOf(expectedBodyValue) !== -1, `Value '${expectedBodyValue}' not found in response body`);
+        if (response.body instanceof Buffer) {
+          const text = response.body.toString();
+          assert.ok(text.indexOf(expectedBodyValue) !== -1, `Value '${expectedBodyValue}' not found in response body`);
+        } else {
+          assert.ok(response.body.indexOf(expectedBodyValue) !== -1, `Value '${expectedBodyValue}' not found in response body`);
+        }
       }
     }
   }
@@ -139,6 +154,10 @@ class Expect {
     if (this.responseTime !== null) {
       assert.ok(response.responseTime <= this.responseTime, `Request took longer than ${this.responseTime}ms: (${response.responseTime}ms).`)
     }
+  }
+
+  fail(error) {
+    assert.fail(error);
   }
 
 }

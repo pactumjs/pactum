@@ -32,7 +32,7 @@ const helper = {
       if (expected[prop] === null) {
         expected[prop] = 'null';
       }
-      if(actual[prop].toString() !== expected[prop].toString()) {
+      if (actual[prop].toString() !== expected[prop].toString()) {
         return false;
       }
     }
@@ -52,7 +52,7 @@ const helper = {
       if (!actual.hasOwnProperty(prop.toLowerCase())) {
         return false;
       }
-      if(expected[prop]  != actual[prop.toLowerCase()]) {
+      if (expected[prop] != actual[prop.toLowerCase()]) {
         return false;
       }
     }
@@ -77,27 +77,27 @@ const helper = {
         data[i] = this.setValueFromMatcher(data[i]);
       }
     } else if (typeof data === 'object' && data !== null) {
-        switch (data.json_class) {
-          case 'Pact::SomethingLike':
-          case 'Pact::Term':
-          case 'Pact::ArrayLike':
-            if (Array.isArray(data.value)) {
-              for (let i = 0; i < data.value.length; i++) {
-                data.value[i] = this.setValueFromMatcher(data.value[i]);
+      switch (data.json_class) {
+        case 'Pact::SomethingLike':
+        case 'Pact::Term':
+        case 'Pact::ArrayLike':
+          if (Array.isArray(data.value)) {
+            for (let i = 0; i < data.value.length; i++) {
+              data.value[i] = this.setValueFromMatcher(data.value[i]);
+            }
+          }
+          return data.value;
+        default:
+          for (const prop in data) {
+            data[prop] = this.setValueFromMatcher(data[prop]);
+            if (typeof data[prop] === 'object' && !Array.isArray(data[prop])) {
+              for (const innerProp in data[prop]) {
+                data[prop][innerProp] = this.setValueFromMatcher(data[prop][innerProp]);
               }
             }
-            return data.value;
-          default:
-            for (const prop in data) {
-              data[prop] = this.setValueFromMatcher(data[prop]);
-              if (typeof data[prop] === 'object' && !Array.isArray(data[prop])) {
-                for (const innerProp in data[prop]) {
-                  data[prop][innerProp] = this.setValueFromMatcher(data[prop][innerProp]);
-                }
-              }
-            }
-            return data;
-        }
+          }
+          return data;
+      }
     }
     return data;
   },
@@ -119,7 +119,7 @@ const helper = {
           match: 'regex',
           regex: data.data.matcher.s
         };
-      }  else if (data.json_class === 'Pact::ArrayLike') {
+      } else if (data.json_class === 'Pact::ArrayLike') {
         matchingRules[path] = {
           min: data.min
         };
@@ -202,6 +202,19 @@ const helper = {
    */
   isValidString(value) {
     return (typeof value === 'string' && value)
+  },
+
+  getPlainQuery(query) {
+    let plainQuery = '';
+    if (typeof query === 'object') {
+      for (const prop in query) {
+        if (plainQuery !== '') {
+          plainQuery = plainQuery + '&';
+        }
+        plainQuery = plainQuery + `${prop}=${query[prop]}`;
+      }
+    }
+    return plainQuery;
   }
 
 }
