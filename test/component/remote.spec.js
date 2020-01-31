@@ -193,6 +193,17 @@ describe('Remote- post single pact interaction', () => {
       .toss();
   });
 
+  it('exercise single mock interaction - second iteration', async () => {
+    await pactum
+      .get(`http://localhost:9393/api/projects/1`)
+      .expectStatus(200)
+      .expectJson({
+        id: 1,
+        name: 'fake'
+      })
+      .toss();
+  });
+
   after(async () => {
     await pactum
       .delete(`http://localhost:9393/api/pactum/pactInteraction/${this.id}`)

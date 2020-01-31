@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "REST API endpoint testing tool with a mock server & compatible with pact.io for contract testing",
   "main": "src/index.js",
   "files": [
@@ -38,8 +38,7 @@
     "express": "^4.17.1",
     "json-query": "^2.2.2",
     "request": "^2.88.0",
-    "request-promise": "^4.2.5",
-    "winston": "^3.2.1"
+    "request-promise": "^4.2.5"
   },
   "devDependencies": {
     "chai": "^4.2.0",

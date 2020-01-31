@@ -17,7 +17,8 @@ const store = {
   updateInteractionExerciseCounter(id) {
     if (this.interactionExerciseCounter.has(id)) {
       const count = this.interactionExerciseCounter.get(id);
-      this.interactionExerciseCounter.set(id, ++count);
+      const newCount = count + 1;
+      this.interactionExerciseCounter.set(id, newCount);
     } else {
       this.interactionExerciseCounter.set(id, 1);
     }
