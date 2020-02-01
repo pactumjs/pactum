@@ -2,7 +2,6 @@ const phin = require('phin');
 const Expect = require('./expect');
 const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
-const store = require('../helpers/store');
 const { PactumRequestError } = require('../helpers/errors');
 
 /**
@@ -37,7 +36,8 @@ class Spec {
   constructor(server) {
     this.id = helper.getRandomId();
     this.server = server;
-    this.interactions = new Map();
+    this.mockInteractions = new Map();
+    this.pactInteractions = new Map();
     this._request = {};
     this._response = {};
     this._expect = new Expect();
@@ -83,7 +83,7 @@ class Spec {
    */
   addMockInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction, true);
-    this.interactions.set(interaction.id, interaction);
+    this.mockInteractions.set(interaction.id, interaction);
     return this;
   }
 
@@ -122,7 +122,7 @@ class Spec {
    */
   addPactInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction, false);
-    this.interactions.set(interaction.id, interaction);
+    this.pactInteractions.set(interaction.id, interaction);
     return this;
   }
 
@@ -469,8 +469,11 @@ class Spec {
     if (!helper.isValidString(this._request.url)) {
       throw new PactumRequestError(`Invalid request url - ${request.url}`);
     }
-    for (let [id, interaction] of this.interactions) {
-      this.server.addInteraction(id, interaction);
+    for (let [id, interaction] of this.mockInteractions) {
+      this.server.addMockInteraction(id, interaction);
+    }
+    for (let [id, interaction] of this.pactInteractions) {
+      this.server.addPactInteraction(id, interaction);
     }
     const requestStartTime = Date.now();
     let failed = false;
@@ -489,15 +492,18 @@ class Spec {
       }
     }
     this._response.responseTime = Date.now() - requestStartTime;
-    for (let [id, interaction] of this.interactions) {
-      store.addInteraction(interaction);
-      this.server.removeInteraction(interaction.port, id);
+    for (let [id, interaction] of this.mockInteractions) {
+      this.server.removeInteraction(id);
+    }
+    for (let [id, interaction] of this.pactInteractions) {
+      this.server.removeInteraction(id);
     }
     this._response.json = helper.getJson(this._response.body);
     if (failed) {
       this._expect.fail(err);
     }
-    this._expect.validateInteractions(this.interactions);
+    this._expect.validateInteractions(this.mockInteractions);
+    this._expect.validateInteractions(this.pactInteractions);
     this._expect.validate(this._response);
     return this._response;
   }

@@ -96,7 +96,7 @@ describe('Pact - Default Mock Interaction', () => {
   });
 
   after(() => {
-    pactum.mock.removeDefaultInteractions();
+    pactum.mock.clearDefaultInteractions();
   })
 
 });
@@ -175,7 +175,7 @@ describe('Pact - Default Pact Interaction', () => {
   });
 
   after(() => {
-    pactum.mock.removeDefaultInteractions();
+    pactum.mock.clearDefaultInteractions();
   })
 
 });
@@ -278,7 +278,7 @@ describe('Pact - Default Mock Interactions', () => {
   });
 
   after(() => {
-    pactum.mock.removeDefaultInteractions();
+    pactum.mock.clearDefaultInteractions();
   })
 
 });
@@ -359,7 +359,7 @@ describe('Pact - Default Pact Interaction', () => {
   });
 
   after(() => {
-    pactum.mock.removeDefaultInteractions();
+    pactum.mock.clearDefaultInteractions();
   })
 
 });

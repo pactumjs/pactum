@@ -17,9 +17,6 @@ const helper = {
       return false;
     }
     for (const prop in actual) {
-      if (!actual.hasOwnProperty(prop)) {
-        continue;
-      }
       if (!expected.hasOwnProperty(prop)) {
         return false;
       }
@@ -37,7 +34,8 @@ const helper = {
       }
     }
     for (const prop in expected) {
-      if (expected.hasOwnProperty(prop) && !actual.hasOwnProperty(prop)) {
+      const actualProps = Object.keys(actual);
+      if (expected.hasOwnProperty(prop) && !actualProps.includes(prop)) {
         return false;
       }
     }

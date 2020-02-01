@@ -1,6 +1,5 @@
 const Interaction = require('../models/interaction');
 const { PactumConfigurationError } = require('../helpers/errors');
-const store = require('../helpers/store');
 
 const config = require('../config');
 
@@ -32,7 +31,6 @@ const config = require('../config');
  */
 
 let _server;
-const interactions = new Map();
 
 class Mock {
 
@@ -41,28 +39,21 @@ class Mock {
       throw new PactumConfigurationError(`Invalid server provided to mock - ${ser}`);
     }
     _server = ser;
+    this.interactionIds = new Set();
   }
 
   /**
    * starts server on specified port or defaults to 9393
-   * @param {number} [port=9393] - port number of mock server
    */
-  start(port = config.mock.port) {
-    if (typeof port !== 'number') {
-      throw new PactumConfigurationError(`Invalid port number given to start the mock server - ${port}`)
-    }
-    return _server.start(port);
+  start() {
+    return _server.start();
   }
 
   /**
    * stops server on specified port or defaults to 9393
-   * @param {number} [port=9393] - port number of mock server
    */
-  stop(port = config.mock.port) {
-    if (typeof port !== 'number') {
-      throw new PactumConfigurationError(`Invalid port number given to stop the mock server - ${port}`)
-    }
-    return _server.stop(port);
+  stop() {
+    return _server.stop();
   }
 
   /**
@@ -82,7 +73,8 @@ class Mock {
    */
   addDefaultMockInteraction(interaction) {
     const interactionObj = new Interaction(interaction, true);
-    _server.addDefaultInteraction(interactionObj.id, interactionObj);
+    _server.addMockInteraction(interactionObj.id, interactionObj);
+    this.interactionIds.add(interactionObj.id);
     return interactionObj.id;
   }
 
@@ -98,8 +90,9 @@ class Mock {
     const ids = [];
     for (let i = 0; i < interactions.length; i++) {
       const interactionObj = new Interaction(interactions[i], true);
-      _server.addDefaultInteraction(interactionObj.id, interactionObj);
+      _server.addMockInteraction(interactionObj.id, interactionObj);
       ids.push(interactionObj.id);
+      this.interactionIds.add(interactionObj.id);
     }
     return ids;
   }
@@ -110,9 +103,8 @@ class Mock {
    */
   addDefaultPactInteraction(interaction) {
     const interactionObj = new Interaction(interaction);
-    interactions.set(interactionObj.id, interactionObj);
-    _server.addDefaultInteraction(interactionObj.id, interactionObj);
-    store.addInteraction(interactionObj);
+    _server.addPactInteraction(interactionObj.id, interactionObj);
+    this.interactionIds.add(interactionObj.id);
     return interactionObj.id;
   }
 
@@ -128,36 +120,37 @@ class Mock {
     const ids = [];
     for (let i = 0; i < interactions.length; i++) {
       const interactionObj = new Interaction(interactions[i], false);
-      _server.addDefaultInteraction(interactionObj.id, interactionObj);
+      _server.addPactInteraction(interactionObj.id, interactionObj);
       ids.push(interactionObj.id);
+      this.interactionIds.add(interactionObj.id);
     }
     return ids;
   }
 
   /**
    * removes specified default interaction from server
-   * @param {string} interactionId - id of the interaction
-   * @param {number} port - port number of mock server 
+   * @param {string} interactionId - id of the interaction 
    */
-  removeDefaultInteraction(interactionId, port = config.mock.port) {
+  removeDefaultInteraction(interactionId) {
     if (typeof interactionId !== 'string' || !interactionId) {
       throw new PactumConfigurationError(`Invalid interaction id - ${interactionId}`)
     }
-    if (typeof port !== 'number') {
-      throw new PactumConfigurationError(`Invalid port number - ${port}`)
-    }
-    _server.removeDefaultInteraction(interactionId, port);
+    _server.removeInteraction(interactionId);
   }
 
   /**
    * removes all default interactions
-   * @param {number} port - port number of mock server
    */
-  removeDefaultInteractions(port = config.mock.port) {
-    _server.removeDefaultInteractions(port);
+  clearDefaultInteractions() {
+    const ids = [];
+    for (const id of this.interactionIds) {
+      ids.push(id);
+      _server.removeInteraction(id);
+    }
+    for (let i = 0; i < ids.length; i++) {
+      this.interactionIds.delete(ids[i]);
+    }
   }
-
-  // stop all _servers
 
 }
 

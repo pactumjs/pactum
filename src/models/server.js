@@ -1,4 +1,4 @@
-const express = require('express');
+const polka = require('polka');
 
 const Interaction = require('./interaction');
 
@@ -9,120 +9,79 @@ const config = require('../config');
 class Server {
 
   constructor() {
-    this.mockMap = new Map();
-    this.remoteMockInteractions = new Map();
-    this.remotePactInteractions = new Map();
+    this.app = null;
+    this.mockInteractions = new Map();
+    this.pactInteractions = new Map();
   }
 
-  start(port = config.mock.port) {
+  start() {
     return new Promise((resolve) => {
-      if (this.mockMap.has(port) && this.mockMap.get(port).running) {
-        console.log('PACTUM mock server is already running');
-        resolve();
-      } else {
-        const app = express();
-        app.use(express.json());
-        registerPactumRoutes(this, app);
-        registerAllRoutes(this, app);
-        const server = app.listen(port, () => {
-          console.log('PACTUM mock server is listening on port', port);
-          app.port = port;
-          if (this.mockMap.has(port)) {
-            const mockApp = this.mockMap.get(port);
-            mockApp.app = app;
-            mockApp.server = server;
-            mockApp.running = true;
-          } else {
-            this.mockMap.set(port, {
-              app,
-              server,
-              running: true,
-              interactions: new Map(),
-              defaultInteractions: new Map()
-            });
-          }
+      if (!this.app) {
+        this.app = polka();
+        this.app.use(bodyParser);
+        registerPactumRoutes(this, this.app);
+        registerAllRoutes(this, this.app);
+        this.app.listen(config.mock.port, () => {
+          console.log('PACTUM mock server is listening on port', config.mock.port);
           resolve();
         });
       }
     });
   }
 
-  stop(port = config.mock.port) {
+  stop() {
     return new Promise((resolve) => {
-      const app = this.mockMap.get(port);
-      if (app) {
-        if (app.running) {
-          app.server.close(() => {
-            console.log('PACTUM mock server stopped on port', port);
-            app.running = false;
-            resolve();
-          });
-        } else {
-          console.log('PACTUM mock server is already stopped on port', port);
+      if (this.app) {
+        this.app.server.close(() => {
+          console.log('PACTUM mock server stopped on port', config.mock.port);
           resolve();
-        }
+        });
       } else {
-        console.log('No PACTUM mock server is running on port', port);
+        console.log('No PACTUM mock server is running on port', config.mock.port);
         resolve();
       }
     });
   }
 
-  addInteraction(id, interaction) {
-    const port = interaction.port;
-    if (this.mockMap.has(port)) {
-      const mock = this.mockMap.get(port);
-      mock.interactions.set(id, interaction);
-    }
+  addMockInteraction(id, interaction) {
+    this.mockInteractions.set(id, interaction);
   }
 
-  addDefaultInteraction(id, interaction) {
-    const port = interaction.port;
-    if (this.mockMap.has(port)) {
-      const mock = this.mockMap.get(port);
-      mock.defaultInteractions.set(id, interaction);
+  addPactInteraction(id, interaction) {
+    store.addInteraction(interaction);
+    this.pactInteractions.set(id, interaction);
+  }
+
+  removeInteraction(id) {
+    if (this.mockInteractions.has(id)) {
+      this.mockInteractions.delete(id);
+    } else if (this.pactInteractions.has(id)) {
+      this.pactInteractions.delete(id);
     } else {
-      const interactions = new Map();
-      const defaultInteractions = new Map();
-      defaultInteractions.set(id, interaction);
-      this.mockMap.set(port, { interactions, defaultInteractions });
+      // error
     }
+
   }
 
-  removeInteraction(port = config.mock.port, id) {
-    if (this.mockMap.has(port)) {
-      const mock = this.mockMap.get(port);
-      mock.interactions.delete(id);
-    }
+  removeMockInteraction(id) {
+    this.mockInteractions.delete(id);
   }
 
-  removeDefaultInteraction(id, port = config.mock.port) {
-    if (this.mockMap.has(port)) {
-      const mock = this.mockMap.get(port);
-      mock.defaultInteractions.delete(id);
-    }
+  removePactInteraction(id) {
+    this.pactInteractions.delete(id);
   }
 
-  removeInteractions(port = config.mock.port) {
-    if (this.mockMap.has(port)) {
-      const mock = this.mockMap.get(port);
-      mock.interactions.clear();
-    }
+  clearMockInteractions() {
+    this.mockInteractions.clear();
   }
 
-  removeDefaultInteractions(port = config.mock.port) {
-    if (this.mockMap.has(port)) {
-      const mock = this.mockMap.get(port);
-      mock.defaultInteractions.clear();
-    }
+  clearPactInteractions() {
+    this.pactInteractions.clear();
   }
 
-  removeAllInteractions() {
-    for (const [port, mock] of this.mockMap.entries()) {
-      console.log(`Removing all interactions for ${port}`);
-      mock.interactions.clear();
-      mock.defaultInteractions.clear();
-    }
+  clearAllInteractions() {
+    this.mockInteractions.clear();
+    this.pactInteractions.clear();
   }
 
 }
@@ -133,19 +92,12 @@ class Server {
  * @param {Express} app - express app object
  */
 function registerAllRoutes(server, app) {
-  app.all('/*', (req, res) => {
-    const mock = server.mockMap.get(req.app.port);
-    const { interactions, defaultInteractions } = mock;
+  app.all('/*', (req, response) => {
+    const res = new ExpressResponse(response);
     let interactionExercised = false;
-    let interaction = helper.getValidInteraction(req, interactions);
+    let interaction = helper.getValidInteraction(req, server.pactInteractions);
     if (!interaction) {
-      interaction = helper.getValidInteraction(req, defaultInteractions);
-    }
-    if (!interaction) {
-      interaction = helper.getValidInteraction(req, server.remotePactInteractions);
-    }
-    if (!interaction) {
-      interaction = helper.getValidInteraction(req, server.remoteMockInteractions);
+      interaction = helper.getValidInteraction(req, server.mockInteractions);
     }
     if (interaction) {
       store.updateInteractionExerciseCounter(interaction.id);
@@ -178,10 +130,11 @@ function registerAllRoutes(server, app) {
  * @param {Express} app - express app object
  */
 function registerPactumRoutes(server, app) {
-  app.post('/api/pactum/mockInteraction', (req, res) => {
+  app.post('/api/pactum/mockInteraction', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
       const interaction = new Interaction(req.body, true);
-      server.remoteMockInteractions.set(interaction.id, interaction);
+      server.mockInteractions.set(interaction.id, interaction);
       res.status(200);
       res.send({ id: interaction.id });
     } catch (error) {
@@ -190,12 +143,13 @@ function registerPactumRoutes(server, app) {
       res.send({ error: error.message });
     }
   });
-  app.get('/api/pactum/mockInteraction/:id', (req, res) => {
+  app.get('/api/pactum/mockInteraction/:id', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
       const id = req.params.id;
-      if (server.remoteMockInteractions.has(id)) {
+      if (server.mockInteractions.has(id)) {
         res.status(200);
-        res.send(server.remoteMockInteractions.get(id).rawInteraction);
+        res.send(server.mockInteractions.get(id).rawInteraction);
       } else {
         res.status(404);
         res.send({ error: `Mock interaction not found - ${id}` });
@@ -206,10 +160,11 @@ function registerPactumRoutes(server, app) {
       res.send({ error: `Internal System Error` });
     }
   });
-  app.get('/api/pactum/mockInteraction', (req, res) => {
+  app.get('/api/pactum/mockInteraction', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
       const interactions = [];
-      for (let [id, interaction] of server.remoteMockInteractions) {
+      for (let [id, interaction] of server.mockInteractions) {
         interactions.push(interaction.rawInteraction);
       }
       res.status(200);
@@ -220,12 +175,13 @@ function registerPactumRoutes(server, app) {
       res.send({ error: `Internal System Error` });
     }
   });
-  app.delete('/api/pactum/mockInteraction/:id', (req, res) => {
+  app.delete('/api/pactum/mockInteraction/:id', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
       const id = req.params.id;
-      if (server.remoteMockInteractions.has(id)) {
+      if (server.mockInteractions.has(id)) {
         res.status(200);
-        server.remoteMockInteractions.delete(id)
+        server.mockInteractions.delete(id)
         res.send();
       } else {
         res.status(404);
@@ -237,9 +193,10 @@ function registerPactumRoutes(server, app) {
       res.send({ error: `Internal System Error` });
     }
   });
-  app.delete('/api/pactum/mockInteraction', (req, res) => {
+  app.delete('/api/pactum/mockInteraction', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
-      server.remoteMockInteractions.clear();
+      server.mockInteractions.clear();
       res.status(200);
       res.send();
     } catch (error) {
@@ -248,10 +205,11 @@ function registerPactumRoutes(server, app) {
       res.send({ error: `Internal System Error` });
     }
   });
-  app.post('/api/pactum/pactInteraction', (req, res) => {
+  app.post('/api/pactum/pactInteraction', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
       const interaction = new Interaction(req.body);
-      server.remotePactInteractions.set(interaction.id, interaction);
+      server.pactInteractions.set(interaction.id, interaction);
       store.addInteraction(interaction);
       res.status(200);
       res.send({ id: interaction.id });
@@ -261,12 +219,13 @@ function registerPactumRoutes(server, app) {
       res.send({ error: error.message });
     }
   });
-  app.get('/api/pactum/pactInteraction/:id', (req, res) => {
+  app.get('/api/pactum/pactInteraction/:id', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
       const id = req.params.id;
-      if (server.remotePactInteractions.has(id)) {
+      if (server.pactInteractions.has(id)) {
         res.status(200);
-        res.send(server.remotePactInteractions.get(id).rawInteraction);
+        res.send(server.pactInteractions.get(id).rawInteraction);
       } else {
         res.status(404);
         res.send({ error: `Pact interaction not found - ${id}` });
@@ -277,10 +236,11 @@ function registerPactumRoutes(server, app) {
       res.send({ error: `Internal System Error` });
     }
   });
-  app.get('/api/pactum/pactInteraction', (req, res) => {
+  app.get('/api/pactum/pactInteraction', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
       const interactions = [];
-      for (let [id, interaction] of server.remotePactInteractions) {
+      for (let [id, interaction] of server.pactInteractions) {
         interactions.push(interaction.rawInteraction);
       }
       res.status(200);
@@ -291,12 +251,13 @@ function registerPactumRoutes(server, app) {
       res.send({ error: `Internal System Error` });
     }
   });
-  app.delete('/api/pactum/pactInteraction/:id', (req, res) => {
+  app.delete('/api/pactum/pactInteraction/:id', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
       const id = req.params.id;
-      if (server.remotePactInteractions.has(id)) {
+      if (server.pactInteractions.has(id)) {
         res.status(200);
-        server.remotePactInteractions.delete(id)
+        server.pactInteractions.delete(id)
         res.send();
       } else {
         res.status(404);
@@ -308,9 +269,10 @@ function registerPactumRoutes(server, app) {
       res.send({ error: `Internal System Error` });
     }
   });
-  app.delete('/api/pactum/pactInteraction', (req, res) => {
+  app.delete('/api/pactum/pactInteraction', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
-      server.remotePactInteractions.clear();
+      server.pactInteractions.clear();
       res.status(200);
       res.send();
     } catch (error) {
@@ -319,7 +281,8 @@ function registerPactumRoutes(server, app) {
       res.send({ error: `Internal System Error` });
     }
   });
-  app.post('/api/pactum/pacts/save', (req, res) => {
+  app.post('/api/pactum/pacts/save', (req, response) => {
+    const res = new ExpressResponse(response);
     try {
       store.save();
       res.status(200);
@@ -331,6 +294,45 @@ function registerPactumRoutes(server, app) {
     }
   });
   // publish pacts
+}
+
+function bodyParser(req, res, next) {
+  let body = '';
+  req.on('data', (chunk) => {
+    body += chunk;
+  });
+  req.on('end', () => {
+    req.body = helper.getJson(body);
+    next();
+  });
+}
+
+class ExpressResponse {
+  constructor(res) {
+    this.res = res;
+  }
+
+  status(code) {
+    this.res.statusCode = code;
+  }
+
+  set(headers) {
+    for (const prop in headers) {
+      this.res.setHeader(prop, headers[prop]);
+    }
+  }
+
+  send(data) {
+    if (data) {
+      if (typeof data === 'object') {
+        this.res.end(JSON.stringify(data));
+      } else {
+        this.res.end(data);
+      }
+    } else {
+      this.res.end();
+    }
+  }
 }
 
 module.exports = Server;

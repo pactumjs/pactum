@@ -32,7 +32,6 @@ describe('Interaction', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "consumer": '',
-      "port": 9393,
       "mock": true,
       "provider": undefined,
       "state": undefined,
@@ -182,7 +181,6 @@ describe('Interaction', () => {
       "id": "random",
       "consumer": '',
       "mock": false,
-      "port": 9393,
       "provider": 'pro',
       "state": 'a state',
       "uponReceiving": 'description',

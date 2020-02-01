@@ -12,62 +12,22 @@ describe('Mock', () => {
     this.server = new Server();
     this.serverStartStub = sandbox.stub(Server.prototype, 'start');
     this.serverStopStub = sandbox.stub(Server.prototype, 'stop');
-    this.serverAddDefaultInteractionStub = sandbox.stub(Server.prototype, 'addDefaultInteraction');
-    this.serverRemoveDefaultInteractionStub = sandbox.stub(Server.prototype, 'removeDefaultInteraction');
-    this.serverRemoveDefaultInteractionsStub = sandbox.stub(Server.prototype, 'removeDefaultInteractions');
+    this.serverAddMockInteractionStub = sandbox.stub(Server.prototype, 'addMockInteraction');
+    this.serverAddPactInteractionStub = sandbox.stub(Server.prototype, 'addPactInteraction');
+    this.serverRemoveInteractionStub = sandbox.stub(Server.prototype, 'removeInteraction');
     this.helperGetRandomIdStub = sandbox.stub(helper, 'getRandomId');
   });
 
-  it('start - invalid port number - string', () => {
-    const mock = new Mock(this.server);
-    expect(() => { mock.start('2333'); }).throws('Invalid port number given to start the mock server - 2333');
-    expect(this.serverStartStub.callCount).equals(0, 'should not start the server');
-  });
-
-  it('start - invalid port number - null', () => {
-    const mock = new Mock(this.server);
-    expect(() => { mock.start(null); }).throws('Invalid port number given to start the mock server - null');
-    expect(this.serverStartStub.callCount).equals(0, 'should not start the server');
-  });
-
-  it('start - no port number', async () => {
+  it('start', async () => {
     const mock = new Mock(this.server);
     await mock.start();
     expect(this.serverStartStub.callCount).equals(1, 'should start the server');
-    expect(this.serverStartStub.args[0]).deep.equals([9393]);
   });
 
-  it('start - with port number', async () => {
-    const mock = new Mock(this.server);
-    await mock.start(30000);
-    expect(this.serverStartStub.callCount).equals(1, 'should start the server');
-    expect(this.serverStartStub.args[0]).deep.equals([30000]);
-  });
-
-  it('stop - invalid port number - string', () => {
-    const mock = new Mock(this.server);
-    expect(() => { mock.stop('2333'); }).throws('Invalid port number given to stop the mock server - 2333');
-    expect(this.serverStopStub.callCount).equals(0, 'should not stop the server');
-  });
-
-  it('stop - invalid port number - null', () => {
-    const mock = new Mock(this.server);
-    expect(() => { mock.stop(null); }).throws('Invalid port number given to stop the mock server - null');
-    expect(this.serverStopStub.callCount).equals(0, 'should not stop the server');
-  });
-
-  it('stop - no port number', async () => {
+  it('stop', async () => {
     const mock = new Mock(this.server);
     await mock.stop();
     expect(this.serverStopStub.callCount).equals(1, 'should stop the server');
-    expect(this.serverStopStub.args[0]).deep.equals([9393]);
-  });
-
-  it('stop - with port number', async () => {
-    const mock = new Mock(this.server);
-    await mock.stop(30000);
-    expect(this.serverStopStub.callCount).equals(1, 'should stop the server');
-    expect(this.serverStopStub.args[0]).deep.equals([30000]);
   });
 
   it('addDefaultMockInteraction - valid', () => {
@@ -91,7 +51,7 @@ describe('Mock', () => {
     const mock = new Mock(this.server);
     const id = mock.addDefaultMockInteraction(rawInteraction);
     expect(id).to.equals('random');
-    expect(this.serverAddDefaultInteractionStub.callCount).equals(1, 'should add a default mock interaction');
+    expect(this.serverAddMockInteractionStub.callCount).equals(1, 'should add a default mock interaction');
   });
 
   it('addDefaultMockInteraction - invalid', () => {
@@ -125,7 +85,7 @@ describe('Mock', () => {
     const mock = new Mock(this.server);
     const id = mock.addDefaultPactInteraction(rawInteraction);
     expect(id).to.equals('random');
-    expect(this.serverAddDefaultInteractionStub.callCount).equals(1, 'should add a default pact interaction');
+    expect(this.serverAddPactInteractionStub.callCount).equals(1, 'should add a default pact interaction');
   });
 
   it('addDefaultPactInteraction - invalid', () => {
@@ -150,37 +110,24 @@ describe('Mock', () => {
     expect(() => { mock.removeDefaultInteraction(); }).throws('Invalid interaction id - undefined');
   });
 
-  it('removeDefaultMockInteraction - invalid port number', () => {
-    const mock = new Mock(this.server);
-    expect(() => { mock.removeDefaultInteraction('id', '233'); }).throws('Invalid port number - 233');
-  });
-
   it('removeDefaultInteraction', () => {
     const mock = new Mock(this.server);
     mock.removeDefaultInteraction('id');
-    expect(this.serverRemoveDefaultInteractionStub.callCount).equals(1, 'should remove default mock interaction');
-    expect(this.serverRemoveDefaultInteractionStub.args[0]).deep.equals(['id', 9393]);
+    expect(this.serverRemoveInteractionStub.callCount).equals(1, 'should remove default mock interaction');
+    expect(this.serverRemoveInteractionStub.args[0]).deep.equals(['id']);
   });
 
-  it('removeDefaultInteraction - with port number', () => {
+  it('clearDefaultInteractions - no interactions', () => {
     const mock = new Mock(this.server);
-    mock.removeDefaultInteraction('id', 2333);
-    expect(this.serverRemoveDefaultInteractionStub.callCount).equals(1, 'should remove default mock interaction');
-    expect(this.serverRemoveDefaultInteractionStub.args[0]).deep.equals(['id', 2333]);
+    mock.clearDefaultInteractions();
+    expect(this.serverRemoveInteractionStub.callCount).equals(0, 'should not remove default interactions');
   });
 
-  it('removeDefaultInteractions', () => {
+  it('clearDefaultInteractions - no interactions', () => {
     const mock = new Mock(this.server);
-    mock.removeDefaultInteractions();
-    expect(this.serverRemoveDefaultInteractionsStub.callCount).equals(1, 'should remove default mock interactions');
-    expect(this.serverRemoveDefaultInteractionsStub.args[0]).deep.equals([9393]);
-  });
-
-  it('removeDefaultInteractions - with port number', () => {
-    const mock = new Mock(this.server);
-    mock.removeDefaultInteractions(2333);
-    expect(this.serverRemoveDefaultInteractionsStub.callCount).equals(1, 'should remove default mock interactions');
-    expect(this.serverRemoveDefaultInteractionsStub.args[0]).deep.equals([2333]);
+    mock.interactionIds.add('1')
+    mock.clearDefaultInteractions();
+    expect(this.serverRemoveInteractionStub.callCount).equals(1, 'should not remove default interactions');
   });
 
   it('addDefaultMockInteractions - single - valid', () => {
@@ -204,7 +151,7 @@ describe('Mock', () => {
     const mock = new Mock(this.server);
     const id = mock.addDefaultMockInteractions(rawInteractions);
     expect(id).to.deep.equals(['random']);
-    expect(this.serverAddDefaultInteractionStub.callCount).equals(1, 'should add a default mock interaction');
+    expect(this.serverAddMockInteractionStub.callCount).equals(1, 'should add a default mock interaction');
   });
 
   it('addDefaultMockInteractions - multiples - valid', () => {
@@ -246,7 +193,7 @@ describe('Mock', () => {
     const mock = new Mock(this.server);
     const id = mock.addDefaultMockInteractions(rawInteractions);
     expect(id).to.deep.equals(['random', 'random']);
-    expect(this.serverAddDefaultInteractionStub.callCount).equals(2, 'should add two default mock interactions');
+    expect(this.serverAddMockInteractionStub.callCount).equals(2, 'should add two default mock interactions');
   });
 
   it('addDefaultMockInteractions - invalid', () => {
@@ -280,7 +227,7 @@ describe('Mock', () => {
     const mock = new Mock(this.server);
     const id = mock.addDefaultPactInteractions(rawInteractions);
     expect(id).to.deep.equals(['random']);
-    expect(this.serverAddDefaultInteractionStub.callCount).equals(1, 'should add a default pact interaction');
+    expect(this.serverAddPactInteractionStub.callCount).equals(1, 'should add a default pact interaction');
   });
 
   it('addDefaultPactInteractions - multiples - valid', () => {
@@ -328,7 +275,7 @@ describe('Mock', () => {
     const mock = new Mock(this.server);
     const id = mock.addDefaultPactInteractions(rawInteractions);
     expect(id).to.deep.equals(['random', 'random']);
-    expect(this.serverAddDefaultInteractionStub.callCount).equals(2, 'should add two default pact interactions');
+    expect(this.serverAddPactInteractionStub.callCount).equals(2, 'should add two default pact interactions');
   });
 
   it('addDefaultPactInteractions - invalid', () => {
