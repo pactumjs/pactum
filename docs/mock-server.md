@@ -12,7 +12,6 @@ Mock interactions & pact interactions can be used to train the mock server to re
   * [Mock Interactions](#mock-interactions)
   * [Pact Interactions](#pact-interactions)
 
-
 ## Getting Started
 
 #### Setup
@@ -293,7 +292,7 @@ Once the server is started, interact with the following API to control the mock 
 
 Returns a single or all mock interactions.
 
-```Bash
+```Shell
 # Fetches a mock interaction with id "m1uh9"
 curl --location --request GET 'http://localhost:9393/api/pactum/mockInteraction/m1uh9'
 
@@ -331,7 +330,7 @@ Response - returns all the mock interactions
 
 Adds a mock interaction to the server.
 
-```Bash
+```Shell
 curl --location --request POST 'http://localhost:9393/api/pactum/mockInteraction' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -367,7 +366,7 @@ Response - returns the mock interaction id.
 
 Removes a mock interaction or all mock interactions from mock server.
 
-```Bash
+```Shell
 # Removes a single mock interaction with id m1uh9
 curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteraction/m1uh9'
 
@@ -383,7 +382,7 @@ curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteracti
 
 Returns a single or all pact interactions.
 
-```Bash
+```Shell
 # Fetches a pact interaction with id "m1uh9"
 curl --location --request GET 'http://localhost:9393/api/pactum/pactInteraction/m1uh9'
 
@@ -425,7 +424,7 @@ Response - returns all the pact interactions
 
 Adds a pact interaction to the server.
 
-```Bash
+```Shell
 curl --location --request POST 'http://localhost:9393/api/pactum/pactInteraction' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -465,7 +464,7 @@ Response - returns the pact interaction id.
 
 Removes a pact interaction or all pact interactions from mock server.
 
-```Bash
+```Shell
 # Removes a single pact interaction with id m1uh9
 curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteraction/m1uh9'
 
