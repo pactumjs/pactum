@@ -24,7 +24,7 @@ npm install --save-dev mocha
   * [Mock Interaction](#mock-interaction)
 * [Contract Testing with Mock Server](#contract-testing-with-mock-server)
   * [Pact Interaction](#pact-interaction)
-* [Mock Server](#mock-server)
+* [Mock Server](https://github.com/ASaiAnudeep/pactum/tree/master/docs/mock-server.md "Mock Server")
 
 ## Usage
 
@@ -507,7 +507,7 @@ it('should fetch order details for id 124', async () => {
 
 after(async () => {
   // removes all default interactions
-  pactum.mock.removeDefaultInteractions();
+  pactum.mock.clearDefaultInteractions();
   await pactum.mock.stop();
 });
 ```
@@ -623,62 +623,3 @@ Methods to add a pact interaction:
 | willRespondWith.body    | any     | required | response body              |
 
 [^ TOC](#table-of-contents)
-
-## Mock Server
-
-Pactum can also be used as a mock server
-
-```javascript
-// The below code will run the pactum server on port 3000
-const pactum = require('pactum');
-pactum.mock.setDefaultPort(3000);
-pactum.mock.start();
-```
-
-Use `addDefaultMockInteraction()` and `addDefaultPactInteraction()` to add default interactions to the mock server.
-To add multiple use `addDefaultMockInteractions()` and `addDefaultPactInteractions()`.
-
-```javascript
-// The below code will run the pactum server on port 3000 
-// with a mock interaction & a pact interaction
-const pactum = require('pactum');
-pactum.mock.setDefaultPort(3000);
-pactum.mock.addDefaultMockInteraction({
-  withRequest: {
-    method: 'GET',
-    path: '/api/projects/1'
-  },
-  willRespondWith: {
-    status: 200,
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: {
-      id: 1,
-      name: 'fake'
-    }
-  }
-});
-pactum.mock.addDefaultPactInteraction({
-  consumer: 'consumer-service',
-  provider: 'project-service',
-  state: 'there is a project with id 1',
-  uponReceiving: 'a request for project 1',
-  withRequest: {
-    method: 'GET',
-    path: '/api/projects/1'
-  },
-  willRespondWith: {
-    status: 200,
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: {
-      id: 1,
-      name: 'fake'
-    }
-  }
-});
-pactum.mock.start();
-```
-

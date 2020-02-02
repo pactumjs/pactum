@@ -22,9 +22,9 @@ describe('Pact - Default Mock Interaction', () => {
     pactum.mock.addDefaultMockInteraction({
       withRequest: {
         method: 'GET',
-        path: '/api/projects/1',
+        path: '/api/projects/2',
         query: {
-          id: 1,
+          id: 2,
           name: 'fake'
         }
       },
@@ -70,8 +70,8 @@ describe('Pact - Default Mock Interaction', () => {
 
   it('GET - one interaction - with multiple queries', async () => {
     await pactum
-      .get('http://localhost:9393/api/projects/1')
-      .withQuery('id', 1)
+      .get('http://localhost:9393/api/projects/2')
+      .withQuery('id', 2)
       .withQuery('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
@@ -91,6 +91,44 @@ describe('Pact - Default Mock Interaction', () => {
       .expectStatus(200)
       .expectJson({
         message: 'ok'
+      })
+      .toss()
+  });
+
+  it('GET - one interaction - overwrite default', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 3,
+            name: 'overwrite'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 3,
+        name: 'overwrite'
+      })
+      .toss()
+  });
+
+  it('GET - one interaction - get default interaction', async () => {
+    await pactum
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
       })
       .toss()
   });
@@ -283,7 +321,7 @@ describe('Pact - Default Mock Interactions', () => {
 
 });
 
-describe('Pact - Default Pact Interaction', () => {
+describe('Pact - Default Pact Interactions', () => {
 
   before(() => {
     pactum.mock.addDefaultPactInteractions([

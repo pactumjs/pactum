@@ -1,6 +1,7 @@
 const fs = require('fs');
 const config = require('../config');
 const helper = require('./helper');
+const log = require('./logger');
 const Interaction = require('../models/interaction');
 const { Contract, PactInteraction } = require('../models/contract');
 
@@ -66,9 +67,14 @@ const store = {
         const interaction = pact.interactions[i];
         const id = interaction.id;
         if (!this.interactionExerciseCounter.has(id)) {
-          console.log('PACTUM', 'Pact interaction not exercised');
-          console.log('PACTUM', 'Request', interaction.request);
-          console.log('PACTUM', 'Response', { status: interaction.response.status, body: interaction.response.body });
+          log.warn('Pact interaction not exercised');
+          log.warn({
+            request: interaction.request,
+            response: {
+              status: interaction.response.status,
+              body: interaction.response.body
+            }
+          });
         }
         delete interaction.id;
       }

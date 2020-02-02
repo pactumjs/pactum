@@ -2,6 +2,7 @@ const phin = require('phin');
 const Expect = require('./expect');
 const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
+const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
 
 /**
@@ -482,12 +483,11 @@ class Spec {
       this._response = await this.fetch();
     } catch (error) {
       if (error.response) {
-        console.log('Normal', error);
         this._response = error.response;
       } else {
         failed = true;
         err = error
-        console.log('Error performing request', error);
+        log.warn('Error performing request', error);
         this._response = error;
       }
     }

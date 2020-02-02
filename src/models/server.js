@@ -4,6 +4,7 @@ const Interaction = require('./interaction');
 
 const helper = require('../helpers/helper');
 const store = require('../helpers/store');
+const log = require('../helpers/logger')
 const config = require('../config');
 
 class Server {
@@ -15,6 +16,7 @@ class Server {
   }
 
   start() {
+    log.trace(`Starting mock server on port ${config.mock.port}`);
     return new Promise((resolve) => {
       if (!this.app) {
         this.app = polka();
@@ -22,22 +24,25 @@ class Server {
         registerPactumRoutes(this, this.app);
         registerAllRoutes(this, this.app);
         this.app.listen(config.mock.port, () => {
-          console.log('PACTUM mock server is listening on port', config.mock.port);
+          log.info(`Mock server is listening on port ${config.mock.port}`);
           resolve();
         });
+      } else {
+        log.warn(`Mock server is already running on port ${config.mock.port}`);
       }
     });
   }
 
   stop() {
+    log.trace(`Stopping mock server on port ${config.mock.port}`);
     return new Promise((resolve) => {
       if (this.app) {
         this.app.server.close(() => {
-          console.log('PACTUM mock server stopped on port', config.mock.port);
+          log.info(`Mock server stopped on port ${config.mock.port}`);
           resolve();
         });
       } else {
-        console.log('No PACTUM mock server is running on port', config.mock.port);
+        log.warn(`Mock server is not running on port ${config.mock.port}`);
         resolve();
       }
     });
@@ -95,9 +100,9 @@ function registerAllRoutes(server, app) {
   app.all('/*', (req, response) => {
     const res = new ExpressResponse(response);
     let interactionExercised = false;
-    let interaction = helper.getValidInteraction(req, server.pactInteractions);
+    let interaction = helper.getMatchingInteraction(req, server.pactInteractions);
     if (!interaction) {
-      interaction = helper.getValidInteraction(req, server.mockInteractions);
+      interaction = helper.getMatchingInteraction(req, server.mockInteractions);
     }
     if (interaction) {
       store.updateInteractionExerciseCounter(interaction.id);
@@ -112,12 +117,14 @@ function registerAllRoutes(server, app) {
       }
     }
     if (!interactionExercised) {
-      console.log();
-      console.log('PACTUM', 'Interaction not found for');
-      console.log('PACTUM', req.method, req.path);
-      console.log('PACTUM', 'Headers -', req.headers);
-      console.log('PACTUM', 'Query -', req.query);
-      console.log('PACTUM', 'Body -', req.body);
+      log.warn('Interaction not found');
+      log.warn({
+        method: req.method,
+        path: req.path,
+        headers: req.headers,
+        query: req.query,
+        body: req.body
+      });
       res.status(404);
       res.send('Interaction Not Found');
     }
@@ -138,7 +145,7 @@ function registerPactumRoutes(server, app) {
       res.status(200);
       res.send({ id: interaction.id });
     } catch (error) {
-      console.log(`Error saving mock interaction - ${error}`);
+      log.error(`Error saving mock interaction - ${error}`);
       res.status(400);
       res.send({ error: error.message });
     }
@@ -155,7 +162,7 @@ function registerPactumRoutes(server, app) {
         res.send({ error: `Mock interaction not found - ${id}` });
       }
     } catch (error) {
-      console.error(`Error fetching mock interaction - ${error}`);
+      log.error(`Error fetching mock interaction - ${error}`);
       res.status(500);
       res.send({ error: `Internal System Error` });
     }
@@ -170,7 +177,7 @@ function registerPactumRoutes(server, app) {
       res.status(200);
       res.send(interactions);
     } catch (error) {
-      console.error(`Error fetching mock interactions - ${error}`);
+      log.error(`Error fetching mock interactions - ${error}`);
       res.status(500);
       res.send({ error: `Internal System Error` });
     }
@@ -188,7 +195,7 @@ function registerPactumRoutes(server, app) {
         res.send({ error: `Mock interaction not found - ${id}` });
       }
     } catch (error) {
-      console.error(`Error deleting mock interaction - ${error}`);
+      log.error(`Error deleting mock interaction - ${error}`);
       res.status(500);
       res.send({ error: `Internal System Error` });
     }
@@ -200,7 +207,7 @@ function registerPactumRoutes(server, app) {
       res.status(200);
       res.send();
     } catch (error) {
-      console.error(`Error deleting mock interactions - ${error}`);
+      log.error(`Error deleting mock interactions - ${error}`);
       res.status(500);
       res.send({ error: `Internal System Error` });
     }
@@ -214,7 +221,7 @@ function registerPactumRoutes(server, app) {
       res.status(200);
       res.send({ id: interaction.id });
     } catch (error) {
-      console.log(`Error saving pact interaction - ${error}`);
+      log.error(`Error saving pact interaction - ${error}`);
       res.status(400);
       res.send({ error: error.message });
     }
@@ -231,7 +238,7 @@ function registerPactumRoutes(server, app) {
         res.send({ error: `Pact interaction not found - ${id}` });
       }
     } catch (error) {
-      console.error(`Error fetching pact interaction - ${error}`);
+      log.error(`Error fetching pact interaction - ${error}`);
       res.status(500);
       res.send({ error: `Internal System Error` });
     }
@@ -246,7 +253,7 @@ function registerPactumRoutes(server, app) {
       res.status(200);
       res.send(interactions);
     } catch (error) {
-      console.error(`Error fetching pact interactions - ${error}`);
+      log.error(`Error fetching pact interactions - ${error}`);
       res.status(500);
       res.send({ error: `Internal System Error` });
     }
@@ -264,7 +271,7 @@ function registerPactumRoutes(server, app) {
         res.send({ error: `Pact interaction not found - ${id}` });
       }
     } catch (error) {
-      console.error(`Error deleting mock interaction - ${error}`);
+      log.error(`Error deleting mock interaction - ${error}`);
       res.status(500);
       res.send({ error: `Internal System Error` });
     }
@@ -276,7 +283,7 @@ function registerPactumRoutes(server, app) {
       res.status(200);
       res.send();
     } catch (error) {
-      console.error(`Error deleting pact interactions - ${error}`);
+      log.error(`Error deleting pact interactions - ${error}`);
       res.status(500);
       res.send({ error: `Internal System Error` });
     }
@@ -288,7 +295,7 @@ function registerPactumRoutes(server, app) {
       res.status(200);
       res.send();
     } catch (error) {
-      console.log(`Error saving pacts - ${error}`);
+      log.error(`Error saving pacts - ${error}`);
       res.status(500);
       res.send({ error: error.message });
     }
@@ -325,6 +332,7 @@ class ExpressResponse {
   send(data) {
     if (data) {
       if (typeof data === 'object') {
+        this.res.setHeader('Content-Type', 'application/json');
         this.res.end(JSON.stringify(data));
       } else {
         this.res.end(data);

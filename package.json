@@ -7,7 +7,8 @@
     "/src"
   ],
   "scripts": {
-    "test": "mocha --timeout 10000 ./test/unit/",
+    "test": "mocha --timeout 10000 ./test/**/*",
+    "test:unit": "mocha --timeout 10000 ./test/unit/",
     "test:component": "mocha --timeout 10000 ./test/component/"
   },
   "keywords": [
@@ -37,6 +38,7 @@
     "djv": "^2.1.3-alpha.0",
     "json-query": "^2.2.2",
     "phin": "^3.4.1",
+    "pino": "^5.16.0",
     "polka": "^0.5.2"
   },
   "devDependencies": {
