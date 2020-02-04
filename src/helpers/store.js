@@ -58,7 +58,7 @@ const store = {
   },
 
   save() {
-    for ([key, pact] of this.pacts.entries()) {
+    for (const [key, pact] of this.pacts.entries()) {
       const dir = `${config.pact.dir}/${pact.consumer.name}`;
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, {recursive: true});

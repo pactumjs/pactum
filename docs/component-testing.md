@@ -9,6 +9,7 @@ Component testing is defined as a software testing type, in which the testing is
   * [HTTP Requests](#http-requests)
   * [HTTP Methods](#http-methods)
   * [HTTP Expectations](#http-expectations)
+  * [Request Settings](#request-settings)
 
 ## Getting Started
 
@@ -187,4 +188,42 @@ it('GET', async () => {
     .expectResponseTime(1000)
     .toss();
 });
+```
+
+### Request Settings
+
+Default options are configured for all the requests
+
+### pactum.request
+
+### setBaseUrl
+Type: `Function`<br>
+
+Sets the base url for all the HTTP requests.
+
+```javascript
+pactum.request.setBaseUrl('http://localhost:3000');
+pactum.get('/api/projects');
+// Request will be sent to http://localhost:3000/api/projects
+```
+
+### setDefaultTimeout
+Type: `Function`<br>
+
+Sets the default timeout for all the HTTP requests.
+Default value is 3000ms
+
+```javascript
+// sets default timeout to 5000ms
+pactum.request.setDefaultTimeout(5000);
+```
+
+### setDefaultHeader
+Type: `Function`<br>
+
+Sets default headers for all the HTTP requests. Default header will be overridden if provided at spec level.
+
+```javascript
+pactum.request.setDefaultHeader('Authorization', 'Basic xxxxx');
+pactum.request.setDefaultHeader('content-type', 'application/json');
 ```

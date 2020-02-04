@@ -4,6 +4,7 @@ const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
+const config = require('../config');
 
 /**
  * request method
@@ -49,7 +50,9 @@ class Spec {
     if (query) {
       this._request.url = this._request.url + '?' + query;
     }
-    this._request.timeout = 3000;
+    setBaseUrl(this._request);
+    this._request.timeout = config.request.timeout;
+    setHeaders(this._request);
     return phin(this._request);
   }
 
@@ -468,7 +471,7 @@ class Spec {
    */
   async toss() {
     if (!helper.isValidString(this._request.url)) {
-      throw new PactumRequestError(`Invalid request url - ${request.url}`);
+      throw new PactumRequestError(`Invalid request url - ${this._request.url}`);
     }
     for (let [id, interaction] of this.mockInteractions) {
       this.server.addMockInteraction(id, interaction);
@@ -522,6 +525,27 @@ function validateRequestUrl(request, url) {
   }
   if (!helper.isValidString(url)) {
     throw new PactumRequestError(`Invalid request url - ${url}`);
+  }
+}
+
+function setHeaders(request) {
+  if (config.request.headers && Object.keys(config.request.headers).length > 0) {
+    if (!request.headers) {
+      request.headers = {};
+    }
+    for (const prop in config.request.headers) {
+       if (request.headers[prop]) {
+        continue;
+       } else {
+        request.headers[prop] = config.request.headers[prop];
+       }
+    }
+  }
+}
+
+function setBaseUrl(request) {
+  if (config.request.baseUrl) {
+    request.url = config.request.baseUrl + request.url
   }
 }
 

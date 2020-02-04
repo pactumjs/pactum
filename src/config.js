@@ -5,6 +5,11 @@ const config = {
   pact: {
     consumer: process.env.PACTUM_PACT_CONSUMER_NAME || '',
     dir: process.env.PACTUM_PACT_DIR || './pacts/'
+  },
+  request: {
+    baseUrl: '',
+    timeout: 3000,
+    headers: {}
   }
 };
 

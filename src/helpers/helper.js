@@ -17,7 +17,7 @@ const helper = {
       return false;
     }
     for (const prop in actual) {
-      if (!expected.hasOwnProperty(prop)) {
+      if (!Object.prototype.hasOwnProperty.call(expected, prop)) {
         return false;
       }
       if (actual[prop] === expected[prop]) {
@@ -35,7 +35,7 @@ const helper = {
     }
     for (const prop in expected) {
       const actualProps = Object.keys(actual);
-      if (expected.hasOwnProperty(prop) && !actualProps.includes(prop)) {
+      if (Object.prototype.hasOwnProperty.call(expected, prop) && !actualProps.includes(prop)) {
         return false;
       }
     }
@@ -44,10 +44,10 @@ const helper = {
 
   validateHeaders(actual, expected) {
     for (const prop in expected) {
-      if (!expected.hasOwnProperty(prop.toLowerCase())) {
+      if (!Object.prototype.hasOwnProperty.call(expected, prop.toLowerCase())) {
         continue;
       }
-      if (!actual.hasOwnProperty(prop.toLowerCase())) {
+      if (!Object.prototype.hasOwnProperty.call(actual, prop.toLowerCase())) {
         return false;
       }
       if (expected[prop] != actual[prop.toLowerCase()]) {

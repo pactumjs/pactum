@@ -10,7 +10,7 @@
 
 ## Installation
 
-```Shell
+```shell
 npm install --save-dev pactum
 ```
 
@@ -20,7 +20,7 @@ npm install --save-dev pactum
 
 Running a single component test expectation.
 
-```JavaScript
+```javascript
 const pactum = require('pactum');
 
 it('should be a teapot', async () => {
@@ -31,7 +31,7 @@ it('should be a teapot', async () => {
 });
 ```
 
-```Shell
+```shell
 # mocha is a test framework
 mocha /path/to/test
 ```
@@ -43,7 +43,7 @@ Learn more about pactum as a component tester [here](https://github.com/ASaiAnud
 Running a contract test with the help of a mock server & a single pact interaction. 
 If the pact interaction is not exercised, the test will fail.
 
-```JavaScript
+```javascript
 const pactum = require('pactum');
 
 before(async () => {
