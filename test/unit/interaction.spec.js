@@ -78,6 +78,27 @@ describe('Interaction', () => {
     });
   });
 
+  it('valid mock interaction - function', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: function() {}
+    }
+    const interaction = new Interaction(rawInteraction, true);
+    expect(interaction.withRequest).deep.equals({
+      "body": undefined,
+      "headers": undefined,
+      "ignoreBody": false,
+      "ignoreQuery": false,
+      "method": "GET",
+      "path": "/api/projects/1",
+      "query": undefined
+    })
+  });
+
   it('invalid mock interaction - no request method', () => {
     const rawInteraction = {
       withRequest: {

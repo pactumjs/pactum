@@ -108,12 +108,16 @@ function registerAllRoutes(server, app) {
       store.updateInteractionExerciseCounter(interaction.id);
       interaction.exercised = true;
       interactionExercised = true;
-      res.set(interaction.willRespondWith.headers);
-      res.status(interaction.willRespondWith.status);
-      if (interaction.willRespondWith.body) {
-        res.send(interaction.willRespondWith.body);
+      if (typeof interaction.willRespondWith === 'function') {
+        interaction.willRespondWith(req, res);
       } else {
-        res.send();
+        res.set(interaction.willRespondWith.headers);
+        res.status(interaction.willRespondWith.status);
+        if (interaction.willRespondWith.body) {
+          res.send(interaction.willRespondWith.body);
+        } else {
+          res.send();
+        }
       }
     }
     if (!interactionExercised) {

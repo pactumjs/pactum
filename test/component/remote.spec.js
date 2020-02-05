@@ -3,6 +3,7 @@ const pactum = require('../../src/index');
 describe('Remote- post single mock interaction', () => {
 
   before(async () => {
+    pactum.mock.clearDefaultInteractions();
     const response = await pactum
       .post('http://localhost:9393/api/pactum/mockInteraction')
       .withJson({

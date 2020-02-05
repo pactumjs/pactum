@@ -52,7 +52,11 @@ class Interaction {
     this.uponReceiving = uponReceiving;
     this.rawInteraction = rawInteraction;
     this.withRequest = new InteractionRequest(withRequest);
-    this.willRespondWith = new InteractionResponse(willRespondWith);
+    if (typeof willRespondWith === 'function') {
+      this.willRespondWith = willRespondWith;
+    } else {
+      this.willRespondWith = new InteractionResponse(willRespondWith);
+    }
   }
 
   validateInteraction(rawInteraction, mock) {
@@ -91,11 +95,14 @@ class Interaction {
         throw new PactumInteractionError(`Pact interaction won't support ignore body`);
       }
     }
-    if (typeof willRespondWith !== 'object') {
-      throw new PactumInteractionError(`Invalid interaction request provided - ${willRespondWith}`);
-    }
-    if (typeof willRespondWith.status !== 'number') {
-      throw new PactumInteractionError(`Invalid interaction response status provided - ${willRespondWith.status}`);
+    if (typeof willRespondWith === 'object') {
+      if (typeof willRespondWith.status !== 'number') {
+        throw new PactumInteractionError(`Invalid interaction response status provided - ${willRespondWith.status}`);
+      }
+    } else {
+      if (typeof willRespondWith !== 'function') {
+        throw new PactumInteractionError(`Invalid interaction request provided - ${willRespondWith}`);
+      }
     }
   }
 
