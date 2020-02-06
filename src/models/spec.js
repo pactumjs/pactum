@@ -24,6 +24,9 @@ const config = require('../config');
  * @property {string} withRequest.path - request path
  * @property {object} [withRequest.headers] - request headers
  * @property {object} [withRequest.query] - request query
+ * @property {object} [withRequest.graphQL] - graphQL request
+ * @property {string} withRequest.graphQL.query - graphQL query
+ * @property {object} [withRequest.graphQL.variables] - graphQL variables
  * @property {object} [withRequest.body] - request body
  * @property {boolean} [withRequest.ignoreQuery] - ignores request query while matching
  * @property {boolean} [withRequest.ignoreBody] - ignores request body while matching
@@ -264,6 +267,28 @@ class Spec {
       this._request.qs = {};
     }
     this._request.qs[key] = value;
+    return this;
+  }
+
+  withGraphQLQuery(query) {
+    if (typeof query !== 'string') {
+      throw new PactumRequestError(`Invalid graphQL query - ${query}`);
+    }
+    if (!this._request.data) {
+      this._request.data = {};
+    }
+    this._request.data.query = query;
+    return this;
+  }
+
+  withGraphQLVariables(variables) {
+    if (typeof variables !== 'object') {
+      throw new PactumRequestError(`Invalid graphQL variables - ${variables}`);
+    }
+    if (!this._request.data) {
+      this._request.data = {};
+    }
+    this._request.data.variables = variables;
     return this;
   }
 

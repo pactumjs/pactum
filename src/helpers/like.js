@@ -68,10 +68,10 @@ class LikeJson {
     } else {
       for (const prop in expectedJson) {
         this.prop = prop;
-        if (!expectedJson.hasOwnProperty(prop)) {
+        if (!Object.prototype.hasOwnProperty.call(expectedJson,prop)) {
           continue;
         }
-        if (!actualJson.hasOwnProperty(prop)) {
+        if (!Object.prototype.hasOwnProperty.call(actualJson,prop)) {
           this.path = path;
           return false;
         }

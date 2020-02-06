@@ -20,6 +20,22 @@ class InteractionRequest {
     if (typeof request.ignoreQuery === 'boolean') {
       this.ignoreQuery = request.ignoreQuery;
     }
+    if (request.graphQL) {
+      this.graphQL = new InteractionRequestGraphQL(request.graphQL);
+      this.body = {
+        query: request.graphQL.query,
+        variables:  request.graphQL.variables
+      }
+    }
+  }
+
+}
+
+class InteractionRequestGraphQL {
+
+  constructor(graphQL) {
+    this.query = graphQL.query;
+    this.variables = graphQL.variables;
   }
 
 }

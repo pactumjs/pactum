@@ -21,6 +21,9 @@ const config = require('../config');
  * @property {string} withRequest.path - request path
  * @property {object} [withRequest.headers] - request headers
  * @property {object} [withRequest.query] - request query
+ * @property {object} [withRequest.graphQL] - graphQL request
+ * @property {string} withRequest.graphQL.query - graphQL query
+ * @property {object} [withRequest.graphQL.variables] - graphQL variables
  * @property {object} [withRequest.body] - request body
  * @property {boolean} [withRequest.ignoreQuery] - ignores request query while matching
  * @property {boolean} [withRequest.ignoreBody] - ignores request body while matching
