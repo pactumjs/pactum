@@ -1,5 +1,4 @@
-const assert = require('assert');
-const { parse: graphQLParse } = require('parse-graphql');
+const graphQL = require('./graphQL');
 
 const helper = {
 
@@ -70,25 +69,6 @@ const helper = {
     } else {
       return false;
     }
-  },
-
-  validateGraphQL(actual, expected) {
-    try {
-      if (actual && typeof actual === 'object' && actual.query) {
-        const actualQuery = graphQLParse(actual.query);
-        const expectedQuery = graphQLParse(expected.query);
-        removeLoc(actualQuery)
-        removeLoc(expectedQuery)
-        assert.deepStrictEqual(actualQuery, expectedQuery);
-        if (actual.variables || expected.variables) {
-          assert.deepStrictEqual(actual.variables, expected.variables);
-        }
-        return true;
-      }
-    } catch (error) {
-      return false;
-    }
-    return false;
   },
 
   setValueFromMatcher(data) {
@@ -216,7 +196,7 @@ const helper = {
       let isValidBody = true;
       if (!interaction.withRequest.ignoreBody) {
         if (interaction.withRequest.graphQL) {
-          isValidBody = this.validateGraphQL(req.body, interaction.withRequest.body);
+          isValidBody = graphQL.compare(req.body, interaction.withRequest.body);
         } else {
           if (typeof req.body === 'object') {
             if (Object.keys(req.body).length > 0) {
@@ -255,18 +235,6 @@ const helper = {
     return plainQuery;
   }
 
-}
-
-function removeLoc(document) {
-  for (let prop in document) {
-    if (prop === 'loc') {
-      delete document[prop];
-    } else {
-      if (typeof document[prop] === 'object') {
-        removeLoc(document[prop])
-      }
-    }
-  }
 }
 
 module.exports = helper;

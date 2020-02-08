@@ -22,9 +22,7 @@ describe('GraphQL', () => {
         }
       })
       .post('http://localhost:9393/api/graphql')
-      .withJson({
-        query: '{ hello }'
-      })
+      .withGraphQLQuery(`{ hello }`)
       .expectStatus(200)
       .expectJson({
         data: {
@@ -567,20 +565,18 @@ describe('GraphQL', () => {
         }
       })
       .post('http://localhost:9393/api/graphql')
-      .withJson({
-        query: `
-          query HeroNameAndFriends($episode: Episode) {
-            hero(episode: $episode) {
+      .withGraphQLQuery(`
+        query HeroNameAndFriends($episode: Episode) {
+          hero(episode: $episode) {
+            name
+            friends {
               name
-              friends {
-                name
-              }
             }
           }
-        `,
-        variables: {
-          "episode": "JEDI"
-        }
+        }`
+      )
+      .withGraphQLVariables({
+        "episode": "JEDI"
       })
       .expectStatus(200)
       .expectJson({

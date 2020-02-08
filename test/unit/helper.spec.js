@@ -254,7 +254,6 @@ describe('helper - setValueFromMatcher', () => {
 
 });
 
-
 describe('helper - setMatchingRules', () => {
 
   it('object', () => {

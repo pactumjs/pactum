@@ -50,13 +50,15 @@ HTTP requests are messages sent by the client to initiate an action on the serve
 
 #### pactum
 
-| Method                     | Description                                       |
-| -------------------------- | ------------------------------------------------- |
-| `get('url')`               | this is a HTTP method to be performed on resource |
-| `withQuery('postId', '1')` | set of parameters attached to the url             |
-| `withHeaders({})`          | request headers                                   |
-| `withBody('Hello')`        | request body                                      |
-| `withJson({id: 1})`        | request json object                               |
+| Method                          | Description                               |
+| ------------------------------- | ----------------------------------------- |
+| `get('url')`                    | HTTP method                               |
+| `withQuery('postId', '1')`      | set of parameters attached to the url     |
+| `withHeaders({})`               | request headers                           |
+| `withBody('Hello')`             | request body                              |
+| `withJson({id: 1})`             | request json object                       |
+| `withGraphQLQuery(`{ hero }`)`  | graphQL query                             |
+| `withGraphQLVariables({})`      | graphQL variables                         |
 
 ```javascript
 const pactum = require('pactum');

@@ -270,6 +270,16 @@ class Spec {
     return this;
   }
 
+  /**
+   * appends graphQL query to the request body
+   * @param {string} query - graphQL query
+   * @example
+   * await pactum
+   *  .post('http://www.graph.com/graphql')
+   *  .withGraphQLQuery(`{ hello }`)
+   *  .expectStatus(200)
+   *  .toss();
+   */
   withGraphQLQuery(query) {
     if (typeof query !== 'string') {
       throw new PactumRequestError(`Invalid graphQL query - ${query}`);
@@ -281,6 +291,23 @@ class Spec {
     return this;
   }
 
+  /**
+   * appends graphQL variables to the request body
+   * @param {object} variables - JSON object of graphQL variables
+   * @example
+   * await pactum
+   *  .post('http://www.graph.com/graphql')
+   *  .withGraphQLQuery(`
+   *    hero(episode: $episode) {
+   *      name
+   *    }`
+   *  )
+   *  .withGraphQLVariables({
+   *    "episode": "JEDI"
+   *  })
+   *  .expectStatus(200)
+   *  .toss();
+   */
   withGraphQLVariables(variables) {
     if (typeof variables !== 'object') {
       throw new PactumRequestError(`Invalid graphQL variables - ${variables}`);
