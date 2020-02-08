@@ -4,7 +4,7 @@ const Interaction = require('./interaction');
 
 const helper = require('../helpers/helper');
 const store = require('../helpers/store');
-const log = require('../helpers/logger')
+const log = require('../helpers/logger');
 const config = require('../config');
 
 class Server {
@@ -192,7 +192,7 @@ function registerPactumRoutes(server, app) {
       const id = req.params.id;
       if (server.mockInteractions.has(id)) {
         res.status(200);
-        server.mockInteractions.delete(id)
+        server.mockInteractions.delete(id);
         res.send();
       } else {
         res.status(404);
@@ -268,7 +268,7 @@ function registerPactumRoutes(server, app) {
       const id = req.params.id;
       if (server.pactInteractions.has(id)) {
         res.status(200);
-        server.pactInteractions.delete(id)
+        server.pactInteractions.delete(id);
         res.send();
       } else {
         res.status(404);

@@ -50,7 +50,7 @@ class Pact {
 
   /**
    * publish pact files to pact broker
-   * @param {PublishOptions} options - publish options 
+   * @param {PublishOptions} options - publish options
    */
   publish(options) {
     const pactFilesOrDirs = options.pactFilesOrDirs;

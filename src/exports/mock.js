@@ -65,7 +65,7 @@ class Mock {
    */
   setDefaultPort(port) {
     if (typeof port !== 'number') {
-      throw new PactumConfigurationError(`Invalid default port number - ${port}`)
+      throw new PactumConfigurationError(`Invalid default port number - ${port}`);
     }
     config.mock.port = port;
   }
@@ -132,11 +132,11 @@ class Mock {
 
   /**
    * removes specified default interaction from server
-   * @param {string} interactionId - id of the interaction 
+   * @param {string} interactionId - id of the interaction
    */
   removeDefaultInteraction(interactionId) {
     if (typeof interactionId !== 'string' || !interactionId) {
-      throw new PactumConfigurationError(`Invalid interaction id - ${interactionId}`)
+      throw new PactumConfigurationError(`Invalid interaction id - ${interactionId}`);
     }
     _server.removeInteraction(interactionId);
   }

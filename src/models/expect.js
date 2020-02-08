@@ -152,7 +152,7 @@ class Expect {
 
   _validateResponseTime(response) {
     if (this.responseTime !== null) {
-      assert.ok(response.responseTime <= this.responseTime, `Request took longer than ${this.responseTime}ms: (${response.responseTime}ms).`)
+      assert.ok(response.responseTime <= this.responseTime, `Request took longer than ${this.responseTime}ms: (${response.responseTime}ms).`);
     }
   }
 

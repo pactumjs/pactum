@@ -4,7 +4,7 @@ const helper = {
 
   getJson(jsonString) {
     try {
-      return JSON.parse(jsonString)
+      return JSON.parse(jsonString);
     } catch (error) {
       return jsonString;
     }
@@ -219,7 +219,7 @@ const helper = {
    * @param {string} value - value to be validated
    */
   isValidString(value) {
-    return (typeof value === 'string' && value)
+    return (typeof value === 'string' && value);
   },
 
   getPlainQuery(query) {
@@ -235,6 +235,6 @@ const helper = {
     return plainQuery;
   }
 
-}
+};
 
 module.exports = helper;

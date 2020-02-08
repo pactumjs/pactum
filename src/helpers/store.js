@@ -2,7 +2,6 @@ const fs = require('fs');
 const config = require('../config');
 const helper = require('./helper');
 const log = require('./logger');
-const Interaction = require('../models/interaction');
 const { Contract, PactInteraction } = require('../models/contract');
 
 const store = {
@@ -27,7 +26,7 @@ const store = {
 
   /**
    * add interaction in the store
-   * @param {Interaction} interaction 
+   * @param {Interaction} interaction
    */
   addInteraction(interaction) {
     const { id, provider, state, uponReceiving, mock } = interaction;
@@ -82,6 +81,6 @@ const store = {
     }
   }
 
-}
+};
 
 module.exports = store;

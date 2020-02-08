@@ -1,5 +1,5 @@
 class Consumer {
-  
+
   constructor(name) {
     this.name = name;
   }
@@ -7,7 +7,7 @@ class Consumer {
 }
 
 class Provider {
-  
+
   constructor(name) {
     this.name = name;
   }
@@ -59,7 +59,7 @@ class Metadata {
 class PactSpecification {
 
   constructor() {
-    this.version = "2.0.0"
+    this.version = "2.0.0";
   }
 
 }

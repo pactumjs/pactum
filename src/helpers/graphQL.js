@@ -8,8 +8,8 @@ const graphql = {
       if (actual && typeof actual === 'object' && actual.query) {
         const actualQuery = parse(actual.query);
         const expectedQuery = parse(expected.query);
-        removeLoc(actualQuery)
-        removeLoc(expectedQuery)
+        removeLoc(actualQuery);
+        removeLoc(expectedQuery);
         assert.deepStrictEqual(actualQuery, expectedQuery);
         if (actual.variables || expected.variables) {
           assert.deepStrictEqual(actual.variables, expected.variables);
@@ -22,7 +22,7 @@ const graphql = {
     return false;
   }
 
-}
+};
 
 function removeLoc(document) {
   for (let prop in document) {
@@ -30,7 +30,7 @@ function removeLoc(document) {
       delete document[prop];
     } else {
       if (typeof document[prop] === 'object') {
-        removeLoc(document[prop])
+        removeLoc(document[prop]);
       }
     }
   }

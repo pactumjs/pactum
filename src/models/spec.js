@@ -363,7 +363,7 @@ class Spec {
       throw new PactumRequestError(`Invalid headers in request - ${headers}`);
     }
     this._request.headers = headers;
-    return this
+    return this;
   }
 
   /**
@@ -541,7 +541,7 @@ class Spec {
         this._response = error.response;
       } else {
         failed = true;
-        err = error
+        err = error;
         log.warn('Error performing request', error);
         this._response = error;
       }
@@ -597,7 +597,7 @@ function setHeaders(request) {
 
 function setBaseUrl(request) {
   if (config.request.baseUrl) {
-    request.url = config.request.baseUrl + request.url
+    request.url = config.request.baseUrl + request.url;
   }
 }
 

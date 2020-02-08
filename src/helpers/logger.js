@@ -5,6 +5,6 @@ const log = pino({
   level: process.env.PACTUM_LOG_LEVEL || 'info',
   useLevelLabels: true,
   nestedKey: 'payload'
-})
+});
 
 module.exports = log;

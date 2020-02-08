@@ -25,7 +25,7 @@ class InteractionRequest {
       this.body = {
         query: request.graphQL.query,
         variables:  request.graphQL.variables
-      }
+      };
     }
   }
 

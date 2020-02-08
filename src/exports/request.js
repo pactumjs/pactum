@@ -38,6 +38,6 @@ const request = {
     config.request.baseUrl = url;
   }
 
-}
+};
 
 module.exports = request;

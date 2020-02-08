@@ -6,4 +6,4 @@ module.exports = {
   PactumInteractionError,
   PactumRequestError,
   PactumConfigurationError
-}
+};
