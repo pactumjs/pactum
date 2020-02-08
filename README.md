@@ -6,6 +6,7 @@
 
 * [Pactum](https://github.com/ASaiAnudeep/pactum/wiki)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+* [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
 * [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 
 ## Installation
@@ -85,6 +86,7 @@ after(async () => {
   await pactum.mock.stop();
 });
 ```
+Learn more about pactum as a contract tester [here](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
 
 ### Mock Server
 

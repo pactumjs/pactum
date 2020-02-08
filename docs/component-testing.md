@@ -2,6 +2,8 @@
 
 Component testing is defined as a software testing type, in which the testing is performed on each individual component separately without integrating with other components.
 
+This tests are all about testing the functionality of individual service. During this, your service will be talking to other external services. But instead of talking to a real external services, they talk to a mock version of external services.
+
 ## Table of contents
 
 * [Getting Started](#getting-started)
@@ -57,7 +59,7 @@ HTTP requests are messages sent by the client to initiate an action on the serve
 | `withHeaders({})`               | request headers                           |
 | `withBody('Hello')`             | request body                              |
 | `withJson({id: 1})`             | request json object                       |
-| `withGraphQLQuery(`{ hero }`)`  | graphQL query                             |
+| `withGraphQLQuery('{ hero }')`  | graphQL query                             |
 | `withGraphQLVariables({})`      | graphQL variables                         |
 
 ```javascript
