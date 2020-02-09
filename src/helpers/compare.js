@@ -1,6 +1,6 @@
-class Like {
+class Compare {
 
-  json(actual, expected) {
+  jsonLike(actual, expected) {
     const comparer = new LikeJson();
     const equal = comparer.compare(actual, expected);
     let message = '';
@@ -100,4 +100,4 @@ class LikeJson {
 
 }
 
-module.exports = Like;
+module.exports = Compare;

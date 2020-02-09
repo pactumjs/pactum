@@ -2,7 +2,7 @@ const assert = require('assert');
 const jqy = require('json-query');
 const djv = require('djv');
 
-const Like = require('../helpers/like');
+const Compare = require('../helpers/compare');
 
 class Expect {
 
@@ -120,8 +120,8 @@ class Expect {
   _validateJsonLike(response) {
     for (let i = 0; i < this.jsonLike.length; i++) {
       const expectedJSON = this.jsonLike[i];
-      const like = new Like();
-      const res = like.json(response.json, expectedJSON);
+      const compare = new Compare();
+      const res = compare.jsonLike(response.json, expectedJSON);
       assert.ok(res.equal, res.message);
     }
   }
