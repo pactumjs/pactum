@@ -27,7 +27,7 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
+    };
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
@@ -86,7 +86,7 @@ describe('Interaction', () => {
         path: '/api/projects/1'
       },
       willRespondWith: function() {}
-    }
+    };
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction.withRequest).deep.equals({
       "body": undefined,
@@ -96,7 +96,7 @@ describe('Interaction', () => {
       "method": "GET",
       "path": "/api/projects/1",
       "query": undefined
-    })
+    });
   });
 
   it('invalid mock interaction - no request method', () => {
@@ -114,8 +114,8 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
-    expect(function() { new Interaction(rawInteraction, true)}).to.throws('Invalid interaction request method provided - undefined');
+    };
+    expect(function() { new Interaction(rawInteraction, true);}).to.throws('Invalid interaction request method provided - undefined');
   });
 
   it('invalid mock interaction - no request method', () => {
@@ -134,8 +134,8 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
-    expect(function() { new Interaction(rawInteraction, true)}).to.throws('Invalid interaction request method provided - get');
+    };
+    expect(function() { new Interaction(rawInteraction, true);}).to.throws('Invalid interaction request method provided - get');
   });
 
   it('invalid mock interaction - no request path', () => {
@@ -153,8 +153,8 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
-    expect(function() { new Interaction(rawInteraction, true)}).to.throws('Invalid interaction request path provided - undefined');
+    };
+    expect(function() { new Interaction(rawInteraction, true);}).to.throws('Invalid interaction request path provided - undefined');
   });
 
   it('invalid mock interaction - no response status', () => {
@@ -172,8 +172,8 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
-    expect(function() { new Interaction(rawInteraction, true)}).to.throws('Invalid interaction response status provided - undefined');
+    };
+    expect(function() { new Interaction(rawInteraction, true);}).to.throws('Invalid interaction response status provided - undefined');
   });
 
   it('valid pact interaction', () => {
@@ -196,7 +196,7 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
+    };
     const interaction = new Interaction(rawInteraction, false);
     expect(interaction).to.deep.equals({
       "id": "random",
@@ -268,8 +268,8 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
-    expect(function() { new Interaction(rawInteraction, false)}).to.throws('Invalid provider name provided - undefined');
+    };
+    expect(function() { new Interaction(rawInteraction, false);}).to.throws('Invalid provider name provided - undefined');
   });
 
   it('invalid pact interaction - no state name', () => {
@@ -290,8 +290,8 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
-    expect(function() { new Interaction(rawInteraction, false)}).to.throws('Invalid state provided - undefined');
+    };
+    expect(function() { new Interaction(rawInteraction, false);}).to.throws('Invalid state provided - undefined');
   });
 
   it('invalid pact interaction - no upon receiving description', () => {
@@ -312,8 +312,8 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
-    expect(function() { new Interaction(rawInteraction, false)}).to.throws('Invalid upon receiving description provided - undefined');
+    };
+    expect(function() { new Interaction(rawInteraction, false);}).to.throws('Invalid upon receiving description provided - undefined');
   });
 
   it('invalid pact interaction - with ignore query', () => {
@@ -336,8 +336,8 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
-    expect(function() { new Interaction(rawInteraction, false)}).to.throws(`Pact interaction won't support ignore query`);
+    };
+    expect(function() { new Interaction(rawInteraction, false);}).to.throws(`Pact interaction won't support ignore query`);
   });
 
   it('invalid pact interaction - with ignore body', () => {
@@ -360,8 +360,8 @@ describe('Interaction', () => {
           name: 'fake'
         }
       }
-    }
-    expect(function() { new Interaction(rawInteraction, false)}).to.throws(`Pact interaction won't support ignore body`);
+    };
+    expect(function() { new Interaction(rawInteraction, false);}).to.throws(`Pact interaction won't support ignore body`);
   });
 
   after(() => {

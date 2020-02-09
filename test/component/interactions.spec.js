@@ -29,7 +29,7 @@ describe('Pact', () => {
         name: 'fake'
       })
       .expectResponseTime(100)
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - without body', async () => {
@@ -49,7 +49,7 @@ describe('Pact', () => {
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(204)
       .expectResponseTime(100)
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - bad response', async () => {
@@ -75,7 +75,7 @@ describe('Pact', () => {
         message: 'invalid request'
       })
       .expectResponseTime(100)
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - with one query', async () => {
@@ -106,7 +106,7 @@ describe('Pact', () => {
         id: 1,
         name: 'fake'
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - with multiple queries', async () => {
@@ -139,7 +139,7 @@ describe('Pact', () => {
         id: 1,
         name: 'fake'
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - with headers', async () => {
@@ -197,7 +197,7 @@ describe('Pact', () => {
       .expectJson({
         message: 'ok'
       })
-      .toss()
+      .toss();
   });
 
   it('POST - one interaction - with body', async () => {
@@ -230,7 +230,7 @@ describe('Pact', () => {
       .expectJson({
         message: 'ok'
       })
-      .toss()
+      .toss();
   });
 
   it('POST - one interaction - with ignore body', async () => {
@@ -260,7 +260,7 @@ describe('Pact', () => {
       .expectJson({
         message: 'ok'
       })
-      .toss()
+      .toss();
   });
 
 });
@@ -307,7 +307,7 @@ describe('Pact - matchers', () => {
           }
         ]
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - array body', async () => {
@@ -342,7 +342,7 @@ describe('Pact - matchers', () => {
           value: 100
         }]
       }])
-      .toss()
+      .toss();
   });
 
 });
@@ -377,7 +377,7 @@ describe('Pact - VALID', () => {
         id: 1,
         name: 'fake'
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction', async () => {
@@ -424,7 +424,7 @@ describe('Pact - VALID', () => {
           }
         ]
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - array body', async () => {
@@ -463,7 +463,7 @@ describe('Pact - VALID', () => {
           value: 100
         }]
       }])
-      .toss()
+      .toss();
   });
 
 });

@@ -65,7 +65,7 @@ describe('Pact - Default Mock Interaction', () => {
         id: 1,
         name: 'fake'
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - with multiple queries', async () => {
@@ -78,7 +78,7 @@ describe('Pact - Default Mock Interaction', () => {
         id: 1,
         name: 'bake'
       })
-      .toss()
+      .toss();
   });
 
   it('POST - one interaction - with ignore body', async () => {
@@ -92,7 +92,7 @@ describe('Pact - Default Mock Interaction', () => {
       .expectJson({
         message: 'ok'
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - overwrite default', async () => {
@@ -119,7 +119,7 @@ describe('Pact - Default Mock Interaction', () => {
         id: 3,
         name: 'overwrite'
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - get default interaction', async () => {
@@ -130,12 +130,12 @@ describe('Pact - Default Mock Interaction', () => {
         id: 1,
         name: 'fake'
       })
-      .toss()
+      .toss();
   });
 
   after(() => {
     pactum.mock.clearDefaultInteractions();
-  })
+  });
 
 });
 
@@ -196,7 +196,7 @@ describe('Pact - Default Pact Interaction', () => {
         id: 1,
         name: 'fake'
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - with multiple queries', async () => {
@@ -209,12 +209,12 @@ describe('Pact - Default Pact Interaction', () => {
         id: 1,
         name: 'bake'
       })
-      .toss()
+      .toss();
   });
 
   after(() => {
     pactum.mock.clearDefaultInteractions();
-  })
+  });
 
 });
 
@@ -285,7 +285,7 @@ describe('Pact - Default Mock Interactions', () => {
         id: 1,
         name: 'fake'
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - with multiple queries', async () => {
@@ -298,7 +298,7 @@ describe('Pact - Default Mock Interactions', () => {
         id: 1,
         name: 'bake'
       })
-      .toss()
+      .toss();
   });
 
   it('POST - one interaction - with ignore body', async () => {
@@ -312,12 +312,12 @@ describe('Pact - Default Mock Interactions', () => {
       .expectJson({
         message: 'ok'
       })
-      .toss()
+      .toss();
   });
 
   after(() => {
     pactum.mock.clearDefaultInteractions();
-  })
+  });
 
 });
 
@@ -380,7 +380,7 @@ describe('Pact - Default Pact Interactions', () => {
         id: 1,
         name: 'fake'
       })
-      .toss()
+      .toss();
   });
 
   it('GET - one interaction - with multiple queries', async () => {
@@ -393,11 +393,11 @@ describe('Pact - Default Pact Interactions', () => {
         id: 1,
         name: 'bake'
       })
-      .toss()
+      .toss();
   });
 
   after(() => {
     pactum.mock.clearDefaultInteractions();
-  })
+  });
 
 });

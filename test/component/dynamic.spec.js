@@ -24,7 +24,7 @@ describe('Dynamic', () => {
         name: 'fake'
       })
       .expectResponseTime(100)
-      .toss()
+      .toss();
   });
 
   it('GET - with query', async () => {
@@ -53,7 +53,7 @@ describe('Dynamic', () => {
         name: 'fake'
       })
       .expectResponseTime(100)
-      .toss()
+      .toss();
   });
 
   it('GET - ignore query - first record', async () => {
@@ -74,7 +74,7 @@ describe('Dynamic', () => {
               id: 2,
               name: 'fake'
             }
-          ]
+          ];
           res.status(200);
           if (req.query.id === '1') {
             res.send(response[0]);
@@ -91,7 +91,7 @@ describe('Dynamic', () => {
         name: 'fake'
       })
       .expectResponseTime(100)
-      .toss()
+      .toss();
   });
 
   it('GET - ignore query - second record', async () => {
@@ -112,7 +112,7 @@ describe('Dynamic', () => {
               id: 2,
               name: 'bake'
             }
-          ]
+          ];
           res.status(200);
           if (req.query.id === '1') {
             res.send(response[0]);
@@ -129,7 +129,7 @@ describe('Dynamic', () => {
         name: 'bake'
       })
       .expectResponseTime(100)
-      .toss()
+      .toss();
   });
 
 });

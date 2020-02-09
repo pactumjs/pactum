@@ -215,7 +215,7 @@ describe('helper - setValueFromMatcher', () => {
         quantity: 2,
         value: 100
       }),
-    })
+    });
     data = helper.setValueFromMatcher(data);
     expect(data).deep.equals([{
       id: 1,
@@ -239,7 +239,7 @@ describe('helper - setValueFromMatcher', () => {
         quantity: like(2),
         value: 100
       }),
-    })
+    });
     data = helper.setValueFromMatcher(data);
     expect(data).deep.equals([{
       id: 1,
@@ -317,8 +317,8 @@ describe('helper - setMatchingRules', () => {
         json_class: "Pact::ArrayLike",
         min: 1,
       }
-    }
-    const mm = {}
+    };
+    const mm = {};
     helper.setMatchingRules(mm, data, '$.body');
     expect(mm).deep.equals({
       '$.body.id': { match: 'type' },
@@ -338,8 +338,8 @@ describe('helper - setMatchingRules', () => {
       contents: '1',
       value: '1',
       json_class: "Pact::SomethingLike"
-    }
-    const mm = {}
+    };
+    const mm = {};
     helper.setMatchingRules(mm, data, '$.body');
     expect(mm).deep.equals({
       '$.body': { match: 'type' }
@@ -347,7 +347,7 @@ describe('helper - setMatchingRules', () => {
   });
 
   it('object - term', () => {
-    const data =  {
+    const data = {
       data: {
         generate: 'M',
         matcher: {
@@ -358,8 +358,8 @@ describe('helper - setMatchingRules', () => {
       },
       value: 'M',
       json_class: "Pact::Term"
-    }
-    const mm = {}
+    };
+    const mm = {};
     helper.setMatchingRules(mm, data, '$.body');
     expect(mm).deep.equals({
       '$.body': { match: 'regex', regex: 'M|F' }
@@ -378,8 +378,8 @@ describe('helper - setMatchingRules', () => {
       }],
       json_class: "Pact::ArrayLike",
       min: 1
-    }
-    const mm = {}
+    };
+    const mm = {};
     helper.setMatchingRules(mm, data, '$.body');
     expect(mm).deep.equals({
       '$.body': { min: 1 },
@@ -394,12 +394,12 @@ describe('helper - setMatchingRules', () => {
       value: 100,
       json_class: "Pact::SomethingLike"
     }];
-    const mm = {}
+    const mm = {};
     helper.setMatchingRules(mm, data, '$.body');
     expect(mm).deep.equals({
       '$.body.[*]': { match: 'type' }
     });
-  })
+  });
 
 });
 
@@ -421,7 +421,7 @@ describe('helper - validateQuery', () => {
     };
     const expected = {
       id: 1
-    }
+    };
     const res = helper.validateQuery(actual, expected);
     expect(res).equals(true);
   });
@@ -433,7 +433,7 @@ describe('helper - validateQuery', () => {
     };
     const expected = {
       id: 1
-    }
+    };
     const res = helper.validateQuery(actual, expected);
     expect(res).equals(false);
   });
@@ -445,7 +445,7 @@ describe('helper - validateQuery', () => {
     const expected = {
       id: 1,
       name: 'some'
-    }
+    };
     const res = helper.validateQuery(actual, expected);
     expect(res).equals(false);
   });
@@ -458,7 +458,7 @@ describe('helper - validateQuery', () => {
     const expected = {
       id: 1,
       name: 'some'
-    }
+    };
     const res = helper.validateQuery(actual, expected);
     expect(res).equals(true);
   });
@@ -471,7 +471,7 @@ describe('helper - validateQuery', () => {
     const expected = {
       id: 1,
       name: 'fake'
-    }
+    };
     const res = helper.validateQuery(actual, expected);
     expect(res).equals(false);
   });
@@ -486,7 +486,7 @@ describe('helper - validateQuery', () => {
       id: '1',
       name: 'some',
       married: false
-    }
+    };
     const res = helper.validateQuery(actual, expected);
     expect(res).equals(true);
   });
@@ -501,7 +501,7 @@ describe('helper - validateQuery', () => {
       id: '1',
       name: 'some',
       married: true
-    }
+    };
     const res = helper.validateQuery(actual, expected);
     expect(res).equals(false);
   });
@@ -512,9 +512,9 @@ describe('helper - validateQuery', () => {
     };
     const expected = {
       id: 'null'
-    }
+    };
     const res = helper.validateQuery(actual, expected);
     expect(res).equals(true);
   });
 
-});  
+});
