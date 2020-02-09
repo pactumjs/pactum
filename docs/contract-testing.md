@@ -50,3 +50,8 @@ During consumer testing, a consumer will generate pacts with its provider using 
 Provider Verification is performed at providers pipeline.
 
 During provider verification, each request is sent to the provider, and the actual response it generates is compared with the minimal expected response described in the consumer test.
+
+----------------------------------------------------------------------------------------------------------------
+
+[![Component Testing](https://img.shields.io/badge/PREV-Compnent%20Testing-orange)](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+[![Consumer Testing](https://img.shields.io/badge/NEXT-Consumer%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)

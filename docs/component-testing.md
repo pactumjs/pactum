@@ -231,3 +231,7 @@ Sets default headers for all the HTTP requests. Default header will be overridde
 pactum.request.setDefaultHeader('Authorization', 'Basic xxxxx');
 pactum.request.setDefaultHeader('content-type', 'application/json');
 ```
+
+----------------------------------------------------------------------------------------------------------------
+
+[![Contract Testing](https://img.shields.io/badge/NEXT-Contract%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)

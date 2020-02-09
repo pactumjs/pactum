@@ -7,6 +7,8 @@
 * [Pactum](https://github.com/ASaiAnudeep/pactum/wiki)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 * [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+  * [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions)
+  * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
 * [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 
 ## Installation
@@ -99,3 +101,7 @@ pactum.mock.start();
 ```
 
 Learn more about pactum as a mock server [here](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
+
+----------------------------------------------------------------------------------------------------------------
+
+[![Component Testing](https://img.shields.io/badge/NEXT-Compnent%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)

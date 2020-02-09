@@ -4,6 +4,12 @@ Consumer testing is the first step in contract testing. This testing helps in bu
 
 In **pactum**, consumer tests are written as a wrapper around the [component testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing).
 
+## Table of contents
+
+* [Getting Started](#getting-started)
+  * [Example Scenario](#example-scenario)
+* [API](#api)
+
 ## Getting Started
 
 Before getting started with consumer testing, get familiar with [component testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing) and a little bit on [interactions](https://github.com/ASaiAnudeep/pactum/wiki/interactions). **Interactions** are explained in a much more detailed way in this page.
@@ -29,14 +35,13 @@ app.get('/api/orders/1', (req, res) => {
   const productId = 190;
   // fetches product details with id "190"
   fetch(`${PRODUCT_SERVICE_URL}/api/products?id=${productId}`)
-    .then(res => {
-      const productDetails = res;
+    .then(product => {
       const order = {
         id: 1,
         product: {
           id: productId,
-          name: productDetails.name
-          price: productDetails.price
+          name: product.name
+          price: product.price
         }
       }
       // responds with order details
@@ -83,7 +88,7 @@ it('should fetch order details', async () => {
 });
 ```
 
-As described earlier, during component testing order-service will be talking to a mock version of product-service.
+As described earlier, during component testing the order-service will be talking to a mock version of product-service.
 
 #### Consumer Test for Order Service
 
@@ -107,7 +112,7 @@ Response
 }
 ```
 
-Pactum allows you to add this interaction to the mock server before running a component test case & it automatically removes all interactions after the execution of test case.
+Pactum allows you to add this interaction to the mock server before running a consumer test case. And also it automatically removes all interactions after the execution of test case.
 
 Yoc can add an Pact Interaction by
 
@@ -147,34 +152,68 @@ A consumer test might look like
 const pactum = require('pactum');
 
 before(async () => {
+  // sets the name of the consumer
+  pactum.pact.setConsumerName('order-service');
   // starts the mock server on port 9393
   await pactum.mock.start();
 });
 
 it('should fetch order details', async () => {
-  await pactum.addPactInteraction({
-    provider: 'product-service',
-    state: 'there is product with id 190',
-    uponReceiving: 'a request for product',
-    withRequest: {
-      method: 'GET',
-      path: '/api/products',
-      query: {
-        id: 190
-      }
-    },
-    willRespondWith: {
-      status: 200,
-      headers: {
-        'content-type': 'application/json'
+  await pactum
+    .addPactInteraction({
+      provider: 'product-service',
+      state: 'there is product with id 190',
+      uponReceiving: 'a request for product',
+      withRequest: {
+        method: 'GET',
+        path: '/api/products',
+        query: {
+          id: 190
+        }
       },
-      body: {
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          "id": 190,
+          "name": "book",
+          "price": 321.12
+        }
+      }
+    })
+    .get('http://localhost:3000/api/orders/1')
+    .expectStatus(200)
+    .expectJson({
+      "id": 1,
+      "product": {
         "id": 190,
         "name": "book",
         "price": 321.12
       }
-    }
-  })
+    })
+    .toss();
+});
+
+after(async () => {
+  // saves the contract file in ./pacts/ folder
+  pactum.pact.save();
+  // stops the mock server
+  await pactum.mock.stop();
+
+});
+```
+
+A real application/service is much more complicate with a lot of moving parts. The service under test might be talking to many more external services. **Pactum** allows you to specify multiple interactions in a single test case. You can add multiple pact & mock interactions in a single spec.
+
+If anyone of the interaction is not exercised, the test will fail. At the end of the test case, all these interactions will be removed from the server.
+
+```javascript
+await pactum
+  .addPactInteraction(`GET_PRODUCT_DETAILS_WITH_ID_1`)
+  .addPactInteraction(`POST_AUDIT_DETAILS`)
+  .addMockInteraction(`GET_DELIVERY_DETAILS`)
   .get('http://localhost:3000/api/orders/1')
   .expectStatus(200)
   .expectJson({
@@ -186,10 +225,90 @@ it('should fetch order details', async () => {
     }
   })
   .toss();
-});
+```
 
-after(async () => {
-  // stops the mock server
-  await pactum.mock.stop();
+## API
+
+### pactum.mock
+
+#### setDefaultPort
+Type: `Function`<br>
+
+Sets the port of the mock server to start. The default port of the server is `9393`.
+
+*This function should be called before starting the server.*
+
+```javascript
+pactum.mock.setDefaultPort(3333);
+```
+
+#### start
+Type: `Function`<br>
+
+Starts the mock server on the default/custom port.
+
+```javascript
+pactum.mock.start();
+```
+
+#### stop
+Type: `Function`<br>
+
+Stops the mock server.
+
+```javascript
+pactum.mock.stop();
+```
+
+### pactum.pact
+
+#### setConsumerName
+Type: `Function`<br>
+
+sets the name of the consumer
+
+```javascript
+pactum.pact.setConsumerName('order-service');
+```
+
+#### save
+Type: `Function`<br>
+
+saves all the contracts(pact files) in the specified directory
+
+```javascript
+pactum.pact.save();
+```
+
+#### setPactFilesDirectory
+Type: `Function`<br>
+
+sets directory for saving pact files
+
+*This should be called before save()*
+
+```javascript
+pactum.pact.save();
+```
+
+#### publish
+Type: `Function`<br>
+
+publish pact files to pact broker
+
+*This should be called after save()*
+
+```javascript
+pactum.pact.publish({
+  pactFilesOrDirs: ['./pacts/'],
+  pactBroker: 'http://pact-broker',
+  pactBrokerUsername: 'username',
+  pactBrokerPassword: '********',
+  consumerVersion: '1.2.22',
+  tags: ['QA', 'DEV']
 });
 ```
+
+----------------------------------------------------------------------------------------------------------------
+
+[![Contract Testing](https://img.shields.io/badge/PREV-Contract%20Testing-orange)](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)

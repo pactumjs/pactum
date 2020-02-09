@@ -92,3 +92,8 @@ pactum.addPactInteraction({
   }
 })
 ```
+
+----------------------------------------------------------------------------------------------------------------
+
+[![Contract Testing](https://img.shields.io/badge/PREV-Contract%20Testing-orange)](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+[![Consumer Testing](https://img.shields.io/badge/NEXT-Consumer%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
