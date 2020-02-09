@@ -53,5 +53,5 @@ During provider verification, each request is sent to the provider, and the actu
 
 ----------------------------------------------------------------------------------------------------------------
 
-[![Component Testing](https://img.shields.io/badge/PREV-Compnent%20Testing-orange)](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+[![Component Testing](https://img.shields.io/badge/PREV-Component%20Testing-orange)](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 [![Consumer Testing](https://img.shields.io/badge/NEXT-Consumer%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)

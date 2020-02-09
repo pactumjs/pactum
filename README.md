@@ -104,4 +104,4 @@ Learn more about pactum as a mock server [here](https://github.com/ASaiAnudeep/p
 
 ----------------------------------------------------------------------------------------------------------------
 
-[![Component Testing](https://img.shields.io/badge/NEXT-Compnent%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+[![Component Testing](https://img.shields.io/badge/NEXT-Component%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)

@@ -1,5 +1,6 @@
 const phin = require('phin');
 const helper = require('../helpers/helper');
+const Compare = require('../helpers/compare');
 
 class Provider {
 
@@ -66,7 +67,8 @@ class Provider {
   }
 
   async validateInteraction(interaction) {
-    const { description, providerState, request, response } = interaction;
+    // description
+    const { providerState, request, response } = interaction;
     if (this.stateHandlers && this.stateHandlers[providerState]) {
       await this.stateHandlers[interaction.providerState]();
     }
@@ -74,7 +76,11 @@ class Provider {
       url: `${this.providerBaseUrl}${request.path}`,
       method: request.method
     });
-    // validate response
+    const actualBody = helper.getJson(actualResponse.body);
+    const expectedBody = response.body;
+    const matchingRules = response.matchingRules;
+    const compare = new Compare();
+    return compare.jsonMatch(actualBody, expectedBody, matchingRules);
   }
 
   publishVerificationResults(path, success) {
@@ -89,6 +95,5 @@ class Provider {
   }
 
 }
-
 
 module.exports = Provider;

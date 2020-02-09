@@ -24,6 +24,30 @@ class Compare {
     return { equal, message };
   }
 
+  jsonMatch(actual, expected, matchingRules) {
+    const comparer = new MatchJson(matchingRules);
+    let equal = comparer.compare(actual, expected, '$.body');
+    let message = '';
+    if (!equal) {
+      if (comparer.noProp) {
+        message = `Json doesn't have "${comparer.prop}" at "${comparer.path}"`;
+      } else if (comparer.expectedType) {
+        message = `Json doesn't have type "${comparer.expectedType}" at "${comparer.path}.${comparer.prop}" but found "${comparer.actualType}"`;
+      } else {
+        message = `Json doesn't have value "${comparer.expectedValue}" at "${comparer.path}.${comparer.prop}" but found "${comparer.actualValue}"`;
+      }
+    } else {
+      for (const prop in matchingRules) {
+        const matchingRule = matchingRules[prop];
+        if (!matchingRule.success) {
+          equal = false;
+          message = `Matching Rule - "${matchingRule.match}" failed at "${prop}"`;
+        }
+      }
+    }
+    return { equal, message };
+  }
+
 }
 
 class LikeJson {
@@ -68,10 +92,10 @@ class LikeJson {
     } else {
       for (const prop in expectedJson) {
         this.prop = prop;
-        if (!Object.prototype.hasOwnProperty.call(expectedJson,prop)) {
+        if (!Object.prototype.hasOwnProperty.call(expectedJson, prop)) {
           continue;
         }
-        if (!Object.prototype.hasOwnProperty.call(actualJson,prop)) {
+        if (!Object.prototype.hasOwnProperty.call(actualJson, prop)) {
           this.path = path;
           return false;
         }
@@ -92,6 +116,67 @@ class LikeJson {
         this.actual = null;
         if (!this.compare(actualJson[prop], expectedJson[prop], newPath)) {
           return false;
+        }
+      }
+    }
+    return true;
+  }
+
+}
+
+class MatchJson {
+
+  constructor(matchingRules) {
+    this.path = '';
+    this.prop = null;
+    this.expectedValue = null;
+    this.actualValue = null;
+    this.expectedType = null;
+    this.actualType = null;
+    this.noProp = false;
+    this.matchingRule = null;
+    this.matchingRules = matchingRules;
+  }
+
+  init() {
+    this.expectedValue = null;
+    this.actualValue = null;
+    this.expectedType = null;
+    this.actualType = null;
+    this.matchingRule = null;
+    this.noProp = false;
+  }
+
+  compare(actual, expected, path) {
+    this.path = path;
+    this.init();
+    if (typeof actual !== typeof expected) {
+      return false;
+    }
+    if (typeof expected === 'object') {
+      for (const prop in expected) {
+        this.prop = prop;
+        if (!Object.prototype.hasOwnProperty.call(actual, prop)) {
+          this.noProp = true;
+          return false;
+        }
+        this.matchingRule = this.matchingRules[`${path}.${prop}`];
+        if (this.matchingRule) {
+          const match = this.matchingRule.match;
+          if (match === 'type') {
+            if (typeof expected[prop] !== typeof actual[prop]) {
+              this.expectedType = typeof expected[prop];
+              this.actualType = typeof actual[prop];
+              return false;
+            }
+            this.matchingRule.success = true;
+          }
+        } else {
+          if (expected[prop] !== actual[prop]) {
+            this.expectedValue = expected[prop];
+            this.actualValue = actual[prop];
+            return false;
+          }
         }
       }
     }

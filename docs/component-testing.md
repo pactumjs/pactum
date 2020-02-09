@@ -2,7 +2,7 @@
 
 Component testing is defined as a software testing type, in which the testing is performed on each individual component separately without integrating with other components.
 
-This tests are all about testing the functionality of individual service. During this, your service will be talking to other external services. But instead of talking to a real external services, they talk to a mock version of external services.
+This tests are all about testing the functionality of individual service. During this, your service will be talking to other external services. But instead of talking to real external services, they talk to mock versions of external services.
 
 ## Table of contents
 

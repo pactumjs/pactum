@@ -1137,3 +1137,358 @@ describe('JSON Like Array of Objects', () => {
   });
 
 });
+
+describe('JSON Match - Object - no matching rules', () => {
+
+  before(() => {
+    this.compare = new Compare();
+  });
+
+  it('empty objects', () => {
+    const actual = {};
+    const expected = {};
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects equal - one property', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {
+      id: 1
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal type - one property', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {
+      id: '1'
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "1" at "$.body.id" but found "1"`);
+  });
+
+  it('objects not equal - one property', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {
+      id: 12
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "12" at "$.body.id" but found "1"`);
+  });
+
+  it('objects not equal - one different property', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {
+      typeId: 1
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have "typeId" at "$.body"`);
+  });
+
+  it('objects equal - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal type - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: 'false'
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "false" at "$.body.married" but found "false"`);
+  });
+
+  it('objects not equal - boolean - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: true
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "false" at "$.body.married" but found "true"`);
+  });
+
+  it('objects not equal - string - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: true
+    };
+    const expected = {
+      id: 1,
+      name: 'Bake',
+      married: true
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "Bake" at "$.body.name" but found "Fake"`);
+  });
+
+  it('objects with multiple properties not equal - one different property ', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: true
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      age: 43
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have "age" at "$.body"`);
+  });
+
+});
+
+describe('JSON Match - Object - matching rules', () => {
+
+  before(() => {
+    this.compare = new Compare();
+  });
+
+  it('empty objects', () => {
+    const actual = {};
+    const expected = {};
+    const matchingRules = {
+      "$.body.id": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals('Matching Rule - "type" failed at "$.body.id"');
+  });
+
+  it('objects equal - one property', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {
+      id: 1
+    };
+    const matchingRules = {
+      "$.body.id": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal type - one property', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {
+      id: '1'
+    };
+    const matchingRules = {
+      "$.body.id": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "string" at "$.body.id" but found "number"`);
+  });
+
+  it('objects equal by type - one property', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {
+      id: 12
+    };
+    const matchingRules = {
+      "$.body.id": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal - one different property', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {
+      typeId: 1
+    };
+    const matchingRules = {
+      "$.body.typeId": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have "typeId" at "$.body"`);
+  });
+
+  it('objects equal - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false
+    };
+    const matchingRules = {
+      "$.body.id": {
+        "match": "type"
+      },
+      "$.body.name": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal type - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: 'false'
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false
+    };
+    const matchingRules = {
+      "$.body.id": {
+        "match": "type"
+      },
+      "$.body.married": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "boolean" at "$.body.married" but found "string"`);
+  });
+
+  it('objects not by type matching - boolean - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: true
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false
+    };
+    const matchingRules = {
+      "$.body.id": {
+        "match": "type"
+      },
+      "$.body.married": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects equal by type matching - string - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: true
+    };
+    const expected = {
+      id: 1,
+      name: 'Bake',
+      married: true
+    };
+    const matchingRules = {
+      "$.body.name": {
+        "match": "type"
+      },
+      "$.body.married": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects with multiple properties not equal - one different property ', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: true
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      age: 43
+    };
+    const matchingRules = {
+      "$.body.name": {
+        "match": "type"
+      },
+      "$.body.age": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have "age" at "$.body"`);
+  });
+
+});
