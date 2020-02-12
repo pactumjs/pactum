@@ -1637,7 +1637,7 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       }
     };
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
@@ -1653,7 +1653,7 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":2
+        "min": 2
       }
     };
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
@@ -1670,7 +1670,7 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":2
+        "min": 2
       }
     };
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
@@ -1687,7 +1687,7 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
@@ -1706,7 +1706,7 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
@@ -1725,7 +1725,7 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
@@ -1753,13 +1753,13 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
       },
       "$.body.movies": {
-        "min":1
+        "min": 1
       },
       "$.body.movies[*].*": {
         "match": "type"
@@ -1786,13 +1786,13 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
       },
       "$.body.movies": {
-        "min":2
+        "min": 2
       },
       "$.body.movies[*].*": {
         "match": "type"
@@ -1820,13 +1820,13 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
       },
       "$.body.movies": {
-        "min":2
+        "min": 2
       },
       "$.body.movies[*].*": {
         "match": "type"
@@ -1853,13 +1853,13 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
       },
       "$.body.movies": {
-        "min":2
+        "min": 2
       },
       "$.body.movies[*].*": {
         "match": "type"
@@ -1889,13 +1889,13 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
       },
       "$.body.movies": {
-        "min":2
+        "min": 2
       },
       "$.body.movies[*].*": {
         "match": "type"
@@ -2001,19 +2001,19 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
       },
       "$.body.address.street.lines": {
-        "min":1
+        "min": 1
       },
       "$.body.address.street.lines[*].*": {
         "match": "type"
       },
       "$.body.movies": {
-        "min":1
+        "min": 1
       },
       "$.body.movies[*].*": {
         "match": "type"
@@ -2050,19 +2050,19 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
       },
       "$.body.address.street.lines": {
-        "min":1
+        "min": 1
       },
       "$.body.address.street.lines[*].*": {
         "match": "type"
       },
       "$.body.movies": {
-        "min":1
+        "min": 1
       },
       "$.body.movies[*].*": {
         "match": "type"
@@ -2082,7 +2082,7 @@ describe('JSON Match - Object - matching rules', () => {
       address: {
         street: {
           street: 60,
-          lines: [ 60 ]
+          lines: [60]
         }
       },
       movies: ['Game']
@@ -2101,19 +2101,19 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const matchingRules = {
       "$.body.books": {
-        "min":1
+        "min": 1
       },
       "$.body.books[*].*": {
         "match": "type"
       },
       "$.body.address.street.lines": {
-        "min":1
+        "min": 1
       },
       "$.body.address.street.lines[*].*": {
         "match": "type"
       },
       "$.body.movies": {
-        "min":1
+        "min": 1
       },
       "$.body.movies[*].*": {
         "match": "type"
@@ -2122,6 +2122,182 @@ describe('JSON Match - Object - matching rules', () => {
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
     expect(res.message).equals(`Json doesn't have type "string" at "$.body.address.street.lines[0]" but found "number"`);
+  });
+
+});
+
+describe('JSON Match - Array - no matching rules', () => {
+
+  before(() => {
+    this.compare = new Compare();
+  });
+
+  it('empty objects', () => {
+    const actual = [];
+    const expected = [];
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('empty expected', () => {
+    const actual = [{
+      id: 1
+    }];
+    const expected = {};
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('equal objects', () => {
+    const actual = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        books: ['Harry'],
+        address: {
+          street: {
+            street: 60,
+            lines: [60]
+          }
+        },
+        movies: ['Game']
+      }
+    ];
+    const expected = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        books: ['Harry'],
+        address: {
+          street: {
+            street: 60,
+            lines: [60]
+          }
+        },
+        movies: ['Game']
+      }
+    ];
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('unequal objects - array', () => {
+    const actual = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        books: ['Harry'],
+        address: {
+          street: {
+            street: 60,
+            lines: [60]
+          }
+        },
+        movies: ['Game']
+      }
+    ];
+    const expected = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        books: ['Harry'],
+        address: {
+          street: {
+            street: 60,
+            lines: [60, 50]
+          }
+        },
+        movies: ['Game']
+      }
+    ];
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "number" at "$.body[0].address.street.lines[1]" but found "undefined"`);
+  });
+
+  it('unequal objects - no property', () => {
+    const actual = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        books: ['Harry'],
+        address: {
+          street: {
+            street: 60,
+            lines: [60]
+          }
+        },
+        movies: ['Game']
+      }
+    ];
+    const expected = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        books: ['Harry'],
+        address: {
+          street: {
+            street: 60,
+            pin: 1,
+            lines: [60]
+          }
+        },
+        movies: ['Game']
+      }
+    ];
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have "pin" at "$.body[0].address.street"`);
+  });
+
+  it('unequal objects - no property', () => {
+    const actual = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        books: ['Harry'],
+        address: {
+          street: {
+            street: 60,
+            lines: [60],
+            pin: 2
+          }
+        },
+        movies: ['Game']
+      }
+    ];
+    const expected = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        books: ['Harry'],
+        address: {
+          street: {
+            street: 60,
+            pin: 1,
+            lines: [60]
+          }
+        },
+        movies: ['Game']
+      }
+    ];
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "1" at "$.body[0].address.street.pin" but found "2"`);
   });
 
 });

@@ -170,10 +170,45 @@ class MatchJson {
   compare(actual, expected, path) {
     this.path = path;
     this.init();
+    if (actual === expected) {
+      return true;
+    }
     if (typeof actual !== typeof expected) {
+      this.expectedType = typeof expected;
+      this.actualType = typeof actual;
       return false;
     }
-    if (typeof expected === 'object') {
+    if (Array.isArray(expected)) {
+      this.prop = null;
+      this.matchingRule = this.matchingRules[path];
+      if (this.matchingRule) {
+        if (Object.prototype.hasOwnProperty.call(this.matchingRule, 'min')) {
+          const min = this.matchingRule.min;
+          if (actual.length < min) {
+            this.expectedLength = min;
+            this.actualLength = actual.length;
+            return false;
+          }
+          this.matchingRule.success = true;
+        }
+      }
+      this.matchingRule = this.matchingRules[`${path}[*].*`];
+      if (this.matchingRule) {
+        const newPath = `${path}[*]`;
+        for (let i = 0; i < actual.length; i++) {
+          if (!this.matchType(actual[i], expected[0], newPath)) {
+            return false;
+          }
+        }
+      } else {
+        for (const prop in expected) {
+          const newPath = `${path}[${prop}]`;
+          if (!this.compare(actual[prop], expected[prop], newPath)) {
+            return false;
+          }
+        }
+      }
+    } else if (typeof expected === 'object') {
       for (const prop in expected) {
         this.prop = prop;
         if (!Object.prototype.hasOwnProperty.call(actual, prop)) {
@@ -229,7 +264,12 @@ class MatchJson {
             }
           }
         } else {
-          if (typeof expected[prop] === 'object') {
+          if (Array.isArray(expected)) {
+            const newPath = `${path}[${prop}]`;
+            if (!this.compare(actual[prop], expected[prop], newPath)) {
+              return false;
+            }
+          } else if (typeof expected[prop] === 'object') {
             const newPath = `${path}.${prop}`;
             if (!this.compare(actual[prop], expected[prop], newPath)) {
               return false;
@@ -243,6 +283,8 @@ class MatchJson {
           }
         }
       }
+    } else {
+      return expected === actual;
     }
     return true;
   }
@@ -266,6 +308,33 @@ class MatchJson {
       this.matchingRule.success = true;
     }
     return true;
+  }
+
+  _matchType(actual, expected, path) {
+    if (actual === expected) {
+      return true;
+    }
+    if (typeof actual !== typeof expected) {
+      this.expectedType = typeof expectedItem;
+      this.actualType = typeof actualItem;
+      return false;
+    }
+    if (Array.isArray(expected)) {
+      for (let i = 0; i < actual.length; i++) {
+        const newPath = `${path}[${i}]`;
+        if(!this._matchType(actual[i], expected[0], newPath)) {
+          return false;
+        }
+      }
+    } else if (typeof expected === 'object') {
+      for (const prop in expected) {
+        const newPath = `${path}.${prop}`;
+        if(!this._matchType(actual[prop], expected[prop], newPath)) {
+          return false;
+        }
+      }
+    }
+    return false;
   }
 
 }
