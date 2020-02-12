@@ -1152,6 +1152,16 @@ describe('JSON Match - Object - no matching rules', () => {
     expect(res.equal).equals(true);
   });
 
+  it('empty expected', () => {
+    const actual = {
+      id: 1
+    };
+    const expected = {};
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
   it('objects equal - one property', () => {
     const actual = {
       id: 1
@@ -1285,6 +1295,63 @@ describe('JSON Match - Object - no matching rules', () => {
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
     expect(res.message).equals(`Json doesn't have "age" at "$.body"`);
+  });
+
+  it('objects equal - nested', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      address: {
+        street: {
+          line: 'Road No. 60'
+        }
+      }
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      address: {
+        street: {
+          line: 'Road No. 60'
+        }
+      }
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal - nested', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      address: {
+        street: {
+          line: 'Road No. 60',
+          area: 'not a society',
+          number: '60'
+        }
+      }
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      address: {
+        street: {
+          line: 'Road No. 60',
+          area: 'society',
+          number: '60'
+        }
+      }
+    };
+    const matchingRules = {};
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "society" at "$.body.address.street.area" but found "not a society"`);
   });
 
 });
@@ -1489,6 +1556,572 @@ describe('JSON Match - Object - matching rules', () => {
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
     expect(res.message).equals(`Json doesn't have "age" at "$.body"`);
+  });
+
+  it('objects equal by regex (same value) - one property', () => {
+    const actual = {
+      gender: 'M'
+    };
+    const expected = {
+      gender: 'M'
+    };
+    const matchingRules = {
+      "$.body.gender": {
+        "match": "regex",
+        "regex": "F|M"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects equal by regex (different value) - one property', () => {
+    const actual = {
+      gender: 'M'
+    };
+    const expected = {
+      gender: 'F'
+    };
+    const matchingRules = {
+      "$.body.gender": {
+        "match": "regex",
+        "regex": "F|M"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal by regex - one property', () => {
+    const actual = {
+      gender: 'Male'
+    };
+    const expected = {
+      gender: 'M'
+    };
+    const matchingRules = {
+      "$.body.gender": {
+        "match": "regex",
+        "regex": "^(M|F){1}$"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't match with "^(M|F){1}$" at "$.body.gender" but found "Male"`);
+  });
+
+  it('invalid regex', () => {
+    const actual = {
+      gender: 'Male'
+    };
+    const expected = {
+      gender: 'M'
+    };
+    const matchingRules = {
+      "$.body.gender": {
+        "match": "regex",
+        "regex": "\\"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Invalid RegExp provided "\\" at "$.body.gender"`);
+  });
+
+  it('objects equal by array min - one property', () => {
+    const actual = {
+      books: ['Harry']
+    };
+    const expected = {
+      books: ['Harry']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal by array min - one property', () => {
+    const actual = {
+      books: ['Harry']
+    };
+    const expected = {
+      books: ['Harry']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":2
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have array with length "2" at "$.body.books" but found "1"`);
+  });
+
+  it('objects not equal by array type - one property', () => {
+    const actual = {
+      books: 'Harry'
+    };
+    const expected = {
+      books: ['Harry']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":2
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "array" at "$.body.books" but found "string"`);
+  });
+
+  it('objects equal by array min & type - one property', () => {
+    const actual = {
+      books: ['Harry']
+    };
+    const expected = {
+      books: ['Harry']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects equal array has more elements - one property', () => {
+    const actual = {
+      books: ['Harry', 'Jon', 'Tom']
+    };
+    const expected = {
+      books: ['Harry']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal by array has different type - one property', () => {
+    const actual = {
+      books: ['Harry', 'Jon', 12]
+    };
+    const expected = {
+      books: ['Harry']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "string" at "$.body.books[2]" but found "number"`);
+  });
+
+  it('objects equal by array min - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      movies: ['Game']
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      movies: ['Game']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      },
+      "$.body.movies": {
+        "min":1
+      },
+      "$.body.movies[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal by array min - multiple properties', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      movies: ['Game']
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      movies: ['Game']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      },
+      "$.body.movies": {
+        "min":2
+      },
+      "$.body.movies[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have array with length "2" at "$.body.movies" but found "1"`);
+  });
+
+  it('objects equal array has more elements - multiple property', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry', 'Porter'],
+      movies: ['Game', 'Of', 'Thrones']
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      movies: ['Game']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      },
+      "$.body.movies": {
+        "min":2
+      },
+      "$.body.movies[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal by array has different type - one property', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry', 'Porter'],
+      movies: ['Game', 'Of', 'Thrones', 2]
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      movies: ['Game']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      },
+      "$.body.movies": {
+        "min":2
+      },
+      "$.body.movies[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "string" at "$.body.movies[3]" but found "number"`);
+  });
+
+  it('objects not equal - array has more elements - multiple property', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry', 'Porter'],
+      movies: ['Game', 'Of', 'Thrones'],
+      country: 'IND'
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      movies: ['Game'],
+      country: 'US'
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      },
+      "$.body.movies": {
+        "min":2
+      },
+      "$.body.movies[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "US" at "$.body.country" but found "IND"`);
+  });
+
+  it('objects equal - nested - by type', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      address: {
+        street: {
+          line: 'Road No. 4',
+          number: '60'
+        }
+      }
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      address: {
+        street: {
+          line: 'Road No. 64',
+          number: '60'
+        }
+      }
+    };
+    const matchingRules = {
+      "$.body.address.street.line": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal - nested - by type', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      address: {
+        street: {
+          line: 'Road No. 4',
+          number: 60
+        }
+      }
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      address: {
+        street: {
+          line: 'Road No. 64',
+          number: '60'
+        }
+      }
+    };
+    const matchingRules = {
+      "$.body.address.street.line": {
+        "match": "type"
+      },
+      "$.body.address.street.number": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "string" at "$.body.address.street.number" but found "number"`);
+  });
+
+  it('objects equal by array min - nested', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      address: {
+        street: {
+          lines: ['Road 60']
+        }
+      },
+      movies: ['Game']
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      address: {
+        street: {
+          lines: ['Road 60']
+        }
+      },
+      movies: ['Game']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      },
+      "$.body.address.street.lines": {
+        "min":1
+      },
+      "$.body.address.street.lines[*].*": {
+        "match": "type"
+      },
+      "$.body.movies": {
+        "min":1
+      },
+      "$.body.movies[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('objects not equal by array min - nested', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      address: {
+        street: {
+          lines: []
+        }
+      },
+      movies: ['Game']
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      address: {
+        street: {
+          lines: ['Road 60']
+        }
+      },
+      movies: ['Game']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      },
+      "$.body.address.street.lines": {
+        "min":1
+      },
+      "$.body.address.street.lines[*].*": {
+        "match": "type"
+      },
+      "$.body.movies": {
+        "min":1
+      },
+      "$.body.movies[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have array with length "1" at "$.body.address.street.lines" but found "0"`);
+  });
+
+  it('objects not equal by type - nested', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      address: {
+        street: {
+          street: 60,
+          lines: [ 60 ]
+        }
+      },
+      movies: ['Game']
+    };
+    const expected = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      books: ['Harry'],
+      address: {
+        street: {
+          lines: ['Road 60']
+        }
+      },
+      movies: ['Game']
+    };
+    const matchingRules = {
+      "$.body.books": {
+        "min":1
+      },
+      "$.body.books[*].*": {
+        "match": "type"
+      },
+      "$.body.address.street.lines": {
+        "min":1
+      },
+      "$.body.address.street.lines[*].*": {
+        "match": "type"
+      },
+      "$.body.movies": {
+        "min":1
+      },
+      "$.body.movies[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "string" at "$.body.address.street.lines[0]" but found "number"`);
   });
 
 });

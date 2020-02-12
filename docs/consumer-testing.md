@@ -205,7 +205,7 @@ after(async () => {
 });
 ```
 
-A real application/service is much more complicate with a lot of moving parts. The service under test might be talking to many more external services. **Pactum** allows you to specify multiple interactions in a single test case. You can add multiple pact & mock interactions in a single spec.
+A real application/service is much more complicated with a lot of moving parts. The service under test might be talking to many more external services. **Pactum** allows you to specify multiple interactions in a single test case. You can add multiple pact & mock interactions in a single spec.
 
 If anyone of the interaction is not exercised, the test will fail. At the end of the test case, all these interactions will be removed from the server.
 
