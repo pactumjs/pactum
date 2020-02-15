@@ -143,7 +143,6 @@ describe('Pact - Default Pact Interaction', () => {
 
   before(() => {
     pactum.mock.addDefaultPactInteraction({
-      consumer: 'c',
       provider: 'p',
       state: 'when there is a project with id 1',
       uponReceiving: 'a request for project 1',
@@ -163,7 +162,6 @@ describe('Pact - Default Pact Interaction', () => {
       }
     });
     pactum.mock.addDefaultPactInteraction({
-      consumer: 'c',
       provider: 'p',
       state: 'when there is a project with id 1',
       uponReceiving: 'a request for project 1',
@@ -326,7 +324,6 @@ describe('Pact - Default Pact Interactions', () => {
   before(() => {
     pactum.mock.addDefaultPactInteractions([
       {
-        consumer: 'c',
         provider: 'p',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',
@@ -346,7 +343,6 @@ describe('Pact - Default Pact Interactions', () => {
         }
       },
       {
-        consumer: 'c',
         provider: 'p',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',

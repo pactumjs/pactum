@@ -56,7 +56,6 @@ before(async () => {
 it('GET - one interaction', async () => {
   await pactum
     .addPactInteraction({
-      consumer: 'little-consumer',
       provider: 'projects-service',
       state: 'when there is a project with id 1',
       uponReceiving: 'a request for project 1',

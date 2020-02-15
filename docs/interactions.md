@@ -72,7 +72,6 @@ Type: `Function`<br>
 
 ```javascript
 pactum.addPactInteraction({
-  consumer: 'order-service',
   provider: 'currency-service',
   state: 'there is INR currency',
   uponReceiving: 'a request for INR currency',

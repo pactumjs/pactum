@@ -352,8 +352,7 @@ describe('Pact - VALID', () => {
   it('GET - one interaction', async () => {
     await pactum
       .addPactInteraction({
-        consumer: 'c',
-        provider: 'p',
+        provider: 'test-provider',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',
         withRequest: {
@@ -383,8 +382,7 @@ describe('Pact - VALID', () => {
   it('GET - one interaction', async () => {
     await pactum
       .addPactInteraction({
-        consumer: 'c',
-        provider: 'p',
+        provider: 'test-provider',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',
         withRequest: {
@@ -430,8 +428,7 @@ describe('Pact - VALID', () => {
   it('GET - one interaction - array body', async () => {
     await pactum
       .addPactInteraction({
-        consumer: 'c',
-        provider: 'p2',
+        provider: 'test-provider-2',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',
         withRequest: {

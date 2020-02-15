@@ -122,7 +122,8 @@ describe('JSON Placeholder', () => {
 
 });
 
-xdescribe('HTTP Bin - Status', () => {
+// disable these specs when running locally
+describe('HTTP Bin - Status', () => {
 
   it('should be ok', async () => {
     await pactum
@@ -203,7 +204,8 @@ xdescribe('HTTP Bin - Status', () => {
 
 });
 
-xdescribe('HTTP Bin - Responses', () => {
+// disable these specs when running locally
+describe('HTTP Bin - Responses', () => {
 
   it('should be deny', async () => {
     await pactum

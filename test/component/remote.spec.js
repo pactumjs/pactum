@@ -100,7 +100,6 @@ describe('Remote- post single pact interaction', () => {
     const response = await pactum
       .post('http://localhost:9393/api/pactum/pactInteraction')
       .withJson([{
-        consumer: 'little',
         provider: 'big',
         state: 'liquid',
         uponReceiving: 'vapour',
@@ -130,7 +129,6 @@ describe('Remote- post single pact interaction', () => {
       .get('http://localhost:9393/api/pactum/pactInteraction')
       .expectStatus(200)
       .expectJson([{
-        consumer: 'little',
         provider: 'big',
         state: 'liquid',
         uponReceiving: 'vapour',
@@ -157,7 +155,6 @@ describe('Remote- post single pact interaction', () => {
       .get(`http://localhost:9393/api/pactum/pactInteraction?id=${this.id}`)
       .expectStatus(200)
       .expectJson([{
-        consumer: 'little',
         provider: 'big',
         state: 'liquid',
         uponReceiving: 'vapour',

@@ -137,7 +137,6 @@ Adds a pact interaction to the server.
 
 ```javascript
 pactum.mock.addDefaultPactInteraction({
-  consumer: 'consumer-service',
   provider: 'project-service',
   state: 'there is a project with id 1',
   uponReceiving: 'a request for project 1',
@@ -167,7 +166,6 @@ Adds multiple pact interaction to the server.
 ```javascript
 pactum.mock.addDefaultPactInteractions([
   {
-    consumer: 'consumer-service',
     provider: 'project-service',
     state: 'there is a project with id 1',
     uponReceiving: 'a request for project 1',
@@ -187,7 +185,6 @@ pactum.mock.addDefaultPactInteractions([
     }
   },
   {
-    consumer: 'consumer-service',
     provider: 'order-service',
     state: 'there are orders',
     uponReceiving: 'a request for orders',
@@ -256,7 +253,6 @@ pactum.mock.addDefaultMockInteraction({
 });
 
 pactum.mock.addDefaultPactInteraction({
-  consumer: 'consumer-service',
   provider: 'order-service',
   state: 'there is a order with id 1',
   uponReceiving: 'a request for order 1',

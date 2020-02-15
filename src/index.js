@@ -88,7 +88,6 @@ const pactum = {
    * @example
    * await pactum
    *  .addPactInteraction({
-   *    consumer: 'our-little-consumer',
    *    provider: 'project-provider',
    *    state: 'when there is a project with id 1',
    *    uponReceiving: 'a request for project 1',
