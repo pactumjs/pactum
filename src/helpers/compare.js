@@ -44,7 +44,7 @@ class Compare {
       } else if (comparer.expectedRegex) {
         message = `Json doesn't match with "${comparer.expectedRegex}" at "${exactPath}" but found "${comparer.actualValue}"`;
       } else if (comparer.expectedLength) {
-        message = `Json doesn't have array with length "${comparer.expectedLength}" at "${exactPath}" but found "${comparer.actualLength}"`;
+        message = `Json doesn't have array with length "${comparer.expectedLength}" at "${exactPath}" but found with length "${comparer.actualLength}"`;
       } else {
         message = `Json doesn't have value "${comparer.expectedValue}" at "${exactPath}" but found "${comparer.actualValue}"`;
       }
@@ -154,187 +154,179 @@ class MatchJson {
     this.matchingRules = matchingRules;
   }
 
-  init() {
-    this.expectedValue = null;
-    this.actualValue = null;
-    this.expectedType = null;
-    this.actualType = null;
-    this.expectedRegex = null;
-    this.expectedLength = null;
-    this.actualLength = null;
-    this.matchingRule = null;
-    this.noProp = false;
-    this.invalidRegExp = false;
-  }
-
-  compare(actual, expected, path) {
-    this.path = path;
-    this.init();
-    if (actual === expected) {
-      return true;
-    }
-    if (typeof actual !== typeof expected) {
-      this.expectedType = typeof expected;
-      this.actualType = typeof actual;
-      return false;
-    }
-    if (Array.isArray(expected)) {
-      this.prop = null;
-      this.matchingRule = this.matchingRules[path];
-      if (this.matchingRule) {
-        if (Object.prototype.hasOwnProperty.call(this.matchingRule, 'min')) {
-          const min = this.matchingRule.min;
+  /**
+   * compare
+   * @param {any} actual
+   * @param {any} expected
+   * @param {string} actualPath - actual path
+   */
+  compare(actual, expected, actualPath) {
+    const matchingPath = actualPath.replace(/\[\d+\]/g, '[*]');
+    const matchingRule = this.matchingRules[matchingPath];
+    if (matchingRule) {
+      const match = matchingRule.match;
+      const min = matchingRule.min;
+      if (match === 'type') {
+        if (typeof actual !== typeof expected) {
+          this.path = actualPath;
+          this.expectedType = typeof expected;
+          this.actualType = typeof actual;
+          matchingRule.success = false;
+          return false;
+        }
+        if (Array.isArray(expected)) {
+          if (actual.length !== expected.length) {
+            return false;
+          }
+          for (let i = 0; i < expected.length; i++) {
+            const newActualPath = `${actualPath}[${i}]`;
+            if (!this.compare(actual[i], expected[i], newActualPath)) {
+              return false;
+            }
+          }
+          matchingRule.success = true;
+        } else if (typeof expected === 'object') {
+          for (const prop in expected) {
+            const newActualPath = `${actualPath}.${prop}`;
+            if (this.matchingRules[newActualPath]) {
+              if (!this.compare(actual[prop], expected[prop], newActualPath)) {
+                return false;
+              }
+            } else {
+              if (typeof actual[prop] !== typeof expected[prop]) {
+                this.path = `${actualPath}.${prop}`;
+                this.expectedType = typeof expected[prop];
+                this.actualType = typeof actual[prop];
+                matchingRule.success = false;
+                return false;
+              }
+            }
+            if (typeof expected[prop] === 'object') {
+              if (!this.compare(actual[prop], expected[prop], newActualPath)) {
+                return false;
+              }
+            }
+          }
+          matchingRule.success = true;
+        } else {
+          matchingRule.success = true;
+        }
+      } else if (match === 'regex') {
+        try {
+          const regex = new RegExp(matchingRule.regex);
+          if (!regex.test(actual)) {
+            this.path = actualPath;
+            this.expectedRegex = matchingRule.regex;
+            this.actualValue = actual;
+            return false;
+          }
+          matchingRule.success = true;
+        } catch (error) {
+          this.path = actualPath;
+          this.expectedRegex = matchingRule.regex;
+          this.invalidRegExp = true;
+          return false;
+        }
+      } else if (typeof min === 'number') {
+        if (Array.isArray(actual)) {
           if (actual.length < min) {
             this.expectedLength = min;
             this.actualLength = actual.length;
+            this.path = actualPath;
             return false;
           }
-          this.matchingRule.success = true;
+          matchingRule.success = true;
+        } else {
+          this.path = actualPath;
+          this.expectedType = 'array';
+          this.actualType = typeof actual;
+          return false;
         }
+        const newMatchingRule = this.matchingRules[`${matchingPath}[*].*`];
+        if (newMatchingRule) {
+          if (newMatchingRule.match === 'type') {
+            for (let i = 0; i < actual.length; i++) {
+              if (typeof actual[i] !== typeof expected[0]) {
+                this.path = `${actualPath}[${i}]`;
+                this.expectedType = typeof expected[0];
+                this.actualType = typeof actual[i];
+                newMatchingRule.success = false;
+                return false;
+              }
+              if (!Array.isArray(expected[0]) && typeof expected[0] === 'object') {
+                for (const prop in expected[0]) {
+                  const newActualPath = `${actualPath}[${i}].${prop}`;
+                  if (this.matchingRules[newActualPath]) {
+                    if (!this.compare(actual[i][prop], expected[0][prop], newActualPath)) {
+                      return false;
+                    }
+                  } else {
+                    if (typeof actual[i][prop] !== typeof expected[0][prop]) {
+                      this.expectedType = typeof expected[0][prop];
+                      this.actualType = typeof actual[i][prop];
+                      newMatchingRule.success = false;
+                      return false;
+                    }
+                    if (typeof expected[0][prop] === 'object') {
+                      if (!this.compare(actual[i][prop], expected[0][prop], newActualPath)) {
+                        return false;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            newMatchingRule.success = true;
+          } else {
+            throw new Error(`Unsupported Matching Rule - ${newMatchingRule.match}`);
+          }
+        }
+      } else {
+        throw new Error(`Unsupported Matching Rule - ${match}`);
       }
-      this.matchingRule = this.matchingRules[`${path}[*].*`];
-      if (this.matchingRule) {
-        const newPath = `${path}[*]`;
-        for (let i = 0; i < actual.length; i++) {
-          if (!this.matchType(actual[i], expected[0], newPath)) {
+    } else {
+      if (typeof actual !== typeof expected) {
+        this.path = actualPath;
+        this.expectedType = typeof expected;
+        this.actualType = typeof actual;
+        return false;
+      }
+      if (Array.isArray(expected)) {
+        if (actual.length !== expected.length) {
+          this.path = actualPath;
+          this.expectedLength = expected.length;
+          this.actualLength = actual.length;
+          return false;
+        }
+        for (let i = 0; i < expected.length; i++) {
+          const newActualPath = `${actualPath}[${i}]`;
+          if (!this.compare(actual[i], expected[i], newActualPath)) {
+            return false;
+          }
+        }
+      } else if (typeof expected === 'object') {
+        for (const prop in expected) {
+          if (!Object.prototype.hasOwnProperty.call(actual, prop)) {
+            this.path = actualPath;
+            this.prop = prop;
+            this.noProp = true;
+            return false;
+          }
+          const newActualPath = `${actualPath}.${prop}`;
+          if (!this.compare(actual[prop], expected[prop], newActualPath)) {
             return false;
           }
         }
       } else {
-        for (const prop in expected) {
-          const newPath = `${path}[${prop}]`;
-          if (!this.compare(actual[prop], expected[prop], newPath)) {
-            return false;
-          }
-        }
-      }
-    } else if (typeof expected === 'object') {
-      for (const prop in expected) {
-        this.prop = prop;
-        if (!Object.prototype.hasOwnProperty.call(actual, prop)) {
-          this.noProp = true;
+        if (expected !== actual) {
+          this.path = actualPath;
+          this.expectedValue = expected;
+          this.actualValue = actual;
           return false;
         }
-        this.matchingRule = this.matchingRules[`${path}.${prop}`];
-        if (this.matchingRule) {
-          const match = this.matchingRule.match;
-          if (match === 'type') {
-            if (typeof expected[prop] !== typeof actual[prop]) {
-              this.expectedType = typeof expected[prop];
-              this.actualType = typeof actual[prop];
-              return false;
-            }
-            this.matchingRule.success = true;
-          } else if (match === 'regex') {
-            try {
-              const regex = new RegExp(this.matchingRule.regex);
-              if (!regex.test(actual[prop])) {
-                this.expectedRegex = this.matchingRule.regex;
-                this.actualValue = actual[prop];
-                return false;
-              }
-              this.matchingRule.success = true;
-            } catch (error) {
-              this.expectedRegex = this.matchingRule.regex;
-              this.invalidRegExp = true;
-              return false;
-            }
-          } else {
-            if (Object.prototype.hasOwnProperty.call(this.matchingRule, 'min')) {
-              const min = this.matchingRule.min;
-              if (Array.isArray(actual[prop])) {
-                if (actual[prop].length < min) {
-                  this.expectedLength = min;
-                  this.actualLength = actual[prop].length;
-                  return false;
-                }
-                this.matchingRule.success = true;
-                const newPath = `${path}.${prop}`;
-                if (!this.matchType(actual[prop], expected[prop], newPath)) {
-                  return false;
-                }
-                this.path = path;
-              } else {
-                this.expectedType = 'array';
-                this.actualType = typeof actual[prop];
-                return false;
-              }
-            } else {
-              // throw error
-            }
-          }
-        } else {
-          if (Array.isArray(expected)) {
-            const newPath = `${path}[${prop}]`;
-            if (!this.compare(actual[prop], expected[prop], newPath)) {
-              return false;
-            }
-          } else if (typeof expected[prop] === 'object') {
-            const newPath = `${path}.${prop}`;
-            if (!this.compare(actual[prop], expected[prop], newPath)) {
-              return false;
-            }
-          } else {
-            if (expected[prop] !== actual[prop]) {
-              this.expectedValue = expected[prop];
-              this.actualValue = actual[prop];
-              return false;
-            }
-          }
-        }
       }
-    } else {
-      return expected === actual;
     }
     return true;
-  }
-
-  matchType(actual, expected, path) {
-    this.init();
-    this.path = path;
-    this.matchingRule = this.matchingRules[`${path}[*].*`];
-    if (this.matchingRule) {
-      const expectedItem = expected[0];
-      for (let i = 0; i < actual.length; i++) {
-        const actualItem = actual[i];
-        if (typeof actualItem !== typeof expectedItem) {
-          this.path = `${this.path}[${i}]`;
-          this.prop = null;
-          this.expectedType = typeof expectedItem;
-          this.actualType = typeof actualItem;
-          return false;
-        }
-      }
-      this.matchingRule.success = true;
-    }
-    return true;
-  }
-
-  _matchType(actual, expected, path) {
-    if (actual === expected) {
-      return true;
-    }
-    if (typeof actual !== typeof expected) {
-      this.expectedType = typeof expectedItem;
-      this.actualType = typeof actualItem;
-      return false;
-    }
-    if (Array.isArray(expected)) {
-      for (let i = 0; i < actual.length; i++) {
-        const newPath = `${path}[${i}]`;
-        if(!this._matchType(actual[i], expected[0], newPath)) {
-          return false;
-        }
-      }
-    } else if (typeof expected === 'object') {
-      for (const prop in expected) {
-        const newPath = `${path}.${prop}`;
-        if(!this._matchType(actual[prop], expected[prop], newPath)) {
-          return false;
-        }
-      }
-    }
-    return false;
   }
 
 }

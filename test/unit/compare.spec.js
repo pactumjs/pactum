@@ -1184,7 +1184,7 @@ describe('JSON Match - Object - no matching rules', () => {
     const matchingRules = {};
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have value "1" at "$.body.id" but found "1"`);
+    expect(res.message).equals(`Json doesn't have type "string" at "$.body.id" but found "number"`);
   });
 
   it('objects not equal - one property', () => {
@@ -1243,7 +1243,7 @@ describe('JSON Match - Object - no matching rules', () => {
     const matchingRules = {};
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have value "false" at "$.body.married" but found "false"`);
+    expect(res.message).equals(`Json doesn't have type "boolean" at "$.body.married" but found "string"`);
   });
 
   it('objects not equal - boolean - multiple properties', () => {
@@ -1658,7 +1658,7 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have array with length "2" at "$.body.books" but found "1"`);
+    expect(res.message).equals(`Json doesn't have array with length "2" at "$.body.books" but found with length "1"`);
   });
 
   it('objects not equal by array type - one property', () => {
@@ -1800,7 +1800,7 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have array with length "2" at "$.body.movies" but found "1"`);
+    expect(res.message).equals(`Json doesn't have array with length "2" at "$.body.movies" but found with length "1"`);
   });
 
   it('objects equal array has more elements - multiple property', () => {
@@ -2070,7 +2070,7 @@ describe('JSON Match - Object - matching rules', () => {
     };
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have array with length "1" at "$.body.address.street.lines" but found "0"`);
+    expect(res.message).equals(`Json doesn't have array with length "1" at "$.body.address.street.lines" but found with length "0"`);
   });
 
   it('objects not equal by type - nested', () => {
@@ -2220,7 +2220,7 @@ describe('JSON Match - Array - no matching rules', () => {
     const matchingRules = {};
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have type "number" at "$.body[0].address.street.lines[1]" but found "undefined"`);
+    expect(res.message).equals(`Json doesn't have array with length "2" at "$.body[0].address.street.lines" but found with length "1"`);
   });
 
   it('unequal objects - no property', () => {
@@ -2298,6 +2298,29 @@ describe('JSON Match - Array - no matching rules', () => {
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
     expect(res.message).equals(`Json doesn't have value "1" at "$.body[0].address.street.pin" but found "2"`);
+  });
+
+});
+
+describe('JSON Match - Array - matching rules', () => {
+
+  before(() => {
+    this.compare = new Compare();
+  });
+
+  it('empty objects', () => {
+    const actual = [];
+    const expected = [];
+    const matchingRules = {
+      "$.body": {
+        "min": 0
+      },
+      "$.body[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
   });
 
 });
