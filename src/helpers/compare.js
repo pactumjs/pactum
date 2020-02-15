@@ -176,6 +176,9 @@ class MatchJson {
         }
         if (Array.isArray(expected)) {
           if (actual.length !== expected.length) {
+            this.expectedLength = expected.length;
+            this.actualLength = actual.length;
+            this.path = actualPath;
             return false;
           }
           for (let i = 0; i < expected.length; i++) {
@@ -262,6 +265,7 @@ class MatchJson {
                     }
                   } else {
                     if (typeof actual[i][prop] !== typeof expected[0][prop]) {
+                      this.path = newActualPath;
                       this.expectedType = typeof expected[0][prop];
                       this.actualType = typeof actual[i][prop];
                       newMatchingRule.success = false;

@@ -1,6 +1,7 @@
 const pactum = require('../../src/index');
 
-xdescribe('JSON Placeholder', () => {
+// disable these specs when running locally
+describe('JSON Placeholder', () => {
 
   it('GET', async () => {
     await pactum

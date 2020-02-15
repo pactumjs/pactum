@@ -7,9 +7,10 @@
     "/src"
   ],
   "scripts": {
-    "test": "mocha --timeout 10000 ./test/**/*",
+    "test": "npm run test:unit && npm run test:component",
     "test:unit": "mocha --timeout 10000 ./test/unit/",
-    "test:component": "mocha --timeout 10000 ./test/component/"
+    "test:component": "mocha --timeout 10000 ./test/component/",
+    "coverage": "nyc --reporter=lcov --reporter=text npm run test"
   },
   "keywords": [
     "api",
@@ -45,6 +46,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.2.2",
+    "nyc": "^15.0.0",
     "sinon": "^8.1.1"
   },
   "engines": {

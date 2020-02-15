@@ -1930,6 +1930,9 @@ describe('JSON Match - Object - matching rules', () => {
       }
     };
     const matchingRules = {
+      "$.body.address": {
+        "match": "type"
+      },
       "$.body.address.street.line": {
         "match": "type"
       }
@@ -2122,6 +2125,326 @@ describe('JSON Match - Object - matching rules', () => {
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(false);
     expect(res.message).equals(`Json doesn't have type "string" at "$.body.address.street.lines[0]" but found "number"`);
+  });
+
+  it('root matching rule - equal object', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    };
+    const expected = {
+      id: 2,
+      name: 'Bake',
+      married: true,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    };
+    const matchingRules = {
+      "$.body": {
+        "match": "type"
+      },
+      "$.body.name": {
+        "match": "regex",
+        "regex": "Fake|Bake"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('root matching rule - not equal object', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: 'false',
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    };
+    const expected = {
+      id: 2,
+      name: 'Bake',
+      married: true,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    };
+    const matchingRules = {
+      "$.body": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "boolean" at "$.body.married" but found "string"`);
+  });
+
+  it('root matching rule - not equal object - regex', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    };
+    const expected = {
+      id: 2,
+      name: 'Bake',
+      married: true,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    };
+    const matchingRules = {
+      "$.body": {
+        "match": "type"
+      },
+      "$.body.name": {
+        "match": "regex",
+        "regex": "Snake|Brake"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't match with "Snake|Brake" at "$.body.name" but found "Fake"`);
+  });
+
+  it('root matching rule - not equal object - deep', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    };
+    const expected = {
+      id: 2,
+      name: 'Bake',
+      married: true,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 24
+        }
+      }
+    };
+    const matchingRules = {
+      "$.body": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "24" at "$.body.scores.sciences.biology" but found "23"`);
+  });
+
+  it('root matching rule - equal object - deep', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    };
+    const expected = {
+      id: 2,
+      name: 'Bake',
+      married: true,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 24
+        }
+      }
+    };
+    const matchingRules = {
+      "$.body": {
+        "match": "type"
+      },
+      "$.body.scores.sciences": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('root matching rule & matching rule at exact item - equal object - deep', () => {
+    const actual = {
+      id: 1,
+      name: 'Fake',
+      married: false,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    };
+    const expected = {
+      id: 2,
+      name: 'Bake',
+      married: true,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 24
+        }
+      }
+    };
+    const matchingRules = {
+      "$.body": {
+        "match": "type"
+      },
+      "$.body.scores.sciences.biology": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('root matching rule - equal array - deep', () => {
+    const actual = [{
+      id: 1,
+      name: 'Fake',
+      married: true,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    }];
+    const expected = [{
+      id: 1,
+      name: 'Fake',
+      married: true,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    }];
+    const matchingRules = {
+      "$.body": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('root matching rule - not equal array - deep', () => {
+    const actual = [{
+      id: 1,
+      name: 'Fake',
+      married: true,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    }];
+    const expected = [{
+      id: 1,
+      name: 'Fake',
+      married: true,
+      scores: {
+        language: 21,
+        sciences: {
+          biology: 23
+        }
+      }
+    }];
+    const matchingRules = {
+      "$.body": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "21" at "$.body[0].scores.language" but found "20"`);
+  });
+
+  it('root matching rule - not equal array - length', () => {
+    const actual = [{
+      id: 1,
+      name: 'Fake',
+      married: true,
+      scores: {
+        language: 20,
+        sciences: {
+          biology: 23
+        }
+      }
+    }];
+    const expected = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: true,
+        scores: {
+          language: 21,
+          sciences: {
+            biology: 23
+          }
+        }
+      },
+      {
+        id: 2,
+        name: 'Bake',
+        married: true,
+        scores: {
+          language: 21,
+          sciences: {
+            biology: 23
+          }
+        }
+      }
+    ];
+    const matchingRules = {
+      "$.body": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have array with length "2" at "$.body" but found with length "1"`);
   });
 
 });
@@ -2321,6 +2644,318 @@ describe('JSON Match - Array - matching rules', () => {
     };
     const res = this.compare.jsonMatch(actual, expected, matchingRules);
     expect(res.equal).equals(true);
+  });
+
+  it('array of strings - equal', () => {
+    const actual = ["Game", "Thrones"];
+    const expected = ["Game"];
+    const matchingRules = {
+      "$.body": {
+        "min": 1
+      },
+      "$.body[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('array of strings - not equal by length', () => {
+    const actual = ["Game", "Thrones"];
+    const expected = ["Game"];
+    const matchingRules = {
+      "$.body": {
+        "min": 3
+      },
+      "$.body[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have array with length "3" at "$.body" but found with length "2"`);
+  });
+
+  it('array of strings - not equal by type', () => {
+    const actual = ["Game", "Thrones", 3];
+    const expected = ["Game"];
+    const matchingRules = {
+      "$.body": {
+        "min": 2
+      },
+      "$.body[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "string" at "$.body[2]" but found "number"`);
+  });
+
+  it('array of objects - equal', () => {
+    const actual = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 23
+          }
+        }
+      }
+    ];
+    const expected = [
+      {
+        id: 2,
+        name: 'Bake',
+        married: true,
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 23
+          }
+        }
+      }
+    ];
+    const matchingRules = {
+      "$.body": {
+        "min": 1
+      },
+      "$.body[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('array of objects - equal - with deep matching rule', () => {
+    const actual = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 23
+          }
+        }
+      }
+    ];
+    const expected = [
+      {
+        id: 2,
+        name: 'Bake',
+        married: true,
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 24
+          }
+        }
+      }
+    ];
+    const matchingRules = {
+      "$.body": {
+        "min": 1
+      },
+      "$.body[*].*": {
+        "match": "type"
+      },
+      "$.body[*].scores.sciences": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('array of objects - not equal - root', () => {
+    const actual = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 24
+          }
+        }
+      },
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 23
+          }
+        }
+      }
+    ];
+    const expected = [
+      {
+        id: 2,
+        name: 'Bake',
+        married: true,
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 24
+          }
+        }
+      }
+    ];
+    const matchingRules = {
+      "$.body": {
+        "min": 1
+      },
+      "$.body[*].*": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value "24" at "$.body[1].scores.sciences.biology" but found "23"`);
+  });
+
+  it('array of nested objects - equal - with deep matching rule', () => {
+    const actual = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        schools: [
+          {
+            id: 1,
+            name: 'Joseph'
+          },
+          {
+            id: 2,
+            name: 'Alpha'
+          }
+        ],
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 23
+          }
+        }
+      }
+    ];
+    const expected = [
+      {
+        id: 2,
+        name: 'Bake',
+        married: true,
+        schools: [
+          {
+            id: 3,
+            name: 'Ants'
+          },
+          {
+            id: 4,
+            name: 'Mary'
+          }
+        ],
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 24
+          }
+        }
+      }
+    ];
+    const matchingRules = {
+      "$.body": {
+        "min": 1
+      },
+      "$.body[*].*": {
+        "match": "type"
+      },
+      "$.body[*].schools": {
+        "min": 1
+      },
+      "$.body[*].schools[*].*": {
+        "match": "type"
+      },
+      "$.body[*].scores.sciences": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
+  it('array of nested objects - not equal - with deep matching rule', () => {
+    const actual = [
+      {
+        id: 1,
+        name: 'Fake',
+        married: false,
+        schools: [
+          {
+            id: 1,
+            name: 'Joseph'
+          },
+          {
+            id: 2,
+            name: 'Alpha'
+          }
+        ],
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 23
+          }
+        }
+      }
+    ];
+    const expected = [
+      {
+        id: 2,
+        name: 'Bake',
+        married: true,
+        schools: [
+          {
+            id: '3',
+            name: 'Ants'
+          }
+        ],
+        scores: {
+          language: 20,
+          sciences: {
+            biology: 24
+          }
+        }
+      }
+    ];
+    const matchingRules = {
+      "$.body": {
+        "min": 1
+      },
+      "$.body[*].*": {
+        "match": "type"
+      },
+      "$.body[*].schools": {
+        "min": 1
+      },
+      "$.body[*].schools[*].*": {
+        "match": "type"
+      },
+      "$.body[*].scores.sciences": {
+        "match": "type"
+      }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type "string" at "$.body[0].schools[0].id" but found "number"`);
   });
 
 });
