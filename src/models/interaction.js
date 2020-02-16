@@ -16,6 +16,9 @@ class InteractionRequest {
       helper.setMatchingRules(this.matchingRules, this.rawQuery, '$.query');
     }
     this.query = helper.setValueFromMatcher(request.query);
+    for (const prop in this.query) {
+      this.query[prop] = this.query[prop].toString();
+    }
     if (request.body && typeof request.body === 'object') {
       this.rawBody = JSON.parse(JSON.stringify(request.body));
       helper.setMatchingRules(this.matchingRules, this.rawBody, '$.body');

@@ -24,9 +24,9 @@ class Compare {
     return { equal, message };
   }
 
-  jsonMatch(actual, expected, matchingRules) {
+  jsonMatch(actual, expected, matchingRules, rootPath = '$.body') {
     const comparer = new MatchJson(matchingRules);
-    let equal = comparer.compare(actual, expected, '$.body');
+    let equal = comparer.compare(actual, expected, rootPath);
     let message = '';
     if (!equal) {
       let exactPath = '';
@@ -50,10 +50,12 @@ class Compare {
       }
     } else {
       for (const prop in matchingRules) {
-        const matchingRule = matchingRules[prop];
-        if (!matchingRule.success) {
-          equal = false;
-          message = `Matching Rule - "${matchingRule.match}" failed at "${prop}"`;
+        if (prop.startsWith(rootPath)) {
+          const matchingRule = matchingRules[prop];
+          if (!matchingRule.success) {
+            equal = false;
+            message = `Matching Rule - "${matchingRule.match}" failed at "${prop}"`;
+          }
         }
       }
     }

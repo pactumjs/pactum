@@ -80,7 +80,7 @@ class Provider {
     const expectedBody = response.body;
     const matchingRules = response.matchingRules;
     const compare = new Compare();
-    return compare.jsonMatch(actualBody, expectedBody, matchingRules);
+    return compare.jsonMatch(actualBody, expectedBody, matchingRules, '$.body');
   }
 
   publishVerificationResults(path, success) {

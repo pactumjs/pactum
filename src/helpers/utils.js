@@ -1,5 +1,5 @@
 const graphQL = require('./graphQL');
-const compare = require('./compare');
+const Compare = require('./compare');
 
 const utils = {
 
@@ -23,7 +23,7 @@ const utils = {
       let isValidQuery = true;
       if (!interaction.withRequest.ignoreQuery) {
         if (Object.keys(req.query).length > 0 || interaction.withRequest.query) {
-          isValidQuery = validateQuery(req.query, interaction.withRequest.query);
+          isValidQuery = validateQuery(req.query, interaction.withRequest.query, interaction.withRequest.matchingRules);
         }
       }
       if (!isValidQuery) {
@@ -40,10 +40,10 @@ const utils = {
         } else {
           if (typeof req.body === 'object') {
             if (Object.keys(req.body).length > 0) {
-              isValidBody = validateBody(req.body, interaction.withRequest.body);
+              isValidBody = validateBody(req.body, interaction.withRequest.body, interaction.withRequest.matchingRules);
             }
           } else if (req.body) {
-            isValidBody = validateBody(req.body, interaction.withRequest.body);
+            isValidBody = validateBody(req.body, interaction.withRequest.body, interaction.withRequest.matchingRules);
           }
         }
       }
@@ -56,34 +56,17 @@ const utils = {
 
 };
 
-function validateQuery(actual, expected) {
+function validateQuery(actual, expected, matchingRules) {
   if (typeof actual !== 'object' || typeof expected !== 'object') {
     return false;
   }
-  for (const prop in actual) {
-    if (!Object.prototype.hasOwnProperty.call(expected, prop)) {
-      return false;
-    }
-    if (actual[prop] === expected[prop]) {
-      continue;
-    }
-    if (actual[prop] === null) {
-      actual[prop] = 'null';
-    }
-    if (expected[prop] === null) {
-      expected[prop] = 'null';
-    }
-    if (actual[prop].toString() !== expected[prop].toString()) {
-      return false;
-    }
+  const compare = new Compare();
+  const response = compare.jsonMatch(actual, expected, matchingRules, '$.query');
+  if (response.equal) {
+    return compare.jsonMatch(expected, actual, matchingRules, '$.query').equal;
+  } else {
+    return response.equal;
   }
-  for (const prop in expected) {
-    const actualProps = Object.keys(actual);
-    if (Object.prototype.hasOwnProperty.call(expected, prop) && !actualProps.includes(prop)) {
-      return false;
-    }
-  }
-  return true;
 }
 
 function validateHeaders(actual, expected) {
@@ -101,15 +84,13 @@ function validateHeaders(actual, expected) {
   return true;
 }
 
-function validateBody(actual, expected) {
-  if (typeof actual === typeof expected) {
-    if (typeof actual === 'object') {
-      return (JSON.stringify(actual) === JSON.stringify(expected));
-    } else {
-      return (actual === expected);
-    }
+function validateBody(actual, expected, matchingRules) {
+  const compare = new Compare();
+  const response = compare.jsonMatch(actual, expected, matchingRules, '$.body');
+  if (response.equal) {
+    return compare.jsonMatch(expected, actual, matchingRules, '$.body').equal;
   } else {
-    return false;
+    return response.equal;
   }
 }
 

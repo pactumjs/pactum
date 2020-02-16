@@ -133,7 +133,7 @@ describe('Interaction', () => {
         "method": "GET",
         "path": "/api/projects/1",
         "query": {
-          "id": 1,
+          "id": "1",
           "name": "Jon"
         },
         "rawQuery": {
@@ -157,7 +157,7 @@ describe('Interaction', () => {
           "method": "GET",
           "path": "/api/projects/1",
           "query": {
-            "id": 1,
+            "id": "1",
             "name": "Jon"
           }
         }
@@ -217,7 +217,7 @@ describe('Interaction', () => {
         "method": "GET",
         "path": "/api/projects/1",
         "query": {
-          "id": 1,
+          "id": "1",
           "name": "Jon"
         },
         "rawQuery": {
@@ -264,7 +264,7 @@ describe('Interaction', () => {
           "method": "GET",
           "path": "/api/projects/1",
           "query": {
-            "id": 1,
+            "id": "1",
             "name": "Jon"
           }
         }
