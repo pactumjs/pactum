@@ -2,11 +2,13 @@ const expect = require('chai').expect;
 const sandbox = require('sinon').createSandbox();
 
 const Interaction = require('../../src/models/interaction');
+const Matcher = require('../../src/models/matcher');
 const helper = require('../../src/helpers/helper');
 
 describe('Interaction', () => {
 
   before(() => {
+    this.matcher = new Matcher();
     this.helperGetRandomIdStub = sandbox.stub(helper, 'getRandomId');
   });
 
@@ -57,7 +59,8 @@ describe('Interaction', () => {
         "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
-        "query": undefined
+        "query": undefined,
+        "matchingRules": {}
       },
       "rawInteraction": {
         "willRespondWith": {
@@ -78,6 +81,388 @@ describe('Interaction', () => {
     });
   });
 
+  it('valid mock interaction - with request query', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1',
+        query: {
+          id: 1,
+          name: 'Jon'
+        }
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "body": {
+          "id": 1,
+          "name": "fake"
+        },
+        "headers": {
+          "content-type": "application/json"
+        },
+        "rawBody": {
+          "id": 1,
+          "name": "fake"
+        },
+        "status": 200
+      },
+      "withRequest": {
+        "body": undefined,
+        "headers": undefined,
+        "ignoreBody": false,
+        "ignoreQuery": false,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": {
+          "id": 1,
+          "name": "Jon"
+        },
+        "rawQuery": {
+          "id": 1,
+          "name": 'Jon'
+        },
+        "matchingRules": {}
+      },
+      "rawInteraction": {
+        "willRespondWith": {
+          "body": {
+            "id": 1,
+            "name": "fake"
+          },
+          "headers": {
+            "content-type": "application/json"
+          },
+          "status": 200
+        },
+        "withRequest": {
+          "method": "GET",
+          "path": "/api/projects/1",
+          "query": {
+            "id": 1,
+            "name": "Jon"
+          }
+        }
+      }
+    });
+  });
+
+  it('valid mock interaction - with request query & matching rules', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1',
+        query: {
+          id: this.matcher.like(1),
+          name: this.matcher.regex({ generate: 'Jon', matcher: '/\w+/g' })
+        }
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "body": {
+          "id": 1,
+          "name": "fake"
+        },
+        "headers": {
+          "content-type": "application/json"
+        },
+        "rawBody": {
+          "id": 1,
+          "name": "fake"
+        },
+        "status": 200
+      },
+      "withRequest": {
+        "body": undefined,
+        "headers": undefined,
+        "ignoreBody": false,
+        "ignoreQuery": false,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": {
+          "id": 1,
+          "name": "Jon"
+        },
+        "rawQuery": {
+          "id": {
+            "contents": 1,
+            "json_class": "Pact::SomethingLike",
+            "value": 1
+          },
+          "name": {
+            "data": {
+              "generate": "Jon",
+              "matcher": {
+                "json_class": "Regexp",
+                "o": 0,
+                "s": "/w+/g"
+              }
+            },
+            "json_class": "Pact::Term",
+            "value": "Jon"
+          }
+        },
+        "matchingRules": {
+           "$.query.id": {
+             "match": "type"
+           },
+           "$.query.name": {
+             "match": "regex",
+             "regex": "/w+/g"
+           }
+         }
+      },
+      "rawInteraction": {
+        "willRespondWith": {
+          "body": {
+            "id": 1,
+            "name": "fake"
+          },
+          "headers": {
+            "content-type": "application/json"
+          },
+          "status": 200
+        },
+        "withRequest": {
+          "method": "GET",
+          "path": "/api/projects/1",
+          "query": {
+            "id": 1,
+            "name": "Jon"
+          }
+        }
+      }
+    });
+  });
+
+  it('valid mock interaction - with request body', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1',
+        body: {
+          id: 1,
+          name: 'Jon'
+        }
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "body": {
+          "id": 1,
+          "name": "fake"
+        },
+        "headers": {
+          "content-type": "application/json"
+        },
+        "rawBody": {
+          "id": 1,
+          "name": "fake"
+        },
+        "status": 200
+      },
+      "withRequest": {
+        "query": undefined,
+        "headers": undefined,
+        "ignoreBody": false,
+        "ignoreQuery": false,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "body": {
+          "id": 1,
+          "name": "Jon"
+        },
+        "rawBody": {
+          "id": 1,
+          "name": 'Jon'
+        },
+        "matchingRules": {}
+      },
+      "rawInteraction": {
+        "willRespondWith": {
+          "body": {
+            "id": 1,
+            "name": "fake"
+          },
+          "headers": {
+            "content-type": "application/json"
+          },
+          "status": 200
+        },
+        "withRequest": {
+          "method": "GET",
+          "path": "/api/projects/1",
+          "body": {
+            "id": 1,
+            "name": "Jon"
+          }
+        }
+      }
+    });
+  });
+
+  it('valid mock interaction - with request body & matching rules', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1',
+        body: {
+          id: this.matcher.like(1),
+          name: this.matcher.regex({ generate: 'Jon', matcher: '/\w+/g' })
+        }
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "body": {
+          "id": 1,
+          "name": "fake"
+        },
+        "headers": {
+          "content-type": "application/json"
+        },
+        "rawBody": {
+          "id": 1,
+          "name": "fake"
+        },
+        "status": 200
+      },
+      "withRequest": {
+        "query": undefined,
+        "headers": undefined,
+        "ignoreBody": false,
+        "ignoreQuery": false,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "body": {
+          "id": 1,
+          "name": "Jon"
+        },
+        "rawBody": {
+          "id": {
+            "contents": 1,
+            "json_class": "Pact::SomethingLike",
+            "value": 1
+          },
+          "name": {
+            "data": {
+              "generate": "Jon",
+              "matcher": {
+                "json_class": "Regexp",
+                "o": 0,
+                "s": "/w+/g"
+              }
+            },
+            "json_class": "Pact::Term",
+            "value": "Jon"
+          }
+        },
+        "matchingRules": {
+           "$.body.id": {
+             "match": "type"
+           },
+           "$.body.name": {
+             "match": "regex",
+             "regex": "/w+/g"
+           }
+         }
+      },
+      "rawInteraction": {
+        "willRespondWith": {
+          "body": {
+            "id": 1,
+            "name": "fake"
+          },
+          "headers": {
+            "content-type": "application/json"
+          },
+          "status": 200
+        },
+        "withRequest": {
+          "method": "GET",
+          "path": "/api/projects/1",
+          "body": {
+            "id": 1,
+            "name": "Jon"
+          }
+        }
+      }
+    });
+  });
+
   it('valid mock interaction - function', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {
@@ -85,7 +470,7 @@ describe('Interaction', () => {
         method: 'GET',
         path: '/api/projects/1'
       },
-      willRespondWith: function() {}
+      willRespondWith: function () { }
     };
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction.withRequest).deep.equals({
@@ -95,7 +480,8 @@ describe('Interaction', () => {
       "ignoreQuery": false,
       "method": "GET",
       "path": "/api/projects/1",
-      "query": undefined
+      "query": undefined,
+      "matchingRules": {}
     });
   });
 
@@ -115,7 +501,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function() { new Interaction(rawInteraction, true);}).to.throws('Invalid interaction request method provided - undefined');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction request method provided - undefined');
   });
 
   it('invalid mock interaction - no request method', () => {
@@ -135,7 +521,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function() { new Interaction(rawInteraction, true);}).to.throws('Invalid interaction request method provided - get');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction request method provided - get');
   });
 
   it('invalid mock interaction - no request path', () => {
@@ -154,7 +540,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function() { new Interaction(rawInteraction, true);}).to.throws('Invalid interaction request path provided - undefined');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction request path provided - undefined');
   });
 
   it('invalid mock interaction - no response status', () => {
@@ -173,7 +559,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function() { new Interaction(rawInteraction, true);}).to.throws('Invalid interaction response status provided - undefined');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction response status provided - undefined');
   });
 
   it('valid pact interaction', () => {
@@ -226,7 +612,8 @@ describe('Interaction', () => {
         "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
-        "query": undefined
+        "query": undefined,
+        "matchingRules": {}
       },
       "rawInteraction": {
         "provider": 'pro',
@@ -269,7 +656,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function() { new Interaction(rawInteraction, false);}).to.throws('Invalid provider name provided - undefined');
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws('Invalid provider name provided - undefined');
   });
 
   it('invalid pact interaction - no state name', () => {
@@ -291,7 +678,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function() { new Interaction(rawInteraction, false);}).to.throws('Invalid state provided - undefined');
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws('Invalid state provided - undefined');
   });
 
   it('invalid pact interaction - no upon receiving description', () => {
@@ -313,7 +700,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function() { new Interaction(rawInteraction, false);}).to.throws('Invalid upon receiving description provided - undefined');
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws('Invalid upon receiving description provided - undefined');
   });
 
   it('invalid pact interaction - with ignore query', () => {
@@ -337,7 +724,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function() { new Interaction(rawInteraction, false);}).to.throws(`Pact interaction won't support ignore query`);
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support ignore query`);
   });
 
   it('invalid pact interaction - with ignore body', () => {
@@ -361,7 +748,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function() { new Interaction(rawInteraction, false);}).to.throws(`Pact interaction won't support ignore body`);
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support ignore body`);
   });
 
   after(() => {

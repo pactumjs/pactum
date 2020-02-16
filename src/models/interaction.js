@@ -10,8 +10,17 @@ class InteractionRequest {
     this.method = request.method;
     this.path = request.path;
     this.headers = request.headers;
-    this.query = request.query;
-    this.body = request.body;
+    this.matchingRules = {};
+    if (request.query && typeof request.query === 'object') {
+      this.rawQuery = JSON.parse(JSON.stringify(request.query));
+      helper.setMatchingRules(this.matchingRules, this.rawQuery, '$.query');
+    }
+    this.query = helper.setValueFromMatcher(request.query);
+    if (request.body && typeof request.body === 'object') {
+      this.rawBody = JSON.parse(JSON.stringify(request.body));
+      helper.setMatchingRules(this.matchingRules, this.rawBody, '$.body');
+    }
+    this.body = helper.setValueFromMatcher(request.body);
     this.ignoreBody = false;
     this.ignoreQuery = false;
     if (typeof request.ignoreBody === 'boolean') {

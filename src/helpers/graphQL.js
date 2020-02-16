@@ -25,7 +25,7 @@ const graphql = {
 };
 
 function removeLoc(document) {
-  for (let prop in document) {
+  for (const prop in document) {
     if (prop === 'loc') {
       delete document[prop];
     } else {

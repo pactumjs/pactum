@@ -1,6 +1,7 @@
 # pactum
 
 ![Build](https://github.com/ASaiAnudeep/pactum/workflows/Build/badge.svg?branch=master)
+![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
 
 **pactum** is a REST API Testing Tool that combines the implementation of consumer driven contract library [Pact](https://docs.pact.io) for JavaScript.
 

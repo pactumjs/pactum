@@ -3,6 +3,7 @@ const polka = require('polka');
 const Interaction = require('./interaction');
 
 const helper = require('../helpers/helper');
+const utils = require('../helpers/utils');
 const store = require('../helpers/store');
 const log = require('../helpers/logger');
 const config = require('../config');
@@ -100,9 +101,9 @@ function registerAllRoutes(server, app) {
   app.all('/*', (req, response) => {
     const res = new ExpressResponse(response);
     let interactionExercised = false;
-    let interaction = helper.getMatchingInteraction(req, server.pactInteractions);
+    let interaction = utils.getMatchingInteraction(req, server.pactInteractions);
     if (!interaction) {
-      interaction = helper.getMatchingInteraction(req, server.mockInteractions);
+      interaction = utils.getMatchingInteraction(req, server.mockInteractions);
     }
     if (interaction) {
       store.updateInteractionExerciseCounter(interaction.id);
