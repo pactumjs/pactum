@@ -1,4 +1,4 @@
-name: coverage
+name: Coverage
 
 on:
   push:
@@ -16,7 +16,8 @@ jobs:
       with:
         node-version: '12'
     - run: npm install
-    - uses: paambaati/codeclimate-action@v2.2.4
+    - name: Code Coverage
+      uses: paambaati/codeclimate-action@v2.4.0
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_TEST_REPORTER_ID }}
       with:
