@@ -21,4 +21,4 @@ jobs:
         CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_TEST_REPORTER_ID }}
       with:
         coverageCommand: npm run coverage
-        coverageLocations: ./coverage/lcov.info:lcov
+        debug: true
