@@ -50,7 +50,7 @@ const helper = {
         const newPath = `${path}.[*]`;
         this.setMatchingRules(matchingRules, item, newPath);
       }
-    } else if (typeof data === 'object' && !Array.isArray(data)) {
+    } else if (this.isValidObject(data)) {
       if (data.json_class === 'Pact::SomethingLike') {
         matchingRules[path] = {
           match: 'type'
@@ -73,7 +73,7 @@ const helper = {
         }
       } else {
         for (const prop in data) {
-          if (typeof data[prop] === 'object' && !Array.isArray(data)) {
+          if (this.isValidObject(data[prop])) {
             if (data[prop].json_class === 'Pact::SomethingLike') {
               matchingRules[`${path}.${prop}`] = {
                 match: 'type'
@@ -122,6 +122,10 @@ const helper = {
       }
     }
     return plainQuery;
+  },
+
+  isValidObject(value) {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
   }
 
 };
