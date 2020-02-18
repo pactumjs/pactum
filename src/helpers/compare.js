@@ -261,7 +261,8 @@ class MatchJson {
               if (!Array.isArray(expected[0]) && typeof expected[0] === 'object') {
                 for (const prop in expected[0]) {
                   const newActualPath = `${actualPath}[${i}].${prop}`;
-                  if (this.matchingRules[newActualPath]) {
+                  const newMatchingPath = `${matchingPath}[*].${prop}`;
+                  if (this.matchingRules[newMatchingPath]) {
                     if (!this.compare(actual[i][prop], expected[0][prop], newActualPath)) {
                       return false;
                     }

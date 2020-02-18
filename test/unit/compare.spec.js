@@ -2958,4 +2958,30 @@ describe('JSON Match - Array - matching rules', () => {
     expect(res.message).equals(`Json doesn't have type "string" at "$.body[0].schools[0].id" but found "number"`);
   });
 
+  it('array of objects - equal - matching rule for type of items in array', () => {
+    const actual = [
+      {
+        useIntentionCode: 'AAA',
+        useIntentionDescFr: 'Ab',
+        useIntentionDescEn: 'Buying of a house'
+      }
+    ];
+    const expected = [
+      {
+        useIntentionCode: 'AAA',
+        useIntentionDescFr: 'Ab',
+        useIntentionDescEn: 'Buying of a house'
+      }
+    ];
+    const matchingRules = {
+      '$.body': { min: 1 },
+      '$.body[*].*': { match: 'type' },
+      '$.body[*].useIntentionCode': { match: 'type' },
+      '$.body[*].useIntentionDescFr': { match: 'type' },
+      '$.body[*].useIntentionDescEn': { match: 'type' }
+    };
+    const res = this.compare.jsonMatch(actual, expected, matchingRules);
+    expect(res.equal).equals(true);
+  });
+
 });

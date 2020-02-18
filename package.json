@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "REST API endpoint testing tool with a mock server & compatible with pact.io for contract testing",
   "main": "src/index.js",
   "files": [
@@ -36,11 +36,11 @@
   "author": "Anudeep <asa.anudeep4@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "colors": "^1.4.0",
     "djv": "^2.1.3-alpha.0",
     "json-query": "^2.2.2",
     "parse-graphql": "^1.0.0",
     "phin": "^3.4.1",
-    "pino": "^5.16.0",
     "polka": "^0.5.2"
   },
   "devDependencies": {

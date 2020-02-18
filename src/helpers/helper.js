@@ -2,6 +2,9 @@ const helper = {
 
   getJson(jsonString) {
     try {
+      if (jsonString instanceof Buffer) {
+        jsonString = jsonString.toString();
+      }
       return JSON.parse(jsonString);
     } catch (error) {
       return jsonString;
