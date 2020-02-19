@@ -11,17 +11,17 @@ const LEVEL_ERROR = 7;
  * @param {string} level - log level
  */
 function getLevelValue(level) {
-  const lowerCaseLevel = level.toLowerCase();
+  const lowerCaseLevel = level.toUpperCase();
   switch (lowerCaseLevel) {
-    case 'trace':
+    case 'TRACE':
       return LEVEL_TRACE;
-    case 'debug':
+    case 'DEBUG':
       return LEVEL_DEBUG;
-    case 'info':
+    case 'INFO':
       return LEVEL_INFO;
-    case 'warn':
+    case 'WARN':
       return LEVEL_WARN;
-    case 'error':
+    case 'ERROR':
       return LEVEL_ERROR;
     default:
       return LEVEL_INFO;
@@ -33,11 +33,20 @@ class Logger {
   constructor() {
     this.console = console;
     // validate log level
-    this.level = process.env.PACTUM_LOG_LEVEL || 'info';
+    this.level = process.env.PACTUM_LOG_LEVEL || 'INFO';
     this.levelValue = getLevelValue(this.level);
     if (process.env.PACTUM_DISABLE_LOG_COLORS === 'true') {
       colors.disable();
     }
+  }
+
+  /**
+   * sets log level
+   * @param {('TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR')} level - log level
+   */
+  setLevel(level) {
+    this.level = level;
+    this.levelValue = getLevelValue(this.level);
   }
 
   trace(...msg) {

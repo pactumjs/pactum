@@ -1,5 +1,6 @@
 const Interaction = require('../models/interaction');
 const { PactumConfigurationError } = require('../helpers/errors');
+const log = require('../helpers/logger');
 
 const config = require('../config');
 
@@ -64,6 +65,7 @@ class Mock {
    * @param {number} port - port number of mock server
    */
   setDefaultPort(port) {
+    log.debug('Setting default port number for mock server', port);
     if (typeof port !== 'number') {
       throw new PactumConfigurationError(`Invalid default port number - ${port}`);
     }
@@ -78,6 +80,7 @@ class Mock {
     const interactionObj = new Interaction(interaction, true);
     _server.addMockInteraction(interactionObj.id, interactionObj);
     this.interactionIds.add(interactionObj.id);
+    log.debug('Added default mock interaction with id', interactionObj.id);
     return interactionObj.id;
   }
 
@@ -97,6 +100,7 @@ class Mock {
       ids.push(interactionObj.id);
       this.interactionIds.add(interactionObj.id);
     }
+    log.debug('Added default mock interactions with ids', ids);
     return ids;
   }
 
@@ -108,6 +112,7 @@ class Mock {
     const interactionObj = new Interaction(interaction);
     _server.addPactInteraction(interactionObj.id, interactionObj);
     this.interactionIds.add(interactionObj.id);
+    log.debug('Added default pact interactions with id', interactionObj.id);
     return interactionObj.id;
   }
 
@@ -127,6 +132,7 @@ class Mock {
       ids.push(interactionObj.id);
       this.interactionIds.add(interactionObj.id);
     }
+    log.debug('Added default pact interactions with ids', ids);
     return ids;
   }
 
@@ -153,6 +159,7 @@ class Mock {
     for (let i = 0; i < ids.length; i++) {
       this.interactionIds.delete(ids[i]);
     }
+    log.debug('Cleared default interactions with ids', ids);
   }
 
 }

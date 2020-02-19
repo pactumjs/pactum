@@ -2,7 +2,7 @@ const pactum = require('../../src/index');
 const { like, term, eachLike } = pactum.matchers;
 
 
-describe('Pact', () => {
+describe('Mock', () => {
 
   it('GET - one interaction', async () => {
     await pactum
@@ -28,6 +28,18 @@ describe('Pact', () => {
         id: 1,
         name: 'fake'
       })
+      .expectJsonSchema({
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "id"]
+      })
+      .expectJsonQuery('id', 1)
       .expectResponseTime(100)
       .toss();
   });
@@ -260,6 +272,44 @@ describe('Pact', () => {
       .expectJson({
         message: 'ok'
       })
+      .toss();
+  });
+
+  it('GET - invalid interaction', async () => {
+    await pactum
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(404)
+      .expectBody('Interaction Not Found')
+      .expectBodyContains('Not Found')
+      .expectResponseTime(100)
+      .toss();
+  });
+
+  it('PUT - invalid interaction', () => {
+    return pactum
+      .put('http://localhost:9393/api/projects/1')
+      .withBody("Hello")
+      .expectStatus(404)
+      .expectBody('Interaction Not Found')
+      .expectHeader('connection', 'close')
+      .expectHeaderContains('connection', 'close')
+      .expectResponseTime(100);
+  });
+
+  it('PATCH - invalid interaction', async () => {
+    await pactum
+      .patch('http://localhost:9393/api/projects/1')
+      .expectStatus(404)
+      .expectBody('Interaction Not Found')
+      .expectResponseTime(100)
+      .toss();
+  });
+
+  it('HEAD - invalid interaction', async () => {
+    await pactum
+      .head('http://localhost:9393/api/projects/1')
+      .expectStatus(404)
+      .expectResponseTime(100)
       .toss();
   });
 

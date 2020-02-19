@@ -21,6 +21,7 @@ class Server {
     return new Promise((resolve) => {
       if (!this.app) {
         this.app = polka();
+        this.app.use(logger);
         this.app.use(bodyParser);
         registerPactumRemoteRoutes(this);
         registerAllRoutes(this, this.app);
@@ -64,30 +65,34 @@ class Server {
     } else if (this.pactInteractions.has(id)) {
       this.pactInteractions.delete(id);
     } else {
-      // error
+      log.warn('Unable to remove interaction. Interaction not found with id', id);
     }
 
   }
 
   removeMockInteraction(id) {
     this.mockInteractions.delete(id);
+    log.trace('Removed mock interaction with id', id);
   }
 
   removePactInteraction(id) {
     this.pactInteractions.delete(id);
+    log.trace('Removed pact interaction with id', id);
   }
 
   clearMockInteractions() {
     this.mockInteractions.clear();
+    log.trace('Cleared mock interactions');
   }
 
   clearPactInteractions() {
     this.pactInteractions.clear();
+    log.trace('Cleared pact interactions');
   }
 
   clearAllInteractions() {
-    this.mockInteractions.clear();
-    this.pactInteractions.clear();
+    this.clearMockInteractions();
+    this.clearPactInteractions();
   }
 
 }
@@ -122,8 +127,7 @@ function registerAllRoutes(server, app) {
       }
     }
     if (!interactionExercised) {
-      log.warn('Interaction not found');
-      log.warn({
+      log.warn('Interaction not found', {
         method: req.method,
         path: req.path,
         headers: req.headers,
@@ -181,7 +185,8 @@ function handleRemoteInteractions(req, response, server, interactionType) {
         if (req.query.id) {
           rawInteractions.push(interactions.get(req.query.id).rawInteraction);
         } else {
-          for (let [id, interaction] of interactions) {
+          for (const [id, interaction] of interactions) {
+            log.trace('Fetching remote interaction', id);
             rawInteractions.push(interaction.rawInteraction);
           }
         }
@@ -217,8 +222,16 @@ function bodyParser(req, res, next) {
   });
   req.on('end', () => {
     req.body = helper.getJson(body);
+    log.trace('Request Body', req.body);
     next();
   });
+}
+
+function logger(req, res, next) {
+  log.trace('Request', req.method, req.path);
+  log.trace('Request Query', req.query);
+  log.trace('Request Headers', req.headers);
+  next();
 }
 
 class ExpressResponse {
