@@ -5,7 +5,7 @@ const Matcher = require('./models/matcher');
 const Mock = require('./exports/mock');
 const Pact = require('./exports/pact');
 const request = require('./exports/request');
-const Provider = require('./exports/provider');
+const provider = require('./exports/provider');
 
 /**
  * request method
@@ -48,7 +48,7 @@ const pactum = {
   matchers,
   pact,
   request,
-  Provider,
+  provider,
 
   /**
    * Add as an mock interaction to the mock server

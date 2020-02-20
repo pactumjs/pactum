@@ -33,7 +33,7 @@ class Expect {
   }
 
   validateInteractions(interactions) {
-    for (let [id, interaction] of interactions) {
+    for (const [id, interaction] of interactions) {
       assert.ok(interaction.exercised, `Interaction not Exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
     }
   }

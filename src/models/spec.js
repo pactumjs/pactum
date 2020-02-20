@@ -524,10 +524,10 @@ class Spec {
     if (!helper.isValidString(this._request.url)) {
       throw new PactumRequestError(`Invalid request url - ${this._request.url}`);
     }
-    for (let [id, interaction] of this.mockInteractions) {
+    for (const [id, interaction] of this.mockInteractions) {
       this.server.addMockInteraction(id, interaction);
     }
-    for (let [id, interaction] of this.pactInteractions) {
+    for (const [id, interaction] of this.pactInteractions) {
       this.server.addPactInteraction(id, interaction);
     }
     const requestStartTime = Date.now();
@@ -546,10 +546,10 @@ class Spec {
       }
     }
     this._response.responseTime = Date.now() - requestStartTime;
-    for (let [id, interaction] of this.mockInteractions) {
+    for (const [id, interaction] of this.mockInteractions) {
       this.server.removeInteraction(id);
     }
-    for (let [id, interaction] of this.pactInteractions) {
+    for (const [id, interaction] of this.pactInteractions) {
       this.server.removeInteraction(id);
     }
     this._response.json = helper.getJson(this._response.body);
