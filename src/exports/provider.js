@@ -3,22 +3,44 @@ const helper = require('../helpers/helper');
 const Compare = require('../helpers/compare');
 const log = require('../helpers/logger');
 
+/**
+ * provider options
+ * @typedef {object} ProviderOptions
+ * @property {string} providerBaseUrl - running API provider host endpoint.
+ * @property {string} [provider] - name of the provider.
+ * @property {string} [providerVersion] - provider version, required to publish verification results to a broker
+ * @property {any} [stateHandlers] - provider state handlers. A map of 'string -> () => Promise', where each string is the state to setup, and the function is used to configure the state in the Provider.
+ * @property {any} [customProviderHeaders] - Header(s) to add to any requests to the provider service. eg { 'Authorization': 'Basic cGFjdDpwYWN0'}.
+ * @property {string[]} [pactUrls] - array of local Pact file paths or HTTP-based URLs (e.g. from a broker). Required if not using a Broker.
+ * @property {string} [pactBrokerUrl] - URL of the Pact Broker to retrieve pacts from. Required if not using pactUrls.
+ * @property {string} [pactBrokerUsername] - username for Pact Broker basic authentication.
+ * @property {string} [pactBrokerPassword] - password for Pact Broker basic authentication.
+ * @property {string} [pactBrokerToken] - bearer token for Pact Broker authentication.
+ * @property {boolean} [publishVerificationResult] - publish verification result to Broker
+ * @property {string[]} [tags] - array of tags, used to filter pacts from the Broker.
+ */
+
 class Provider {
 
+  /**
+   * constructor
+   * @param {ProviderOptions} options - provider options
+   */
   constructor(options) {
     this.pactBrokerUrl = options.pactBrokerUrl;
     this.pactBrokerUsername = options.pactBrokerUsername;
     this.pactBrokerPassword = options.pactBrokerPassword;
-    this.tags = options.tag || [];
+    this.tags = options.tags || [];
     this.publishVerificationResult = options.publishVerificationResult;
     this.stateHandlers = options.stateHandlers || {};
     this.provider = options.provider;
     this.providerBaseUrl = options.providerBaseUrl;
     this.providerVersion =  options.providerVersion;
+    this.customProviderHeaders = options.customProviderHeaders;
 
     this.testCount = 0;
-    this.testPassed = 0;
-    this.testFailed = 0;
+    this.testPassedCount = 0;
+    this.testFailedCount = 0;
     this.testSkipped = 0;
   }
 
@@ -39,11 +61,11 @@ class Provider {
         const interaction = interactions[j];
         const isValid = await this._validateInteraction(interaction);
         if (isValid.equal) {
-          this.testPassed = this.testPassed + 1;
+          this.testPassedCount = this.testPassedCount + 1;
           log.info(`     ${'√'.green} ${interaction.description.gray}`);
         } else {
           success = false;
-          this.testFailed = this.testFailed + 1;
+          this.testFailedCount = this.testFailedCount + 1;
           log.info(`     ${'X'.red } ${interaction.description.gray}`);
           log.error(`       ${isValid.message.red}`);
         }
@@ -60,9 +82,10 @@ class Provider {
 
   _printSummary() {
     log.info();
-    log.info(` ${this.testPassed} passing`.green);
-    if (this.testFailed > 0) {
-      log.info(` ${this.testFailed} failing`.red);
+    log.info(` ${this.testPassedCount} passing`.green);
+    if (this.testFailedCount > 0) {
+      log.info(` ${this.testFailedCount} failing`.red);
+      process.exit(1);
     }
   }
 
@@ -186,6 +209,10 @@ class Provider {
 
 const provider = {
 
+  /**
+   * validate provider
+   * @param {ProviderOptions} options - provider options
+   */
   validate(options) {
     const providerObj = new Provider(options);
     return providerObj.validate();
