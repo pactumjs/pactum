@@ -30,6 +30,7 @@ class Provider {
     this.pactBrokerUrl = options.pactBrokerUrl;
     this.pactBrokerUsername = options.pactBrokerUsername;
     this.pactBrokerPassword = options.pactBrokerPassword;
+    this.pactBrokerToken = options.pactBrokerToken;
     this.tags = options.tags || [];
     this.publishVerificationResult = options.publishVerificationResult;
     this.stateHandlers = options.stateHandlers || {};
@@ -73,50 +74,40 @@ class Provider {
       if (this.publishVerificationResult) {
         const url = consumerPactDetails['_links']['pb:publish-verification-results']['href'];
         const path = url.match(/\/pacts\/provider.*/g)[0];
-        const publishResponse = await this._publishVerificationResults(path, success);
-        log.info(publishResponse.statusCode);
+        await this._publishVerificationResults(path, success);
       }
     }
     this._printSummary();
   }
 
-  _printSummary() {
-    log.info();
-    log.info(` ${this.testPassedCount} passing`.green);
-    if (this.testFailedCount > 0) {
-      log.info(` ${this.testFailedCount} failing`.red);
-      process.exit(1);
-    }
-  }
-
   async _getLatestProviderPacts() {
-    const response = await phin({
-      url: `${this.pactBrokerUrl}/pacts/provider/${this.provider}/latest`,
-      core: {
-        auth: `${this.pactBrokerUsername}:${this.pactBrokerPassword}`
-      },
-      method: 'GET'
-    });
+    const requestOptions = this._getPactBrokerRequestOptions();
+    requestOptions.url = `${this.pactBrokerUrl}/pacts/provider/${this.provider}/latest`;
+    requestOptions.method = 'GET';
+    log.debug('Fetching latest provider pacts', requestOptions);
+    const response = await phin(requestOptions);
     if (response.statusCode === 200) {
       const body = helper.getJson(response.body);
       return body['_links']['pb:pacts'];
+    } else {
+      log.error(`Failed to fetch latest provider pacts. | Response: ${response.statusCode} - ${response.statusMessage}`);
+      return null;
     }
-    return null;
   }
 
   async _getProviderConsumerPactDetails(consumer, consumerVersion) {
-    const response = await phin({
-      url: `${this.pactBrokerUrl}/pacts/provider/${this.provider}/consumer/${consumer}/version/${consumerVersion}`,
-      core: {
-        auth: `${this.pactBrokerUsername}:${this.pactBrokerPassword}`
-      },
-      method: 'GET'
-    });
+    const requestOptions = this._getPactBrokerRequestOptions();
+    requestOptions.url = `${this.pactBrokerUrl}/pacts/provider/${this.provider}/consumer/${consumer}/version/${consumerVersion}`;
+    requestOptions.method = 'GET';
+    log.debug('Fetching provider-consumer pacts', requestOptions);
+    const response = await phin(requestOptions);
     if (response.statusCode === 200) {
       const body = helper.getJson(response.body);
       return body;
+    } else {
+      log.error(`Failed to fetch consumer pact details. | Response: ${response.statusCode} - ${response.statusMessage}`);
+      return null;
     }
-    return null;
   }
 
   async _validateInteraction(interaction) {
@@ -126,8 +117,23 @@ class Provider {
     if (this.stateHandlers && this.stateHandlers[providerState]) {
       await this.stateHandlers[interaction.providerState]();
     }
-    const actualResponse = await phin(this.getRequestOptions(request));
+    const actualResponse = await phin(this._getInteractionRequestOptions(request));
     return this._validateResponse(actualResponse, response);
+  }
+
+  async _publishVerificationResults(path, success) {
+    const requestOptions = this._getPactBrokerRequestOptions();
+    requestOptions.url = `${this.pactBrokerUrl}${path}`;
+    requestOptions.method = 'POST';
+    requestOptions.data = {
+      success,
+      providerApplicationVersion: this.providerVersion
+    };
+    log.debug('Publishing verification results.', requestOptions);
+    const response = await phin(requestOptions);
+    if (response.statusCode !== 200) {
+      log.error(`Failed to publish verification results. | Response: ${response.statusCode} - ${response.statusMessage}`);
+    }
   }
 
   _validateResponse(actual, expected) {
@@ -164,6 +170,9 @@ class Provider {
       const compare = new Compare();
       return compare.jsonMatch(actual.headers, expected.headers, matchingRules, '$.headers');
     }
+    return {
+      equal: true
+    };
   }
 
   _validateBody(actual, expected) {
@@ -181,7 +190,7 @@ class Provider {
     };
   }
 
-  getRequestOptions(request) {
+  _getInteractionRequestOptions(request) {
     const options = {
       url: request.query ? `${this.providerBaseUrl}${request.path}?${request.query}` : `${this.providerBaseUrl}${request.path}`,
       method: request.method,
@@ -191,18 +200,28 @@ class Provider {
     return options;
   }
 
-  _publishVerificationResults(path, success) {
-    return phin({
-      url: `${this.pactBrokerUrl}${path}`,
-      method: 'POST',
-      core: {
+  _getPactBrokerRequestOptions() {
+    const requestOptions = {};
+    if (this.pactBrokerUsername) {
+      requestOptions.core = {
         auth: `${this.pactBrokerUsername}:${this.pactBrokerPassword}`
-      },
-      data: {
-        success,
-        providerApplicationVersion: this.providerVersion
-      }
-    });
+      };
+    }
+    if (this.pactBrokerToken) {
+      requestOptions.headers = {
+        'authorization': `Basic ${this.pactBrokerToken}`
+      };
+    }
+    return requestOptions;
+  }
+
+  _printSummary() {
+    log.info();
+    log.info(` ${this.testPassedCount} passing`.green);
+    if (this.testFailedCount > 0) {
+      log.info(` ${this.testFailedCount} failing`.red);
+      throw 'Provider Verification Failed';
+    }
   }
 
 }
