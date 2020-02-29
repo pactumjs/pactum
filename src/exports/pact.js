@@ -1,8 +1,8 @@
 const fs = require('fs');
-const path = require('path');
 const phin = require('phin');
 
 const config = require('../config');
+const helper = require('../helpers/helper');
 const store = require('../helpers/store');
 const { PactumConfigurationError } = require('../helpers/errors');
 
@@ -53,35 +53,7 @@ class Pact {
    * @param {PublishOptions} options - publish options
    */
   publish(options) {
-    const pactFilesOrDirs = options.pactFilesOrDirs;
-    const filePaths = new Set();
-    for (let i = 0; i < pactFilesOrDirs.length; i++) {
-      const pactFileOrDir = pactFilesOrDirs[i];
-      const stats = fs.lstatSync(pactFileOrDir);
-      if (stats.isDirectory()) {
-        const items = fs.readdirSync(pactFileOrDir);
-        for (let j = 0; j < items.length; j++) {
-          const item = items[j];
-          const itemPath = path.join(pactFileOrDir, item);
-          const childPathStats = fs.lstatSync(itemPath);
-          if (childPathStats.isDirectory()) {
-            const childItems = fs.readdirSync(itemPath);
-            for (let k = 0; k < childItems.length; k++) {
-              const childItem = childItems[k];
-              const childItemPath = path.join(itemPath, childItem);
-              const childItemStats = fs.lstatSync(childItemPath);
-              if (childItemStats.isFile()) {
-                filePaths.add(childItemPath);
-              }
-            }
-          } else {
-            filePaths.add(itemPath);
-          }
-        }
-      } else {
-        filePaths.add(pactFileOrDir);
-      }
-    }
+    const filePaths = helper.getLocalPactFiles(options.pactFilesOrDirs);
     return _publish(filePaths, options);
   }
 
@@ -99,21 +71,19 @@ async function _publish(filePaths, options) {
   const pactBrokerUsername = options.pactBrokerUsername || process.env.PACT_BROKER_USERNAME;
   const pactBrokerPassword = options.pactBrokerPassword || process.env.PACT_BROKER_PASSWORD;
   for (const filePath of filePaths) {
-    const ext = path.extname(filePath);
-    if (ext === '.json') {
-      const pactFile = require(filePath);
-      const consumer = pactFile.consumer.name || config.pact.consumer || process.env.PACTUM_PACT_CONSUMER_NAME;
-      const provider = pactFile.provider.name;
-      consumers.add(consumer);
-      await phin({
-        url: `${pactBroker}/pacts/provider/${provider}/consumer/${consumer}/version/${consumerVersion}`,
-        method: 'PUT',
-        core: {
-          auth: `${pactBrokerUsername}:${pactBrokerPassword}`
-        },
-        data: pactFile
-      });
-    }
+    const rawData = fs.readFileSync(filePath);
+    const pactFile = JSON.parse(rawData);
+    const consumer = pactFile.consumer.name || config.pact.consumer || process.env.PACTUM_PACT_CONSUMER_NAME;
+    const provider = pactFile.provider.name;
+    consumers.add(consumer);
+    await phin({
+      url: `${pactBroker}/pacts/provider/${provider}/consumer/${consumer}/version/${consumerVersion}`,
+      method: 'PUT',
+      core: {
+        auth: `${pactBrokerUsername}:${pactBrokerPassword}`
+      },
+      data: pactFile
+    });
   }
   for (const consumer of consumers) {
     for (let i = 0; i < tags.length; i++) {

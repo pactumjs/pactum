@@ -40,6 +40,7 @@ class Server {
     return new Promise((resolve) => {
       if (this.app) {
         this.app.server.close(() => {
+          this.app = null;
           log.info(`Mock server stopped on port ${config.mock.port}`);
           resolve();
         });

@@ -1,0 +1,92 @@
+{
+  "consumer": {
+    "name": "billing-service"
+  },
+  "provider": {
+    "name": "user-service"
+  },
+  "interactions": [
+    {
+      "description": "a request for project 1",
+      "providerState": "when there is a project with id 1",
+      "request": {
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": ""
+      },
+      "response": {
+        "status": 200,
+        "headers": {},
+        "body": {
+          "id": 1,
+          "name": "fake"
+        },
+        "matchingRules": {}
+      }
+    },
+    {
+      "description": "a request for project 2",
+      "providerState": "when there is a project with id 2",
+      "request": {
+        "method": "GET",
+        "path": "/api/projects/2",
+        "query": ""
+      },
+      "response": {
+        "status": 200,
+        "headers": {},
+        "body": {
+          "id": 1,
+          "name": "fake",
+          "gender": "M",
+          "married": true,
+          "favorite": {
+            "books": [
+              "Harry Porter"
+            ]
+          },
+          "addresses": [
+            {
+              "street": "Road No. 60"
+            }
+          ]
+        },
+        "matchingRules": {
+          "$.body.id": {
+            "match": "type"
+          },
+          "$.body.name": {
+            "match": "type"
+          },
+          "$.body.gender": {
+            "match": "regex",
+            "regex": "F|M"
+          },
+          "$.body.married": {
+            "match": "type"
+          },
+          "$.body.favorite.books": {
+            "min": 1
+          },
+          "$.body.favorite.books[*].*": {
+            "match": "type"
+          },
+          "$.body.addresses": {
+            "min": 1
+          },
+          "$.body.addresses[*].*": {
+            "match": "type"
+          },
+          "$.body.addresses[*].street": {
+            "match": "type"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

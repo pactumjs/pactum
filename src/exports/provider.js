@@ -1,17 +1,19 @@
 const phin = require('phin');
+const fs = require('fs');
 const helper = require('../helpers/helper');
 const Compare = require('../helpers/compare');
 const log = require('../helpers/logger');
+const { PactumConfigurationError } = require('../helpers/errors');
 
 /**
  * provider options
  * @typedef {object} ProviderOptions
  * @property {string} providerBaseUrl - running API provider host endpoint.
- * @property {string} [provider] - name of the provider.
+ * @property {string} provider - name of the provider.
  * @property {string} [providerVersion] - provider version, required to publish verification results to a broker
  * @property {any} [stateHandlers] - provider state handlers. A map of 'string -> () => Promise', where each string is the state to setup, and the function is used to configure the state in the Provider.
  * @property {any} [customProviderHeaders] - Header(s) to add to any requests to the provider service. eg { 'Authorization': 'Basic cGFjdDpwYWN0'}.
- * @property {string[]} [pactUrls] - array of local Pact file paths or HTTP-based URLs (e.g. from a broker). Required if not using a Broker.
+ * @property {string[]} [pactFilesOrDirs] - array of local pact files or directories
  * @property {string} [pactBrokerUrl] - URL of the Pact Broker to retrieve pacts from. Required if not using pactUrls.
  * @property {string} [pactBrokerUsername] - username for Pact Broker basic authentication.
  * @property {string} [pactBrokerPassword] - password for Pact Broker basic authentication.
@@ -27,17 +29,24 @@ class Provider {
    * @param {ProviderOptions} options - provider options
    */
   constructor(options) {
+    if (!helper.isValidObject(options)) {
+      throw new PactumConfigurationError(`Invalid provider options provided - ${options}`);
+    }
     this.pactBrokerUrl = options.pactBrokerUrl;
     this.pactBrokerUsername = options.pactBrokerUsername;
     this.pactBrokerPassword = options.pactBrokerPassword;
     this.pactBrokerToken = options.pactBrokerToken;
+    this.pactFilesOrDirs = options.pactFilesOrDirs;
+    // @property {string[]} [pactUrls] - array of HTTP-based URLs (e.g. from a broker). Required if not using a Broker.
     this.tags = options.tags || [];
     this.publishVerificationResult = options.publishVerificationResult;
     this.stateHandlers = options.stateHandlers || {};
     this.provider = options.provider;
     this.providerBaseUrl = options.providerBaseUrl;
-    this.providerVersion =  options.providerVersion;
+    this.providerVersion = options.providerVersion;
     this.customProviderHeaders = options.customProviderHeaders;
+
+    this.validateOptions();
 
     this.testCount = 0;
     this.testPassedCount = 0;
@@ -45,39 +54,111 @@ class Provider {
     this.testSkipped = 0;
   }
 
-  async validate() {
-    log.info(`Provider Verification: `);
-    const providerPacts = await this._getLatestProviderPacts();
-    for (let i = 0; i < providerPacts.length; i++) {
-      let success = true;
-      const providerPact = providerPacts[i];
-      const versionString = providerPact.href.match(/\/version\/.*/g);
-      const consumerVersion = versionString[0].replace('/version/', '');
-      const consumerPactDetails = await this._getProviderConsumerPactDetails(providerPact.name, consumerVersion);
-      log.info();
-      log.info(`  Consumer: ${providerPact.name} - ${consumerVersion}`);
-      const interactions = consumerPactDetails.interactions;
-      for (let j = 0; j < interactions.length; j++) {
-        this.testCount = this.testCount + 1;
-        const interaction = interactions[j];
-        const isValid = await this._validateInteraction(interaction);
-        if (isValid.equal) {
-          this.testPassedCount = this.testPassedCount + 1;
-          log.info(`     ${'√'.green} ${interaction.description.gray}`);
-        } else {
-          success = false;
-          this.testFailedCount = this.testFailedCount + 1;
-          log.info(`     ${'X'.red } ${interaction.description.gray}`);
-          log.error(`       ${isValid.message.red}`);
-        }
-      }
-      if (this.publishVerificationResult) {
-        const url = consumerPactDetails['_links']['pb:publish-verification-results']['href'];
-        const path = url.match(/\/pacts\/provider.*/g)[0];
-        await this._publishVerificationResults(path, success);
+  validateOptions() {
+    if (!helper.isValidString(this.providerBaseUrl)) {
+      throw new PactumConfigurationError(`Invalid provider base url provided - ${this.providerBaseUrl}`);
+    }
+    if (!helper.isValidString(this.provider)) {
+      throw new PactumConfigurationError(`Invalid provider name provided - ${this.provider}`);
+    }
+    if (!this.pactBrokerUrl && !this.pactFilesOrDirs) {
+      throw new PactumConfigurationError(`Invalid pact-broker url - ${this.pactBrokerUrl} / pact local files - ${this.pactFilesOrDirs} provided`);
+    }
+    if (this.customProviderHeaders) {
+      if (!helper.isValidObject(this.customProviderHeaders)) {
+        throw new PactumConfigurationError(`Invalid custom headers provided - ${this.customProviderHeaders}`);
       }
     }
-    this._printSummary();
+    if (this.stateHandlers) {
+      if (!helper.isValidObject(this.stateHandlers)) {
+        throw new PactumConfigurationError(`Invalid state handlers provided - ${this.stateHandlers}`);
+      }
+      for (const prop in this.stateHandlers) {
+        if (typeof this.stateHandlers[prop] !== 'function') {
+          throw new PactumConfigurationError(`Invalid state handlers function provided for - ${prop}`);
+        }
+      }
+    }
+    if (this.pactBrokerUrl) {
+      if (!helper.isValidString(this.provider)) {
+        throw new PactumConfigurationError(`Invalid provider name provided - ${this.provider}`);
+      }
+    }
+    if (this.publishVerificationResult) {
+      if (!this.pactBrokerUrl) {
+        throw new PactumConfigurationError(`Invalid pact broker url provided - ${this.pactBrokerUrl}`);
+      }
+      if (!this.providerVersion) {
+        throw new PactumConfigurationError(`Invalid provider version provided - ${this.providerVersion}`);
+      }
+    }
+  }
+
+  async validate() {
+    log.info(`Provider Verification: `);
+    await this.validatePactsFromPactBroker();
+    await this.validatePactsFromLocal();
+    this.printSummary();
+  }
+
+  async validatePactsFromPactBroker() {
+    if (this.pactBrokerUrl) {
+      const providerPacts = await this._getLatestProviderPacts();
+      for (let i = 0; i < providerPacts.length; i++) {
+        const providerPact = providerPacts[i];
+        const versionString = providerPact.href.match(/\/version\/.*/g);
+        const consumerVersion = versionString[0].replace('/version/', '');
+        const consumerPactDetails = await this._getProviderConsumerPactDetails(providerPact.name, consumerVersion);
+        log.info();
+        log.info(`  Consumer: ${providerPact.name} - ${consumerVersion}`);
+        const interactions = consumerPactDetails.interactions;
+        const success = await this.validateInteractions(interactions);
+        if (this.publishVerificationResult) {
+          const url = consumerPactDetails['_links']['pb:publish-verification-results']['href'];
+          const path = url.match(/\/pacts\/provider.*/g)[0];
+          await this._publishVerificationResults(path, success);
+        }
+      }
+    }
+  }
+
+  async validatePactsFromLocal() {
+    if (this.pactFilesOrDirs) {
+      const filePaths = helper.getLocalPactFiles(this.pactFilesOrDirs);
+      for (const filePath of filePaths) {
+        const rawData = fs.readFileSync(filePath);
+        const pactFile = JSON.parse(rawData);
+        const consumer = pactFile.consumer.name;
+        const provider = pactFile.provider.name;
+        if (this.provider === provider) {
+          log.info();
+          log.info(`  Consumer: ${consumer}`);
+          const interactions = pactFile.interactions;
+          await this.validateInteractions(interactions);
+        } else {
+          log.warn(`Invalid provider ${provider} in ${filePath}`);
+        }
+      }
+    }
+  }
+
+  async validateInteractions(interactions) {
+    let success = true;
+    for (let j = 0; j < interactions.length; j++) {
+      this.testCount = this.testCount + 1;
+      const interaction = interactions[j];
+      const isValid = await this._validateInteraction(interaction);
+      if (isValid.equal) {
+        this.testPassedCount = this.testPassedCount + 1;
+        log.info(`     ${'√'.green} ${interaction.description.gray}`);
+      } else {
+        success = false;
+        this.testFailedCount = this.testFailedCount + 1;
+        log.info(`     ${'X'.red} ${interaction.description.gray}`);
+        log.error(`       ${isValid.message.red}`);
+      }
+    }
+    return success;
   }
 
   async _getLatestProviderPacts() {
@@ -197,6 +278,14 @@ class Provider {
       headers: request.headers,
       data: request.body
     };
+    if (this.customProviderHeaders) {
+      if (!options.headers) {
+        options.headers = {};
+      }
+      for (const prop in this.customProviderHeaders) {
+        options.headers[prop] = this.customProviderHeaders[prop];
+      }
+    }
     return options;
   }
 
@@ -215,7 +304,7 @@ class Provider {
     return requestOptions;
   }
 
-  _printSummary() {
+  printSummary() {
     log.info();
     log.info(` ${this.testPassedCount} passing`.green);
     if (this.testFailedCount > 0) {
