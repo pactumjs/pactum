@@ -1,6 +1,6 @@
 const Expect = require('../../src/models/expect');
 
-describe.only('Expect', () => {
+describe('Expect', () => {
 
   it('validate status', () => {
     const ex = new Expect();
