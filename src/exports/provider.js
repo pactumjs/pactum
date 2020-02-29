@@ -62,12 +62,10 @@ class Provider {
       throw new PactumConfigurationError(`Invalid provider name provided - ${this.provider}`);
     }
     if (!this.pactBrokerUrl && !this.pactFilesOrDirs) {
-      throw new PactumConfigurationError(`Invalid pact-broker url - ${this.pactBrokerUrl} / pact local files - ${this.pactFilesOrDirs} provided`);
+      throw new PactumConfigurationError(`Invalid pact-broker url (${this.pactBrokerUrl}) provided & invalid pact local files (${this.pactFilesOrDirs}) provided`);
     }
-    if (this.customProviderHeaders) {
-      if (!helper.isValidObject(this.customProviderHeaders)) {
-        throw new PactumConfigurationError(`Invalid custom headers provided - ${this.customProviderHeaders}`);
-      }
+    if (this.customProviderHeaders && !helper.isValidObject(this.customProviderHeaders)) {
+      throw new PactumConfigurationError(`Invalid custom headers provided - ${this.customProviderHeaders}`);
     }
     if (this.stateHandlers) {
       if (!helper.isValidObject(this.stateHandlers)) {
@@ -79,17 +77,20 @@ class Provider {
         }
       }
     }
-    if (this.pactBrokerUrl) {
-      if (!helper.isValidString(this.provider)) {
-        throw new PactumConfigurationError(`Invalid provider name provided - ${this.provider}`);
-      }
-    }
     if (this.publishVerificationResult) {
       if (!this.pactBrokerUrl) {
         throw new PactumConfigurationError(`Invalid pact broker url provided - ${this.pactBrokerUrl}`);
       }
       if (!this.providerVersion) {
         throw new PactumConfigurationError(`Invalid provider version provided - ${this.providerVersion}`);
+      }
+    }
+    if (this.pactFilesOrDirs) {
+      if (!Array.isArray(this.pactFilesOrDirs)) {
+        throw new PactumConfigurationError(`Invalid array of pact files or folders (${this.pactFilesOrDirs}) provided`);
+      }
+      if (this.pactFilesOrDirs.length === 0) {
+        throw new PactumConfigurationError(`Empty array of pact files or folders provided`);
       }
     }
   }

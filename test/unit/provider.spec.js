@@ -1381,3 +1381,213 @@ describe('Provider Verification - Local Pacts', () => {
   });
 
 });
+
+describe('Provider Verification - Invalid Options', () => {
+
+  it('undefined', async () => {
+    let err;
+    try {
+      await pactum.provider.validate();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid provider options provided - undefined');
+  });
+
+  it('no provider base url', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({});
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid provider base url provided - undefined');
+  });
+
+  it('empty provider base url', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({ providerBaseUrl: '' });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid provider base url provided - ');
+  });
+
+  it('no provider', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http'
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid provider name provided - undefined');
+  });
+
+  it('empty provider', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: ''
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid provider name provided - ');
+  });
+
+  it('no pact url or pact broker url', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: 'some-service'
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid pact-broker url (undefined) provided & invalid pact local files (undefined) provided');
+  });
+
+  it('empty pact broker url', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: 'some-service',
+        pactBrokerUrl: ''
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid pact-broker url () provided & invalid pact local files (undefined) provided');
+  });
+
+  it('string pactFilesOrDirs', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: 'some-service',
+        pactFilesOrDirs: 's'
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid array of pact files or folders (s) provided');
+  });
+
+  it('empty pactFilesOrDirs', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: 'some-service',
+        pactFilesOrDirs: []
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Empty array of pact files or folders provided');
+  });
+
+  it('publishVerificationResult without pact broker url', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: 'some-service',
+        pactFilesOrDirs: [ '' ],
+        publishVerificationResult: true
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid pact broker url provided - undefined');
+  });
+
+  it('publishVerificationResult without provider version', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: 'some-service',
+        pactFilesOrDirs: [ '' ],
+        pactBrokerUrl: 'http',
+        publishVerificationResult: true
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid provider version provided - undefined');
+  });
+
+  it('publishVerificationResult with empty provider version', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: 'some-service',
+        pactFilesOrDirs: [ '' ],
+        pactBrokerUrl: 'http',
+        publishVerificationResult: true,
+        providerVersion: ''
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid provider version provided - ');
+  });
+
+  it('string custom headers', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: 'some-service',
+        pactFilesOrDirs: [ '' ],
+        customProviderHeaders: ' a '
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid custom headers provided -  a ');
+  });
+
+  it('string state handlers', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: 'some-service',
+        pactFilesOrDirs: [ '' ],
+        stateHandlers: ' a '
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid state handlers provided -  a ');
+  });
+
+  it('string state handlers functions', async () => {
+    let err;
+    try {
+      await pactum.provider.validate({
+        providerBaseUrl: 'http',
+        provider: 'some-service',
+        pactFilesOrDirs: [ '' ],
+        stateHandlers: {
+          a: function() {},
+          b: ''
+        }
+      });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid state handlers function provided for - b');
+  });
+
+});
