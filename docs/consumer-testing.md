@@ -12,7 +12,7 @@ In **pactum**, consumer tests are written as a wrapper around the [component tes
 
 ## Getting Started
 
-Before getting started with consumer testing, get familiar with [component testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing) and a little bit on [interactions](https://github.com/ASaiAnudeep/pactum/wiki/interactions). **Interactions** are explained in a much more detailed way in this page.
+Before getting started with consumer testing, get familiar with [component testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 
 ### Example Scenario
 
@@ -112,7 +112,7 @@ Response
 }
 ```
 
-Pactum allows you to add this interaction to the mock server before running a consumer test case. And also it automatically removes all interactions after the execution of test case.
+Pactum allows you to add this interaction to the mock server before running a consumer test case. And also it automatically removes all interactions after the execution of a test case.
 
 Yoc can add an Pact Interaction by
 
@@ -227,6 +227,18 @@ await pactum
   .toss();
 ```
 
+#### Publishing Contracts to Pact Broker
+
+Final step of consumer testing is to publish the contracts (pact files) to a shared location like pact-broker.
+
+```javascript
+await pactum.pact.publish({
+  pactFilesOrDirs: ['./pacts/'],
+  pactBroker: 'http://localhost:9292',
+  consumerVersion: '1.2.3'
+});
+```
+
 ## API
 
 ### pactum.mock
@@ -311,4 +323,10 @@ pactum.pact.publish({
 
 ----------------------------------------------------------------------------------------------------------------
 
-[![Contract Testing](https://img.shields.io/badge/PREV-Contract%20Testing-orange)](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing" >
+  <img src="https://img.shields.io/badge/PREV-Contract%20Testing-orange" alt="Contract Testing" align="left" style="display: inline;" />
+</a>
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification" >
+  <img src="https://img.shields.io/badge/NEXT-Provider%20Verification-blue" alt="Provider Verification" align="right" style="display: inline;" />
+</a>

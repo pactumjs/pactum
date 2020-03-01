@@ -1,7 +1,5 @@
 # Interactions
 
-> Interactions will be explained in much more detailed in [consumer testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
-
 An interaction is an individual message that combines a request sent by the consumer & minimal expected response replied by the provider. Interactions help you to control the the state of your providers (mock server). They are categorized into two:
 
 * Mock Interaction
@@ -93,6 +91,3 @@ pactum.addPactInteraction({
 ```
 
 ----------------------------------------------------------------------------------------------------------------
-
-[![Contract Testing](https://img.shields.io/badge/PREV-Contract%20Testing-orange)](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
-[![Consumer Testing](https://img.shields.io/badge/NEXT-Consumer%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)

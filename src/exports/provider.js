@@ -14,12 +14,11 @@ const { PactumConfigurationError } = require('../helpers/errors');
  * @property {any} [stateHandlers] - provider state handlers. A map of 'string -> () => Promise', where each string is the state to setup, and the function is used to configure the state in the Provider.
  * @property {any} [customProviderHeaders] - Header(s) to add to any requests to the provider service. eg { 'Authorization': 'Basic cGFjdDpwYWN0'}.
  * @property {string[]} [pactFilesOrDirs] - array of local pact files or directories
- * @property {string} [pactBrokerUrl] - URL of the Pact Broker to retrieve pacts from. Required if not using pactUrls.
+ * @property {string} [pactBrokerUrl] - URL of the Pact Broker to retrieve pacts from. Required if not using pactFilesOrDirs.
  * @property {string} [pactBrokerUsername] - username for Pact Broker basic authentication.
  * @property {string} [pactBrokerPassword] - password for Pact Broker basic authentication.
  * @property {string} [pactBrokerToken] - bearer token for Pact Broker authentication.
  * @property {boolean} [publishVerificationResult] - publish verification result to Broker
- * @property {string[]} [tags] - array of tags, used to filter pacts from the Broker.
  */
 
 class Provider {
@@ -38,7 +37,7 @@ class Provider {
     this.pactBrokerToken = options.pactBrokerToken;
     this.pactFilesOrDirs = options.pactFilesOrDirs;
     // @property {string[]} [pactUrls] - array of HTTP-based URLs (e.g. from a broker). Required if not using a Broker.
-    this.tags = options.tags || [];
+    // @property {string[]} [tags] - array of tags, used to filter pacts from the Broker.
     this.publishVerificationResult = options.publishVerificationResult;
     this.stateHandlers = options.stateHandlers || {};
     this.provider = options.provider;

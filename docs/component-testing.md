@@ -234,4 +234,9 @@ pactum.request.setDefaultHeader('content-type', 'application/json');
 
 ----------------------------------------------------------------------------------------------------------------
 
-[![Contract Testing](https://img.shields.io/badge/NEXT-Contract%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+<a href="https://github.com/ASaiAnudeep/pactum/wiki" >
+  <img src="https://img.shields.io/badge/PREV-Home-orange" alt="Home" align="left" style="display: inline;" />
+</a>
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing" >
+  <img src="https://img.shields.io/badge/NEXT-Contract%20Testing-blue" alt="Contract Testing" align="right" style="display: inline;" />
+</a>

@@ -45,13 +45,27 @@ Consumer Testing is performed at consumer pipeline.
 
 During consumer testing, a consumer will generate pacts with its provider using interactions. Consumer Pact tests operate on each interaction to say *"assuming the provider returns the expected response for this request, does the consumer code correctly generate the request and handle the expected response?"*.
 
+Consumer Testing will
+
+* Generate contracts (pact files) between a consumer & its providers
+* Publishes the contract (pact files) to a shared location like [pact-broker](https://docs.pact.io/pact_broker)
+
 ### Provider Verification
 
 Provider Verification is performed at providers pipeline.
 
 During provider verification, each request is sent to the provider, and the actual response it generates is compared with the minimal expected response described in the consumer test.
 
+Provider Verification will
+
+* Fetch contracts (pact files) between a provider & its consumers from a shared location like [pact-broker](https://docs.pact.io/pact_broker)
+* Validate each pact against the provider & publish the results.
+
 ----------------------------------------------------------------------------------------------------------------
 
-[![Component Testing](https://img.shields.io/badge/PREV-Component%20Testing-orange)](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
-[![Consumer Testing](https://img.shields.io/badge/NEXT-Consumer%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing" >
+  <img src="https://img.shields.io/badge/PREV-Component%20Testing-orange" alt="Component Testing" align="left" style="display: inline;" />
+</a>
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing" >
+  <img src="https://img.shields.io/badge/NEXT-Consumer%20Testing-blue" alt="Consumer Testing" align="right" style="display: inline;" />
+</a>

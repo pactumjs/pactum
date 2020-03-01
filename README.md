@@ -10,8 +10,9 @@
 * [Pactum](https://github.com/ASaiAnudeep/pactum/wiki)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 * [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
-  * [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions)
   * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
+  * [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
+* [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions)
 * [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 
 ## Installation
@@ -106,4 +107,6 @@ Learn more about pactum as a mock server [here](https://github.com/ASaiAnudeep/p
 
 ----------------------------------------------------------------------------------------------------------------
 
-[![Component Testing](https://img.shields.io/badge/NEXT-Component%20Testing-blue)](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing" >
+  <img src="https://img.shields.io/badge/NEXT-Component%20Testing-blue" alt="Component Testing" align="right" style="display: inline;" />
+</a>
