@@ -275,6 +275,73 @@ describe('Mock', () => {
       .toss();
   });
 
+  it('POST - one interaction - with form data', async () => {
+    const fs = require('fs');
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/projects',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          },
+          ignoreBody: true
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            message: 'ok'
+          }
+        }
+      })
+      .post('http://localhost:9393/api/projects')
+      .withFormData({
+        'file': fs.createReadStream('./interactions.spec.js')
+      })
+      .expectStatus(200)
+      .expectJson({
+        message: 'ok'
+      })
+      .toss();
+  });
+
+  it('POST - one interaction - with form data instance', async () => {
+    const fs = require('fs');
+    const FormData = require('form-data');
+    const form = new FormData();
+    form.append('file', fs.createReadStream('./interactions.spec.js'));
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/projects',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          },
+          ignoreBody: true
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            message: 'ok'
+          }
+        }
+      })
+      .post('http://localhost:9393/api/projects')
+      .withFormData(form)
+      .expectStatus(200)
+      .expectJson({
+        message: 'ok'
+      })
+      .toss();
+  });
+
   it('GET - invalid interaction', async () => {
     await pactum
       .get('http://localhost:9393/api/projects/1')

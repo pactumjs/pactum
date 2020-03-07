@@ -61,6 +61,7 @@ HTTP requests are messages sent by the client to initiate an action on the serve
 | `withJson({id: 1})`             | request json object                       |
 | `withGraphQLQuery('{ hero }')`  | graphQL query                             |
 | `withGraphQLVariables({})`      | graphQL variables                         |
+| `withFormData({})`              | object to send as form data               |
 
 ```javascript
 const pactum = require('pactum');

@@ -1,4 +1,5 @@
 const phin = require('phin');
+const FormData = require('form-data');
 const Expect = require('./expect');
 const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
@@ -386,6 +387,49 @@ class Spec {
   }
 
   /**
+   * attaches form data to the request
+   * @param {FormData} data - object to send as form data or instance of "form-data"
+   * @param {object} [options] - form data options (not used if instance of "form-data" is provided)
+   * @see https://www.npmjs.com/package/form-data
+   * @example
+   * await pactum
+   *  .post('https://jsonplaceholder.typicode.com/upload')
+   *  .withFormData({
+   *    'file': fs.createReadStream('./package.json')
+   *  })
+   *  .expectStatus(200)
+   *  .toss()
+   *
+   * @example
+   * const form = new FormData();
+   * form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
+   * await pactum
+   *  .post('https://jsonplaceholder.typicode.com/upload')
+   *  .withFormData(form)
+   *  .expectStatus(200)
+   *  .toss()
+   */
+  withFormData(data, options) {
+    if (typeof this._request.form !== 'undefined') {
+      throw new PactumRequestError(`Duplicate form data in request - ${this._request.formData}`);
+    }
+    if (!helper.isValidObject(data)) {
+      throw new PactumRequestError(`Invalid form data in request - ${data}`);
+    }
+    let formData = {};
+    if (data instanceof FormData) {
+      formData = data;
+    } else {
+      formData = options ? new FormData(options) : new FormData();
+      for (const prop in data) {
+        formData.append(prop, data[prop]);
+      }
+    }
+    this._request.form = formData;
+    return this;
+  }
+
+  /**
    * expects a status code on the response
    * @param {number} statusCode - expected HTTP stats code
    * @example
@@ -585,11 +629,11 @@ function setHeaders(request) {
       request.headers = {};
     }
     for (const prop in config.request.headers) {
-       if (request.headers[prop]) {
+      if (request.headers[prop]) {
         continue;
-       } else {
+      } else {
         request.headers[prop] = config.request.headers[prop];
-       }
+      }
     }
   }
 }
