@@ -309,7 +309,7 @@ class Spec {
    *  .toss();
    */
   withGraphQLVariables(variables) {
-    if (typeof variables !== 'object') {
+    if (!helper.isValidObject(variables)) {
       throw new PactumRequestError(`Invalid graphQL variables - ${variables}`);
     }
     if (!this._request.data) {
@@ -359,7 +359,7 @@ class Spec {
    *  .toss();
    */
   withHeaders(headers) {
-    if (typeof headers !== 'object') {
+    if (!helper.isValidObject(headers)) {
       throw new PactumRequestError(`Invalid headers in request - ${headers}`);
     }
     this._request.headers = headers;
@@ -411,7 +411,7 @@ class Spec {
    */
   withFormData(data, options) {
     if (typeof this._request.form !== 'undefined') {
-      throw new PactumRequestError(`Duplicate form data in request - ${this._request.formData}`);
+      throw new PactumRequestError(`Duplicate form data in request - ${this._request.form}`);
     }
     if (!helper.isValidObject(data)) {
       throw new PactumRequestError(`Invalid form data in request - ${data}`);
