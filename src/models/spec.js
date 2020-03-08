@@ -401,7 +401,7 @@ class Spec {
    *  .toss()
    *
    * @example
-   * const form = new FormData();
+   * const form = new pactum.request.FormData();
    * form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
    * await pactum
    *  .post('https://jsonplaceholder.typicode.com/upload')

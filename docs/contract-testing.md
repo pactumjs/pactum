@@ -36,8 +36,8 @@ Pactum follows the same workflow of [pact.io](https://docs.pact.io)
 
 Contract Testing has two steps
 
-1. Consumer Testing
-2. Provider Verification
+1. Defining Consumer Expectations (**Consumer Testing**)
+2. Verifying Expectations on Provider (**Provider Verification**)
 
 ### Consumer Testing
 

@@ -47,7 +47,22 @@ Learn more about pactum as a component tester [here](https://github.com/ASaiAnud
 
 ### Contract Testing
 
-Running a contract test with the help of a mock server & a single pact interaction. 
+Contract Testing is a technique for testing interactions between applications (often called as services) that communicate with each other, to ensure the messages they send or receive conform to a shared understanding that is documented in a **contract**.
+
+Learn more about contract testing at [pact.io](https://docs.pact.io)
+
+Learn more about contract testing with pactum at [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+
+[![Contract Testing](https://img.youtube.com/vi/-6x6XBDf9sQ/0.jpg)](https://www.youtube.com/watch?v=-6x6XBDf9sQ)
+
+Contract Testing has two steps
+
+1. Defining Consumer Expectations (**Consumer Testing**)
+2. Verifying Expectations on Provider (**Provider Verification**)
+
+#### Consumer Testing
+
+Running a consumer test with the help of a mock server & a single pact interaction. 
 If the pact interaction is not exercised, the test will fail.
 
 ```javascript
@@ -91,7 +106,22 @@ after(async () => {
   await pactum.mock.stop();
 });
 ```
-Learn more about pactum as a contract tester [here](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+Learn more about pactum as a consumer tester at [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
+
+#### Provider Verification
+
+Running a provider verification test with the help of a pact broker. 
+
+```javascript
+await pactum.provider.validate({
+  pactBrokerUrl: 'http://pact-broker:9393',
+  providerBaseUrl: 'http://user-service:3000',
+  provider: 'user-service',
+  providerVersion: '1.2.3'
+});
+```
+
+Learn more about pactum as a provider verifier at [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
 
 ### Mock Server
 

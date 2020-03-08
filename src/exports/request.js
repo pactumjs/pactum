@@ -1,7 +1,11 @@
+const form = require('form-data');
+
 const config = require('../config');
 const { PactumRequestError } = require('../helpers/errors');
 
 const request = {
+
+  FormData: form,
 
   /**
    * adds a default header to all the requests

@@ -310,8 +310,7 @@ describe('Mock', () => {
 
   it('POST - one interaction - with form data instance', async () => {
     const fs = require('fs');
-    const FormData = require('form-data');
-    const form = new FormData();
+    const form = new pactum.request.FormData();
     form.append('file', fs.createReadStream('./interactions.spec.js'));
     await pactum
       .addMockInteraction({
