@@ -1,3 +1,4 @@
+const { PactumMatcherError } = require('../helpers/errors');
 class Matcher {
 
   /**
@@ -5,11 +6,7 @@ class Matcher {
    * @param {any} value - value for which type should be matched
    */
   like(value) {
-    return {
-      contents: value,
-      value,
-      json_class: "Pact::SomethingLike"
-    };
+    return like(value);
   }
 
   /**
@@ -17,7 +14,7 @@ class Matcher {
    * @param {any} value - value for which type should be matched
    */
   somethingLike(value) {
-    return this.like(value);
+    return like(value);
   }
 
   /**
@@ -27,19 +24,7 @@ class Matcher {
    * @param {string} options.matcher - regex
    */
   term(options) {
-    const { generate, matcher } = options;
-    return {
-      data: {
-        generate,
-        matcher: {
-          json_class: "Regexp",
-          o: 0,
-          s: matcher,
-        },
-      },
-      value: generate,
-      json_class: "Pact::Term"
-    };
+    return term(options);
   }
 
   /**
@@ -49,7 +34,7 @@ class Matcher {
    * @param {string} options.matcher - regex
    */
   regex(options) {
-    return this.term(options);
+    return term(options);
   }
 
   /**
@@ -74,6 +59,36 @@ class Matcher {
     };
   }
 
+}
+
+function like(value) {
+  return {
+    contents: value,
+    value,
+    json_class: "Pact::SomethingLike"
+  };
+}
+
+function term(options) {
+  if (typeof options !== 'object') {
+    throw new PactumMatcherError(`Invalid matching options - ${options}`);
+  }
+  if (typeof options.matcher === 'object') {
+    options.matcher = options.matcher.source;
+  }
+  const { generate, matcher } = options;
+  return {
+    data: {
+      generate,
+      matcher: {
+        json_class: "Regexp",
+        o: 0,
+        s: matcher,
+      },
+    },
+    value: generate,
+    json_class: "Pact::Term"
+  };
 }
 
 module.exports = Matcher;
