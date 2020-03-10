@@ -388,6 +388,29 @@ class Spec {
   }
 
   /**
+   * attaches form data to the request with header - "application/x-www-form-urlencoded"
+   * @param {object} form - form object
+   * @example
+   * await pactum
+   *   .post('https://jsonplaceholder.typicode.com/posts')
+   *   .withFormData({
+   *     'user': 'drake'
+   *   })
+   *   .expectStatus(200)
+   *   .toss()
+   */
+  withForm(form) {
+    if (!helper.isValidObject(form)) {
+      throw new PactumRequestError(`Invalid form provided - ${form}`);
+    }
+    if (typeof this._request.form !== 'undefined') {
+      throw new PactumRequestError(`Duplicate form in request`);
+    }
+    this._request.form = form;
+    return this;
+  }
+
+  /**
    * attaches multi part form data to the request with header - "multipart/form-data"
    * @param {string|FormData} key - key to append
    * @param {string|Buffer|Array|ArrayBuffer} value - value to append

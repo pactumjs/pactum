@@ -275,6 +275,36 @@ describe('Mock', () => {
       .toss();
   });
 
+  it('POST - one interaction - with form data', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/projects',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          },
+          ignoreBody: true
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            message: 'ok'
+          }
+        }
+      })
+      .post('http://localhost:9393/api/projects')
+      .withForm({ 'user': 'drake' })
+      .expectStatus(200)
+      .expectJson({
+        message: 'ok'
+      })
+      .toss();
+  });
+
   it('POST - one interaction - with multi part form data', async () => {
     const fs = require('fs');
     const path = require('path');
