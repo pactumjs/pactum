@@ -154,6 +154,41 @@ describe('Mock', () => {
       .toss();
   });
 
+  it('GET - one interaction - with query params', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1',
+          query: {
+            id: 1,
+            name: 'fake'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .withQueryParams({
+        'id': 1,
+        'name': 'fake'
+      })
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss();
+  });
+
   it('GET - one interaction - with headers', async () => {
     await pactum
       .addMockInteraction({

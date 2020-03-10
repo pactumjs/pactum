@@ -272,6 +272,28 @@ class Spec {
   }
 
   /**
+   * adds query params to the request url - /comments?postId=1
+   * @param {object} params - query params
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/comments')
+   *  .withQueryParams({ 'postId': '1' })
+   *  .expectStatus(200)
+   *  .toss();
+   * @summary generated url will look like - /comments?postId=1&userId=2
+   */
+  withQueryParams(params) {
+    if (!helper.isValidObject(params)) {
+      throw new PactumRequestError(`Invalid query parameters for request - ${params}`);
+    }
+    if (this._request.qs !== undefined) {
+      throw new PactumRequestError(`Duplicate query params in request`);
+    }
+    this._request.qs = params;
+    return this;
+  }
+
+  /**
    * appends graphQL query to the request body
    * @param {string} query - graphQL query
    * @example

@@ -52,16 +52,18 @@ HTTP requests are messages sent by the client to initiate an action on the serve
 
 #### pactum
 
-| Method                          | Description                               |
-| ------------------------------- | ----------------------------------------- |
-| `get('url')`                    | HTTP method                               |
-| `withQuery('postId', '1')`      | set of parameters attached to the url     |
-| `withHeaders({})`               | request headers                           |
-| `withBody('Hello')`             | request body                              |
-| `withJson({id: 1})`             | request json object                       |
-| `withGraphQLQuery('{ hero }')`  | graphQL query                             |
-| `withGraphQLVariables({})`      | graphQL variables                         |
-| `withFormData({})`              | object to send as form data               |
+| Method                              | Description                               |
+| ----------------------------------- | ----------------------------------------- |
+| `get('url')`                        | HTTP method                               |
+| `withQuery('postId', '1')`          | set of parameters attached to the url     |
+| `withQueryParams({'postId': '1'})`  | set of parameters attached to the url     |
+| `withHeaders({})`                   | request headers                           |
+| `withBody('Hello')`                 | request body                              |
+| `withJson({id: 1})`                 | request json object                       |
+| `withGraphQLQuery('{ hero }')`      | graphQL query                             |
+| `withGraphQLVariables({})`          | graphQL variables                         |
+| `withForm({})`                      | object to send as form data               |
+| `withMultiPartFormData('','', {})`  | object to send as multi part form data    |
 
 ```javascript
 const pactum = require('pactum');

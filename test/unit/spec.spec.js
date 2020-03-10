@@ -230,6 +230,33 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: Duplicate form in request');
   });
 
+  it('null query params in request', async () => {
+    let err;
+    try {
+      const spec = new Spec();
+      await spec
+        .post('/')
+        .withQueryParams(null);
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid query parameters for request - null');
+  });
+
+  it('duplicate query params in request', async () => {
+    let err;
+    try {
+      const spec = new Spec();
+      await spec
+        .post('/')
+        .withQueryParams({})
+        .withQueryParams({});
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Duplicate query params in request');
+  });
+
 
 
 });
