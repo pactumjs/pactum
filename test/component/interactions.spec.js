@@ -275,16 +275,14 @@ describe('Mock', () => {
       .toss();
   });
 
-  it('POST - one interaction - with form data', async () => {
+  it('POST - one interaction - with multi part form data', async () => {
     const fs = require('fs');
+    const path = require('path');
     await pactum
       .addMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects',
-          headers: {
-            'content-type': 'application/x-www-form-urlencoded'
-          },
           ignoreBody: true
         },
         willRespondWith: {
@@ -298,9 +296,7 @@ describe('Mock', () => {
         }
       })
       .post('http://localhost:9393/api/projects')
-      .withFormData({
-        'file': fs.createReadStream('./interactions.spec.js')
-      })
+      .withMultiPartFormData('file', fs.readFileSync(path.resolve('./test/component/base.spec.js')), { contentType: 'application/js', filename: 'interactions.spec.js' })
       .expectStatus(200)
       .expectJson({
         message: 'ok'
@@ -308,18 +304,16 @@ describe('Mock', () => {
       .toss();
   });
 
-  it('POST - one interaction - with form data instance', async () => {
+  it('POST - one interaction - with multi part form data instance', async () => {
     const fs = require('fs');
+    const path = require('path');
     const form = new pactum.request.FormData();
-    form.append('file', fs.createReadStream('./interactions.spec.js'));
+    form.append('file', fs.readFileSync(path.resolve('./test/component/base.spec.js')), { contentType: 'application/js', filename: 'interactions.spec.js' });
     await pactum
       .addMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects',
-          headers: {
-            'content-type': 'application/x-www-form-urlencoded'
-          },
           ignoreBody: true
         },
         willRespondWith: {
@@ -333,7 +327,7 @@ describe('Mock', () => {
         }
       })
       .post('http://localhost:9393/api/projects')
-      .withFormData(form)
+      .withMultiPartFormData(form)
       .expectStatus(200)
       .expectJson({
         message: 'ok'

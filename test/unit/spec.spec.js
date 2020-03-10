@@ -148,29 +148,6 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: Duplicate body in request - Hello');
   });
 
-  it('withFormData - invalid', () => {
-    let err;
-    try {
-      const spec = new Spec();
-      spec.withFormData();
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: Invalid form data in request - undefined');
-  });
-
-  it('withFormData - duplicate', () => {
-    let err;
-    try {
-      const spec = new Spec();
-      spec.withFormData({});
-      spec.withFormData({});
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: Duplicate form data in request - [object FormData]');
-  });
-
   it('toss - without url', async () => {
     let err;
     try {

@@ -57,6 +57,7 @@ class Spec {
     setBaseUrl(this._request);
     this._request.timeout = config.request.timeout;
     setHeaders(this._request);
+    setMultiPartFormData(this._request);
     return phin(this._request);
   }
 
@@ -387,45 +388,37 @@ class Spec {
   }
 
   /**
-   * attaches form data to the request
-   * @param {FormData} data - object to send as form data or instance of "form-data"
-   * @param {object} [options] - form data options (not used if instance of "form-data" is provided)
+   * attaches multi part form data to the request with header - "multipart/form-data"
+   * @param {string|FormData} key - key to append
+   * @param {string|Buffer|Array|ArrayBuffer} value - value to append
+   * @param {FormData.AppendOptions} [options] - form data append options
    * @see https://www.npmjs.com/package/form-data
    * @example
-   * await pactum
-   *  .post('https://jsonplaceholder.typicode.com/upload')
-   *  .withFormData({
-   *    'file': fs.createReadStream('./package.json')
-   *  })
-   *  .expectStatus(200)
-   *  .toss()
+   *  await pactum
+   *   .post('https://jsonplaceholder.typicode.com/upload')
+   *   .withMultiPartFormData('file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' })
+   *   .withMultiPartFormData('user', 'drake')
+   *   .expectStatus(200)
+   *   .toss()
    *
    * @example
    * const form = new pactum.request.FormData();
-   * form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
+   * form.append('my_file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' });
    * await pactum
    *  .post('https://jsonplaceholder.typicode.com/upload')
-   *  .withFormData(form)
+   *  .withMultiPartFormData(form)
    *  .expectStatus(200)
    *  .toss()
    */
-  withFormData(data, options) {
-    if (typeof this._request.form !== 'undefined') {
-      throw new PactumRequestError(`Duplicate form data in request - ${this._request.form}`);
-    }
-    if (!helper.isValidObject(data)) {
-      throw new PactumRequestError(`Invalid form data in request - ${data}`);
-    }
-    let formData = {};
-    if (data instanceof FormData) {
-      formData = data;
+  withMultiPartFormData(key, value, options) {
+    if (key instanceof FormData) {
+      this._request._multiPartFormData = key;
     } else {
-      formData = options ? new FormData(options) : new FormData();
-      for (const prop in data) {
-        formData.append(prop, data[prop]);
+      if (this._request._multiPartFormData === undefined) {
+        this._request._multiPartFormData = new FormData();
       }
+      this._request._multiPartFormData.append(key, value, options);
     }
-    this._request.form = formData;
     return this;
   }
 
@@ -641,6 +634,21 @@ function setHeaders(request) {
 function setBaseUrl(request) {
   if (config.request.baseUrl) {
     request.url = config.request.baseUrl + request.url;
+  }
+}
+
+function setMultiPartFormData(request) {
+  if (request._multiPartFormData) {
+    request.data = request._multiPartFormData.getBuffer();
+    const multiPartHeaders = request._multiPartFormData.getHeaders();
+    if (!request.headers) {
+      request.headers = multiPartHeaders;
+    } else {
+      for (const prop in multiPartHeaders) {
+        request.headers[prop] = multiPartHeaders[prop];
+      }
+    }
+    delete request._multiPartFormData;
   }
 }
 
