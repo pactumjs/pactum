@@ -1,6 +1,6 @@
 # Interactions
 
-An interaction is an individual message that combines a request sent by the consumer & minimal expected response replied by the provider. Interactions help you to control the the state of your providers (mock server). They are categorized into two:
+An interaction is an individual message that combines a request sent by the consumer & minimal expected response replied by the provider. Interactions help you to control the state of your providers (mock server). They are categorized into two:
 
 * Mock Interaction
 * Pact Interaction

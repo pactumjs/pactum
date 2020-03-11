@@ -18,7 +18,7 @@ Before getting started with consumer testing, get familiar with [component testi
 
 Here we have an example describing pactum consumer tests between a consumer (order-service) and its provider (product-service).
 
-To make things simple, lets assume order-service has a single order with id `1`. When requested for this order details, order-service will fetch corresponding product details from its provider product-service.
+To make things simple, let's assume order-service has a single order with id `1`. When requested for this order details, order-service will fetch corresponding product details from its provider product-service.
 
 
 #### Order Service Code
@@ -52,7 +52,7 @@ app.get('/api/orders/1', (req, res) => {
 app.listen(3000, () => console.log(`Example app listening on port ${port}!`))
 ```
 
-Making a request to get order details will result in the following response
+Requesting order details will result in the following response
 
 ```json
 {
@@ -92,7 +92,7 @@ As described earlier, during component testing the order-service will be talking
 
 #### Consumer Test for Order Service
 
-During consumer testing with **pactum**, you don't need to spin up a mock server & train it to behave like product service. Pactum comes with its own mock server where you can train your service on the fly to react in a specific way when a specific request is received.
+During consumer testing with **pactum**, you don't need to spin up a mock server & train it to behave like product service. Pactum comes with a mock server where you can train your service on the fly to react in a specific way when a specific request is received.
 
 As you observed in consumer code, the order-service will be making the following request on product-service.
 
@@ -114,7 +114,7 @@ Response
 
 Pactum allows you to add this interaction to the mock server before running a consumer test case. And also it automatically removes all interactions after the execution of a test case.
 
-Yoc can add an Pact Interaction by
+You can add a Pact Interaction by
 
 ```javascript
 const pactum = require('pactum');
@@ -205,9 +205,9 @@ after(async () => {
 });
 ```
 
-A real application/service is much more complicated with a lot of moving parts. The service under test might be talking to many more external services. **Pactum** allows you to specify multiple interactions in a single test case. You can add multiple pact & mock interactions in a single spec.
+A real application/service might be much more complex with a lot of moving parts. The service under test might be talking to multiple external services. **Pactum** allows you to specify multiple interactions in a single test case. You can add multiple pact & mock interactions in a single spec.
 
-If anyone of the interaction is not exercised, the test will fail. At the end of the test case, all these interactions will be removed from the server.
+If anyone of the interaction is not exercised, the test will fail. At the end of the test case, all these interactions will be removed from the mock server.
 
 ```javascript
 await pactum
@@ -229,7 +229,7 @@ await pactum
 
 #### Publishing Contracts to Pact Broker
 
-Final step of consumer testing is to publish the contracts (pact files) to a shared location like pact-broker.
+The final step of consumer testing is to publish the contracts (pact files) to a shared location like pact-broker.
 
 ```javascript
 await pactum.pact.publish({
@@ -300,7 +300,7 @@ sets directory for saving pact files
 *This should be called before save()*
 
 ```javascript
-pactum.pact.save();
+pactum.pact.setPactFilesDirectory('/path/for/saving/pact-files');
 ```
 
 #### publish

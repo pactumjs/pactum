@@ -1,8 +1,8 @@
 # Component Testing
 
-Component testing is defined as a software testing type, in which the testing is performed on each individual component separately without integrating with other components.
+Component testing is defined as a software testing type, in which the testing is performed on each component separately without integrating with other components.
 
-This tests are all about testing the functionality of individual service. During this, your service will be talking to other external services. But instead of talking to real external services, they talk to mock versions of external services.
+These tests are all about testing the functionality of individual service. During this, your service will be talking to other external services. But instead of talking to real external services, they talk to mock versions of external services.
 
 ## Table of contents
 
@@ -17,7 +17,7 @@ This tests are all about testing the functionality of individual service. During
 
 ### Simple Test
 
-Lets assume you have an order-service which is a RESTFull API service running on port 3000.
+Let's assume you have an order-service which is a REST API service running on port 3000.
 Assuming all the external dependencies of the **order-service** are mocked.
 
 The below code will run an expectation on **order-service**.
@@ -206,7 +206,7 @@ Default options are configured for all the requests
 ### setBaseUrl
 Type: `Function`<br>
 
-Sets the base url for all the HTTP requests.
+Sets the base URL for all the HTTP requests.
 
 ```javascript
 pactum.request.setBaseUrl('http://localhost:3000');
@@ -218,7 +218,7 @@ pactum.get('/api/projects');
 Type: `Function`<br>
 
 Sets the default timeout for all the HTTP requests.
-Default value is 3000ms
+The default value is 3000ms
 
 ```javascript
 // sets default timeout to 5000ms
@@ -228,7 +228,7 @@ pactum.request.setDefaultTimeout(5000);
 ### setDefaultHeader
 Type: `Function`<br>
 
-Sets default headers for all the HTTP requests. Default header will be overridden if provided at spec level.
+Sets default headers for all the HTTP requests. The default header will be overridden if provided at the spec level.
 
 ```javascript
 pactum.request.setDefaultHeader('Authorization', 'Basic xxxxx');

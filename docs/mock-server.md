@@ -161,7 +161,7 @@ pactum.mock.addDefaultPactInteraction({
 Type: `Function`<br>
 Returns: `string[]` - interaction id's
 
-Adds multiple pact interaction to the server.
+Adds multiple pact interactions to the server.
 
 ```javascript
 pactum.mock.addDefaultPactInteractions([
@@ -277,7 +277,7 @@ pactum.mock.start();
 
 ## Remote API
 
-Pactum allows to add or remove interactions dynamically through REST API.
+Pactum allows us to add or remove interactions dynamically through the REST API.
 Once the server is started, interact with the following API to control the mock server.
 
 ### Mock Interactions
@@ -324,7 +324,7 @@ Response - returns all the mock interactions
 
 ##### POST
 
-Adds multiple mock interaction to the server.
+Adds multiple mock interactions to the server.
 
 ```Shell
 curl --location --request POST 'http://localhost:9393/api/pactum/mockInteraction' \
@@ -358,7 +358,7 @@ Response - returns the mock interaction id.
 
 ##### DELETE
 
-Removes a mock interaction or all mock interactions from mock server.
+Removes a mock interaction or all mock interactions from the mock server.
 
 ```Shell
 # Removes a single mock interaction with id m1uh9
@@ -454,7 +454,7 @@ Response - returns the pact interaction id.
 
 ##### DELETE
 
-Removes a pact interaction or all pact interactions from mock server.
+Removes a pact interaction or all pact interactions from the mock server.
 
 ```Shell
 # Removes a single pact interaction with id m1uh9

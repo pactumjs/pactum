@@ -6,7 +6,7 @@ Contract Testing gives a way for services to enter into an agreement on how they
 
 Learn more about contract testing at [pact.io](https://docs.pact.io)
 
-> Pactum is inspired from **pact.io**. Pactum works at HTTP layer while pact.io works at unit testing level.
+> Pactum is inspired by **pact.io**. Pactum works at the HTTP layer while pact.io works at the unit testing level.
 
 ## Table of contents
 
@@ -41,7 +41,7 @@ Contract Testing has two steps
 
 ### Consumer Testing
 
-Consumer Testing is performed at consumer pipeline.
+Consumer Testing is performed at the consumer pipeline.
 
 During consumer testing, a consumer will generate pacts with its provider using interactions. Consumer Pact tests operate on each interaction to say *"assuming the provider returns the expected response for this request, does the consumer code correctly generate the request and handle the expected response?"*.
 
@@ -52,7 +52,7 @@ Consumer Testing will
 
 ### Provider Verification
 
-Provider Verification is performed at providers pipeline.
+Provider Verification is performed at the provider's pipeline.
 
 During provider verification, each request is sent to the provider, and the actual response it generates is compared with the minimal expected response described in the consumer test.
 
