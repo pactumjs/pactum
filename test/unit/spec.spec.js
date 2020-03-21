@@ -257,6 +257,17 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: Duplicate query params in request');
   });
 
-
+  it('invalid request timeout', async () => {
+    let err;
+    try {
+      const spec = new Spec();
+      await spec
+        .post('/')
+        .__setRequestTimeout("1000");
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid timeout provided - 1000');
+  });
 
 });

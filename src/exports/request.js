@@ -20,7 +20,7 @@ const request = {
   },
 
   /**
-   * adds a default timeout to all the requests
+   * sets a default timeout to all the requests
    * Default is 3000ms
    * @param {number} timeout - timeout in milliseconds
    */

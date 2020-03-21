@@ -47,6 +47,7 @@ class Spec {
     this._request = {};
     this._response = {};
     this._expect = new Expect();
+    this.previousLogLevel = null;
   }
 
   fetch() {
@@ -55,7 +56,7 @@ class Spec {
       this._request.url = this._request.url + '?' + query;
     }
     setBaseUrl(this._request);
-    this._request.timeout = config.request.timeout;
+    this._request.timeout = this._request.timeout || config.request.timeout;
     setHeaders(this._request);
     setMultiPartFormData(this._request);
     return phin(this._request);
@@ -468,6 +469,28 @@ class Spec {
   }
 
   /**
+   * overrides default log level for current spec
+   * @param {('TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR')} level - log level
+   */
+  __setLogLevel(level) {
+    this.previousLogLevel = log.level;
+    log.setLevel(level);
+    return this;
+  }
+
+  /**
+   * overrides default timeout for current request
+   * @param {number} timeout - request timeout in milliseconds
+   */
+  __setRequestTimeout(timeout) {
+    if (typeof timeout !== 'number') {
+      throw new PactumRequestError(`Invalid timeout provided - ${timeout}`);
+    }
+    this._request.timeout = timeout;
+    return this;
+  }
+
+  /**
    * expects a status code on the response
    * @param {number} statusCode - expected HTTP stats code
    * @example
@@ -635,6 +658,9 @@ class Spec {
       this.server.removeInteraction(id);
     }
     this._response.json = helper.getJson(this._response.body);
+    if (this.previousLogLevel) {
+      log.setLevel(this.previousLogLevel);
+    }
     if (failed) {
       this._expect.fail(err);
     }

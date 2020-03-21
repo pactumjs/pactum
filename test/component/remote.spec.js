@@ -206,3 +206,22 @@ describe('Remote- post single pact interaction', () => {
   });
 
 });
+
+describe('Remote- invalid requests', () => {
+
+  it('invalid url', async () => {
+    await pactum
+      .get('http://localhost:9393/api/pactum/invalid')
+      .expectStatus(404)
+      .expectBodyContains('404 Not Found')
+      .toss();
+  });
+
+  it('invalid method', async () => {
+    await pactum
+      .patch('http://localhost:9393/api/pactum/mockInteraction')
+      .expectStatus(405)
+      .toss();
+  });
+
+});
