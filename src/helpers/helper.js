@@ -174,6 +174,21 @@ const helper = {
       }
     }
     return filePaths;
+  },
+
+  /**
+   * returns stringified object with 2 spaces
+   * @param {object} obj - object
+   */
+  stringify(obj) {
+    if (this.isValidObject(obj)) {
+      try {
+        return JSON.stringify(obj, null, 2);
+      } catch (error) {
+        return obj;
+      }
+    }
+    return obj;
   }
 
 };

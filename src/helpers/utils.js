@@ -1,6 +1,8 @@
 const graphQL = require('./graphQL');
 const Compare = require('./compare');
 
+const log = require('./logger');
+
 const utils = {
 
   /**
@@ -9,15 +11,20 @@ const utils = {
    * @param {Map<string, object>} interactions - interactions
    */
   getMatchingInteraction(req, interactions) {
+    log.debug('Finding matching interaction');
     const ids = Array.from(interactions.keys());
     for (let i = ids.length - 1; i >= 0; i--) {
-      const interaction = interactions.get(ids[i]);
+      const interactionId = ids[i];
+      log.debug(`Comparing interaction with id ${interactionId}`);
+      const interaction = interactions.get(interactionId);
       const isValidMethod = (interaction.withRequest.method === req.method);
       if (!isValidMethod) {
+        log.debug(`Interaction with id ${interactionId} failed to match - HTTP Method`);
         continue;
       }
       const isValidPath = (interaction.withRequest.path === req.path);
       if (!isValidPath) {
+        log.debug(`Interaction with id ${interactionId} failed to match - HTTP Path`);
         continue;
       }
       let isValidQuery = true;
@@ -27,11 +34,16 @@ const utils = {
         }
       }
       if (!isValidQuery) {
+        log.debug(`Interaction with id ${interactionId} failed to match - HTTP Query Params`);
         continue;
       }
       let isValidHeaders = true;
       if (interaction.withRequest.headers) {
         isValidHeaders = validateHeaders(req.headers, interaction.withRequest.headers);
+      }
+      if (!isValidHeaders) {
+        log.debug(`Interaction with id ${interactionId} failed to match - HTTP Headers`);
+        continue;
       }
       let isValidBody = true;
       if (!interaction.withRequest.ignoreBody) {
@@ -50,6 +62,7 @@ const utils = {
       if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
         return interaction;
       }
+      log.debug(`Interaction with id ${interactionId} failed to match - HTTP Body`);
     }
     return null;
   }

@@ -11,8 +11,8 @@ const LEVEL_ERROR = 7;
  * @param {string} level - log level
  */
 function getLevelValue(level) {
-  const lowerCaseLevel = level.toUpperCase();
-  switch (lowerCaseLevel) {
+  const logLevel = level.toUpperCase();
+  switch (logLevel) {
     case 'TRACE':
       return LEVEL_TRACE;
     case 'DEBUG':

@@ -410,6 +410,21 @@ describe('Mock', () => {
       .toss();
   });
 
+  it('POST - invalid interaction', async () => {
+    await pactum
+      .post('http://localhost:9393/api/projects')
+      .withJson({
+        parent: {
+          child : [ 1, { grand: 3 } ]
+        }
+      })
+      .expectStatus(404)
+      .expectBody('Interaction Not Found')
+      .expectBodyContains('Not Found')
+      .expectResponseTime(100)
+      .toss();
+  });
+
   it('PUT - invalid interaction', () => {
     return pactum
       .put('http://localhost:9393/api/projects/1')

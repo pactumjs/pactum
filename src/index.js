@@ -6,6 +6,9 @@ const Mock = require('./exports/mock');
 const Pact = require('./exports/pact');
 const request = require('./exports/request');
 const provider = require('./exports/provider');
+const Settings = require('./exports/settings');
+
+const logger = require('./helpers/logger');
 
 /**
  * request method
@@ -41,6 +44,7 @@ const server = new Server();
 const matchers = new Matcher();
 const mock = new Mock(server);
 const pact = new Pact();
+const settings = new Settings(pact, request, mock, logger);
 
 const pactum = {
 
@@ -49,6 +53,7 @@ const pactum = {
   pact,
   request,
   provider,
+  settings,
 
   /**
    * Add as an mock interaction to the mock server

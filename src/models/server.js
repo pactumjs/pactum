@@ -128,13 +128,14 @@ function registerAllRoutes(server, app) {
       }
     }
     if (!interactionExercised) {
-      log.warn('Interaction not found', {
+      log.warn('Interaction Not Found in Mock Server', {
         method: req.method,
         path: req.path,
         headers: req.headers,
         query: req.query,
         body: req.body
       });
+      log.debug(helper.stringify(req.body));
       res.status(404);
       res.send('Interaction Not Found');
     }
