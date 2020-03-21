@@ -93,6 +93,7 @@ class Spec {
    */
   addMockInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction, true);
+    log.debug('Mock Interaction added to Mock Server -', interaction.id);
     this.mockInteractions.set(interaction.id, interaction);
     return this;
   }
@@ -131,6 +132,7 @@ class Spec {
    */
   addPactInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction, false);
+    log.debug('Pact Interaction added to Mock Server -', interaction.id);
     this.pactInteractions.set(interaction.id, interaction);
     return this;
   }

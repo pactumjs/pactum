@@ -403,6 +403,7 @@ describe('Mock', () => {
   it('GET - invalid interaction', async () => {
     await pactum
       .get('http://localhost:9393/api/projects/1')
+      .withQueryParams({ id: '1'})
       .expectStatus(404)
       .expectBody('Interaction Not Found')
       .expectBodyContains('Not Found')

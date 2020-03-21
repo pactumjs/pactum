@@ -106,42 +106,62 @@ class Server {
 function registerAllRoutes(server, app) {
   app.all('/*', (req, response) => {
     const res = new ExpressResponse(response);
-    let interactionExercised = false;
     let interaction = utils.getMatchingInteraction(req, server.pactInteractions);
     if (!interaction) {
       interaction = utils.getMatchingInteraction(req, server.mockInteractions);
     }
     if (interaction) {
-      store.updateInteractionExerciseCounter(interaction.id);
-      interaction.exercised = true;
-      interactionExercised = true;
-      if (typeof interaction.willRespondWith === 'function') {
-        interaction.willRespondWith(req, res);
-      } else {
-        res.set(interaction.willRespondWith.headers);
-        res.status(interaction.willRespondWith.status);
-        if (interaction.willRespondWith.body) {
-          res.send(interaction.willRespondWith.body);
-        } else {
-          res.send();
-        }
-      }
-    }
-    if (!interactionExercised) {
-      log.warn('Interaction Not Found in Mock Server', {
-        method: req.method,
-        path: req.path,
-        headers: req.headers,
-        query: req.query,
-        body: req.body
-      });
-      log.debug(helper.stringify(req.body));
-      res.status(404);
-      res.send('Interaction Not Found');
+      sendInteractionFoundResponse(req, res, interaction);
+    } else {
+      sendInteractionNotFoundResponse(req, res);
     }
   });
 }
 
+/**
+ * respond with details in interaction
+ * @param {object} req - HTTP request
+ * @param {ExpressResponse} res - HTTP response
+ * @param {Interaction} interaction - HTTP interaction
+ */
+function sendInteractionFoundResponse(req, res, interaction) {
+  store.updateInteractionExerciseCounter(interaction.id);
+  interaction.exercised = true;
+  if (typeof interaction.willRespondWith === 'function') {
+    interaction.willRespondWith(req, res);
+  } else {
+    res.set(interaction.willRespondWith.headers);
+    res.status(interaction.willRespondWith.status);
+    if (interaction.willRespondWith.body) {
+      res.send(interaction.willRespondWith.body);
+    } else {
+      res.send();
+    }
+  }
+}
+
+/**
+ * respond with not found response
+ * @param {object} req - HTTP request
+ * @param {ExpressResponse} res - HTTP response
+ */
+function sendInteractionNotFoundResponse(req, res) {
+  log.warn('Interaction Not Found in Mock Server', {
+    method: req.method,
+    path: req.path,
+    headers: req.headers,
+    query: req.query ? JSON.parse(JSON.stringify(req.query)) : req.query,
+    body: req.body
+  });
+  log.debug(helper.stringify(req.body));
+  res.status(404);
+  res.send('Interaction Not Found');
+}
+
+/**
+ * registers all pactum routes
+ * @param {Server} server - mock server
+ */
 function registerPactumRemoteRoutes(server) {
   const app = server.app;
   app.all('/api/pactum/*', (req, res) => {

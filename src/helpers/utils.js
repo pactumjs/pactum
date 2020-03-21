@@ -11,7 +11,7 @@ const utils = {
    * @param {Map<string, object>} interactions - interactions
    */
   getMatchingInteraction(req, interactions) {
-    log.debug('Finding matching interaction');
+    log.debug('Finding matching interaction. Total interactions -', interactions.size);
     const ids = Array.from(interactions.keys());
     for (let i = ids.length - 1; i >= 0; i--) {
       const interactionId = ids[i];
