@@ -12,7 +12,11 @@ class InteractionRequest {
     this.matchingRules = {};
     if (request.headers && typeof request.headers === 'object') {
       this.rawHeaders = JSON.parse(JSON.stringify(request.headers));
-      helper.setMatchingRules(this.matchingRules, this.rawHeaders, '$.headers');
+      const rawLowerCaseHeaders = {};
+      for (const prop in this.rawHeaders) {
+        rawLowerCaseHeaders[prop.toLowerCase()] = this.rawHeaders[prop];
+      }
+      helper.setMatchingRules(this.matchingRules, rawLowerCaseHeaders, '$.headers');
     }
     this.headers = helper.setValueFromMatcher(request.headers);
     if (request.query && typeof request.query === 'object') {

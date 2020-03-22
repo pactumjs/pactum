@@ -59,6 +59,18 @@ class Matcher {
     };
   }
 
+  /**
+   * contains matching
+   * @param {string} value - value to be present
+   */
+  contains(value) {
+    const options = {
+      generate: value,
+      matcher: value
+    };
+    return term(options);
+  }
+
 }
 
 function like(value) {

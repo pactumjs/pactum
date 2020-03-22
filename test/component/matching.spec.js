@@ -1,5 +1,5 @@
 const pactum = require('../../src/index');
-const { like, somethingLike, term, regex, eachLike } = pactum.matchers;
+const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers;
 
 describe('Request Matchers', () => {
 
@@ -203,6 +203,44 @@ describe('Request Matchers', () => {
         name: 'Bark'
       }])
       .expectStatus(200)
+      .toss();
+  });
+
+  it('GET - one interaction - contains', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1',
+          query: {
+            date: contains('2020')
+          },
+          headers: {
+            'x-Request-Id': contains('PutItem')
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .__setLogLevel('DEBUG')
+      .get('http://localhost:9393/api/projects/1')
+      .withQuery('date', '12/00/2020')
+      .withHeaders({
+        'x-request-id': 'DynamoDB.2018.PutItem'
+      })
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
       .toss();
   });
 
