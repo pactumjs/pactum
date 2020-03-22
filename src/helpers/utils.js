@@ -39,7 +39,7 @@ const utils = {
       }
       let isValidHeaders = true;
       if (interaction.withRequest.headers) {
-        isValidHeaders = validateHeaders(req.headers, interaction.withRequest.headers);
+        isValidHeaders = validateHeaders(req.headers, interaction.withRequest.headers, interaction.withRequest.matchingRules);
       }
       if (!isValidHeaders) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Headers`);
@@ -82,19 +82,19 @@ function validateQuery(actual, expected, matchingRules) {
   }
 }
 
-function validateHeaders(actual, expected) {
-  for (const prop in expected) {
-    if (!Object.prototype.hasOwnProperty.call(expected, prop.toLowerCase())) {
-      continue;
-    }
-    if (!Object.prototype.hasOwnProperty.call(actual, prop.toLowerCase())) {
-      return false;
-    }
-    if (expected[prop] != actual[prop.toLowerCase()]) {
-      return false;
-    }
+function validateHeaders(actual, expected, matchingRules) {
+  // covert props of header to lower case : Content-Type -> content-type
+  const lowerCaseActual = {};
+  for (const prop in actual) {
+    lowerCaseActual[prop.toLowerCase()] = actual[prop];
   }
-  return true;
+  const lowerCaseExpected = {};
+  for (const prop in expected) {
+    lowerCaseExpected[prop.toLowerCase()] = expected[prop];
+  }
+  const compare = new Compare();
+  const response = compare.jsonMatch(lowerCaseActual, lowerCaseExpected, matchingRules, '$.headers');
+  return response.equal;
 }
 
 function validateBody(actual, expected, matchingRules) {

@@ -206,4 +206,68 @@ describe('Request Matchers', () => {
       .toss();
   });
 
+  it('GET - one interaction - headers like', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1',
+          headers: {
+            date: like('08/04/2020')
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .withHeaders({'date': '12/00/9632', 'place': 'hyd'})
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss();
+  });
+
+  it('GET - one interaction - multiple headers like', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1',
+          headers: {
+            date: like('08/04/2020'),
+            place: 'hyd'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .__setLogLevel('DEBUG')
+      .get('http://localhost:9393/api/projects/1')
+      .withHeaders({'date': '12/00/9632', 'place': 'hyd'})
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss();
+  });
+
 });

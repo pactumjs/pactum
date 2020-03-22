@@ -9,8 +9,12 @@ class InteractionRequest {
   constructor(request) {
     this.method = request.method;
     this.path = request.path;
-    this.headers = request.headers;
     this.matchingRules = {};
+    if (request.headers && typeof request.headers === 'object') {
+      this.rawHeaders = JSON.parse(JSON.stringify(request.headers));
+      helper.setMatchingRules(this.matchingRules, this.rawHeaders, '$.headers');
+    }
+    this.headers = helper.setValueFromMatcher(request.headers);
     if (request.query && typeof request.query === 'object') {
       this.rawQuery = JSON.parse(JSON.stringify(request.query));
       helper.setMatchingRules(this.matchingRules, this.rawQuery, '$.query');
