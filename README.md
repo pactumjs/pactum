@@ -5,7 +5,11 @@
 
 **pactum** is a REST API Testing Tool that combines the implementation of a consumer driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
+In simple words, pactum helps in testing API endpoints. It comes with a HTTP server that acts as a mock which enables to control the state of all external dependencies. It is *simple*, *fast*, *easy* and *fun* to use.
+
 ## Documentation
+
+Learn more about pactum from following links
 
 * [Pactum](https://github.com/ASaiAnudeep/pactum/wiki)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
@@ -18,12 +22,25 @@
 ## Installation
 
 ```shell
+# install pactum as a dev dependency
 npm install --save-dev pactum
+
+# install a test framework to run pactum tests
+# mocha / jest / jasmine
+npm install --save-dev mocha
 ```
 
-## Usage
+# Usage
 
-### Component Testing
+pactum can be used for
+
+* [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+* [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+* [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
+
+## Component Testing
+
+Component testing is defined as a software testing type, in which the testing is performed on each component separately without integrating with other components.
 
 Running a single component test expectation.
 
@@ -39,13 +56,75 @@ it('should be a teapot', async () => {
 ```
 
 ```shell
-# mocha is a test framework
+# mocha is a test framework to execute test cases
 mocha /path/to/test
 ```
 
-Learn more about pactum as a component tester [here](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+Running a complex component test expectation.
 
-### Contract Testing
+```javascript
+const pactum = require('pactum');
+
+it('should add a new post', () => {
+  return pactum
+    .post('https://jsonplaceholder.typicode.com/posts')
+    .withJson({
+      title: 'foo',
+      body: 'bar',
+      userId: 1
+    })
+    .withHeaders({
+      "Content-Type": "application/json; charset=UTF-8"
+    })
+    .expectStatus(201)
+    .expectHeader('content-type', 'application/json; charset=utf-8')
+    .expectJson({
+      id: '1'
+    });
+});
+```
+
+Running a component test expectation with mocking external dependency (AWS DynamoDB).
+
+```javascript
+const pactum = require('pactum');
+
+before(() => {
+  return pactum.mock.start();
+});
+
+it('should not get non existing user', () => {
+  return pactum
+    .addMockInteraction({
+      withRequest: {
+        method: 'POST',
+        path: '/',
+        headers: {
+          'x-amz-target': 'DynamoDB_20120810.GetItem'
+        },
+        body: {
+          Key: { UserName: { S: 'brave' } },
+          TableName: 'Users'
+        }
+      },
+      willRespondWith: {
+        status: 200,
+        body: { Items: [] }
+      }
+    })
+    .get('http://localhost:3333/user')
+    .withQuery('user', 'brave')
+    .expectStatus(404);
+});
+
+after(() => {
+  return pactum.mock.stop();
+});
+```
+
+Learn more about component testing with pactum at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+
+## Contract Testing
 
 Contract Testing is a technique for testing interactions between applications (often called as services) that communicate with each other, to ensure the messages they send or receive conform to a shared understanding that is documented in a **contract**.
 
@@ -60,7 +139,7 @@ Contract Testing has two steps
 1. Defining Consumer Expectations (**Consumer Testing**)
 2. Verifying Expectations on Provider (**Provider Verification**)
 
-#### Consumer Testing
+### Consumer Testing
 
 Running a consumer test with the help of a mock server & a single pact interaction. 
 If the pact interaction is not exercised, the test will fail.
@@ -108,7 +187,7 @@ after(async () => {
 ```
 Learn more about pactum as a consumer tester at [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
 
-#### Provider Verification
+### Provider Verification
 
 Running a provider verification test with the help of a pact broker. 
 
@@ -123,7 +202,9 @@ await pactum.provider.validate({
 
 Learn more about pactum as a provider verifier at [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
 
-### Mock Server
+## Mock Server
+
+Mock Server allows you to mock any server or service via HTTP or HTTPS, such as a REST endpoint.
 
 Running **pactum** as a standalone mock server.
 

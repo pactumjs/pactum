@@ -64,6 +64,8 @@ HTTP requests are messages sent by the client to initiate an action on the serve
 | `withGraphQLVariables({})`          | graphQL variables                         |
 | `withForm({})`                      | object to send as form data               |
 | `withMultiPartFormData('','', {})`  | object to send as multi part form data    |
+| `__setLogLevel('DEBUG')`            | sets log level for troubleshooting        |
+| `__setRequestTimeout(2000)`         | sets request timeout                      |
 
 ```javascript
 const pactum = require('pactum');
