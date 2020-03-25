@@ -12,6 +12,7 @@ These tests are all about testing the functionality of individual service. Durin
   * [HTTP Methods](#http-methods)
   * [HTTP Expectations](#http-expectations)
   * [Request Settings](#request-settings)
+* [Examples](#examples)
 
 ## Getting Started
 
@@ -236,6 +237,194 @@ Sets default headers for all the HTTP requests. The default header will be overr
 pactum.request.setDefaultHeader('Authorization', 'Basic xxxxx');
 pactum.request.setDefaultHeader('content-type', 'application/json');
 ```
+
+----------------------------------------------------------------------------------------------------------------
+
+<a href="https://github.com/ASaiAnudeep/pactum/wiki" >
+  <img src="https://img.shields.io/badge/PREV-Home-orange" alt="Home" align="left" style="display: inline;" />
+</a>
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing" >
+  <img src="https://img.shields.io/badge/NEXT-Contract%20Testing-blue" alt="Contract Testing" align="right" style="display: inline;" />
+</a>
+
+<br>
+
+----------------------------------------------------------------------------------------------------------------
+
+
+# Examples
+
+Refer the below examples to get started with component testing.
+
+## Simple Component Tests
+
+```javascript
+const pactum = require('pactum');
+
+describe('JSON Placeholder', () => {
+
+  it('GET', async () => {
+    await pactum
+      .get('https://jsonplaceholder.typicode.com/posts/1')
+      .expectStatus(200)
+      .expectHeader('content-type', 'application/json; charset=utf-8')
+      .expectHeader('connection', /\w+/)
+      .expectJsonLike({
+        userId: 1,
+        id: 1
+      })
+      .expectJsonSchema({
+        "properties": {
+          "userId": {
+            "type": "number"
+          }
+        },
+        "required": ["userId", "id"]
+      })
+      .toss();
+  });
+
+  it('GET - with query', async () => {
+    await pactum
+      .get('https://jsonplaceholder.typicode.com/comments')
+      .withQuery('postId', 1)
+      .expectStatus(200)
+      .expectHeaderContains('content-type', 'application/json')
+      .expectJsonLike([
+        {
+          postId: 1,
+          id: 1,
+          name: /\w+/
+        }
+      ])
+      .toss();
+  });
+
+  it('POST - with body', async () => {
+    await pactum
+      .post('https://jsonplaceholder.typicode.com/posts')
+      .withHeaders({
+        "content-type": "application/json"
+      })
+      .withBody({
+        title: 'foo',
+        body: 'bar',
+        userId: 1
+      })
+      .expectStatus(201)
+      .toss();
+  });
+
+  it('PUT', async () => {
+    await pactum
+      .put('https://jsonplaceholder.typicode.com/posts/1')
+      .withJson({
+        id: 1,
+        title: 'foo',
+        body: 'bar',
+        userId: 1
+      })
+      .expectStatus(200)
+      .toss();
+  });
+
+})
+```
+
+## Component Tests With Mock Server
+
+During component testing, your service will be running in a controlled environment. Instead of taking to external services, it will be communicating with a mock server.
+
+**pactum** comes with a mock server where you will able to control the behavior of each external service. *Interactions* are a way to instruct the mock server to simulate the behavior of external services. 
+
+Multiple interactions can be added to the mock server before execution of a test case through `addMockInteraction` or `addPactInteraction` methods. If these interactions are not exercised then test case will fail. If an unexpected request is received by the mock server, it will respond with *404* - *Interaction Not Found*. All interactions added at test case level will be removed after its execution. Use `__setLogLevel('DEBUG')` method to see the logs from the mock server for troubleshooting purpose.
+
+Learn more about interactions at [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions)
+
+```javascript
+const pactum = require('pactum');
+
+describe('Mock', () => {
+
+  before(async () => {
+    await pactum.mock.start();
+  });
+
+  it('GET - one interaction - with one query', async () => {
+    await pactum
+      // this mock interaction will removed after the execution of current spec.
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1',
+          query: {
+            name: 'fake'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .withQuery('name', 'fake')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss();
+  });
+
+  it('GET - multiple interactions', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            id: 1
+          }
+        }
+      })
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/2'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            id: 2
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects')
+      .withQuery('name', 'fake')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss();
+  });
+
+  after(async () => {
+    await pactum.mock.stop();
+  });
+
+});
+```
+
 
 ----------------------------------------------------------------------------------------------------------------
 
