@@ -48,8 +48,12 @@ class Mock {
 
   /**
    * starts server on specified port or defaults to 9393
+   * @param {number} port - port number of mock server
    */
-  start() {
+  start(port) {
+    if (port) {
+      this.setDefaultPort(port);
+    }
     return _server.start();
   }
 
