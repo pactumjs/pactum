@@ -16,28 +16,67 @@ const logger = require('./helpers/logger');
  */
 
 /**
- * interaction details
- * @typedef {object} Interaction
+ * pact interaction details
+ * @typedef {object} PactInteraction
  * @property {string} [id] - unique id of the interaction
- * @property {string} [consumer] - name of the consumer
+ * @property {string} provider - name of the provider
+ * @property {string} state - state of the provider
+ * @property {string} uponReceiving - description of the request
+ * @property {PactInteractionRequest} withRequest - interaction request details
+ * @property {PactInteractionResponse} willRespondWith - interaction response details
+ */
+
+/**
+ * mock interaction details
+ * @typedef {object} MockInteraction
+ * @property {string} [id] - unique id of the interaction
  * @property {string} [provider] - name of the provider
- * @property {string} [state] - state of the provider
- * @property {string} [uponReceiving] - description of the request
- * @property {object} withRequest - interaction request details
- * @property {RequestMethod} withRequest.method - request method
- * @property {string} withRequest.path - request path
- * @property {object} [withRequest.headers] - request headers
- * @property {object} [withRequest.query] - request query
- * @property {object} [withRequest.graphQL] - graphQL request
- * @property {string} withRequest.graphQL.query - graphQL query
- * @property {object} [withRequest.graphQL.variables] - graphQL variables
- * @property {object} [withRequest.body] - request body
- * @property {boolean} [withRequest.ignoreQuery] - ignores request query while matching
- * @property {boolean} [withRequest.ignoreBody] - ignores request body while matching
- * @property {object} willRespondWith - interaction response details
- * @property {string} willRespondWith.status - response status code
- * @property {string} [willRespondWith.headers] - response headers
- * @property {object} [willRespondWith.body] - response body
+ * @property {MockInteractionRequest} withRequest - interaction request details
+ * @property {MockInteractionResponse} willRespondWith - interaction response details
+ */
+
+/**
+ * pact interaction request details
+ * @typedef {object} PactInteractionRequest
+ * @property {RequestMethod} method - request method
+ * @property {string} path - request method
+ * @property {object} [headers] - request headers
+ * @property {object} [query] - request query
+ * @property {GraphQLRequest} [graphQL] - graphQL request
+ * @property {object} [body] - request body
+ */
+
+
+/**
+ * @typedef {Object} MockInteractionRequestType
+ * @property {boolean} ignoreQuery - ignores request query while matching
+ * @property {boolean} ignoreBody - ignores request body while matching
+ *
+ * mock interaction request details
+ * @typedef {PactInteractionRequest & MockInteractionRequestType} MockInteractionRequest
+ */
+
+/**
+ * graphQL request details
+ * @typedef {object} GraphQLRequest
+ * @property {string} query - graphQL query
+ * @property {string} [variables] - graphQL variables
+ */
+
+/**
+ * pact interaction response details
+ * @typedef {object} PactInteractionResponse
+ * @property {number} status - response status code
+ * @property {object} [headers] - response headers
+ * @property {object} [body] - response body
+ */
+
+/**
+ * @typedef {Object} MockInteractionResponseType
+ * @property {number} [fixedDelay] - response fixed delay
+ *
+ * mock interaction response details
+ * @typedef {PactInteractionResponse & MockInteractionResponseType} MockInteractionResponse
  */
 
 const server = new Server();
@@ -57,7 +96,7 @@ const pactum = {
 
   /**
    * Add as an mock interaction to the mock server
-   * @param {Interaction} interaction - interaction details
+   * @param {MockInteraction} interaction - interaction details
    * @example
    * await pactum
    *  .addMockInteraction({
@@ -91,7 +130,7 @@ const pactum = {
 
   /**
    * Add as an pact interaction to the mock server
-   * @param {Interaction} interaction - interaction details
+   * @param {PactInteraction} interaction - interaction details
    * @example
    * await pactum
    *  .addPactInteraction({

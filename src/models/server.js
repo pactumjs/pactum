@@ -106,8 +106,10 @@ class Server {
 function registerAllRoutes(server, app) {
   app.all('/*', (req, response) => {
     const res = new ExpressResponse(response);
+    log.debug('Finding matching interaction from pact interactions -', server.pactInteractions.size);
     let interaction = utils.getMatchingInteraction(req, server.pactInteractions);
     if (!interaction) {
+      log.debug('Finding matching interaction from mock interactions -', server.mockInteractions.size);
       interaction = utils.getMatchingInteraction(req, server.mockInteractions);
     }
     if (interaction) {
@@ -132,12 +134,34 @@ function sendInteractionFoundResponse(req, res, interaction) {
   } else {
     res.set(interaction.willRespondWith.headers);
     res.status(interaction.willRespondWith.status);
-    if (interaction.willRespondWith.body) {
-      res.send(interaction.willRespondWith.body);
-    } else {
-      res.send();
-    }
+    const delay = getDelay(interaction);
+    setTimeout(() => sendResponseBody(res, interaction.willRespondWith.body), delay);
   }
+}
+
+/**
+ * sends response body
+ * @param {ExpressResponse} res - HTTP response
+ * @param {object} body - response body to be sent
+ */
+function sendResponseBody(res, body) {
+  if (body) {
+    res.send(body);
+  } else {
+    res.send();
+  }
+}
+
+/**
+ * returns response delay in ms
+ * @param {Interaction} interaction - interaction
+ */
+function getDelay(interaction) {
+  let delay = 0;
+  if (interaction.willRespondWith.fixedDelay) {
+    delay = interaction.willRespondWith.fixedDelay;
+  }
+  return delay;
 }
 
 /**

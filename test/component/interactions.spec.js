@@ -222,6 +222,46 @@ describe('Mock', () => {
       .toss();
   });
 
+  it('GET - one interaction - with fixed delay', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          },
+          fixedDelay: 10
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .expectJsonSchema({
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "id"]
+      })
+      .expectJsonQuery('id', 1)
+      .toss();
+  });
+
   it('POST - one interaction', async () => {
     await pactum
       .addMockInteraction({

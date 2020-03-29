@@ -50,7 +50,8 @@ describe('Interaction', () => {
           "id": 1,
           "name": "fake"
         },
-        "status": 200
+        "status": 200,
+        "fixedDelay": undefined
       },
       "withRequest": {
         "body": undefined,
@@ -123,7 +124,8 @@ describe('Interaction', () => {
           "id": 1,
           "name": "fake"
         },
-        "status": 200
+        "status": 200,
+        "fixedDelay": undefined
       },
       "withRequest": {
         "body": undefined,
@@ -207,7 +209,8 @@ describe('Interaction', () => {
           "id": 1,
           "name": "fake"
         },
-        "status": 200
+        "status": 200,
+        "fixedDelay": undefined
       },
       "withRequest": {
         "body": undefined,
@@ -314,7 +317,8 @@ describe('Interaction', () => {
           "id": 1,
           "name": "fake"
         },
-        "status": 200
+        "status": 200,
+        "fixedDelay": undefined
       },
       "withRequest": {
         "query": undefined,
@@ -398,7 +402,8 @@ describe('Interaction', () => {
           "id": 1,
           "name": "fake"
         },
-        "status": 200
+        "status": 200,
+        "fixedDelay": undefined
       },
       "withRequest": {
         "query": undefined,
@@ -485,6 +490,78 @@ describe('Interaction', () => {
     });
   });
 
+  it('valid mock interaction - fixed Delay', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        },
+        fixedDelay: 10
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "body": {
+          "id": 1,
+          "name": "fake"
+        },
+        "headers": {
+          "content-type": "application/json"
+        },
+        "rawBody": {
+          "id": 1,
+          "name": "fake"
+        },
+        "status": 200,
+        "fixedDelay": 10
+      },
+      "withRequest": {
+        "body": undefined,
+        "headers": undefined,
+        "ignoreBody": false,
+        "ignoreQuery": false,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": undefined,
+        "matchingRules": {}
+      },
+      "rawInteraction": {
+        "willRespondWith": {
+          "body": {
+            "id": 1,
+            "name": "fake"
+          },
+          "headers": {
+            "content-type": "application/json"
+          },
+          "status": 200,
+          "fixedDelay": 10
+        },
+        "withRequest": {
+          "method": "GET",
+          "path": "/api/projects/1"
+        }
+      },
+    });
+  });
+
   it('invalid mock interaction - no request method', () => {
     const rawInteraction = {
       withRequest: {
@@ -562,6 +639,70 @@ describe('Interaction', () => {
     expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction response status provided - undefined');
   });
 
+  it('invalid mock interaction - fixed Delay is string', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        },
+        fixedDelay: "ten"
+      }
+    };
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction response Fixed Delay provided - ten');
+  });
+
+  it('invalid mock interaction - fixed Delay is less than 0', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        },
+        fixedDelay: -22
+      }
+    };
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Interaction response Fixed Delay should be greater than 0');
+  });
+
+  it('invalid mock interaction - null response', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: null
+    };
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction response provided - null');
+  });
+
+  it('invalid mock interaction - null', () => {
+    expect(function () { new Interaction(null, true); }).to.throws('Invalid interaction provided - null');
+  });
+
+  it('invalid mock interaction - undefined', () => {
+    expect(function () { new Interaction(undefined, true); }).to.throws('Invalid interaction provided - undefined');
+  });
+
   it('valid pact interaction', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {
@@ -603,7 +744,8 @@ describe('Interaction', () => {
           "id": 1,
           "name": "fake"
         },
-        "status": 200
+        "status": 200,
+        "fixedDelay": undefined
       },
       "withRequest": {
         "body": undefined,
@@ -749,6 +891,31 @@ describe('Interaction', () => {
       }
     };
     expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support ignore body`);
+  });
+
+  it('invalid pact interaction - fixed delay', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      provider: 'pro',
+      state: 'a state',
+      uponReceiving: 'description',
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        },
+        fixedDelay: 100
+      }
+    };
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support delays`);
   });
 
   after(() => {

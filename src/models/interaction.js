@@ -71,6 +71,7 @@ class InteractionResponse {
       this.rawBody = response.body;
     }
     this.body = helper.setValueFromMatcher(response.body);
+    this.fixedDelay = response.fixedDelay;
   }
 
 }
@@ -96,8 +97,8 @@ class Interaction {
   }
 
   validateInteraction(rawInteraction, mock) {
-    if (typeof rawInteraction !== 'object') {
-      throw new PactumInteractionError(`Invalid interaction provided`);
+    if (!helper.isValidObject(rawInteraction)) {
+      throw new PactumInteractionError(`Invalid interaction provided - ${rawInteraction}`);
     }
     const { provider, state, uponReceiving, withRequest, willRespondWith } = rawInteraction;
     if (!mock) {
@@ -130,14 +131,25 @@ class Interaction {
       if (withRequest.ignoreBody) {
         throw new PactumInteractionError(`Pact interaction won't support ignore body`);
       }
+      if (willRespondWith.fixedDelay) {
+        throw new PactumInteractionError(`Pact interaction won't support delays`);
+      }
     }
-    if (typeof willRespondWith === 'object') {
+    if (helper.isValidObject(willRespondWith)) {
       if (typeof willRespondWith.status !== 'number') {
         throw new PactumInteractionError(`Invalid interaction response status provided - ${willRespondWith.status}`);
       }
+      if (willRespondWith.fixedDelay) {
+        if (typeof willRespondWith.fixedDelay !== 'number') {
+          throw new PactumInteractionError(`Invalid interaction response Fixed Delay provided - ${willRespondWith.fixedDelay}`);
+        }
+        if (willRespondWith.fixedDelay < 0) {
+          throw new PactumInteractionError(`Interaction response Fixed Delay should be greater than 0`);
+        }
+      }
     } else {
       if (typeof willRespondWith !== 'function') {
-        throw new PactumInteractionError(`Invalid interaction request provided - ${willRespondWith}`);
+        throw new PactumInteractionError(`Invalid interaction response provided - ${willRespondWith}`);
       }
     }
   }
