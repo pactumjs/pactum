@@ -71,7 +71,31 @@ class InteractionResponse {
       this.rawBody = response.body;
     }
     this.body = helper.setValueFromMatcher(response.body);
-    this.fixedDelay = response.fixedDelay;
+    if (response.fixedDelay) {
+      this.delay = new InteractionResponseDelay('FIXED', response.fixedDelay);
+    } else if (response.randomDelay) {
+      this.delay = new InteractionResponseDelay('RANDOM', response.randomDelay);
+    } else {
+      this.delay = new InteractionResponseDelay('NONE', null);
+    }
+
+  }
+
+}
+
+class InteractionResponseDelay {
+
+  constructor(type, props) {
+    this.type = type;
+    if (type === 'RANDOM') {
+      this.subType = 'UNIFORM';
+      this.min = props.min;
+      this.max = props.max;
+    } else if (type === 'FIXED') {
+      this.value = props;
+    } else {
+      this.value = 0;
+    }
   }
 
 }
@@ -100,18 +124,31 @@ class Interaction {
     if (!helper.isValidObject(rawInteraction)) {
       throw new PactumInteractionError(`Invalid interaction provided - ${rawInteraction}`);
     }
-    const { provider, state, uponReceiving, withRequest, willRespondWith } = rawInteraction;
+    const { withRequest, willRespondWith } = rawInteraction;
     if (!mock) {
-      if (typeof provider !== 'string' || !provider) {
-        throw new PactumInteractionError(`Invalid provider name provided - ${provider}`);
-      }
-      if (typeof state !== 'string' || !state) {
-        throw new PactumInteractionError(`Invalid state provided - ${state}`);
-      }
-      if (typeof uponReceiving !== 'string' || !uponReceiving) {
-        throw new PactumInteractionError(`Invalid upon receiving description provided - ${uponReceiving}`);
-      }
+      this.validateRequiredFieldsPact(rawInteraction);
     }
+    this.validateWithRequest(withRequest);
+    if (!mock) {
+      this.validateInvalidFieldsPact(withRequest, willRespondWith);
+    }
+    this.validateWillRespondWith(willRespondWith);
+  }
+
+  validateRequiredFieldsPact(rawInteraction) {
+    const { provider, state, uponReceiving } = rawInteraction;
+    if (typeof provider !== 'string' || !provider) {
+      throw new PactumInteractionError(`Invalid provider name provided - ${provider}`);
+    }
+    if (typeof state !== 'string' || !state) {
+      throw new PactumInteractionError(`Invalid state provided - ${state}`);
+    }
+    if (typeof uponReceiving !== 'string' || !uponReceiving) {
+      throw new PactumInteractionError(`Invalid upon receiving description provided - ${uponReceiving}`);
+    }
+  }
+
+  validateWithRequest(withRequest) {
     if (typeof withRequest !== 'object') {
       throw new PactumInteractionError(`Invalid interaction request provided - ${withRequest}`);
     }
@@ -124,33 +161,68 @@ class Interaction {
     if (typeof withRequest.path !== 'string' || !withRequest.path) {
       throw new PactumInteractionError(`Invalid interaction request path provided - ${withRequest.path}`);
     }
-    if (!mock) {
-      if (withRequest.ignoreQuery) {
-        throw new PactumInteractionError(`Pact interaction won't support ignore query`);
-      }
-      if (withRequest.ignoreBody) {
-        throw new PactumInteractionError(`Pact interaction won't support ignore body`);
-      }
-      if (willRespondWith.fixedDelay) {
-        throw new PactumInteractionError(`Pact interaction won't support delays`);
-      }
+  }
+
+  validateInvalidFieldsPact(withRequest, willRespondWith) {
+    if (withRequest.ignoreQuery) {
+      throw new PactumInteractionError(`Pact interaction won't support ignore query`);
     }
+    if (withRequest.ignoreBody) {
+      throw new PactumInteractionError(`Pact interaction won't support ignore body`);
+    }
+    if (willRespondWith.fixedDelay) {
+      throw new PactumInteractionError(`Pact interaction won't support delays`);
+    }
+    if (willRespondWith.randomDelay) {
+      throw new PactumInteractionError(`Pact interaction won't support delays`);
+    }
+  }
+
+  validateWillRespondWith(willRespondWith) {
     if (helper.isValidObject(willRespondWith)) {
       if (typeof willRespondWith.status !== 'number') {
         throw new PactumInteractionError(`Invalid interaction response status provided - ${willRespondWith.status}`);
       }
       if (willRespondWith.fixedDelay) {
-        if (typeof willRespondWith.fixedDelay !== 'number') {
-          throw new PactumInteractionError(`Invalid interaction response Fixed Delay provided - ${willRespondWith.fixedDelay}`);
-        }
-        if (willRespondWith.fixedDelay < 0) {
-          throw new PactumInteractionError(`Interaction response Fixed Delay should be greater than 0`);
-        }
+        this.validateFixedDelay(willRespondWith.fixedDelay);
+      }
+      if (willRespondWith.randomDelay) {
+        this.validateRandomDelay(willRespondWith.randomDelay);
       }
     } else {
       if (typeof willRespondWith !== 'function') {
         throw new PactumInteractionError(`Invalid interaction response provided - ${willRespondWith}`);
       }
+    }
+  }
+
+  validateFixedDelay(fixedDelay) {
+    if (typeof fixedDelay !== 'number') {
+      throw new PactumInteractionError(`Invalid interaction response Fixed Delay provided - ${fixedDelay}`);
+    }
+    if (fixedDelay < 0) {
+      throw new PactumInteractionError(`Interaction response Fixed Delay should be greater than 0`);
+    }
+  }
+
+  validateRandomDelay(randomDelay) {
+    if (!helper.isValidObject(randomDelay)) {
+      throw new PactumInteractionError(`Invalid Random Delay provided- ${randomDelay}`);
+    }
+    if (typeof randomDelay.min !== 'number') {
+      throw new PactumInteractionError(`Invalid min value provided in Random Delay - ${randomDelay.min}`);
+    }
+    if (typeof randomDelay.max !== 'number') {
+      throw new PactumInteractionError(`Invalid max value provided in Random Delay - ${randomDelay.max}`);
+    }
+    if (randomDelay.min < 0) {
+      throw new PactumInteractionError(`Min value in Random Delay should be greater than 0`);
+    }
+    if (randomDelay.max < 0) {
+      throw new PactumInteractionError(`Max value in Random Delay should be greater than 0`);
+    }
+    if (randomDelay.min > randomDelay.max) {
+      throw new PactumInteractionError(`Min value in Random Delay should be less than Max Value`);
     }
   }
 

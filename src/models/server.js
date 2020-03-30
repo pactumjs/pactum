@@ -157,11 +157,14 @@ function sendResponseBody(res, body) {
  * @param {Interaction} interaction - interaction
  */
 function getDelay(interaction) {
-  let delay = 0;
-  if (interaction.willRespondWith.fixedDelay) {
-    delay = interaction.willRespondWith.fixedDelay;
+  const delay = interaction.willRespondWith.delay;
+  if (delay.type === 'RANDOM') {
+    const min = delay.min;
+    const max = delay.max;
+    return Math.floor(Math.random() * (max - min)) + min;
+  } else {
+    return delay.value;
   }
-  return delay;
 }
 
 /**

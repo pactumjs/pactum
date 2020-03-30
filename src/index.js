@@ -73,7 +73,10 @@ const logger = require('./helpers/logger');
 
 /**
  * @typedef {Object} MockInteractionResponseType
- * @property {number} [fixedDelay] - response fixed delay
+ * @property {number} [fixedDelay] - response fixed delay in ms
+ * @property {object} [randomDelay] - response random delay
+ * @property {number} randomDelay.min - min delay in ms
+ * @property {number} randomDelay.max - max delay in ms
  *
  * mock interaction response details
  * @typedef {PactInteractionResponse & MockInteractionResponseType} MockInteractionResponse
