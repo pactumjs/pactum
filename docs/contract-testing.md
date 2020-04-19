@@ -22,7 +22,7 @@ Learn more about contract testing at [pact.io](https://docs.pact.io)
 
 * **Provider** - An application (often called a service) that provides functionality or data for other applications to use, often via an API.
 
-* **Contract** - A contract is a documented form of shared understanding between a consumer & a provider. Pact creates this document in the form of **JSON** file.
+* **Contract** - A contract is a documented form of shared understanding between a consumer & a provider. Pact creates this document in the form of a **JSON** file.
 
 * **Pact** - A contract between a consumer and provider is called a pact. Each pact is a collection of interactions.
 

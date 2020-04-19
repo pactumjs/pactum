@@ -337,7 +337,7 @@ During component testing, your service will be running in a controlled environme
 
 **pactum** comes with a mock server where you will able to control the behavior of each external service. *Interactions* are a way to instruct the mock server to simulate the behavior of external services. 
 
-Multiple interactions can be added to the mock server before execution of a test case through `addMockInteraction` or `addPactInteraction` methods. If these interactions are not exercised then test case will fail. If an unexpected request is received by the mock server, it will respond with *404* - *Interaction Not Found*. All interactions added at test case level will be removed after its execution. Use `__setLogLevel('DEBUG')` method to see the logs from the mock server for troubleshooting purpose.
+Multiple interactions can be added to the mock server before the execution of a test case through `addMockInteraction` or `addPactInteraction` methods. If these interactions are not exercised then the test case will fail. If an unexpected request is received by the mock server, it will respond with *404* - *Interaction Not Found*. All interactions added at the test case level will be removed after its execution. Use the `__setLogLevel('DEBUG')` method to see the logs from the mock server for troubleshooting purposes.
 
 Learn more about interactions at [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions)
 

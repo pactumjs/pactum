@@ -18,7 +18,7 @@ Before getting started with consumer testing, get familiar with [component testi
 
 Here we have an example describing pactum consumer tests between a consumer (order-service) and its provider (product-service).
 
-To make things simple, let's assume order-service has a single order with id `1`. When requested for this order details, order-service will fetch corresponding product details from its provider product-service.
+To make things simple, let's assume order-service has a single order with id `1`. When requested for this order details, the order-service will fetch corresponding product details from its provider product-service.
 
 
 #### Order Service Code

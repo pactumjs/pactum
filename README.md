@@ -3,13 +3,13 @@
 ![Build](https://github.com/ASaiAnudeep/pactum/workflows/Build/badge.svg?branch=master)
 ![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
 
-**pactum** is a REST API Testing Tool that combines the implementation of a consumer driven contract library [Pact](https://docs.pact.io) for JavaScript.
+**pactum** is a REST API Testing Tool that comes with a *mock server* & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
-In simple words, pactum helps in testing API endpoints. It comes with a HTTP server that acts as a mock which enables to control the state of all external dependencies. It is *simple*, *fast*, *easy* and *fun* to use.
+In simple words, **pactum** helps in testing API endpoints. It comes with an HTTP server that acts as a mock or service virtualization tool which enables to control the state of all external dependencies. It is *simple*, *fast*, *easy* and *fun* to use.
 
 ## Documentation
 
-Learn more about pactum from following links
+Learn more about **pactum** from following links
 
 * [Pactum](https://github.com/ASaiAnudeep/pactum/wiki)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
@@ -122,7 +122,7 @@ after(() => {
 });
 ```
 
-Learn more about component testing with pactum at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+Learn more about component testing with **pactum** at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 
 ## Contract Testing
 
@@ -130,7 +130,7 @@ Contract Testing is a technique for testing interactions between applications (o
 
 Learn more about contract testing at [pact.io](https://docs.pact.io)
 
-Learn more about contract testing with pactum at [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+Learn more about contract testing with **pactum** at [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
 
 [![Contract Testing](https://img.youtube.com/vi/-6x6XBDf9sQ/0.jpg)](https://www.youtube.com/watch?v=-6x6XBDf9sQ)
 
@@ -141,7 +141,7 @@ Contract Testing has two steps
 
 ### Consumer Testing
 
-Running a consumer test with the help of a mock server & a single pact interaction. 
+Running a consumer test with the help of a *mock server* & a single pact interaction. 
 If the pact interaction is not exercised, the test will fail.
 
 ```javascript
@@ -185,11 +185,11 @@ after(async () => {
   await pactum.mock.stop();
 });
 ```
-Learn more about pactum as a consumer tester at [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
+Learn more about **pactum** as a consumer tester at [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
 
 ### Provider Verification
 
-Running a provider verification test with the help of a pact broker. 
+Running a provider verification test with the help of a [pact broker](https://github.com/pact-foundation/pact_broker). 
 
 ```javascript
 await pactum.provider.validate({
@@ -200,13 +200,15 @@ await pactum.provider.validate({
 });
 ```
 
-Learn more about pactum as a provider verifier at [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
+Learn more about **pactum** as a provider verifier at [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
 
 ## Mock Server
 
-Mock Server allows you to mock any server or service via HTTP or HTTPS, such as a REST endpoint.
+Mock Server allows you to mock any server or service via HTTP or HTTPS, such as a REST endpoint. Simply it is a simulator for HTTP-based APIs.
 
-Running **pactum** as a standalone mock server.
+**pactum** can act as a standalone *mock server* or as a *service virtualization* tool. It comes with a powerful request & response matching.
+
+Running **pactum** as a standalone *mock server*.
 
 ```javascript
 const pactum = require('pactum');
@@ -231,7 +233,7 @@ pactum.mock.addDefaultMockInteraction({
 pactum.mock.start(3000);
 ```
 
-Learn more about pactum as a mock server [here](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
+Learn more about **pactum** as a *mock server* at [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 
 ----------------------------------------------------------------------------------------------------------------
 
