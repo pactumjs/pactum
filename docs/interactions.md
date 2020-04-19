@@ -7,6 +7,11 @@ Interactions are the way to instruct or train the mock server to respond in a pa
 
 The main difference between mock & pact interactions is that mock interaction cannot form a contract while a pact interaction can.
 
+## Table of contents
+
+* [API](#api)
+* [Request Matching](#request-matching)
+
 ## API
 
 Interactions can be added or removed from the mock server in the following ways.
@@ -55,6 +60,27 @@ Mock Interaction will have the following properties.
 | willRespondWith.randomDelay.min | number      | delays the response by ms   |
 | willRespondWith.randomDelay.max | number      | delays the response by ms   |
 
+#### pactum.addMockInteraction
+Type: `Function`<br>
+
+```javascript
+pactum.addMockInteraction({
+  withRequest: {
+    method: 'GET',
+    path: '/api/currency/INR'
+  },
+  willRespondWith: {
+    status: 200,
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: {
+      id: 'INR',
+      description: 'Indian Rupee'
+    }
+  }
+})
+```
 
 ### Pact Interaction
 
@@ -77,30 +103,6 @@ Mock Interaction will have the following properties.
 | willRespondWith.status        | **number**  | response status code        |
 | willRespondWith.headers       | object      | response headers            |
 | willRespondWith.body          | any         | response body               |
-
-
-
-#### pactum.addMockInteraction
-Type: `Function`<br>
-
-```javascript
-pactum.addMockInteraction({
-  withRequest: {
-    method: 'GET',
-    path: '/api/currency/INR'
-  },
-  willRespondWith: {
-    status: 200,
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: {
-      id: 'INR',
-      description: 'Indian Rupee'
-    }
-  }
-})
-```
 
 #### pactum.addPactInteraction
 Type: `Function`<br>
@@ -125,6 +127,86 @@ pactum.addPactInteraction({
     }
   }
 })
+```
+
+## Request Matching
+
+**pactum** supports matching of requests.
+
+It supports following matchers
+
+* `like` or `somethingLike` - matches with the type
+* `regex` or `term` - matches with the regular expression
+* `eachLike` - matches all the elements in the array with the specified type
+* `contains` - checks if actual value contains a specified value in it
+
+Matchers can be applied to
+
+* Path - *supports only regex*
+* Query
+* Headers - *headers are ignored during request matching until explicitly specified*
+* Body
+
+When a request is received by the pactum's mock server, it will attempt to match each interaction with the request. If a match is found, it will respond with the response details in the matched interaction. If no match is found, the mock server will respond with status *404*.
+
+```javascript
+it('Matchers - Path & Query', () => {
+  return pactum
+    .addMockInteraction({
+      withRequest: {
+        method: 'GET',
+        // Matches path with value in matcher. Value inside generate is used in contract testing.
+        path: regex({ generate: '/api/projects/1', matcher: /\/api\/projects\/\d+/ }),
+        query: {
+          // Matches with type. Date can be any string.
+          date: like('08/04/2020'),
+          // No matcher is applied to the age.
+          age: '10'
+        } 
+      },
+      willRespondWith: {
+        status: 200
+      }
+    })
+    .get('http://localhost:9393/api/projects/1')
+    .withQuery('date', '12/00/9632')
+    .expectStatus(200);
+});
+
+it('Matchers - Body', () => {
+  return pactum
+    .addMockInteraction({
+      withRequest: {
+        method: 'POST',
+        path: '/api/person',
+        // checks if the body has array of objects with id, name & address
+        body: eachLike({
+          // checks if id matches with regular expression
+          id: term({ generate: 123, matcher: /\d+/ }),
+          name: 'Bark',
+          address: like({
+            // checks if city is string
+            city: 'some',
+            // checks if pin is number
+            pin: 123 
+          })
+        })
+      },
+      willRespondWith: {
+        status: 200
+      }
+    })
+    .post('http://localhost:9393/api/person')
+    .withBody([{
+      id: 100,
+      name: 'Dark',
+      address: {
+        city: 'another',
+        pin: 5000
+      }
+    }])
+    .expectStatus(200);
+});
 ```
 
 ----------------------------------------------------------------------------------------------------------------

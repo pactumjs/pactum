@@ -23,7 +23,8 @@
     "pact",
     "pact-js",
     "pact.io",
-    "pactum"
+    "pactum",
+    "microservices"
   ],
   "repository": {
     "type": "git",
