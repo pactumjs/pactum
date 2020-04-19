@@ -308,4 +308,31 @@ describe('Request Matchers', () => {
       .toss();
   });
 
+  it('GET - one interaction - path regex instance', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: regex({ generate: '/api/projects/1', matcher: /\/api\/projects\/\d+/g })
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/3244')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss();
+  });
+
 });

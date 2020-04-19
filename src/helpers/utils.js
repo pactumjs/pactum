@@ -21,7 +21,7 @@ const utils = {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Method`);
         continue;
       }
-      const isValidPath = (interaction.withRequest.path === req.path);
+      const isValidPath = validatePath(req.path, interaction.withRequest.path, interaction.withRequest.matchingRules);
       if (!isValidPath) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Path`);
         continue;
@@ -67,6 +67,12 @@ const utils = {
   }
 
 };
+
+function validatePath(actual, expected, matchingRules) {
+  const compare = new Compare();
+  const response = compare.jsonMatch(actual, expected, matchingRules, '$.path');
+  return response.equal;
+}
 
 function validateQuery(actual, expected, matchingRules) {
   if (typeof actual !== 'object' || typeof expected !== 'object') {

@@ -1,3 +1,5 @@
+const log = require('./logger');
+
 class Compare {
 
   jsonLike(actual, expected) {
@@ -21,6 +23,7 @@ class Compare {
         }
       }
     }
+    log.debug('JSON Like:', equal, message);
     return { equal, message };
   }
 
@@ -55,10 +58,12 @@ class Compare {
           if (!matchingRule.success) {
             equal = false;
             message = `Matching Rule - "${matchingRule.match}" failed at "${prop}"`;
+            break;
           }
         }
       }
     }
+    log.debug('JSON Match', equal, message);
     return { equal, message };
   }
 

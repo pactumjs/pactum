@@ -7,9 +7,10 @@ const ALLOWED_REQUEST_METHODS = new Set(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'
 class InteractionRequest {
 
   constructor(request) {
-    this.method = request.method;
-    this.path = request.path;
     this.matchingRules = {};
+    this.method = request.method;
+    helper.setMatchingRules(this.matchingRules, request.path, '$.path');
+    this.path = helper.setValueFromMatcher(request.path);
     if (request.headers && typeof request.headers === 'object') {
       this.rawHeaders = JSON.parse(JSON.stringify(request.headers));
       const rawLowerCaseHeaders = {};
@@ -158,7 +159,7 @@ class Interaction {
     if (!ALLOWED_REQUEST_METHODS.has(withRequest.method)) {
       throw new PactumInteractionError(`Invalid interaction request method provided - ${withRequest.method}`);
     }
-    if (typeof withRequest.path !== 'string' || !withRequest.path) {
+    if (withRequest.path === undefined || withRequest.path === null) {
       throw new PactumInteractionError(`Invalid interaction request path provided - ${withRequest.path}`);
     }
   }

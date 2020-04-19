@@ -112,8 +112,8 @@ it('should not get non existing user', () => {
         body: { Items: [] }
       }
     })
-    .get('http://localhost:3333/user')
-    .withQuery('user', 'brave')
+    .get('http://localhost:3333/users')
+    .withQuery('name', 'brave')
     .expectStatus(404);
 });
 
@@ -210,8 +210,25 @@ Running **pactum** as a standalone mock server.
 
 ```javascript
 const pactum = require('pactum');
-pactum.mock.setDefaultPort(3000);
-pactum.mock.start();
+
+pactum.mock.addDefaultMockInteraction({
+  withRequest: {
+    method: 'GET',
+    path: '/api/projects/1'
+  },
+  willRespondWith: {
+    status: 200,
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: {
+      id: 1,
+      name: 'fake'
+    }
+  }
+});
+
+pactum.mock.start(3000);
 ```
 
 Learn more about pactum as a mock server [here](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
