@@ -333,7 +333,7 @@ describe('JSON Placeholder', () => {
 
 ## Component Tests With Mock Server
 
-During component testing, your service will be running in a controlled environment. Instead of taking to external services, it will be communicating with a mock server.
+During component testing, your service will be running in a controlled environment. Instead of talking to external services, it will be communicating with a mock server.
 
 **pactum** comes with a mock server where you will able to control the behavior of each external service. *Interactions* are a way to instruct the mock server to simulate the behavior of external services. 
 

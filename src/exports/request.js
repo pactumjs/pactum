@@ -36,7 +36,7 @@ const request = {
    * @param {string} url - base url
    */
   setBaseUrl(url) {
-    if (!url) {
+    if (typeof url !== 'string') {
       throw new PactumRequestError(`Invalid base url provided - ${url}`);
     }
     config.request.baseUrl = url;

@@ -1,4 +1,5 @@
 const pactum = require('../../src/index');
+const config = require('../../src/config');
 
 describe('Pact - Default Mock Interaction', () => {
 
@@ -394,6 +395,44 @@ describe('Pact - Default Pact Interactions', () => {
 
   after(() => {
     pactum.mock.clearDefaultInteractions();
+  });
+
+});
+
+describe('Pact - Defaults', () => {
+
+  it('request - setBaseUrl', async () => {
+    pactum.request.setBaseUrl('http://localhost:9393');
+    await pactum
+      .get('/api')
+      .expectStatus(404);
+  });
+
+  it('request - setDefaultTimeout', async () => {
+    pactum.request.setDefaultTimeout(2000);
+    await pactum
+      .get('http://localhost:9393/api')
+      .expectStatus(404);
+  });
+
+  it('request - setDefaultHeader', async () => {
+    pactum.request.setDefaultHeader('content-type', 'application/json');
+    await pactum
+      .get('http://localhost:9393/api')
+      .expectStatus(404);
+  });
+
+  it('settings - setLogLevel', async () => {
+    pactum.settings.setLogLevel('INFO');
+    await pactum
+      .get('http://localhost:9393/api')
+      .expectStatus(404);
+  });
+
+  afterEach(() => {
+    pactum.request.setBaseUrl('');
+    pactum.request.setDefaultTimeout(3000);
+    config.request.headers = {};
   });
 
 });

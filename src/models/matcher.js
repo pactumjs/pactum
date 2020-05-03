@@ -29,7 +29,7 @@ class Matcher {
 
   /**
    * regex matching
-   * @param {object} options - matching options
+   * @param {(object|string|RegExp)} options - matching options
    * @param {string} options.generate - value to be generated
    * @param {string} options.matcher - regex
    */
@@ -41,6 +41,7 @@ class Matcher {
    * array matcher
    * @param {any} content - value for which type should be matched
    * @param {object} options - matching options
+   * @param {number} options.min - min number of elements
    */
   eachLike(content, options) {
     let min = 1;
@@ -82,11 +83,34 @@ function like(value) {
 }
 
 function term(options) {
-  if (typeof options !== 'object') {
-    throw new PactumMatcherError(`Invalid matching options - ${options}`);
+  if (!(typeof options === 'object' || typeof options === 'string') || options === null) {
+    throw new PactumMatcherError(`Invalid regex matching options - ${options}`);
   }
-  if (typeof options.matcher === 'object') {
-    options.matcher = options.matcher.source;
+  if (typeof options === 'string') {
+    const matcher = options;
+    let isValid = true;
+    try {
+      new RegExp(matcher);
+    } catch (error) {
+      isValid = false;
+    }
+    if (!isValid) {
+      throw new PactumMatcherError(`Invalid regex matching options - ${options}`);
+    }
+    options = {
+      generate: '',
+      matcher
+    };
+  } else if (options instanceof RegExp) {
+    const matcher = options.source;
+    options = {
+      generate: '',
+      matcher
+    };
+  } else {
+    if (typeof options.matcher === 'object') {
+      options.matcher = options.matcher.source;
+    }
   }
   const { generate, matcher } = options;
   return {

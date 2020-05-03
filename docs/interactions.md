@@ -10,7 +10,7 @@ The main difference between mock & pact interactions is that mock interaction ca
 ## Table of contents
 
 * [API](#api)
-* [Request Matching](#request-matching)
+* [Matching](#matching)
 
 ## API
 
@@ -129,9 +129,29 @@ pactum.addPactInteraction({
 })
 ```
 
-## Request Matching
+## Matching
 
-**pactum** supports matching of requests.
+In real world applications, sometimes it is hard to match an expected request/response with actual request/response.
+
+```javascript
+const interaction = {
+  withRequest: {
+    method: 'GET',
+    path: '/api/orders',
+    query: {
+      // randomly generated id
+      id: 'p144XiRTu'
+    }
+  },
+  willRespondWith: {
+    status: 200
+  }
+}
+```
+
+To overcome such issues, **pactum** provides a mechanism for request matching during *[Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)* & *[Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)* and response matching during *[Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)*.
+
+**pactum** matching mechanism is inspired from [Pact - Matching](https://docs.pact.io/getting_started/matching)
 
 It supports following matchers
 
@@ -147,9 +167,183 @@ Matchers can be applied to
 * Headers - *headers are ignored during request matching until explicitly specified*
 * Body
 
-When a request is received by the pactum's mock server, it will attempt to match each interaction with the request. If a match is found, it will respond with the response details in the matched interaction. If no match is found, the mock server will respond with status *404*.
+### Type Matching
+
+Often, you will not care what the exact value is at a particular path is, you just care that a value is present and that it is of the expected type.
+
+* `like` or `somethingLike`
+* `eachLike`
+
+#### like
+
+Type matching for primitive data types - *string*/*number*/*boolean*
 
 ```javascript
+const { like } = pactum.matchers;
+const interaction = {
+  withRequest: {
+    method: 'GET',
+    path: '/api/orders',
+    query: {
+      // matches if it has id & of type string
+      id: like('abc')
+    }
+  },
+  willRespondWith: {
+    status: 200,
+    body: {
+      // matches if it has quantity & active properties with number & bool types
+      quantity: like(2),
+      active: like(true)
+    }
+  }
+}
+```
+
+Type matching for objects in **pactum** deviates from in **pact.io** when matching nested objects.
+
+```javascript
+const { like } = pactum.matchers;
+const interaction = {
+  withRequest: {
+    method: 'GET',
+    path: '/api/orders'
+  },
+  willRespondWith: {
+    status: 200,
+    // matches if body is JSON & has quantity & active properties with number & bool types
+    body: like({
+      quantity: 2,
+      active: true
+    })
+  }
+}
+```
+
+```javascript
+// matching doesn't expand to nested objects
+const { like } = pactum.matchers;
+const interaction = {
+  withRequest: {
+    method: 'GET',
+    path: '/api/orders'
+  },
+  willRespondWith: {
+    status: 200,
+    // matches if body is JSON object
+    // & it has quantity, active & item properties with number, bool & object types respectively
+    // & item has name & brand properties with 'car' & 'v40' values respectively
+    body: like({
+      quantity: 2,
+      active: true,
+      item: {
+        name: 'car',
+        brand: 'v40'
+      }
+    })
+  }
+}
+```
+
+```javascript
+// to match nested objects with type, we need apply 'like()' explicitly to nested objects
+const { like } = pactum.matchers;
+const interaction = {
+  withRequest: {
+    method: 'GET',
+    path: '/api/orders'
+  },
+  willRespondWith: {
+    status: 200,
+    // matches if body is JSON object
+    // & it has quantity, active, item & delivery properties with number, bool & object types respectively
+    // & item has name & brand properties with string types
+    // & delivery has pin property with type number & has state property with 'AP' as value
+    body: like({
+      quantity: 2,
+      active: true,
+      item: like({
+        name: 'car',
+        brand: 'v40'
+      }),
+      delivery: {
+        pin: like(500081),
+        state: 'AP'
+      }
+    })
+  }
+}
+```
+
+#### eachLike
+
+*eachLike* is similar to *like* but applies to arrays.
+
+```javascript
+const { eachLike } = pactum.matchers;
+const interaction = {
+  withRequest: {
+    method: 'GET',
+    path: '/api/orders'
+  },
+  willRespondWith: {
+    status: 200,
+    // matches if body is an array of JSON objects
+    // & each object in array should have it has quantity, active, item
+    // & item has name property with string type
+    // & item has colors property with array of strings
+    body: eachLike({
+      quantity: 2,
+      active: true,
+      item: like({
+        name: 'car',
+        colors: eachLike('blue')
+      }
+    })
+  }
+}
+```
+
+### Regex Matching
+
+Sometimes you will have keys in a request or response with values that are hard to know beforehand - timestamps and generated IDs are two examples.
+
+What you need is a way to say "I expect something matching this regular expression, but I don't care what the actual value is".
+
+#### regex
+
+```javascript
+const { regex } = pactum.matchers;
+const interaction = {
+  withRequest: {
+    method: 'GET',
+    path: regex('/api/projects/\\d+')
+  },
+  willRespondWith: {
+    status: 200,
+    body: {
+      name: 'xyx'
+      birthDate: regex({
+        generate: '03/05/2020',
+        matcher: /\d{2}\/\d{2}\/\d{4}/
+      })
+    }
+  }
+}
+```
+
+## Request Matching
+
+When a request is received by the pactum's mock server, it will attempt to match each interaction with the request. If a match is found, it will respond with the response details in the matched interaction. If no match is found, the mock server will respond with status *404*.
+
+*As a rule of thumb, you generally want to use exact matching when you're setting up the expectations for a request because you're under control of the data at this stage, and according to Postel's Law, we want to be "strict" with what we send out. Note that the request matching does not allow "unexpected" values to be present in JSON request bodies or query strings. (It does however allow extra headers, because we found that writing expectations that included the headers added by the various frameworks that might be used resulted in tests that were very fiddly to maintain.)*
+
+> Applicable during *component testing* and *consumer testing*
+
+```javascript
+const pactum = require('pactum');
+const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers;
+
 it('Matchers - Path & Query', () => {
   return pactum
     .addMockInteraction({
@@ -206,6 +400,52 @@ it('Matchers - Body', () => {
       }
     }])
     .expectStatus(200);
+});
+```
+
+## Response Matching
+
+*You want to be as loose as possible with the matching for the response though. This stops the tests being brittle on the provider side. Generally speaking, it doesn't matter what value the provider actually returns during verification, as long as the types match. When you need certain formats in the values (eg. URLS), you can use regex. Really really consider before you start introducing too many matchers however - for example, yes, the provider might be currently returning a GUID, but would anything in your consumer really break if they returned a different format of string ID? (If it did, that's a nasty code smell!) Note that during provider verification, following Postel's Law of being "relaxed" with what we accept, "unexpected" values in JSON response bodies are ignored. This is expected and is perfectly OK. Another consumer may have an expectation about that field.*
+
+> Applicable during *provider verification*
+
+```javascript
+const pactum = require('pactum');
+const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers;
+
+it('Matchers - Body', () => {
+  return pactum
+    .addMockInteraction({
+      withRequest: {
+        method: 'POST',
+        path: '/api/person'
+      },
+      willRespondWith: {
+        status: 200,
+        // create a single array of object with id, name & address
+        body: eachLike({
+          // creates a id with 123
+          id: term({ generate: 123, matcher: /\d+/ }),
+          name: 'Bark',
+          address: like({
+            // creates a city with 'hyd'
+            city: 'hyd',
+            // creates a pin with '500081'
+            pin: 500081 
+          })
+        })
+      }
+    })
+    .get('http://localhost:9393/api/person')
+    .expectStatus(200)
+    .expectJson([{
+      id: 123,
+      name: 'Bark',
+      address: {
+        cit: 'hyd',
+        pin: 500081
+      }
+    }]);
 });
 ```
 
