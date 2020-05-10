@@ -74,6 +74,7 @@ const config = require('../config');
  * @property {object} [randomDelay] - response random delay
  * @property {number} randomDelay.min - min delay in ms
  * @property {number} randomDelay.max - max delay in ms
+ * @property {Object.<number, MockInteractionResponse>} onCall - behavior on consecutive calls
  *
  * mock interaction response details
  * @typedef {PactInteractionResponse & MockInteractionResponseType} MockInteractionResponse

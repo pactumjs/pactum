@@ -486,7 +486,7 @@ describe('Mock', () => {
   it('GET - invalid interaction', async () => {
     await pactum
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParams({ id: '1'})
+      .withQueryParams({ id: '1' })
       .expectStatus(404)
       .expectBody('Interaction Not Found')
       .expectBodyContains('Not Found')
@@ -501,7 +501,7 @@ describe('Mock', () => {
       .__setRequestTimeout(1000)
       .withJson({
         parent: {
-          child : [ 1, { grand: 3 } ]
+          child: [1, { grand: 3 }]
         }
       })
       .expectStatus(404)
@@ -536,6 +536,23 @@ describe('Mock', () => {
       .head('http://localhost:9393/api/projects/1')
       .expectStatus(404)
       .expectResponseTime(100)
+      .toss();
+  });
+
+  it('GET - empty on call', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          onCall: {}
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(404)
+      .expectBody('Response Not Found')
       .toss();
   });
 

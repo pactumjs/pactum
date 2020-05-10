@@ -104,6 +104,7 @@ class InteractionResponseDelay {
 class Interaction {
 
   constructor(rawInteraction, mock = false) {
+    this.setDefaults(rawInteraction, mock);
     this.validateInteraction(rawInteraction, mock);
     const { id, consumer, provider, state, uponReceiving, withRequest, willRespondWith } = rawInteraction;
     this.id = id || helper.getRandomId();
@@ -119,6 +120,22 @@ class Interaction {
       this.willRespondWith = willRespondWith;
     } else {
       this.willRespondWith = new InteractionResponse(willRespondWith);
+      const onCall = willRespondWith.onCall;
+      if (helper.isValidObject(onCall)) {
+        for (const prop in onCall) {
+          this.willRespondWith[parseInt(prop)] = new InteractionResponse(onCall[prop]);
+        }
+      }
+    }
+  }
+
+  setDefaults(rawInteraction, mock) {
+    if (helper.isValidObject(rawInteraction)) {
+      const { willRespondWith } = rawInteraction;
+      if (mock && helper.isValidObject(willRespondWith) && willRespondWith.onCall) {
+        willRespondWith.status = willRespondWith.status ? willRespondWith.status : 404;
+        willRespondWith.body = willRespondWith.body ? willRespondWith.body : 'Response Not Found';
+      }
     }
   }
 
@@ -134,7 +151,7 @@ class Interaction {
     if (!mock) {
       this.validateInvalidFieldsPact(withRequest, willRespondWith);
     }
-    this.validateWillRespondWith(willRespondWith);
+    this.validateWillRespondWith(willRespondWith, mock);
   }
 
   validateRequiredFieldsPact(rawInteraction) {
@@ -172,11 +189,17 @@ class Interaction {
     if (withRequest.ignoreBody) {
       throw new PactumInteractionError(`Pact interaction won't support ignore body`);
     }
+    if (typeof willRespondWith === 'function') {
+      throw new PactumInteractionError(`Pact interaction won't support function response`);
+    }
     if (willRespondWith.fixedDelay) {
       throw new PactumInteractionError(`Pact interaction won't support delays`);
     }
     if (willRespondWith.randomDelay) {
       throw new PactumInteractionError(`Pact interaction won't support delays`);
+    }
+    if (willRespondWith.onCall) {
+      throw new PactumInteractionError(`Pact interaction won't support consecutive call responses`);
     }
   }
 
@@ -191,6 +214,7 @@ class Interaction {
       if (willRespondWith.randomDelay) {
         this.validateRandomDelay(willRespondWith.randomDelay);
       }
+      this.validateOnCall(willRespondWith.onCall);
     } else {
       if (typeof willRespondWith !== 'function') {
         throw new PactumInteractionError(`Invalid interaction response provided - ${willRespondWith}`);
@@ -225,6 +249,19 @@ class Interaction {
     }
     if (randomDelay.min > randomDelay.max) {
       throw new PactumInteractionError(`Min value in Random Delay should be less than Max Value`);
+    }
+  }
+
+  validateOnCall(onCall) {
+    if (helper.isValidObject(onCall)) {
+      for (const prop in onCall) {
+        try {
+          parseInt(prop);
+          this.validateWillRespondWith(onCall[prop]);
+        } catch(error) {
+          throw new PactumInteractionError(`Invalid interaction response onCall provided`);
+        }
+      }
     }
   }
 

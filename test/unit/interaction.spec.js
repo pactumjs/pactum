@@ -670,6 +670,188 @@ describe('Interaction', () => {
     });
   });
 
+  it('valid mock interaction - single on Call', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        onCall: {
+          1: {
+            status: 404
+          }
+        },
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "count": 0,
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "body": {
+          "id": 1,
+          "name": "fake"
+        },
+        "headers": {
+          "content-type": "application/json"
+        },
+        "rawBody": {
+          "id": 1,
+          "name": "fake"
+        },
+        "status": 200,
+        "delay": {
+          "type": "NONE",
+          "value": 0
+        },
+        "1": {
+          "body": undefined,
+          "delay": {
+            "type": "NONE",
+            "value": 0
+          },
+          "headers": undefined,
+          "rawBody": undefined,
+          "status": 404
+        }
+      },
+      "withRequest": {
+        "body": undefined,
+        "headers": undefined,
+        "ignoreBody": false,
+        "ignoreQuery": false,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": undefined,
+        "matchingRules": {}
+      },
+      "rawInteraction": {
+        "willRespondWith": {
+          "body": {
+            "id": 1,
+            "name": "fake"
+          },
+          "headers": {
+            "content-type": "application/json"
+          },
+          "status": 200,
+          "onCall": {
+            "1": {
+              "status": 404
+            }
+          }
+        },
+        "withRequest": {
+          "method": "GET",
+          "path": "/api/projects/1"
+        }
+      },
+    });
+  });
+
+  it('valid mock interaction - multiple on Calls & no default', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        onCall: {
+          0: {
+            status: 404
+          },
+          1: {
+            status: 200
+          }
+        }
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "count": 0,
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "body": "Response Not Found",
+        "rawBody": "Response Not Found",
+        "headers": undefined,
+        "status": 404,
+        "delay": {
+          "type": "NONE",
+          "value": 0
+        },
+        "0": {
+          "body": undefined,
+          "delay": {
+            "type": "NONE",
+            "value": 0
+          },
+          "headers": undefined,
+          "rawBody": undefined,
+          "status": 404
+        },
+        "1": {
+          "body": undefined,
+          "delay": {
+            "type": "NONE",
+            "value": 0
+          },
+          "headers": undefined,
+          "rawBody": undefined,
+          "status": 200
+        }
+      },
+      "withRequest": {
+        "body": undefined,
+        "headers": undefined,
+        "ignoreBody": false,
+        "ignoreQuery": false,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": undefined,
+        "matchingRules": {}
+      },
+      "rawInteraction": {
+        "willRespondWith": {
+          "body": "Response Not Found",
+          "status": 404,
+          "onCall": {
+            "0": {
+              "status": 404
+            },
+            "1": {
+              "status": 200
+            }
+          }
+        },
+        "withRequest": {
+          "method": "GET",
+          "path": "/api/projects/1"
+        }
+      },
+    });
+  });
+
   it('invalid mock interaction - no request method', () => {
     const rawInteraction = {
       withRequest: {
@@ -956,6 +1138,22 @@ describe('Interaction', () => {
     expect(function () { new Interaction(undefined, true); }).to.throws('Invalid interaction provided - undefined');
   });
 
+  it('invalid mock interaction - onCall - string keys', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        onCall: {
+          "first": "ano one"
+        }
+      }
+    };
+    expect(function () { new Interaction(rawInteraction, true); }).throws('Invalid interaction response onCall provided');
+  });
+
   it('valid pact interaction', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {
@@ -1194,10 +1392,25 @@ describe('Interaction', () => {
           id: 1,
           name: 'fake'
         },
-        randomDelay: {min: 100, max: 1000}
+        randomDelay: { min: 100, max: 1000 }
       }
     };
     expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support delays`);
+  });
+
+  it('invalid pact interaction - response function', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      provider: 'pro',
+      state: 'a state',
+      uponReceiving: 'description',
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: () => { }
+    };
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support function response`);
   });
 
   after(() => {
