@@ -129,14 +129,26 @@ function registerAllRoutes(server, app) {
 function sendInteractionFoundResponse(req, res, interaction) {
   store.updateInteractionExerciseCounter(interaction.id);
   interaction.exercised = true;
-  if (typeof interaction.willRespondWith === 'function') {
-    interaction.willRespondWith(req, res);
+  const { willRespondWith } = interaction;
+  if (typeof willRespondWith === 'function') {
+    willRespondWith(req, res);
   } else {
-    res.set(interaction.willRespondWith.headers);
-    res.status(interaction.willRespondWith.status);
-    const delay = getDelay(interaction);
-    setTimeout(() => sendResponseBody(res, interaction.willRespondWith.body), delay);
+    let response = {};
+    if (willRespondWith[interaction.count]) {
+      response = willRespondWith[interaction.count];
+    } else {
+      response = willRespondWith;
+    }
+    res.set(response.headers);
+    res.status(response.status);
+    const delay = getDelay(response);
+    if (delay > 0) {
+      sendResponseBody(res, response.body);
+    } else {
+      setTimeout(() => sendResponseBody(res, response.body), delay);
+    }
   }
+  interaction.count += 1;
 }
 
 /**
@@ -154,10 +166,10 @@ function sendResponseBody(res, body) {
 
 /**
  * returns response delay in ms
- * @param {Interaction} interaction - interaction
+ * @param {object} willRespondWith - will Respond With
  */
-function getDelay(interaction) {
-  const delay = interaction.willRespondWith.delay;
+function getDelay(willRespondWith) {
+  const delay = willRespondWith.delay;
   if (delay.type === 'RANDOM') {
     const min = delay.min;
     const max = delay.max;

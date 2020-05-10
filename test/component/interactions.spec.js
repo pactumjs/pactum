@@ -556,6 +556,26 @@ describe('Mock', () => {
       .toss();
   });
 
+  it('GET - 0th on call', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          onCall: {
+            0: {
+              status: 200
+            }
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(200)
+      .toss();
+  });
+
 });
 
 describe('Pact - matchers', () => {

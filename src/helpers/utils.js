@@ -59,7 +59,6 @@ const utils = {
         }
       }
       if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
-        interaction.count += 1;
         return interaction;
       }
       log.debug(`Interaction with id ${interactionId} failed to match - HTTP Body`);
