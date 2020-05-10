@@ -59,6 +59,7 @@ Mock Interaction will have the following properties.
 | willRespondWith.randomDelay     | object      | delays the response by ms   |
 | willRespondWith.randomDelay.min | number      | delays the response by ms   |
 | willRespondWith.randomDelay.max | number      | delays the response by ms   |
+| willRespondWith(req, res)       | function    | response function           |
 
 #### pactum.addMockInteraction
 Type: `Function`<br>
@@ -78,6 +79,21 @@ pactum.addMockInteraction({
       id: 'INR',
       description: 'Indian Rupee'
     }
+  }
+});
+
+// custom response with function
+pactum.addMockInteraction({
+  withRequest: {
+    method: 'GET',
+    path: '/api/currency/INR'
+  },
+  willRespondWith: function (req, res) {
+    res.status(200);
+    res.send({
+      id: 1,
+      name: 'fake'
+    });
   }
 })
 ```

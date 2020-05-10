@@ -33,6 +33,7 @@ describe('Interaction', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
+      "count": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -110,6 +111,7 @@ describe('Interaction', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
+      "count": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -198,6 +200,7 @@ describe('Interaction', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
+      "count": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -309,6 +312,7 @@ describe('Interaction', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
+      "count": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -397,6 +401,7 @@ describe('Interaction', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
+      "count": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -527,6 +532,7 @@ describe('Interaction', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
+      "count": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -605,6 +611,7 @@ describe('Interaction', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
+      "count": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -973,6 +980,7 @@ describe('Interaction', () => {
     const interaction = new Interaction(rawInteraction, false);
     expect(interaction).to.deep.equals({
       "id": "random",
+      "count": 0,
       "consumer": '',
       "mock": false,
       "provider": 'pro',

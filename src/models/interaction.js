@@ -107,6 +107,7 @@ class Interaction {
     this.validateInteraction(rawInteraction, mock);
     const { id, consumer, provider, state, uponReceiving, withRequest, willRespondWith } = rawInteraction;
     this.id = id || helper.getRandomId();
+    this.count = 0;
     this.mock = mock;
     this.consumer = consumer || config.pact.consumer;
     this.provider = provider;
