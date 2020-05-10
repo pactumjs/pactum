@@ -34,6 +34,74 @@ const config = require('../config');
  * @property {object} [willRespondWith.body] - response body
  */
 
+/**
+ * pact interaction details
+ * @typedef {object} PactInteraction
+ * @property {string} [id] - unique id of the interaction
+ * @property {string} provider - name of the provider
+ * @property {string} state - state of the provider
+ * @property {string} uponReceiving - description of the request
+ * @property {PactInteractionRequest} withRequest - interaction request details
+ * @property {PactInteractionResponse} willRespondWith - interaction response details
+ */
+
+/**
+ * mock interaction details
+ * @typedef {object} MockInteraction
+ * @property {string} [id] - unique id of the interaction
+ * @property {string} [provider] - name of the provider
+ * @property {MockInteractionRequest} withRequest - interaction request details
+ * @property {MockInteractionResponse} willRespondWith - interaction response details
+ */
+
+/**
+ * pact interaction request details
+ * @typedef {object} PactInteractionRequest
+ * @property {RequestMethod} method - request method
+ * @property {string} path - request method
+ * @property {object} [headers] - request headers
+ * @property {object} [query] - request query
+ * @property {GraphQLRequest} [graphQL] - graphQL request
+ * @property {object} [body] - request body
+ */
+
+
+/**
+ * @typedef {Object} MockInteractionRequestType
+ * @property {boolean} ignoreQuery - ignores request query while matching
+ * @property {boolean} ignoreBody - ignores request body while matching
+ *
+ * mock interaction request details
+ * @typedef {PactInteractionRequest & MockInteractionRequestType} MockInteractionRequest
+ */
+
+/**
+ * graphQL request details
+ * @typedef {object} GraphQLRequest
+ * @property {string} query - graphQL query
+ * @property {string} [variables] - graphQL variables
+ */
+
+/**
+ * pact interaction response details
+ * @typedef {object} PactInteractionResponse
+ * @property {number} status - response status code
+ * @property {object} [headers] - response headers
+ * @property {object} [body] - response body
+ */
+
+/**
+ * @typedef {Object} MockInteractionResponseType
+ * @property {number} [fixedDelay] - response fixed delay in ms
+ * @property {object} [randomDelay] - response random delay
+ * @property {number} randomDelay.min - min delay in ms
+ * @property {number} randomDelay.max - max delay in ms
+ * @property {Object.<number, MockInteractionResponse>} onCall - behavior on consecutive calls
+ *
+ * mock interaction response details
+ * @typedef {PactInteractionResponse & MockInteractionResponseType} MockInteractionResponse
+ */
+
 let _server;
 
 class Mock {
@@ -78,7 +146,7 @@ class Mock {
 
   /**
    * add a mock interaction to default list
-   * @param {Interaction} interaction - mock interaction
+   * @param {MockInteraction} interaction - mock interaction
    */
   addDefaultMockInteraction(interaction) {
     const interactionObj = new Interaction(interaction, true);
@@ -90,7 +158,7 @@ class Mock {
 
   /**
    * add mock interactions to default list
-   * @param {Interaction[]} interactions - mock interactions array
+   * @param {MockInteraction[]} interactions - mock interactions array
    */
   addDefaultMockInteractions(interactions) {
     if (!Array.isArray(interactions)) {
@@ -110,7 +178,7 @@ class Mock {
 
   /**
    * add a pact interaction to default list
-   * @param {Interaction} interaction - pact interaction
+   * @param {PactInteraction} interaction - pact interaction
    */
   addDefaultPactInteraction(interaction) {
     const interactionObj = new Interaction(interaction);
@@ -122,7 +190,7 @@ class Mock {
 
   /**
    * add pact interactions to default list
-   * @param {Interaction[]} interactions - mock interactions array
+   * @param {PactInteraction[]} interactions - mock interactions array
    */
   addDefaultPactInteractions(interactions) {
     if (!Array.isArray(interactions)) {

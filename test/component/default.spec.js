@@ -436,3 +436,75 @@ describe('Pact - Defaults', () => {
   });
 
 });
+
+describe('OnCall - Mock Interactions', () => {
+
+  before(() => {
+    pactum.mock.addDefaultMockInteraction({
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 204,
+        onCall: {
+          0: {
+            status: 200
+          },
+          "1": {
+            status: 201
+          },
+          2: {
+            status: 202
+          },
+          5: {
+            status: 500
+          }
+        }
+      }
+    });
+  });
+
+  it('GET - Call - 0', async () => {
+    await pactum
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(200)
+      .toss();
+  });
+
+  it('GET - Call - 1', async () => {
+    await pactum
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(201)
+      .toss();
+  });
+
+  it('GET - Call - 2', async () => {
+    await pactum
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(202)
+      .toss();
+  });
+
+  it('GET - Call - 3', async () => {
+    await pactum
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(204)
+      .toss();
+  });
+
+  it('GET - Call - 4', async () => {
+    await pactum
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(204)
+      .toss();
+  });
+
+  it('GET - Call - 5', async () => {
+    await pactum
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(500)
+      .toss();
+  });
+
+});
