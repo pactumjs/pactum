@@ -36,35 +36,42 @@ Learn more about these methods at [Mock Server](https://github.com/ASaiAnudeep/p
 
 Mock Interaction will have the following properties.
 
-| Property                        | Type        | Description                 |
-| ------------------------------  | ----------  | --------------------------  |
-| id                              | string      | id of the interaction       |
-| provider                        | string      | name of the provider        |
-| withRequest                     | **object**  | request details             |
-| withRequest.method              | **string**  | HTTP method                 |
-| withRequest.path                | **string**  | api path                    |
-| withRequest.headers             | object      | request headers             |
-| withRequest.query               | object      | query parameters            |
-| withRequest.body                | any         | request body                |
-| withRequest.ignoreQuery         | boolean     | ignore request query        |
-| withRequest.ignoreBody          | boolean     | ignore request body         |
-| withRequest.graphQL             | object      | graphQL details             |
-| withRequest.graphQL.query       | **string**  | graphQL query               |
-| withRequest.graphQL.variables   | object      | graphQL variables           |
-| willRespondWith                 | **any**     | response details            |
-| willRespondWith.status          | **number**  | response status code        |
-| willRespondWith.headers         | object      | response headers            |
-| willRespondWith.body            | any         | response body               |
-| willRespondWith.fixedDelay      | number      | delays the response by ms   |
-| willRespondWith.randomDelay     | object      | delays the response by ms   |
-| willRespondWith.randomDelay.min | number      | delays the response by ms   |
-| willRespondWith.randomDelay.max | number      | delays the response by ms   |
-| willRespondWith(req, res)       | function    | response function           |
+| Property                        | Type        | Description                     |
+| ------------------------------  | ----------  | --------------------------      |
+| id                              | string      | id of the interaction           |
+| provider                        | string      | name of the provider            |
+| withRequest                     | **object**  | request details                 |
+| withRequest.method              | **string**  | HTTP method                     |
+| withRequest.path                | **string**  | api path                        |
+| withRequest.headers             | object      | request headers                 |
+| withRequest.query               | object      | query parameters                |
+| withRequest.body                | any         | request body                    |
+| withRequest.ignoreQuery         | boolean     | ignore request query            |
+| withRequest.ignoreBody          | boolean     | ignore request body             |
+| withRequest.graphQL             | object      | graphQL details                 |
+| withRequest.graphQL.query       | **string**  | graphQL query                   |
+| withRequest.graphQL.variables   | object      | graphQL variables               |
+| willRespondWith                 | **any**     | response details                |
+| willRespondWith.status          | **number**  | response status code            |
+| willRespondWith.headers         | object      | response headers                |
+| willRespondWith.body            | any         | response body                   |
+| willRespondWith.fixedDelay      | number      | delays the response by ms       |
+| willRespondWith.randomDelay     | object      | delays the response by ms       |
+| willRespondWith.randomDelay.min | number      | delays the response by ms       |
+| willRespondWith.randomDelay.max | number      | delays the response by ms       |
+| willRespondWith.onCall          | object      | response on consecutive  calls  |
+| willRespondWith(req, res)       | function    | response with custom function   |
+
+The response of a mock interaction can be controlled in three forms:
+1. Static Object
+2. Custom Function
+3. Dynamic Object
 
 #### pactum.addMockInteraction
 Type: `Function`<br>
 
 ```javascript
+// Static Object
 pactum.addMockInteraction({
   withRequest: {
     method: 'GET',
@@ -82,7 +89,7 @@ pactum.addMockInteraction({
   }
 });
 
-// custom response with function
+// Custom Function
 pactum.addMockInteraction({
   withRequest: {
     method: 'GET',
@@ -95,7 +102,34 @@ pactum.addMockInteraction({
       name: 'fake'
     });
   }
-})
+});
+
+// Dynamic Object (change behavior on consecutive calls)
+pactum.addDefaultMockInteraction({
+  withRequest: {
+    method: 'GET',
+    path: '/api/projects/1'
+  },
+  willRespondWith: {
+    status: 204, // default response
+    onCall: {
+      0: {
+        status: 200,
+        body: 'Success :)'
+      },
+      1: {
+        status: 201
+      },
+      2: {
+        status: 202
+      },
+      5: {
+        status: 500,
+        body: 'No Success :('
+      }
+    }
+  }
+});
 ```
 
 ### Pact Interaction
