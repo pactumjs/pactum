@@ -50,8 +50,7 @@ const pactum = require('pactum');
 it('should be a teapot', async () => {
   await pactum
     .get('http://httpbin.org/status/418')
-    .expectStatus(418)
-    .toss();
+    .expectStatus(418);
 });
 ```
 
@@ -74,13 +73,22 @@ it('should add a new post', () => {
       userId: 1
     })
     .withHeaders({
-      "Content-Type": "application/json; charset=UTF-8"
+      "Authorization": "Basic xxxx"
     })
     .expectStatus(201)
     .expectHeader('content-type', 'application/json; charset=utf-8')
     .expectJson({
       id: '1'
-    });
+    })
+    .expectJsonSchema({
+      properties: {
+        id: {
+          type: 'number'
+        }
+      },
+      required: ['id']
+    })
+    .expectResponseTime(100);
 });
 ```
 
@@ -212,11 +220,15 @@ Running **pactum** as a standalone *mock server*.
 
 ```javascript
 const pactum = require('pactum');
+const { regex } = pactum.matchers;
 
 pactum.mock.addDefaultMockInteraction({
   withRequest: {
     method: 'GET',
-    path: '/api/projects/1'
+    path: '/api/projects',
+    query: {
+      date: regex(/^\d{4}-\d{2}-\d{2}$/)
+    }
   },
   willRespondWith: {
     status: 200,
@@ -234,6 +246,10 @@ pactum.mock.start(3000);
 ```
 
 Learn more about **pactum** as a *mock server* at [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
+
+# Notes
+
+Inspired from [frisby](https://docs.frisbyjs.com/) testing style & [pact](https://docs.pact.io) interactions.
 
 ----------------------------------------------------------------------------------------------------------------
 

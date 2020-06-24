@@ -81,7 +81,13 @@ function validateQuery(actual, expected, matchingRules) {
   const compare = new Compare();
   const response = compare.jsonMatch(actual, expected, matchingRules, '$.query');
   if (response.equal) {
-    return compare.jsonMatch(expected, actual, matchingRules, '$.query').equal;
+    for (const prop in actual) {
+      if (!Object.prototype.hasOwnProperty.call(expected, prop)) {
+        log.debug(`Query param not found - ${prop}`);
+        return false;
+      }
+    }
+    return true;
   } else {
     return response.equal;
   }

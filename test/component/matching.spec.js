@@ -127,6 +127,37 @@ describe('Request Matchers', () => {
       .toss();
   });
 
+  it('GET - one interaction - query regex date', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1',
+          query: {
+            date: regex(/^\d{4}-\d{2}-\d{2}$/)
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .withQuery('date', '2020-06-24')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss();
+  });
+
   it('POST - one interaction - term instance', async () => {
     await pactum
       .addMockInteraction({

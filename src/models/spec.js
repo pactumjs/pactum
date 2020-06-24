@@ -703,6 +703,7 @@ class Spec {
       this.server.removeInteraction(id);
     }
     this._response.json = helper.getJson(this._response.body);
+    printRequestResponse(this._request, this._response);
     if (this.previousLogLevel) {
       log.setLevel(this.previousLogLevel);
     }
@@ -765,6 +766,20 @@ function setMultiPartFormData(request) {
       }
     }
     delete request._multiPartFormData;
+  }
+}
+
+function printRequestResponse(req, res) {
+  if (log.levelValue <= 4) {
+    const rr = {
+      request: req,
+      response: {
+        statusCode: res.statusCode,
+        headers: res.headers,
+        json: res.json
+      }
+    }
+    log.debug('Request & Response =>', JSON.stringify(rr, null, 2));
   }
 }
 
