@@ -3,6 +3,7 @@ const jqy = require('json-query');
 const djv = require('djv');
 
 const Compare = require('../helpers/compare');
+const handler = require('../exports/handler');
 
 class Expect {
 
@@ -17,6 +18,7 @@ class Expect {
     this.headers = [];
     this.headerContains = [];
     this.responseTime = null;
+    this.customExpectHandlers = [];
   }
 
   validate(response) {
@@ -30,6 +32,7 @@ class Expect {
     this._validateJsonQuery(response);
     this._validateResponseTime(response);
     this._validateJsonSchema(response);
+    this._validateCustomExpectHandlers(response);
   }
 
   validateInteractions(interactions) {
@@ -153,6 +156,18 @@ class Expect {
   _validateResponseTime(response) {
     if (this.responseTime !== null) {
       assert.ok(response.responseTime <= this.responseTime, `Request took longer than ${this.responseTime}ms: (${response.responseTime}ms).`);
+    }
+  }
+
+  _validateCustomExpectHandlers(response) {
+    for (let i = 0; i < this.customExpectHandlers.length; i++) {
+      const requiredHandler = this.customExpectHandlers[i];
+      const customExpectHandler = handler.getExpectHandler(requiredHandler.name);
+      if (customExpectHandler) {
+        customExpectHandler(response, requiredHandler.data);
+      } else {
+        throw new Error(`Custom Expect Handler Not Found - ${requiredHandler.name}`)
+      }
     }
   }
 

@@ -536,13 +536,31 @@ class Spec {
   }
 
   /**
+   * runs specified custom expect handler
+   * @param {string} name - name of the custom expect handler
+   * @param {any} data - additional data
+   * @example
+   * pactum.handler.addCustomExpectHandler('hasAddress', (response, data) => {
+   *   const json = response.json;
+   *   assert.strictEqual(json.type, data);
+   * });
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/users/1')
+   *  .expect('isUser')
+   *  .expect('hasAddress', 'home');
+   */
+  expect(name, data) {
+    this._expect.customExpectHandlers.push({name, data});
+    return this;
+  }
+
+  /**
    * expects a status code on the response
    * @param {number} statusCode - expected HTTP stats code
    * @example
    * await pactum
    *  .delete('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectStatus(200)
-   *  .toss();
+   *  .expectStatus(200);
    */
   expectStatus(statusCode) {
     this._expect.statusCode = statusCode;

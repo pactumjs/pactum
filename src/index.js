@@ -7,6 +7,7 @@ const Pact = require('./exports/pact');
 const request = require('./exports/request');
 const provider = require('./exports/provider');
 const Settings = require('./exports/settings');
+const handler = require('./exports/handler');
 
 const logger = require('./helpers/logger');
 
@@ -97,6 +98,7 @@ const pactum = {
   request,
   provider,
   settings,
+  handler,
 
   /**
    * Add as an mock interaction to the mock server

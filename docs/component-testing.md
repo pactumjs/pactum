@@ -144,6 +144,7 @@ Expectations help to assert the response received from the server.
 
 | Method                                  | Description                                                      |
 | --------------------------------------- | ---------------------------------------------------------------- |
+| `expect('customHandler')`               | runs custom expect handler                                       |
 | `expectStatus(201)`                     | check HTTP status                                                |
 | `expectHeader('key', 'value')`          | check HTTP header key + value (RegExp)                           |
 | `expectHeaderContains('key', 'value')`  | check HTTP header key contains partial value (RegExp)            |
