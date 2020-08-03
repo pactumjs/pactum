@@ -230,7 +230,7 @@ describe('Expects', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.code).equals('ECONNREFUSED');
+    expect(err).not.undefined;
   });
 
 });
