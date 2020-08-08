@@ -233,4 +233,26 @@ describe('Expects', () => {
     expect(err).not.undefined;
   });
 
+  it('interaction not exercised error', async () => {
+    let err;
+    try {
+      await pactum
+        .addMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api'
+          },
+          willRespondWith: {
+            status: 200
+          }
+        })
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200);
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).contains('Interaction not exercised');
+  });
+
+
 });

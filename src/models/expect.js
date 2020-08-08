@@ -37,7 +37,7 @@ class Expect {
 
   validateInteractions(interactions) {
     for (const [id, interaction] of interactions) {
-      assert.ok(interaction.exercised, `Interaction not Exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+      assert.ok(interaction.exercised, `Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
     }
   }
 
