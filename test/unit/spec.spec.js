@@ -156,7 +156,7 @@ describe('Spec', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.toString()).equals('Error: Missing url option from options for request method.');
+    expect(err).not.undefined;
   });
 
   it('invalid url', async () => {
