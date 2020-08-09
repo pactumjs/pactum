@@ -6,7 +6,7 @@ describe('Expect Handler', () => {
   it('invalid handler name', () => {
     let err;
     try {
-      handler.addCustomExpectHandler();
+      handler.addExpectHandler();
     } catch (error) {
       err = error;
     }
@@ -16,7 +16,7 @@ describe('Expect Handler', () => {
   it('empty handler name', () => {
     let err;
     try {
-      handler.addCustomExpectHandler('');
+      handler.addExpectHandler('');
     } catch (error) {
       err = error;
     }
@@ -26,7 +26,7 @@ describe('Expect Handler', () => {
   it('invalid handler function', () => {
     let err;
     try {
-      handler.addCustomExpectHandler('hello');
+      handler.addExpectHandler('hello');
     } catch (error) {
       err = error;
     }

@@ -407,7 +407,7 @@ class Spec {
    * @param {string} name - name of the custom expect handler
    * @param {any} data - additional data
    * @example
-   * pactum.handler.addCustomExpectHandler('hasAddress', (response, data) => {
+   * pactum.handler.addExpectHandler('hasAddress', (response, data) => {
    *   const json = response.json;
    *   assert.strictEqual(json.type, data);
    * });

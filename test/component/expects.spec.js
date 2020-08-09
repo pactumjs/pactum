@@ -8,13 +8,13 @@ describe('Expects', () => {
       const user = response.json;
       expect(user).deep.equals({ id: 1 });
     }
-    pactum.handler.addCustomExpectHandler('isUser', isUser);
+    pactum.handler.addExpectHandler('isUser', isUser);
 
     const hasAddress = function (response, addressType) {
       const address = response.json;
       expect(address.type).equals(addressType);
     }
-    pactum.handler.addCustomExpectHandler('hasAddress', hasAddress);
+    pactum.handler.addExpectHandler('hasAddress', hasAddress);
   });
 
   it('custom expect handler', async () => {

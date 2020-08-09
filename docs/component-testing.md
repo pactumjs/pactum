@@ -67,6 +67,7 @@ HTTP requests are messages sent by the client to initiate an action on the serve
 | `withMultiPartFormData('','', {})`  | object to send as multi part form data    |
 | `__setLogLevel('DEBUG')`            | sets log level for troubleshooting        |
 | `__setRequestTimeout(2000)`         | sets request timeout                      |
+| `retry({})`                         | retry options                             |                
 
 ```javascript
 const pactum = require('pactum');
@@ -111,6 +112,42 @@ it('POST - with body', async () => {
 });
 ```
 
+##### retryOptions
+
+| Property  | Type       | Description                                |
+| --------- | ---------- | ------------------------------------------ |
+| count     | `number`   | number of times to retry - defaults to 3   |
+| delay     | `number`   | delay between retries - defaults to 1000ms |
+| strategy  | `function` | retry strategy function - returns boolean  |
+| strategy  | `string`   | retry strategy handler name                | 
+
+```javascript
+const pactum = require('pactum');
+
+it('should get the newly added post', () => {
+  return pactum
+    .get('https://jsonplaceholder.typicode.com/posts/12')
+    .retry({
+      count: 2,
+      delay: 2000,
+      strategy: (res) => res.statusCode !== 202
+    })
+    .expectStatus(200);
+});
+
+pactum.handler.addRetryHandler('waitForPost', (res) => { /* Custom Retry Strategy Code */});
+
+it('should get the newly added post', () => {
+  return pactum
+    .get('https://jsonplaceholder.typicode.com/posts/12')
+    .retry({
+      strategy: 'waitForPost' // Default Count: 3 & Delay: 1000 milliseconds
+    })
+    .expectStatus(200);
+});
+```
+
+
 ### HTTP Methods
 
 The request method indicates the method to be performed on the resource identified by the given Request-URI.
@@ -144,7 +181,7 @@ Expectations help to assert the response received from the server.
 
 | Method                                  | Description                                                      |
 | --------------------------------------- | ---------------------------------------------------------------- |
-| `expect('customHandler')`               | runs custom expect handler                                       |
+| `expect('handler', data)`               | runs custom expect handler                                       |
 | `expectStatus(201)`                     | check HTTP status                                                |
 | `expectHeader('key', 'value')`          | check HTTP header key + value (RegExp)                           |
 | `expectHeaderContains('key', 'value')`  | check HTTP header key contains partial value (RegExp)            |

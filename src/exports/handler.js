@@ -1,4 +1,4 @@
-const customExpectHandler = {};
+const expectHandler = {};
 const retryHandler = {};
 
 const handler = {
@@ -8,26 +8,26 @@ const handler = {
    * @param {string} name - name of the custom expect handler
    * @param {function} func - handler function
    * @example
-   * pactum.handler.addCustomExpectHandler('isUser', (response) => {
+   * pactum.handler.addExpectHandler('isUser', (response) => {
    *   assert.strictEqual(response.json.type, 'user');
    * });
    */
-  addCustomExpectHandler(name, func) {
+  addExpectHandler(name, func) {
     if (typeof name !== 'string' || name === '') {
       throw new Error('Invalid custom expect handler name');
     }
     if (typeof func !== 'function') {
       throw new Error('Custom expect handler should be a function');
     }
-    customExpectHandler[name] = func;
+    expectHandler[name] = func;
   },
 
   getExpectHandler(name) {
-    return customExpectHandler[name];
+    return expectHandler[name];
   },
 
   /**
-   * adds retry handler
+   * adds custom retry handler
    * @param {string} name - retry handler name
    * @param {function} func - retry handler function
    * @example
