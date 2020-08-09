@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const Spec = require('../../src/models/spec');
+const Spec = require('../../src/models/Spec');
 
 describe('Spec', () => {
 
@@ -156,7 +156,7 @@ describe('Spec', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.toString()).equals('Error: Invalid request url - undefined');
+    expect(err).not.undefined;
   });
 
   it('invalid url', async () => {
@@ -268,6 +268,43 @@ describe('Spec', () => {
       err = error;
     }
     expect(err.toString()).equals('Error: Invalid timeout provided - 1000');
+  });
+
+  it('empty retry options', async () => {
+    let err;
+    try {
+      const spec = new Spec();
+      await spec
+        .post('/')
+        .retry();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid retry options');
+  });
+
+  it('empty retry strategy', async () => {
+    let err;
+    try {
+      const spec = new Spec();
+      await spec
+        .post('/')
+        .retry({});
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid retry strategy');
+  });
+
+  it('valid request', async () => {
+    let err;
+    try {
+      const spec = new Spec();
+      await spec.get('http://localhost:3000');
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
   });
 
 });

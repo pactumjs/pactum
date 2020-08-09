@@ -3,9 +3,9 @@
 ![Build](https://github.com/ASaiAnudeep/pactum/workflows/Build/badge.svg?branch=master)
 ![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
 
-**pactum** is a REST API Testing Tool that comes with a *mock server* & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
+**pactum** is a REST API Testing Tool used for e2e testing, integration testing, component testing & contract testing of API endpoints. It comes with a *mock server* & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
-In simple words, **pactum** helps in testing API endpoints. It comes with an HTTP server that acts as a mock or service virtualization tool which enables to control the state of all external dependencies. It is *simple*, *fast*, *easy* and *fun* to use.
+In simple words, **pactum** helps in testing API endpoints. It comes with an HTTP server that acts as a mock server or a service virtualization tool which enables us to control the state of all external dependencies. It is *simple*, *fast*, *easy* and *fun* to use.
 
 ## Documentation
 
@@ -40,7 +40,9 @@ pactum can be used for
 
 ## Component Testing
 
-Component testing is defined as a software testing type, in which the testing is performed on each component separately without integrating with other components.
+Component testing is defined as a software testing type, in which the testing is performed on each component separately without integrating with other components.  
+
+### Simple Component Test Case
 
 Running a single component test expectation.
 
@@ -58,6 +60,10 @@ it('should be a teapot', async () => {
 # mocha is a test framework to execute test cases
 mocha /path/to/test
 ```
+
+### Complex HTTP Assertions
+
+**Pactum** can make numerous assertions on HTTP responses. It allows verification of returned status codes, headers, json objects, json schemas & response times.
 
 Running a complex component test expectation.
 
@@ -92,17 +98,75 @@ it('should add a new post', () => {
 });
 ```
 
+It also allows us to add custom expect handlers that are ideal to make assertions that are specific to your case. You can bring your own assertion library or take advantage of popular assertion libraries like [chai](https://www.npmjs.com/package/chai)
+
+```javascript
+const pactum = require('pactum');
+
+pactum.handler.addExpectHandler('isNewPost', (res) => { /* Custom Assertion Code */})
+
+it('should add a new post', () => {
+  return pactum
+    .post('https://jsonplaceholder.typicode.com/posts')
+    .withJson({
+      title: 'foo',
+      body: 'bar',
+      userId: 1
+    })
+    .expectStatus(201)
+    .expect('isNewPost')
+    .expect((res) => { /* Custom Assertion Code */ });
+});
+```
+
+It also allows us to add custom retry handlers that are ideal to wait for specific conditions to happen before attempting to make assertions on the response.  
+
+```javascript
+const pactum = require('pactum');
+
+it('should get the newly added post', () => {
+  return pactum
+    .get('https://jsonplaceholder.typicode.com/posts/12')
+    .retry({
+      count: 2,
+      delay: 2000,
+      strategy: (res) => res.statusCode !== 202
+    })
+    .expectStatus(200);
+});
+
+pactum.handler.addRetryHandler('waitForPost', (res) => { /* Custom Retry Strategy Code */});
+
+it('should get the newly added post', () => {
+  return pactum
+    .get('https://jsonplaceholder.typicode.com/posts/12')
+    .retry({
+      strategy: 'waitForPost' // Default Count: 3 & Delay: 1000 milliseconds
+    })
+    .expectStatus(200);
+});
+
+```
+
+### Mocking External Services (Dependencies)
+
+During component testing, the service under test might be talking to other external services. Instead of talking to real external services, it will be communicating with a mock server.
+
+**Pactum** comes with a mock server where you will able to control the behavior of each external service. Interactions are a way to instruct the mock server to simulate the behavior of external services.
+
 Running a component test expectation with mocking external dependency (AWS DynamoDB).
 
 ```javascript
 const pactum = require('pactum');
 
 before(() => {
-  return pactum.mock.start();
+  // starts a mock server on port 3000
+  return pactum.mock.start(3000);
 });
 
 it('should not get non existing user', () => {
   return pactum
+    // adds interaction to mock server
     .addMockInteraction({
       withRequest: {
         method: 'POST',

@@ -8,13 +8,13 @@ describe('Expects', () => {
       const user = response.json;
       expect(user).deep.equals({ id: 1 });
     }
-    pactum.handler.addCustomExpectHandler('isUser', isUser);
+    pactum.handler.addExpectHandler('isUser', isUser);
 
     const hasAddress = function (response, addressType) {
       const address = response.json;
       expect(address.type).equals(addressType);
     }
-    pactum.handler.addCustomExpectHandler('hasAddress', hasAddress);
+    pactum.handler.addExpectHandler('hasAddress', hasAddress);
   });
 
   it('custom expect handler', async () => {
@@ -34,6 +34,25 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users/1')
       .expect('isUser')
+      .expectStatus(200);
+  });
+
+  it('ad hoc expect handler', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users/1'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            id: 1
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users/1')
+      .expect((res) => { expect(res.json).deep.equals({ id: 1 }); })
       .expectStatus(200);
   });
 
@@ -71,6 +90,31 @@ describe('Expects', () => {
       err = error;
     }
     expect(err.message).equals(`expected 'WORK' to equal 'HOME'`);
+  });
+
+  it('failed ad hoc expect handler', async () => {
+    let err;
+    try {
+      await pactum
+        .addMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/users/1'
+          },
+          willRespondWith: {
+            status: 200,
+            body: {
+              id: 1
+            }
+          }
+        })
+        .get('http://localhost:9393/api/users/1')
+        .expect((res) => { expect(res.json).deep.equals({ id: 2 }); })
+        .expectStatus(200);
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
   });
 
   it('failed status code', async () => {
@@ -232,5 +276,27 @@ describe('Expects', () => {
     }
     expect(err).not.undefined;
   });
+
+  it('interaction not exercised error', async () => {
+    let err;
+    try {
+      await pactum
+        .addMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api'
+          },
+          willRespondWith: {
+            status: 200
+          }
+        })
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200);
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).contains('Interaction not exercised');
+  });
+
 
 });

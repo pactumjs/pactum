@@ -37,7 +37,7 @@ class Expect {
 
   validateInteractions(interactions) {
     for (const [id, interaction] of interactions) {
-      assert.ok(interaction.exercised, `Interaction not Exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+      assert.ok(interaction.exercised, `Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
     }
   }
 
@@ -162,11 +162,15 @@ class Expect {
   _validateCustomExpectHandlers(response) {
     for (let i = 0; i < this.customExpectHandlers.length; i++) {
       const requiredHandler = this.customExpectHandlers[i];
-      const customExpectHandler = handler.getExpectHandler(requiredHandler.name);
-      if (customExpectHandler) {
-        customExpectHandler(response, requiredHandler.data);
+      if (typeof requiredHandler.handler === 'function') {
+        requiredHandler.handler(response, requiredHandler.data);
       } else {
-        throw new Error(`Custom Expect Handler Not Found - ${requiredHandler.name}`)
+        const customExpectHandler = handler.getExpectHandler(requiredHandler.handler);
+        if (customExpectHandler) {
+          customExpectHandler(response, requiredHandler.data);
+        } else {
+          throw new Error(`Custom Expect Handler Not Found - ${requiredHandler.handler}`)
+        }
       }
     }
   }

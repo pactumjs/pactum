@@ -189,6 +189,10 @@ const helper = {
       }
     }
     return obj;
+  },
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
 };

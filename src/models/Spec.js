@@ -1,183 +1,19 @@
-const phin = require('phin');
 const FormData = require('form-data');
+const Tosser = require('./Tosser');
 const Expect = require('./expect');
-const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
 const config = require('../config');
 
-/**
- * request method
- * @typedef {('GET'|'POST'|'PUT'|'DELETE'|'PATCH'|'HEAD')} RequestMethod
- */
-
-/**
- * pact interaction details
- * @typedef {object} PactInteraction
- * @property {string} [id] - unique id of the interaction
- * @property {string} provider - name of the provider
- * @property {string} state - state of the provider
- * @property {string} uponReceiving - description of the request
- * @property {PactInteractionRequest} withRequest - interaction request details
- * @property {PactInteractionResponse} willRespondWith - interaction response details
- */
-
-/**
- * mock interaction details
- * @typedef {object} MockInteraction
- * @property {string} [id] - unique id of the interaction
- * @property {string} [provider] - name of the provider
- * @property {MockInteractionRequest} withRequest - interaction request details
- * @property {MockInteractionResponse} willRespondWith - interaction response details
- */
-
-/**
- * pact interaction request details
- * @typedef {object} PactInteractionRequest
- * @property {RequestMethod} method - request method
- * @property {string} path - request method
- * @property {object} [headers] - request headers
- * @property {object} [query] - request query
- * @property {GraphQLRequest} [graphQL] - graphQL request
- * @property {object} [body] - request body
- */
-
-
-/**
- * @typedef {Object} MockInteractionRequestType
- * @property {boolean} ignoreQuery - ignores request query while matching
- * @property {boolean} ignoreBody - ignores request body while matching
- *
- * mock interaction request details
- * @typedef {PactInteractionRequest & MockInteractionRequestType} MockInteractionRequest
- */
-
-/**
- * graphQL request details
- * @typedef {object} GraphQLRequest
- * @property {string} query - graphQL query
- * @property {string} [variables] - graphQL variables
- */
-
-/**
- * pact interaction response details
- * @typedef {object} PactInteractionResponse
- * @property {number} status - response status code
- * @property {object} [headers] - response headers
- * @property {object} [body] - response body
- */
-
-/**
- * @typedef {Object} MockInteractionResponseType
- * @property {number} [fixedDelay] - response fixed delay in ms
- * @property {object} [randomDelay] - response random delay
- * @property {number} randomDelay.min - min delay in ms
- * @property {number} randomDelay.max - max delay in ms
- * @property {Object.<number, MockInteractionResponse>} onCall - behavior on consecutive calls
- *
- * mock interaction response details
- * @typedef {PactInteractionResponse & MockInteractionResponseType} MockInteractionResponse
- */
-
 class Spec {
 
-  constructor(server) {
+  constructor() {
     this.id = helper.getRandomId();
-    this.server = server;
-    this.mockInteractions = new Map();
-    this.pactInteractions = new Map();
     this._request = {};
     this._response = {};
     this._expect = new Expect();
     this.previousLogLevel = null;
-  }
-
-  fetch() {
-    const query = helper.getPlainQuery(this._request.qs);
-    if (query) {
-      this._request.url = this._request.url + '?' + query;
-    }
-    setBaseUrl(this._request);
-    this._request.timeout = this._request.timeout || config.request.timeout;
-    setHeaders(this._request);
-    setMultiPartFormData(this._request);
-    return phin(this._request);
-  }
-
-  /**
-   * Add as an interaction to the mock server
-   * @param {MockInteraction} rawInteraction - interaction details
-   * @example
-   * await pactum
-   *  .addMockInteraction({
-   *    withRequest: {
-   *      method: 'GET',
-   *      path: '/api/projects/1'
-   *    },
-   *    willRespondWith: {
-   *      status: 200,
-   *      headers: {
-   *        'Content-Type': 'application/json'
-   *      },
-   *      body: {
-   *        id: 1,
-   *        name: 'fake'
-   *      }
-   *    }
-   *  })
-   *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .expectStatus(200)
-   *  .expectJsonLike({
-   *    userId: 1,
-   *    id: 1
-   *   })
-   *  .toss();
-   */
-  addMockInteraction(rawInteraction) {
-    const interaction = new Interaction(rawInteraction, true);
-    log.debug('Mock Interaction added to Mock Server -', interaction.id);
-    this.mockInteractions.set(interaction.id, interaction);
-    return this;
-  }
-
-  /**
-   * Add as an interaction to the mock server
-   * @param {PactInteraction} rawInteraction - interaction details
-   * @example
-   * await pactum
-   *  .addPactInteraction({
-   *    provider: 'project-provider',
-   *    state: 'when there is a project with id 1',
-   *    uponReceiving: 'a request for project 1',
-   *    withRequest: {
-   *      method: 'GET',
-   *      path: '/api/projects/1'
-   *    },
-   *    willRespondWith: {
-   *      status: 200,
-   *      headers: {
-   *        'Content-Type': 'application/json'
-   *      },
-   *      body: {
-   *        id: 1,
-   *        name: 'fake'
-   *      }
-   *    }
-   *  })
-   *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .expectStatus(200)
-   *  .expectJsonLike({
-   *    userId: 1,
-   *    id: 1
-   *   })
-   *  .toss();
-   */
-  addPactInteraction(rawInteraction) {
-    const interaction = new Interaction(rawInteraction, false);
-    log.debug('Pact Interaction added to Mock Server -', interaction.id);
-    this.pactInteractions.set(interaction.id, interaction);
-    return this;
   }
 
   /**
@@ -514,6 +350,37 @@ class Spec {
   }
 
   /**
+   * retry request on specific conditions
+   * @param {object} options - retry options
+   * @param {number} [options.count=3] - maximum number of retries
+   * @param {number} [options.delay=1000] - delay between each request in milliseconds
+   * @param {function|string} options.strategy - retry strategy function (return true to retry)
+   * @example
+   * await pactum
+   *  .get('/some/url)
+   *  .retry({
+   *     strategy: (res) => res.statusCode !== 200
+   *   })
+   *  .expectStatus(200);
+   */
+  retry(options) {
+    if (!options) {
+      throw new PactumRequestError('Invalid retry options');
+    }
+    if (!options.strategy) {
+      throw new PactumRequestError('Invalid retry strategy');
+    }
+    if (!options.count) {
+      options.count = 3;
+    }
+    if (!options.delay) {
+      options.delay = 1000;
+    }
+    this._request.retryOptions = options;
+    return this;
+  }
+
+  /**
    * overrides default log level for current spec
    * @param {('TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR')} level - log level
    */
@@ -537,20 +404,21 @@ class Spec {
 
   /**
    * runs specified custom expect handler
-   * @param {string} name - name of the custom expect handler
+   * @param {string|function} handler - name of the custom expect handler or function itself
    * @param {any} data - additional data
    * @example
-   * pactum.handler.addCustomExpectHandler('hasAddress', (response, data) => {
+   * pactum.handler.addExpectHandler('hasAddress', (response, data) => {
    *   const json = response.json;
    *   assert.strictEqual(json.type, data);
    * });
    * await pactum
    *  .get('https://jsonplaceholder.typicode.com/users/1')
    *  .expect('isUser')
-   *  .expect('hasAddress', 'home');
+   *  .expect('hasAddress', 'home')
+   *  .expect((res, data) => { -- assertion code -- });
    */
-  expect(name, data) {
-    this._expect.customExpectHandlers.push({name, data});
+  expect(handler, data) {
+    this._expect.customExpectHandlers.push({handler, data});
     return this;
   }
 
@@ -689,49 +557,17 @@ class Spec {
    * executes the test case
    */
   async toss() {
-    if (!helper.isValidString(this._request.url)) {
-      throw new PactumRequestError(`Invalid request url - ${this._request.url}`);
-    }
-    for (const [id, interaction] of this.mockInteractions) {
-      this.server.addMockInteraction(id, interaction);
-    }
-    for (const [id, interaction] of this.pactInteractions) {
-      this.server.addPactInteraction(id, interaction);
-    }
-    const requestStartTime = Date.now();
-    let failed = false;
-    let err = null;
-    try {
-      this._response = await this.fetch();
-    } catch (error) {
-      if (error.response) {
-        this._response = error.response;
-      } else {
-        failed = true;
-        err = error;
-        log.warn('Error performing request', error);
-        this._response = error;
-      }
-    }
-    this._response.responseTime = Date.now() - requestStartTime;
-    for (const [id, interaction] of this.mockInteractions) {
-      this.server.removeInteraction(id);
-    }
-    for (const [id, interaction] of this.pactInteractions) {
-      this.server.removeInteraction(id);
-    }
-    this._response.json = helper.getJson(this._response.body);
-    printRequestResponse(this._request, this._response);
-    if (this.previousLogLevel) {
-      log.setLevel(this.previousLogLevel);
-    }
-    if (failed) {
-      this._expect.fail(err);
-    }
-    this._expect.validateInteractions(this.mockInteractions);
-    this._expect.validateInteractions(this.pactInteractions);
-    this._expect.validate(this._response);
-    return this._response;
+    const tosser = new Tosser({
+      request: this._request,
+      expect: this._expect,
+      previousLogLevel: this.previousLogLevel
+    });
+    tosser.updateRequest();
+    await tosser.setResponse();
+    tosser.setPreviousLogLevel();
+    tosser.validateError();
+    tosser.validateResponse();
+    return tosser.response;
   }
 
   then(resolve, reject) {
@@ -748,56 +584,6 @@ function validateRequestUrl(request, url) {
   }
   if (!helper.isValidString(url)) {
     throw new PactumRequestError(`Invalid request url - ${url}`);
-  }
-}
-
-function setHeaders(request) {
-  if (config.request.headers && Object.keys(config.request.headers).length > 0) {
-    if (!request.headers) {
-      request.headers = {};
-    }
-    for (const prop in config.request.headers) {
-      if (request.headers[prop]) {
-        continue;
-      } else {
-        request.headers[prop] = config.request.headers[prop];
-      }
-    }
-  }
-}
-
-function setBaseUrl(request) {
-  if (config.request.baseUrl) {
-    request.url = config.request.baseUrl + request.url;
-  }
-}
-
-function setMultiPartFormData(request) {
-  if (request._multiPartFormData) {
-    request.data = request._multiPartFormData.getBuffer();
-    const multiPartHeaders = request._multiPartFormData.getHeaders();
-    if (!request.headers) {
-      request.headers = multiPartHeaders;
-    } else {
-      for (const prop in multiPartHeaders) {
-        request.headers[prop] = multiPartHeaders[prop];
-      }
-    }
-    delete request._multiPartFormData;
-  }
-}
-
-function printRequestResponse(req, res) {
-  if (log.levelValue <= 4) {
-    const rr = {
-      request: req,
-      response: {
-        statusCode: res.statusCode,
-        headers: res.headers,
-        json: res.json
-      }
-    }
-    log.debug('Request & Response =>', JSON.stringify(rr, null, 2));
   }
 }
 
