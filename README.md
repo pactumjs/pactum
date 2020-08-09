@@ -114,7 +114,8 @@ it('should add a new post', () => {
       userId: 1
     })
     .expectStatus(201)
-    .expect('isNewPost');
+    .expect('isNewPost')
+    .expect((res) => { /* Custom Assertion Code */ });
 });
 ```
 

@@ -37,6 +37,25 @@ describe('Expects', () => {
       .expectStatus(200);
   });
 
+  it('ad hoc expect handler', async () => {
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users/1'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            id: 1
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users/1')
+      .expect((res) => { expect(res.json).deep.equals({ id: 1 }); })
+      .expectStatus(200);
+  });
+
   it('unknown custom expect handler', async () => {
     let err;
     try {
@@ -71,6 +90,31 @@ describe('Expects', () => {
       err = error;
     }
     expect(err.message).equals(`expected 'WORK' to equal 'HOME'`);
+  });
+
+  it('failed ad hoc expect handler', async () => {
+    let err;
+    try {
+      await pactum
+        .addMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/users/1'
+          },
+          willRespondWith: {
+            status: 200,
+            body: {
+              id: 1
+            }
+          }
+        })
+        .get('http://localhost:9393/api/users/1')
+        .expect((res) => { expect(res.json).deep.equals({ id: 2 }); })
+        .expectStatus(200);
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
   });
 
   it('failed status code', async () => {

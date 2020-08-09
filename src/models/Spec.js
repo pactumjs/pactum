@@ -404,7 +404,7 @@ class Spec {
 
   /**
    * runs specified custom expect handler
-   * @param {string} name - name of the custom expect handler
+   * @param {string|function} handler - name of the custom expect handler or function itself
    * @param {any} data - additional data
    * @example
    * pactum.handler.addExpectHandler('hasAddress', (response, data) => {
@@ -414,10 +414,11 @@ class Spec {
    * await pactum
    *  .get('https://jsonplaceholder.typicode.com/users/1')
    *  .expect('isUser')
-   *  .expect('hasAddress', 'home');
+   *  .expect('hasAddress', 'home')
+   *  .expect((res, data) => { -- assertion code -- });
    */
-  expect(name, data) {
-    this._expect.customExpectHandlers.push({name, data});
+  expect(handler, data) {
+    this._expect.customExpectHandlers.push({handler, data});
     return this;
   }
 
