@@ -576,57 +576,6 @@ describe('Mock', () => {
       .toss();
   });
 
-  it('GET - retry strategy', async () => {
-    await pactum
-      .addMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1'
-        },
-        willRespondWith: {
-          onCall: {
-            0: {
-              status: 202
-            },
-            1: {
-              status: 200
-            }
-          }
-        }
-      })
-      .get('http://localhost:9393/api/projects/1')
-      .retry({
-        delay: 1,
-        count: 1,
-        strategy: (res) => res.statusCode !== 200
-      })
-      .expectStatus(200)
-      .toss();
-  });
-
-  it('GET - should not retry with default retry options', async () => {
-    await pactum
-      .addMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1'
-        },
-        willRespondWith: {
-          onCall: {
-            0: {
-              status: 200
-            }
-          }
-        }
-      })
-      .get('http://localhost:9393/api/projects/1')
-      .retry({
-        strategy: (res) => res.statusCode !== 200
-      })
-      .expectStatus(200)
-      .toss();
-  });
-
 });
 
 describe('Pact - matchers', () => {

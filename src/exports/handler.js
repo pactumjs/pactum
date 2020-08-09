@@ -1,4 +1,5 @@
 const customExpectHandler = {};
+const retryHandler = {};
 
 const handler = {
 
@@ -23,6 +24,27 @@ const handler = {
 
   getExpectHandler(name) {
     return customExpectHandler[name];
+  },
+
+  /**
+   * adds retry handler
+   * @param {string} name - retry handler name
+   * @param {function} func - retry handler function
+   * @example
+   * pactum.handler.addRetryHandler('RetryTill200', (res) => res.statusCode !== 200);
+   */
+  addRetryHandler(name, func) {
+    if (typeof name !== 'string' || name === '') {
+      throw new Error('Invalid retry handler name');
+    }
+    if (typeof func !== 'function') {
+      throw new Error('Retry handler should be a function');
+    }
+    retryHandler[name] = func;
+  },
+
+  getRetryHandler(name) {
+    return retryHandler[name];
   }
 
 }

@@ -2,6 +2,7 @@ const phin = require('phin');
 const helper = require('../helpers/helper');
 const config = require('../config');
 const log = require('../helpers/logger');
+const handler = require('../exports/handler');
 
 class Tosser {
 
@@ -44,6 +45,14 @@ class Tosser {
       for (let i = 0; i < count; i++) {
         if (typeof strategy === 'function') {
           retry = strategy(this.response);
+        }
+        if (typeof strategy === 'string') {
+          const retryHandler = handler.getRetryHandler(strategy);
+          if (retryHandler) {
+            retry = retryHandler(this.response);
+          } else {
+            throw new Error(`Retry Handler Not Found - ${strategy}`);
+          }
         }
         if (retry) {
           await helper.sleep(delay);

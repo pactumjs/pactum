@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const handler = require('../../src/exports/handler');
 
-describe('Handler', () => {
+describe('Expect Handler', () => {
 
   it('invalid handler name', () => {
     let err;
@@ -31,6 +31,40 @@ describe('Handler', () => {
       err = error;
     }
     expect(err.message).equals('Custom expect handler should be a function');
+  });
+
+});
+
+describe('Retry Handler', () => {
+
+  it('invalid handler name', () => {
+    let err;
+    try {
+      handler.addRetryHandler();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Invalid retry handler name');
+  });
+
+  it('empty handler name', () => {
+    let err;
+    try {
+      handler.addRetryHandler('');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Invalid retry handler name');
+  });
+
+  it('invalid handler function', () => {
+    let err;
+    try {
+      handler.addRetryHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Retry handler should be a function');
   });
 
 });
