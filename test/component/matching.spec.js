@@ -261,7 +261,6 @@ describe('Request Matchers', () => {
           }
         }
       })
-      .__setLogLevel('DEBUG')
       .get('http://localhost:9393/api/projects/1')
       .withQuery('date', '12/00/2020')
       .withHeaders({
@@ -328,7 +327,6 @@ describe('Request Matchers', () => {
           }
         }
       })
-      .__setLogLevel('DEBUG')
       .get('http://localhost:9393/api/projects/1')
       .withHeaders({'date': '12/00/9632', 'place': 'hyd'})
       .expectStatus(200)

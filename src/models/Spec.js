@@ -350,6 +350,37 @@ class Spec {
   }
 
   /**
+   * retry request on specific conditions
+   * @param {object} options - retry options
+   * @param {number} [options.count=3] - maximum number of retries
+   * @param {number} [options.delay=1000] - delay between each request in milliseconds
+   * @param {function|string} options.strategy - retry strategy function (return true to retry)
+   * @example
+   * await pactum
+   *  .get('/some/url)
+   *  .retry({
+   *     strategy: (res) => res.statusCode !== 200
+   *   })
+   *  .expectStatus(200);
+   */
+  retry(options) {
+    if (!options) {
+      throw new PactumRequestError('Invalid retry options');
+    }
+    if (!options.strategy) {
+      throw new PactumRequestError('Invalid retry strategy');
+    }
+    if (!options.count) {
+      options.count = 3;
+    }
+    if (!options.delay) {
+      options.delay = 1000;
+    }
+    this._request.retryOptions = options;
+    return this;
+  }
+
+  /**
    * overrides default log level for current spec
    * @param {('TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR')} level - log level
    */

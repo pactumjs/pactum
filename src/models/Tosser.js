@@ -11,7 +11,7 @@ class Tosser {
     this.mockInteractions = params.mockInteractions;
     this.pactInteractions = params.pactInteractions;
     this.expect = params.expect;
-    this.previousLogLevel = this.previousLogLevel;
+    this.previousLogLevel = params.previousLogLevel;
     this.response = {};
   }
 
@@ -36,16 +36,23 @@ class Tosser {
   }
 
   async setResponse() {
-    const requestStartTime = Date.now();
-    try {
-      this.response = await phin(this.request);
-      this.response.json = helper.getJson(this.response.body);
-    } catch (error) {
-      log.warn('Error performing request', error);
-      this.response = error;
+    this.response = await getResponse(this.request);
+    const retryOptions = this.request.retryOptions;
+    if (retryOptions) {
+      const { count, delay, strategy } = retryOptions;
+      let retry = false;
+      for (let i = 0; i < count; i++) {
+        if (typeof strategy === 'function') {
+          retry = strategy(this.response);
+        }
+        if (retry) {
+          await helper.sleep(delay);
+          this.response = await getResponse(this.request);
+        } else {
+          break;
+        }
+      }
     }
-    this.response.responseTime = Date.now() - requestStartTime;
-    printRequestResponse(this.request, this.response);
   }
 
   setPreviousLogLevel() {
@@ -115,6 +122,21 @@ function setMultiPartFormData(request) {
     }
     delete request._multiPartFormData;
   }
+}
+
+async function getResponse(req) {
+  let res = {};
+  const requestStartTime = Date.now();
+  try {
+    res = await phin(req);
+    res.json = helper.getJson(res.body);
+  } catch (error) {
+    log.warn('Error performing request', error);
+    res = error;
+  }
+  res.responseTime = Date.now() - requestStartTime;
+  printRequestResponse(req, res);
+  return res;
 }
 
 function printRequestResponse(req, res) {

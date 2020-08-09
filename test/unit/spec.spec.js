@@ -270,6 +270,32 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: Invalid timeout provided - 1000');
   });
 
+  it('empty retry options', async () => {
+    let err;
+    try {
+      const spec = new Spec();
+      await spec
+        .post('/')
+        .retry();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid retry options');
+  });
+
+  it('empty retry strategy', async () => {
+    let err;
+    try {
+      const spec = new Spec();
+      await spec
+        .post('/')
+        .retry({});
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid retry strategy');
+  });
+
   it('valid request', async () => {
     let err;
     try {
