@@ -196,7 +196,9 @@ describe('Mock', () => {
           method: 'GET',
           path: '/api/projects/1',
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'x-powered-by': 'phin',
+            'x-served-by': 'polka'
           }
         },
         willRespondWith: {
@@ -211,9 +213,11 @@ describe('Mock', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
+      .withHeader('x-served-by', 'polka')
       .withHeaders({
         'content-type': 'application/json'
       })
+      .withHeader('x-powered-by', 'phin')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,

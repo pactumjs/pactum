@@ -247,6 +247,25 @@ class Spec {
   }
 
   /**
+   * appends header to the request
+   * @param {string} key - header key
+   * @param {string} value - header value
+   * @example
+   * await pactum
+   *  .post('')
+   *  .withHeader('Authorization', 'Basic xxx')
+   *  .withHeader('Accept', 'json')
+   *  .expectStatus(200)
+   */
+  withHeader(key, value) {
+    if (!this._request.headers) {
+      this._request.headers = {};
+    }
+    this._request.headers[key] = value;
+    return this;
+  }
+
+  /**
    * attaches headers to the request
    * @param {object} headers - request headers with key-value pairs
    * @example
@@ -267,7 +286,10 @@ class Spec {
     if (!helper.isValidObject(headers)) {
       throw new PactumRequestError(`Invalid headers in request - ${headers}`);
     }
-    this._request.headers = headers;
+    if (!this._request.headers) {
+      this._request.headers = {};
+    }
+    Object.assign(this._request.headers, headers);
     return this;
   }
 
