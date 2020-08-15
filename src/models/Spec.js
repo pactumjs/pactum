@@ -561,6 +561,17 @@ class Spec {
     return this;
   }
 
+  /**
+   * expects the json at path equals to the value
+   * @param {string} path - json path
+   * @param {any} value - value to be asserted
+   * @see https://www.npmjs.com/package/json-query
+   * @example
+   * await pactum
+   *  .get('some-url')
+   *  .expectJsonQuery('[0].name', 'Matt')
+   *  .expectJsonQuery('[*].name', ['Matt', 'Pet', 'Don']);
+   */
   expectJsonQuery(path, value) {
     this._expect.jsonQuery.push({ path, value });
     return this;

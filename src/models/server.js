@@ -68,7 +68,6 @@ class Server {
     } else {
       log.warn('Unable to remove interaction. Interaction not found with id', id);
     }
-
   }
 
   removeMockInteraction(id) {

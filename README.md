@@ -84,9 +84,16 @@ it('should add a new post', () => {
     .expectStatus(201)
     .expectHeader('content-type', 'application/json; charset=utf-8')
     .expectJson({
-      id: '1'
+      id: '1',
+      users: [
+        {
+          name: 'Mike'
+          country: 'IND'
+        }
+      ]
     })
     .expectJsonSchema({
+      type: 'object',
       properties: {
         id: {
           type: 'number'
@@ -94,6 +101,7 @@ it('should add a new post', () => {
       },
       required: ['id']
     })
+    .expectJsonQuery('users[0].name', 'Mike')
     .expectResponseTime(100);
 });
 ```

@@ -298,5 +298,82 @@ describe('Expects', () => {
     expect(err.message).contains('Interaction not exercised');
   });
 
+  it('json query - on root object', () => {
+    return pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            people: [
+              { name: 'Matt', country: 'NZ' },
+              { name: 'Pete', country: 'AU' },
+              { name: 'Mike', country: 'NZ' }
+            ]
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .expectStatus(200)
+      .expectJsonQuery('people[country=NZ].name', 'Matt')
+      .expectJsonQuery('people[*].name', ['Matt', 'Pete', 'Mike'])
+  });
+
+  it('json query - on root array', () => {
+    return pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users'
+        },
+        willRespondWith: {
+          status: 200,
+          body: [
+            { name: 'Matt', country: 'NZ' },
+            { name: 'Pete', country: 'AU' },
+            { name: 'Mike', country: 'NZ' }
+          ]
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .expectStatus(200)
+      .expectJsonQuery('[1].country', 'AU')
+      .expectJsonQuery('[country=NZ].name', 'Matt')
+      .expectJsonQuery('[*].name', ['Matt', 'Pete', 'Mike'])
+  });
+
+  it('json query - on root object - fails', async () => {
+    let err;
+    try {
+      await pactum
+        .addMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/users'
+          },
+          willRespondWith: {
+            status: 200,
+            body: {
+              people: [
+                { name: 'Matt', country: 'NZ' },
+                { name: 'Pete', country: 'AU' },
+                { name: 'Mike', country: 'NZ' }
+              ]
+            }
+          }
+        })
+        .get('http://localhost:9393/api/users')
+        .expectStatus(200)
+        .expectJsonQuery('people[country=NZ].name', 'Matt')
+        .expectJsonQuery('people[*].name', ['Matt', 'Pete']);
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
 
 });
