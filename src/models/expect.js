@@ -14,6 +14,7 @@ class Expect {
     this.json = [];
     this.jsonLike = [];
     this.jsonQuery = [];
+    this.jsonQueryLike = [];
     this.jsonSchema = [];
     this.headers = [];
     this.headerContains = [];
@@ -30,8 +31,9 @@ class Expect {
     this._validateJson(response);
     this._validateJsonLike(response);
     this._validateJsonQuery(response);
-    this._validateResponseTime(response);
+    this._validateJsonQueryLike(response);
     this._validateJsonSchema(response);
+    this._validateResponseTime(response);
     this._validateCustomExpectHandlers(response);
   }
 
@@ -141,11 +143,23 @@ class Expect {
     }
   }
 
+  _validateJsonQueryLike(response) {
+    for (let i = 0; i < this.jsonQueryLike.length; i++) {
+      const jQ = this.jsonQueryLike[i];
+      const value = jqy(jQ.path, { data: response.json }).value;
+      const compare = new Compare();
+      const res = compare.jsonLike(value, jQ.value);
+      if (!res.equal) {
+        this.fail(res.message);
+      }
+    }
+  }
+
   _validateJsonSchema(response) {
     for (let i = 0; i < this.jsonSchema.length; i++) {
       const jS = this.jsonSchema[i];
       const jsv = new djv();
-      jsv.addSchema('test', {common: jS});
+      jsv.addSchema('test', { common: jS });
       const validation = jsv.validate('test#/common', response.json);
       if (validation) {
         assert.fail(`Response doesn't match with JSON schema - ${JSON.stringify(validation, null, 2)}`);

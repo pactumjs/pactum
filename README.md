@@ -89,6 +89,10 @@ it('should add a new post', () => {
         {
           name: 'Mike'
           country: 'IND'
+        },
+        {
+          name: 'Mac'
+          country: 'US'
         }
       ]
     })
@@ -102,6 +106,7 @@ it('should add a new post', () => {
       required: ['id']
     })
     .expectJsonQuery('users[0].name', 'Mike')
+    .expectJsonQueryLike('users[*].country', ['IND', 'US'])
     .expectResponseTime(100);
 });
 ```

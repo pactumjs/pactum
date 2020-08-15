@@ -375,5 +375,56 @@ describe('Expects', () => {
     expect(err).not.undefined;
   });
 
+  it('json query like - on root object', () => {
+    return pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            people: [
+              { name: 'Matt', country: 'NZ' },
+              { name: 'Pete', country: 'AU' },
+              { name: 'Mike', country: 'NZ' }
+            ]
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .expectStatus(200)
+      .expectJsonQueryLike('people[*].name', ['Matt', 'Pete']);
+  });
+
+  it('json query like - fails', async () => {
+    let err;
+    try {
+      await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            people: [
+              { name: 'Matt', country: 'NZ' },
+              { name: 'Pete', country: 'AU' },
+              { name: 'Mike', country: 'NZ' }
+            ]
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .expectStatus(200)
+      .expectJsonQueryLike('people[*].name', ['Matt', 'Pet']);  
+    } catch (error) {
+      err = error;   
+    }
+    expect(err).not.undefined; 
+  });
 
 });

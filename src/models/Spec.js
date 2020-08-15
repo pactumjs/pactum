@@ -578,6 +578,21 @@ class Spec {
   }
 
   /**
+   * expects the json at path to be like the value
+   * @param {string} path - json path
+   * @param {any} value - value to be asserted
+   * @see https://www.npmjs.com/package/json-query
+   * @example
+   * await pactum
+   *  .get('some-url')
+   *  .expectJsonQueryLike('[*].name', ['Matt', 'Pet', 'Don']);
+   */
+  expectJsonQueryLike(path, value) {
+    this._expect.jsonQueryLike.push({ path, value });
+    return this;
+  }
+
+  /**
    * expects request completes within a specified duration (ms)
    * @param {number} value - response time in milliseconds
    */
