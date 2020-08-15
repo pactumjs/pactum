@@ -1,5 +1,6 @@
 const expectHandler = {};
 const retryHandler = {};
+const returnHandler = {};
 
 const handler = {
 
@@ -45,7 +46,28 @@ const handler = {
 
   getRetryHandler(name) {
     return retryHandler[name];
-  }
+  },
+
+  /**
+   * adds custom return handler
+   * @param {string} name - return handler name
+   * @param {function} func - return handler function
+   * @example
+   * pactum.handler.addReturnHandler('ReturnOrderId', (req, res) => { return res.json.id });
+   */
+  addReturnHandler(name, func) {
+    if (typeof name !== 'string' || name === '') {
+      throw new Error('Invalid return handler name');
+    }
+    if (typeof func !== 'function') {
+      throw new Error('Return handler should be a function');
+    }
+    returnHandler[name] = func;
+  },
+
+  getReturnHandler(name) {
+    return returnHandler[name];
+  },
 
 }
 

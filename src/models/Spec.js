@@ -12,6 +12,7 @@ class Spec {
     this.id = helper.getRandomId();
     this._request = {};
     this._response = {};
+    this._returns = [];
     this._expect = new Expect();
     this.previousLogLevel = null;
   }
@@ -602,12 +603,35 @@ class Spec {
   }
 
   /**
+   * returns custom response
+   * @param {string|function} handler - return handler (json-query/handler function)
+   * @example
+   * const id = await pactum
+   *  .get('some-url')
+   *  .expectStatus(200)
+   *  .returns('user.id') // json query
+   * // 'id' will be equal to '123' if response is { user: { id: 123 }}
+   * 
+   * const resp = await pactum
+   *  .get('some-url')
+   *  .expectStatus(200)
+   *  .returns([0].name)
+   *  .returns((req, res) => { return res.json[0].id }) // custom function
+   * // 'resp' will be an array containing ['name', 'id']
+   */
+  returns(handler) {
+    this._returns.push(handler);
+    return this;
+  }
+
+  /**
    * executes the test case
    */
   async toss() {
     const tosser = new Tosser({
       request: this._request,
       expect: this._expect,
+      returns: this._returns,
       previousLogLevel: this.previousLogLevel
     });
     tosser.updateRequest();
@@ -615,7 +639,7 @@ class Spec {
     tosser.setPreviousLogLevel();
     tosser.validateError();
     tosser.validateResponse();
-    return tosser.response;
+    return tosser.getOutput();
   }
 
   then(resolve, reject) {

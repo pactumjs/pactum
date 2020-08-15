@@ -68,3 +68,37 @@ describe('Retry Handler', () => {
   });
 
 });
+
+describe('Return Handler', () => {
+
+  it('invalid handler name', () => {
+    let err;
+    try {
+      handler.addReturnHandler();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Invalid return handler name');
+  });
+
+  it('empty handler name', () => {
+    let err;
+    try {
+      handler.addReturnHandler('');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Invalid return handler name');
+  });
+
+  it('invalid handler function', () => {
+    let err;
+    try {
+      handler.addReturnHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Return handler should be a function');
+  });
+
+});

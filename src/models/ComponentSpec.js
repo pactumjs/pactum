@@ -169,6 +169,7 @@ class ComponentSpec extends Spec {
       request: this._request,
       server: this.server,
       expect: this._expect,
+      returns: this._returns,
       mockInteractions: this.mockInteractions,
       pactInteractions: this.pactInteractions,
       previousLogLevel: this.previousLogLevel
@@ -181,7 +182,7 @@ class ComponentSpec extends Spec {
     tosser.validateError();
     tosser.validateInteractions();
     tosser.validateResponse();
-    return tosser.response;
+    return tosser.getOutput();
   }
 
 }
