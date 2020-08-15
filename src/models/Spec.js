@@ -165,13 +165,13 @@ class Spec {
    * @summary generated url will look like - /comments?postId=1&userId=2
    */
   withQueryParams(params) {
-    if (!helper.isValidObject(params)) {
-      throw new PactumRequestError(`Invalid query parameters for request - ${params}`);
+    if (!helper.isValidObject(params) || Object.keys(params).length === 0) {
+      throw new PactumRequestError(`Invalid query parameters object - ${params ? JSON.stringify(params) : params}`);
     }
-    if (this._request.qs !== undefined) {
-      throw new PactumRequestError(`Duplicate query params in request`);
+    if (!this._request.qs) {
+      this._request.qs = {};
     }
-    this._request.qs = params;
+    Object.assign(this._request.qs, params);
     return this;
   }
 
