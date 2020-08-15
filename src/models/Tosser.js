@@ -104,12 +104,12 @@ function setBaseUrl(request) {
 }
 
 function setHeaders(request) {
-  if (config.request.headers && Object.keys(config.request.headers).length > 0) {
+  if (Object.keys(config.request.headers).length > 0) {
     if (!request.headers) {
       request.headers = {};
     }
     for (const prop in config.request.headers) {
-      if (request.headers[prop]) {
+      if (prop in request.headers) {
         continue;
       } else {
         request.headers[prop] = config.request.headers[prop];
