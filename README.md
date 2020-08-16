@@ -161,6 +161,40 @@ it('should get the newly added post', () => {
 
 ```
 
+### Nested Dependent HTTP Calls
+
+API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to next tests using [json-query](https://www.npmjs.com/package/json-query) or custom functions.
+
+```javascript
+const pactum = require('pactum');
+
+it('should return all posts and first post should have comments', async () => {
+  const postID = await pactum
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .return('[0].id');
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
+    .expectStatus(200);
+});
+
+pactum.handler.addReturnHandler('GetFirstPostId', (req, res) => { return res.json[0].id; });
+
+it('return multiple data', async () => {
+  const ids = await pactum
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .return('GetFirstPostId')
+    .return((req, res) => { return res.json[1].id; });
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${ids[0]}/comments`)
+    .expectStatus(200);
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${ids[1]}/comments`)
+    .expectStatus(200);
+});
+```
+
 ### Mocking External Services (Dependencies)
 
 During component testing, the service under test might be talking to other external services. Instead of talking to real external services, it will be communicating with a mock server.
