@@ -46,12 +46,12 @@ class Tosser {
       let retry = false;
       for (let i = 0; i < count; i++) {
         if (typeof strategy === 'function') {
-          retry = strategy(this.response);
+          retry = strategy(this.request, this.response);
         }
         if (typeof strategy === 'string') {
           const retryHandler = handler.getRetryHandler(strategy);
           if (retryHandler) {
-            retry = retryHandler(this.response);
+            retry = retryHandler(this.request, this.response);
           } else {
             throw new Error(`Retry Handler Not Found - ${strategy}`);
           }
@@ -122,7 +122,6 @@ class Tosser {
   }
 
 }
-
 
 function setBaseUrl(request) {
   if (config.request.baseUrl) {

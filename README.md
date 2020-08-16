@@ -143,12 +143,12 @@ it('should get the newly added post', () => {
     .retry({
       count: 2,
       delay: 2000,
-      strategy: (res) => res.statusCode !== 202
+      strategy: (req, res) => res.statusCode !== 202
     })
     .expectStatus(200);
 });
 
-pactum.handler.addRetryHandler('waitForPost', (res) => { /* Custom Retry Strategy Code */});
+pactum.handler.addRetryHandler('waitForPost', (req, res) => { /* Custom Retry Strategy Code */});
 
 it('should get the newly added post', () => {
   return pactum
