@@ -1,4 +1,5 @@
 const phin = require('phin');
+const jqy = require('json-query');
 const helper = require('../helpers/helper');
 const config = require('../config');
 const log = require('../helpers/logger');
@@ -13,6 +14,7 @@ class Tosser {
     this.pactInteractions = params.pactInteractions;
     this.expect = params.expect;
     this.previousLogLevel = params.previousLogLevel;
+    this.returns = params.returns;
     this.response = {};
   }
 
@@ -44,12 +46,12 @@ class Tosser {
       let retry = false;
       for (let i = 0; i < count; i++) {
         if (typeof strategy === 'function') {
-          retry = strategy(this.response);
+          retry = strategy(this.request, this.response);
         }
         if (typeof strategy === 'string') {
           const retryHandler = handler.getRetryHandler(strategy);
           if (retryHandler) {
-            retry = retryHandler(this.response);
+            retry = retryHandler(this.request, this.response);
           } else {
             throw new Error(`Retry Handler Not Found - ${strategy}`);
           }
@@ -91,11 +93,35 @@ class Tosser {
   }
 
   validateResponse() {
-    this.expect.validate(this.response);
+    this.expect.validate(this.request, this.response);
+  }
+
+  getOutput() {
+    const outputs = [];
+    for (let i = 0; i < this.returns.length; i++) {
+      const _handler = this.returns[i];
+      if (typeof _handler === 'function') {
+        outputs.push(_handler(this.request, this.response));
+      }
+      if (typeof _handler === 'string') {
+        const _customHandlerFun = handler.getReturnHandler(_handler);
+        if (_customHandlerFun) {
+          outputs.push(_customHandlerFun(this.request, this.response));
+        } else {
+          outputs.push(jqy(_handler, { data: this.response.json }).value);
+        }
+      }
+    }
+    if (outputs.length === 1) {
+      return outputs[0];
+    } else if (outputs.length > 1) {
+      return outputs;
+    } else {
+      return this.response;
+    }
   }
 
 }
-
 
 function setBaseUrl(request) {
   if (config.request.baseUrl) {
@@ -104,12 +130,12 @@ function setBaseUrl(request) {
 }
 
 function setHeaders(request) {
-  if (config.request.headers && Object.keys(config.request.headers).length > 0) {
+  if (Object.keys(config.request.headers).length > 0) {
     if (!request.headers) {
       request.headers = {};
     }
     for (const prop in config.request.headers) {
-      if (request.headers[prop]) {
+      if (prop in request.headers) {
         continue;
       } else {
         request.headers[prop] = config.request.headers[prop];

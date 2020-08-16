@@ -12,6 +12,7 @@ class Spec {
     this.id = helper.getRandomId();
     this._request = {};
     this._response = {};
+    this._returns = [];
     this._expect = new Expect();
     this.previousLogLevel = null;
   }
@@ -165,13 +166,13 @@ class Spec {
    * @summary generated url will look like - /comments?postId=1&userId=2
    */
   withQueryParams(params) {
-    if (!helper.isValidObject(params)) {
-      throw new PactumRequestError(`Invalid query parameters for request - ${params}`);
+    if (!helper.isValidObject(params) || Object.keys(params).length === 0) {
+      throw new PactumRequestError(`Invalid query parameters object - ${params ? JSON.stringify(params) : params}`);
     }
-    if (this._request.qs !== undefined) {
-      throw new PactumRequestError(`Duplicate query params in request`);
+    if (!this._request.qs) {
+      this._request.qs = {};
     }
-    this._request.qs = params;
+    Object.assign(this._request.qs, params);
     return this;
   }
 
@@ -247,6 +248,25 @@ class Spec {
   }
 
   /**
+   * appends header to the request
+   * @param {string} key - header key
+   * @param {string} value - header value
+   * @example
+   * await pactum
+   *  .post('')
+   *  .withHeader('Authorization', 'Basic xxx')
+   *  .withHeader('Accept', 'json')
+   *  .expectStatus(200)
+   */
+  withHeader(key, value) {
+    if (!this._request.headers) {
+      this._request.headers = {};
+    }
+    this._request.headers[key] = value;
+    return this;
+  }
+
+  /**
    * attaches headers to the request
    * @param {object} headers - request headers with key-value pairs
    * @example
@@ -267,7 +287,10 @@ class Spec {
     if (!helper.isValidObject(headers)) {
       throw new PactumRequestError(`Invalid headers in request - ${headers}`);
     }
-    this._request.headers = headers;
+    if (!this._request.headers) {
+      this._request.headers = {};
+    }
+    Object.assign(this._request.headers, headers);
     return this;
   }
 
@@ -359,7 +382,7 @@ class Spec {
    * await pactum
    *  .get('/some/url)
    *  .retry({
-   *     strategy: (res) => res.statusCode !== 200
+   *     strategy: (req, res) => res.statusCode !== 200
    *   })
    *  .expectStatus(200);
    */
@@ -407,15 +430,15 @@ class Spec {
    * @param {string|function} handler - name of the custom expect handler or function itself
    * @param {any} data - additional data
    * @example
-   * pactum.handler.addExpectHandler('hasAddress', (response, data) => {
-   *   const json = response.json;
+   * pactum.handler.addExpectHandler('hasAddress', (req, res, data) => {
+   *   const json = res.json;
    *   assert.strictEqual(json.type, data);
    * });
    * await pactum
    *  .get('https://jsonplaceholder.typicode.com/users/1')
    *  .expect('isUser')
    *  .expect('hasAddress', 'home')
-   *  .expect((res, data) => { -- assertion code -- });
+   *  .expect((req, res, data) => { -- assertion code -- });
    */
   expect(handler, data) {
     this._expect.customExpectHandlers.push({handler, data});
@@ -539,8 +562,34 @@ class Spec {
     return this;
   }
 
+  /**
+   * expects the json at path equals to the value
+   * @param {string} path - json path
+   * @param {any} value - value to be asserted
+   * @see https://www.npmjs.com/package/json-query
+   * @example
+   * await pactum
+   *  .get('some-url')
+   *  .expectJsonQuery('[0].name', 'Matt')
+   *  .expectJsonQuery('[*].name', ['Matt', 'Pet', 'Don']);
+   */
   expectJsonQuery(path, value) {
     this._expect.jsonQuery.push({ path, value });
+    return this;
+  }
+
+  /**
+   * expects the json at path to be like the value
+   * @param {string} path - json path
+   * @param {any} value - value to be asserted
+   * @see https://www.npmjs.com/package/json-query
+   * @example
+   * await pactum
+   *  .get('some-url')
+   *  .expectJsonQueryLike('[*].name', ['Matt', 'Pet', 'Don']);
+   */
+  expectJsonQueryLike(path, value) {
+    this._expect.jsonQueryLike.push({ path, value });
     return this;
   }
 
@@ -554,12 +603,35 @@ class Spec {
   }
 
   /**
+   * returns custom response
+   * @param {string|function} handler - return handler (json-query/handler function)
+   * @example
+   * const id = await pactum
+   *  .get('some-url')
+   *  .expectStatus(200)
+   *  .returns('user.id') // json query
+   * // 'id' will be equal to '123' if response is { user: { id: 123 }}
+   * 
+   * const resp = await pactum
+   *  .get('some-url')
+   *  .expectStatus(200)
+   *  .returns([0].name)
+   *  .returns((req, res) => { return res.json[0].id }) // custom function
+   * // 'resp' will be an array containing ['name', 'id']
+   */
+  returns(handler) {
+    this._returns.push(handler);
+    return this;
+  }
+
+  /**
    * executes the test case
    */
   async toss() {
     const tosser = new Tosser({
       request: this._request,
       expect: this._expect,
+      returns: this._returns,
       previousLogLevel: this.previousLogLevel
     });
     tosser.updateRequest();
@@ -567,7 +639,7 @@ class Spec {
     tosser.setPreviousLogLevel();
     tosser.validateError();
     tosser.validateResponse();
-    return tosser.response;
+    return tosser.getOutput();
   }
 
   then(resolve, reject) {

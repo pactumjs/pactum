@@ -11,24 +11,20 @@ describe('JSON Like - Object - Equal Properties', () => {
     expect(res.equal).equals(true);
   });
 
-  it('object equals - one property - number', () => {
+  it('object equals - different types of properties', () => {
     const actual = {
-      id: 1
+      id: 1,
+      name: 'bob',
+      minor: true,
+      any: null,
+      age: 8
     };
     const expected = {
-      id: 1
-    };
-    const compare = new Compare();
-    const res = compare.jsonLike(actual, expected);
-    expect(res.equal).equals(true);
-  });
-
-  it('object not equals - one property - null', () => {
-    const actual = {
-      id: null
-    };
-    const expected = {
-      id: null
+      id: 1,
+      name: 'bob',
+      minor: true,
+      any: null,
+      age: /\d+/
     };
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
@@ -58,19 +54,29 @@ describe('JSON Like - Object - Equal Properties', () => {
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have value '1' at '$.id' but found '1'`);
+    expect(res.message).equals(`Json doesn't have type 'string' at '$.id' but found 'number'`);
   });
 
-  it('object equals - one property - string', () => {
-    const actual = {
-      id: "1"
-    };
+  it('object not equals - different types - actual array', () => {
+    const actual = [{ id: 1 }];
     const expected = {
-      id: "1"
+      id: '1'
     };
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
-    expect(res.equal).equals(true);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type 'object' at '$' but found 'array'`);
+  });
+
+  it('object not equals - different types - expected array', () => {
+    const expected = [{ id: 1 }];
+    const actual = {
+      id: '1'
+    };
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have type 'array' at '$' but found 'object'`);
   });
 
   it('object not equals - one property - string', () => {
@@ -86,18 +92,6 @@ describe('JSON Like - Object - Equal Properties', () => {
     expect(res.message).equals(`Json doesn't have value '2' at '$.id' but found '1'`);
   });
 
-  it('object equals - one property - boolean', () => {
-    const actual = {
-      id: true
-    };
-    const expected = {
-      id: true
-    };
-    const compare = new Compare();
-    const res = compare.jsonLike(actual, expected);
-    expect(res.equal).equals(true);
-  });
-
   it('object not equals - one property - boolean', () => {
     const actual = {
       id: false
@@ -111,16 +105,17 @@ describe('JSON Like - Object - Equal Properties', () => {
     expect(res.message).equals(`Json doesn't have value 'true' at '$.id' but found 'false'`);
   });
 
-  it('object equals - one property - RegEx', () => {
+  it('object not equals - one property - null', () => {
     const actual = {
-      id: 1
+      id: {}
     };
     const expected = {
-      id: /\d+/
+      id: null
     };
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
-    expect(res.equal).equals(true);
+    expect(res.equal).equals(false);
+    expect(res.message).contains(`Json doesn't have value 'null' at '$.id' but found`);
   });
 
   it('object not equals - one property - RegEx', () => {
@@ -133,21 +128,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have value '/\\W+/' at '$.id' but found '1'`);
-  });
-
-  it('object equals - multiple properties', () => {
-    const actual = {
-      id: 1,
-      name: 'hunt'
-    };
-    const expected = {
-      id: 1,
-      name: 'hunt'
-    };
-    const compare = new Compare();
-    const res = compare.jsonLike(actual, expected);
-    expect(res.equal).equals(true);
+    expect(res.message).equals(`Json doesn't match with '/\\W+/' at '$.id' but found '1'`);
   });
 
   it('object not equals - multiple properties', () => {
@@ -163,51 +144,6 @@ describe('JSON Like - Object - Equal Properties', () => {
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
     expect(res.message).equals(`Json doesn't have value 'bent' at '$.name' but found 'hunt'`);
-  });
-
-  it('nested object equals - multiple properties', () => {
-    const actual = {
-      id: 1,
-      name: 'hunt',
-      scores: {
-        maths: 90,
-        social: 80
-      }
-    };
-    const expected = {
-      id: 1,
-      name: 'hunt',
-      scores: {
-        maths: 90,
-        social: 80
-      }
-    };
-    const compare = new Compare();
-    const res = compare.jsonLike(actual, expected);
-    expect(res.equal).equals(true);
-  });
-
-  it('nested object not equals - multiple properties', () => {
-    const actual = {
-      id: 1,
-      name: 'hunt',
-      scores: {
-        maths: 90,
-        social: 80
-      }
-    };
-    const expected = {
-      id: 1,
-      name: 'hunt',
-      scores: {
-        maths: 90,
-        social: 70
-      }
-    };
-    const compare = new Compare();
-    const res = compare.jsonLike(actual, expected);
-    expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have value '70' at '$.scores.social' but found '80'`);
   });
 
   it('nested objects equals - multiple properties', () => {
@@ -470,7 +406,7 @@ describe('JSON Like - Array', () => {
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have value '2' at '$[0]' but found '1'`);
+    expect(res.message).equals(`Json doesn't have 'array' with length '2' at '$' but found 'array' with length '1'`);
   });
 
   it('array not equals - multiple actual items', () => {
@@ -522,7 +458,7 @@ describe('JSON Like - Array', () => {
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have value '5' at '$[1][1]' but found '4'`);
+    expect(res.message).equals(`Json doesn't have value '3' at '$[1][0]' but found '2'`);
   });
 
 });
@@ -1133,7 +1069,76 @@ describe('JSON Like Array of Objects', () => {
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have value '42' at '$[1].scores.languages[0].english' but found '41'`);
+    expect(res.message).equals(`Json doesn't have value '42' at '$[1].scores.languages[0].english' but found '43'`);
+  });
+
+  it('equals - different order', () => {
+    const actual = [
+      {
+        id: 1
+      },
+      {
+        id: 2
+      },
+      {
+        id: 3
+      },
+      {
+        id: 4
+      }
+    ];
+    const expected = [
+      {
+        id: 4
+      },
+      {
+        id: 3
+      },
+      {
+        id: 2
+      },
+      {
+        id: 1
+      }
+    ];
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('not equals - different order', () => {
+    const actual = [
+      {
+        id: 1
+      },
+      {
+        id: 2
+      },
+      {
+        id: 3
+      },
+      {
+        id: 4
+      }
+    ];
+    const expected = [
+      {
+        id: 4
+      },
+      {
+        id: 3
+      },
+      {
+        id: 1
+      },
+      {
+        id: 1
+      }
+    ];
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value '1' at '$[3].id' but found '4'`);
   });
 
 });

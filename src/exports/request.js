@@ -1,6 +1,7 @@
 const form = require('form-data');
 
 const config = require('../config');
+const helper = require('../helpers/helper');
 const { PactumRequestError } = require('../helpers/errors');
 
 const request = {
@@ -17,6 +18,17 @@ const request = {
       throw new PactumRequestError(`Invalid header key provided - ${key}`);
     }
     config.request.headers[key] = value;
+  },
+
+  /**
+   * adds default headers to all the requests
+   * @param {object} headers - header key-value pairs
+   */
+  setDefaultHeaders(headers) {
+    if (!helper.isValidObject(headers)) {
+      throw new PactumRequestError(`Invalid headers provided - ${headers}`);
+    }
+    Object.assign(config.request.headers, headers);
   },
 
   /**

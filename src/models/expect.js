@@ -14,6 +14,7 @@ class Expect {
     this.json = [];
     this.jsonLike = [];
     this.jsonQuery = [];
+    this.jsonQueryLike = [];
     this.jsonSchema = [];
     this.headers = [];
     this.headerContains = [];
@@ -21,7 +22,7 @@ class Expect {
     this.customExpectHandlers = [];
   }
 
-  validate(response) {
+  validate(request, response) {
     this._validateStatus(response);
     this._validateHeaders(response);
     this._validateHeaderContains(response);
@@ -30,9 +31,10 @@ class Expect {
     this._validateJson(response);
     this._validateJsonLike(response);
     this._validateJsonQuery(response);
-    this._validateResponseTime(response);
+    this._validateJsonQueryLike(response);
     this._validateJsonSchema(response);
-    this._validateCustomExpectHandlers(response);
+    this._validateResponseTime(response);
+    this._validateCustomExpectHandlers(request, response);
   }
 
   validateInteractions(interactions) {
@@ -141,11 +143,23 @@ class Expect {
     }
   }
 
+  _validateJsonQueryLike(response) {
+    for (let i = 0; i < this.jsonQueryLike.length; i++) {
+      const jQ = this.jsonQueryLike[i];
+      const value = jqy(jQ.path, { data: response.json }).value;
+      const compare = new Compare();
+      const res = compare.jsonLike(value, jQ.value);
+      if (!res.equal) {
+        this.fail(res.message);
+      }
+    }
+  }
+
   _validateJsonSchema(response) {
     for (let i = 0; i < this.jsonSchema.length; i++) {
       const jS = this.jsonSchema[i];
       const jsv = new djv();
-      jsv.addSchema('test', {common: jS});
+      jsv.addSchema('test', { common: jS });
       const validation = jsv.validate('test#/common', response.json);
       if (validation) {
         assert.fail(`Response doesn't match with JSON schema - ${JSON.stringify(validation, null, 2)}`);
@@ -159,15 +173,15 @@ class Expect {
     }
   }
 
-  _validateCustomExpectHandlers(response) {
+  _validateCustomExpectHandlers(request, response) {
     for (let i = 0; i < this.customExpectHandlers.length; i++) {
       const requiredHandler = this.customExpectHandlers[i];
       if (typeof requiredHandler.handler === 'function') {
-        requiredHandler.handler(response, requiredHandler.data);
+        requiredHandler.handler(request, response, requiredHandler.data);
       } else {
         const customExpectHandler = handler.getExpectHandler(requiredHandler.handler);
         if (customExpectHandler) {
-          customExpectHandler(response, requiredHandler.data);
+          customExpectHandler(request, response, requiredHandler.data);
         } else {
           throw new Error(`Custom Expect Handler Not Found - ${requiredHandler.handler}`)
         }

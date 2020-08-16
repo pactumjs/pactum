@@ -129,7 +129,8 @@ describe('Mock', () => {
           path: '/api/projects/1',
           query: {
             id: 1,
-            name: 'fake'
+            name: 'fake',
+            age: 27
           }
         },
         willRespondWith: {
@@ -146,6 +147,7 @@ describe('Mock', () => {
       .get('http://localhost:9393/api/projects/1')
       .withQuery('id', 1)
       .withQuery('name', 'fake')
+      .withQueryParams({ 'age': 27 })
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -196,7 +198,9 @@ describe('Mock', () => {
           method: 'GET',
           path: '/api/projects/1',
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'x-powered-by': 'phin',
+            'x-served-by': 'polka'
           }
         },
         willRespondWith: {
@@ -211,9 +215,11 @@ describe('Mock', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
+      .withHeader('x-served-by', 'polka')
       .withHeaders({
         'content-type': 'application/json'
       })
+      .withHeader('x-powered-by', 'phin')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,

@@ -1,6 +1,7 @@
 const expect = require('chai').expect;
 
 const request = require('../../src/exports/request');
+const config = require('../../src/config');
 
 describe('request', () => {
 
@@ -20,6 +21,24 @@ describe('request', () => {
     expect(() => request.setDefaultHeader()).throws('Invalid header key provided - undefined');
   });
 
+  it('setDefaultHeaders - null', () => {
+    expect(() => request.setDefaultHeaders(null)).throws('Invalid headers provided - null');
+  });
+
+  it('setDefaultHeader & setDefaultHeaders', () => {
+    request.setDefaultHeader('hello', 'world');
+    request.setDefaultHeader('no', 'space');
+    request.setDefaultHeaders({
+      'gta': 'v',
+      'hello': 'space'
+    });
+    expect(config.request.headers).deep.equals({
+      'hello': 'space',
+      'no': 'space',
+      'gta': 'v'
+    });
+  });
+
   it('setDefaultTimeout - null', () => {
     expect(() => request.setDefaultTimeout(null)).throws('Invalid timeout provided - null');
   });
@@ -30,6 +49,10 @@ describe('request', () => {
 
   it('setDefaultTimeout - string', () => {
     expect(() => request.setDefaultTimeout('100')).throws('Invalid timeout provided - 100');
+  });
+
+  afterEach(() => {
+   config.request.headers = {}; 
   });
 
 });

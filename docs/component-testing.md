@@ -188,9 +188,10 @@ Expectations help to assert the response received from the server.
 | `expectBody('value')`                   | check exact match of body                                        |
 | `expectBodyContains('value')`           | check body contains the value (RegExp)                           |
 | `expectJson({json})`                    | check exact match of json                                        |
-| `expectJsonLike({json})`                | check json contains partial value (RegExp)                       |
+| `expectJsonLike({json})`                | check loose match of json (RegExp)                               |
 | `expectJsonSchema({schema})`            | validate [json-schema](https://json-schema.org/learn/)           |
 | `expectJsonQuery('path', 'value')`      | validate [json-query](https://www.npmjs.com/package/json-query)  |
+| `expectJsonQueryLike('path', {json}`    | check loose match of json-query                                  |
 | `expectResponseTime(10)`                | check if request completes within a specified duration (ms)      |
 
 ```javascript

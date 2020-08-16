@@ -25,7 +25,7 @@ describe('Retries', () => {
       .retry({
         delay: 1,
         count: 1,
-        strategy: (res) => res.statusCode !== 200
+        strategy: (req, res) => res.statusCode !== 200
       })
       .expectStatus(200)
       .toss();
@@ -48,14 +48,14 @@ describe('Retries', () => {
       })
       .get('http://localhost:9393/api/projects/1')
       .retry({
-        strategy: (res) => res.statusCode !== 200
+        strategy: (req, res) => res.statusCode !== 200
       })
       .expectStatus(200)
       .toss();
   });
 
   it('custom retry strategy', async () => {
-    pactum.handler.addRetryHandler('RetryTill200', (res) => res.statusCode !== 200);
+    pactum.handler.addRetryHandler('RetryTill200', (req, res) => res.statusCode !== 200);
     await pactum
       .addMockInteraction({
         withRequest: {

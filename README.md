@@ -84,9 +84,20 @@ it('should add a new post', () => {
     .expectStatus(201)
     .expectHeader('content-type', 'application/json; charset=utf-8')
     .expectJson({
-      id: '1'
+      id: '1',
+      users: [
+        {
+          name: 'Mike'
+          country: 'IND'
+        },
+        {
+          name: 'Mac'
+          country: 'US'
+        }
+      ]
     })
     .expectJsonSchema({
+      type: 'object',
       properties: {
         id: {
           type: 'number'
@@ -94,6 +105,8 @@ it('should add a new post', () => {
       },
       required: ['id']
     })
+    .expectJsonQuery('users[0].name', 'Mike')
+    .expectJsonQueryLike('users[*].country', ['IND', 'US'])
     .expectResponseTime(100);
 });
 ```
@@ -103,7 +116,7 @@ It also allows us to add custom expect handlers that are ideal to make assertion
 ```javascript
 const pactum = require('pactum');
 
-pactum.handler.addExpectHandler('isNewPost', (res) => { /* Custom Assertion Code */})
+pactum.handler.addExpectHandler('isNewPost', (req, res) => { /* Custom Assertion Code */})
 
 it('should add a new post', () => {
   return pactum
@@ -115,7 +128,7 @@ it('should add a new post', () => {
     })
     .expectStatus(201)
     .expect('isNewPost')
-    .expect((res) => { /* Custom Assertion Code */ });
+    .expect((req, res) => { /* Custom Assertion Code */ });
 });
 ```
 
@@ -130,12 +143,12 @@ it('should get the newly added post', () => {
     .retry({
       count: 2,
       delay: 2000,
-      strategy: (res) => res.statusCode !== 202
+      strategy: (req, res) => { return res.statusCode === 202 }
     })
     .expectStatus(200);
 });
 
-pactum.handler.addRetryHandler('waitForPost', (res) => { /* Custom Retry Strategy Code */});
+pactum.handler.addRetryHandler('waitForPost', (req, res) => { /* Custom Retry Strategy Code */});
 
 it('should get the newly added post', () => {
   return pactum
@@ -146,6 +159,40 @@ it('should get the newly added post', () => {
     .expectStatus(200);
 });
 
+```
+
+### Nested Dependent HTTP Calls
+
+API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to next tests using [json-query](https://www.npmjs.com/package/json-query) or custom functions.
+
+```javascript
+const pactum = require('pactum');
+
+it('should return all posts and first post should have comments', async () => {
+  const postID = await pactum
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .return('[0].id');
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
+    .expectStatus(200);
+});
+
+pactum.handler.addReturnHandler('GetFirstPostId', (req, res) => { return res.json[0].id; });
+
+it('return multiple data', async () => {
+  const ids = await pactum
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .return('GetFirstPostId')
+    .return((req, res) => { return res.json[1].id; });
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${ids[0]}/comments`)
+    .expectStatus(200);
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${ids[1]}/comments`)
+    .expectStatus(200);
+});
 ```
 
 ### Mocking External Services (Dependencies)
