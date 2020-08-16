@@ -9,8 +9,8 @@ const handler = {
    * @param {string} name - name of the custom expect handler
    * @param {function} func - handler function
    * @example
-   * pactum.handler.addExpectHandler('isUser', (response) => {
-   *   assert.strictEqual(response.json.type, 'user');
+   * pactum.handler.addExpectHandler('isUser', (req, res) => {
+   *   assert.strictEqual(res.json.type, 'user');
    * });
    */
   addExpectHandler(name, func) {
@@ -32,7 +32,7 @@ const handler = {
    * @param {string} name - retry handler name
    * @param {function} func - retry handler function
    * @example
-   * pactum.handler.addRetryHandler('RetryTill200', (res) => res.statusCode !== 200);
+   * pactum.handler.addRetryHandler('RetryTill200', (req, res) => res.statusCode !== 200);
    */
   addRetryHandler(name, func) {
     if (typeof name !== 'string' || name === '') {
