@@ -4,13 +4,13 @@ const expect = require('chai').expect;
 describe('Expects', () => {
 
   before(() => {
-    const isUser = function (response) {
+    const isUser = function (req, response) {
       const user = response.json;
       expect(user).deep.equals({ id: 1 });
     }
     pactum.handler.addExpectHandler('isUser', isUser);
 
-    const hasAddress = function (response, addressType) {
+    const hasAddress = function (req, response, addressType) {
       const address = response.json;
       expect(address.type).equals(addressType);
     }
@@ -52,7 +52,7 @@ describe('Expects', () => {
         }
       })
       .get('http://localhost:9393/api/users/1')
-      .expect((res) => { expect(res.json).deep.equals({ id: 1 }); })
+      .expect((req, res) => { expect(res.json).deep.equals({ id: 1 }); })
       .expectStatus(200);
   });
 

@@ -93,7 +93,7 @@ class Tosser {
   }
 
   validateResponse() {
-    this.expect.validate(this.response);
+    this.expect.validate(this.request, this.response);
   }
 
   getOutput() {

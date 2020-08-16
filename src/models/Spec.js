@@ -382,7 +382,7 @@ class Spec {
    * await pactum
    *  .get('/some/url)
    *  .retry({
-   *     strategy: (res) => res.statusCode !== 200
+   *     strategy: (req, res) => res.statusCode !== 200
    *   })
    *  .expectStatus(200);
    */
@@ -430,15 +430,15 @@ class Spec {
    * @param {string|function} handler - name of the custom expect handler or function itself
    * @param {any} data - additional data
    * @example
-   * pactum.handler.addExpectHandler('hasAddress', (response, data) => {
-   *   const json = response.json;
+   * pactum.handler.addExpectHandler('hasAddress', (req, res, data) => {
+   *   const json = res.json;
    *   assert.strictEqual(json.type, data);
    * });
    * await pactum
    *  .get('https://jsonplaceholder.typicode.com/users/1')
    *  .expect('isUser')
    *  .expect('hasAddress', 'home')
-   *  .expect((res, data) => { -- assertion code -- });
+   *  .expect((req, res, data) => { -- assertion code -- });
    */
   expect(handler, data) {
     this._expect.customExpectHandlers.push({handler, data});

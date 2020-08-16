@@ -116,7 +116,7 @@ It also allows us to add custom expect handlers that are ideal to make assertion
 ```javascript
 const pactum = require('pactum');
 
-pactum.handler.addExpectHandler('isNewPost', (res) => { /* Custom Assertion Code */})
+pactum.handler.addExpectHandler('isNewPost', (req, res) => { /* Custom Assertion Code */})
 
 it('should add a new post', () => {
   return pactum
@@ -128,7 +128,7 @@ it('should add a new post', () => {
     })
     .expectStatus(201)
     .expect('isNewPost')
-    .expect((res) => { /* Custom Assertion Code */ });
+    .expect((req, res) => { /* Custom Assertion Code */ });
 });
 ```
 
@@ -143,7 +143,7 @@ it('should get the newly added post', () => {
     .retry({
       count: 2,
       delay: 2000,
-      strategy: (req, res) => res.statusCode !== 202
+      strategy: (req, res) => { return res.statusCode === 202 }
     })
     .expectStatus(200);
 });

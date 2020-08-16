@@ -22,7 +22,7 @@ class Expect {
     this.customExpectHandlers = [];
   }
 
-  validate(response) {
+  validate(request, response) {
     this._validateStatus(response);
     this._validateHeaders(response);
     this._validateHeaderContains(response);
@@ -34,7 +34,7 @@ class Expect {
     this._validateJsonQueryLike(response);
     this._validateJsonSchema(response);
     this._validateResponseTime(response);
-    this._validateCustomExpectHandlers(response);
+    this._validateCustomExpectHandlers(request, response);
   }
 
   validateInteractions(interactions) {
@@ -173,15 +173,15 @@ class Expect {
     }
   }
 
-  _validateCustomExpectHandlers(response) {
+  _validateCustomExpectHandlers(request, response) {
     for (let i = 0; i < this.customExpectHandlers.length; i++) {
       const requiredHandler = this.customExpectHandlers[i];
       if (typeof requiredHandler.handler === 'function') {
-        requiredHandler.handler(response, requiredHandler.data);
+        requiredHandler.handler(request, response, requiredHandler.data);
       } else {
         const customExpectHandler = handler.getExpectHandler(requiredHandler.handler);
         if (customExpectHandler) {
-          customExpectHandler(response, requiredHandler.data);
+          customExpectHandler(request, response, requiredHandler.data);
         } else {
           throw new Error(`Custom Expect Handler Not Found - ${requiredHandler.handler}`)
         }
