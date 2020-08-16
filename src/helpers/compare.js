@@ -4,25 +4,8 @@ class Compare {
 
   jsonLike(actual, expected) {
     const comparer = new LikeJson();
-    const equal = comparer.compare(actual, expected);
-    let message = '';
-    if (!equal) {
-      if (comparer.expected === null) {
-        message = `Json doesn't have property '${comparer.prop}' at '${comparer.path}'`;
-      } else {
-        let exactPath = '';
-        if (comparer.prop !== null) {
-          exactPath = `${comparer.path}.${comparer.prop}`;
-        } else {
-          exactPath = `${comparer.path}`;
-        }
-        if (comparer.actualPlaceValue) {
-          message = `Json doesn't have value '${comparer.expected}' at '${exactPath}' but found '${comparer.actualPlaceValue}'`;
-        } else {
-          message = `Json doesn't have value '${comparer.expected}' at '${exactPath}' but found '${comparer.actual}'`;
-        }
-      }
-    }
+    const message = comparer.compare(actual, expected);
+    const equal = message === '';
     log.debug('JSON Like:', equal, message);
     return { equal, message };
   }
@@ -71,74 +54,111 @@ class Compare {
 
 class LikeJson {
 
-  constructor() {
-    this.path = '$';
-    this.prop = null;
-    this.expected = null;
-    this.actual = null;
-    this.actualPlaceValue = null;
-  }
-
-  compare(actualJson, expectedJson, path = '$') {
-    if ((expectedJson instanceof RegExp && expectedJson.test(actualJson)) || (actualJson === expectedJson)) {
-      return true;
+  compare(actual, expected, actualPath = '$', expectedPath = '$') {
+    const valueRes = this.valueCompare(actual, expected, actualPath, expectedPath);
+    if (valueRes !== null) {
+      return valueRes;
     }
-    if (!(actualJson instanceof Object) || !(expectedJson instanceof Object)) {
-      this.expected = expectedJson;
-      this.actual = actualJson;
-      this.path = path;
-      return false;
-    }
-    if (Array.isArray(expectedJson) && Array.isArray(actualJson)) {
-      this.prop = null;
-      for (let i = 0; i < expectedJson.length; i++) {
-        let found = false;
-        const newPath = path + `[${i}]`;
-        for (let j = 0; j < actualJson.length; j++) {
-          if (i === j) {
-            this.actualPlaceValue = actualJson[j];
-          }
-          if (this.compare(actualJson[j], expectedJson[i], newPath)) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          return false;
-        }
-        this.actualPlaceValue = null;
+    if (Array.isArray(expected)) {
+      const arrRes = this.arrayCompare(actual, expected, actualPath, expectedPath);
+      if (arrRes) {
+        return arrRes;
       }
     } else {
-      for (const prop in expectedJson) {
-        this.prop = prop;
-        if (!Object.prototype.hasOwnProperty.call(expectedJson, prop)) {
-          continue;
-        }
-        if (!Object.prototype.hasOwnProperty.call(actualJson, prop)) {
-          this.path = path;
-          return false;
-        }
-        this.expected = expectedJson[prop];
-        this.actual = actualJson[prop];
-        this.actualPlaceValue = null;
-        if ((this.expected instanceof RegExp && this.expected.test(this.actual)) || (this.expected === this.actual)) {
-          this.expected = null;
-          this.actual = null;
-          continue;
-        }
-        if (typeof (actualJson[prop]) !== "object") {
-          this.path = path;
-          return false;
-        }
-        const newPath = path + '.' + prop;
-        this.expected = null;
-        this.actual = null;
-        if (!this.compare(actualJson[prop], expectedJson[prop], newPath)) {
-          return false;
-        }
+      const objRes = this.objectCompare(actual, expected, actualPath, expectedPath);
+      if (objRes) {
+        return objRes;
       }
     }
-    return true;
+    return '';
+  }
+
+  valueCompare(actual, expected, actualPath, expectedPath) {
+    if (actual === expected) {
+      return '';
+    }
+    if (expected instanceof RegExp) {
+      if (expected.test(actual)) {
+        return '';
+      }
+      return `Json doesn't match with '${expected}' at '${expectedPath}' but found '${actual}'`;
+    }
+    if (typeof expected !== typeof actual) {
+      return `Json doesn't have type '${typeof expected}' at '${expectedPath}' but found '${typeof actual}'`;
+    }
+    if (typeof expected !== 'object' && typeof actual !== 'object') {
+      return `Json doesn't have value '${expected}' at '${expectedPath}' but found '${actual}'`;
+    }
+    if (expected === null || actual === null) {
+      return `Json doesn't have value '${expected}' at '${expectedPath}' but found '${actual}'`;
+    }
+    if (Array.isArray(expected) && !Array.isArray(actual)) {
+      return `Json doesn't have type 'array' at '${expectedPath}' but found 'object'`;
+    }
+    if (!Array.isArray(expected) && Array.isArray(actual)) {
+      return `Json doesn't have type 'object' at '${expectedPath}' but found 'array'`;
+    }
+    return null;
+  }
+
+  arrayCompare(actual, expected, actualPath, expectedPath) {
+    if (expected.length > actual.length) {
+      return `Json doesn't have 'array' with length '${expected.length}' at '${expectedPath}' but found 'array' with length '${actual.length}'`;
+    }
+    const seen = new Set();
+    for (let i = 0; i < expected.length; i++) {
+      let found = false;
+      const eItem = expected[i];
+      let aItem = actual[i];
+      const newExpectedPath = expectedPath + `[${i}]`;
+      const actualPathResp = this.compare(aItem, eItem, newExpectedPath, newExpectedPath);
+      if (actualPathResp === '') {
+        seen.add(i);
+        continue;
+      }
+      for (let j = i + 1; j < actual.length && !seen.has(j); j++) {
+        aItem = actual[j];
+        const newActualPath = actualPath + `[${j}]`;
+        const resp = this.compare(aItem, eItem, newActualPath, newExpectedPath);
+        if (resp === '') {
+          seen.add(j);
+          found = true;
+          break;
+        }
+      }
+      if (found) {
+        continue;
+      }
+      for (let j = 0; j < i && !seen.has(j); j++) {
+        aItem = actual[j];
+        const newActualPath = actualPath + `[${j}]`;
+        const resp = this.compare(aItem, eItem, newActualPath, newExpectedPath);
+        if (resp === '') {
+          seen.add(j);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        return actualPathResp;
+      }
+    }
+  }
+
+  objectCompare(actual, expected, actualPath, expectedPath) {
+    for (const prop in expected) {
+      if (!Object.prototype.hasOwnProperty.call(expected, prop)) {
+        continue;
+      }
+      if (!Object.prototype.hasOwnProperty.call(actual, prop)) {
+        return `Json doesn't have property '${prop}' at '${expectedPath}'`;
+      }
+      const newPath = expectedPath + '.' + prop;
+      const resp = this.compare(actual[prop], expected[prop], newPath, newPath);
+      if (resp) {
+        return resp;
+      }
+    }
   }
 
 }
