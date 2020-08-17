@@ -1085,6 +1085,12 @@ describe('JSON Like Array of Objects', () => {
       },
       {
         id: 4
+      },
+      {
+        id: 5
+      },
+      {
+        id: 6
       }
     ];
     const expected = [
@@ -1093,6 +1099,12 @@ describe('JSON Like Array of Objects', () => {
       },
       {
         id: 3
+      },
+      {
+        id: 5
+      },
+      {
+        id: 6
       },
       {
         id: 2
