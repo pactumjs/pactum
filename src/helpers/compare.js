@@ -116,27 +116,31 @@ class LikeJson {
         seen.add(i);
         continue;
       }
-      for (let j = i + 1; j < actual.length && !seen.has(j); j++) {
-        aItem = actual[j];
-        const newActualPath = actualPath + `[${j}]`;
-        const resp = this.compare(aItem, eItem, newActualPath, newExpectedPath);
-        if (resp === '') {
-          seen.add(j);
-          found = true;
-          break;
+      for (let j = i + 1; j < actual.length; j++) {
+        if (!seen.has(j)) {
+          aItem = actual[j];
+          const newActualPath = actualPath + `[${j}]`;
+          const resp = this.compare(aItem, eItem, newActualPath, newExpectedPath);
+          if (resp === '') {
+            seen.add(j);
+            found = true;
+            break;
+          }
         }
       }
       if (found) {
         continue;
       }
-      for (let j = 0; j < i && !seen.has(j); j++) {
-        aItem = actual[j];
-        const newActualPath = actualPath + `[${j}]`;
-        const resp = this.compare(aItem, eItem, newActualPath, newExpectedPath);
-        if (resp === '') {
-          seen.add(j);
-          found = true;
-          break;
+      for (let j = 0; j < i; j++) {
+        if (!seen.has(j)) {
+          aItem = actual[j];
+          const newActualPath = actualPath + `[${j}]`;
+          const resp = this.compare(aItem, eItem, newActualPath, newExpectedPath);
+          if (resp === '') {
+            seen.add(j);
+            found = true;
+            break;
+          }
         }
       }
       if (!found) {
