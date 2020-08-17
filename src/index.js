@@ -1,4 +1,4 @@
-const ComponentSpec = require('./models/ComponentSpec');
+const Spec = require('./models/Spec');
 const Server = require('./models/server');
 const Matcher = require('./models/matcher');
 
@@ -130,7 +130,7 @@ const pactum = {
    *  .toss();
    */
   addMockInteraction(interaction) {
-    const spec = new ComponentSpec(server);
+    const spec = new Spec(server);
     return spec.addMockInteraction(interaction);
   },
 
@@ -167,7 +167,7 @@ const pactum = {
    *  .toss();
    */
   addPactInteraction(interaction) {
-    const spec = new ComponentSpec(server);
+    const spec = new Spec(server);
     return spec.addPactInteraction(interaction);
   },
 
@@ -186,7 +186,7 @@ const pactum = {
    *  .toss();
    */
   get(url) {
-    return new ComponentSpec(server).get(url);
+    return new Spec(server).get(url);
   },
 
   /**
@@ -194,7 +194,7 @@ const pactum = {
    * @param {string} url - HTTP url
    */
   head(url) {
-    return new ComponentSpec(server).head(url);
+    return new Spec(server).head(url);
   },
 
   /**
@@ -210,7 +210,7 @@ const pactum = {
    *  .toss();
    */
   patch(url) {
-    return new ComponentSpec(server).patch(url);
+    return new Spec(server).patch(url);
   },
 
   /**
@@ -228,7 +228,7 @@ const pactum = {
    *  .toss();
    */
   post(url) {
-    return new ComponentSpec(server).post(url);
+    return new Spec(server).post(url);
   },
 
   /**
@@ -247,7 +247,7 @@ const pactum = {
    *  .toss();
    */
   put(url) {
-    return new ComponentSpec(server).put(url);
+    return new Spec(server).put(url);
   },
 
   /**
@@ -260,7 +260,7 @@ const pactum = {
    *  .toss();
    */
   delete(url) {
-    return new ComponentSpec(server).delete(url);
+    return new Spec(server).delete(url);
   }
 
 };
