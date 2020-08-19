@@ -254,7 +254,7 @@ it('should get jon snow details', () => {
     .get('http://localhost:3333/users/4')
     .expectStatus(404)
     .expectJson({
-      id: 1,
+      id: 4,
       name: 'Jon Snow',
       address: {
         city: 'WinterFell',
