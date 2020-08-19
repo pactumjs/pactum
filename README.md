@@ -44,7 +44,7 @@ Component testing is defined as a software testing type, in which the testing is
 
 ### Simple Component Test Cases
 
-Tests in **pactum** are highly descriptive. It uses numerous descriptive methods to build your request and expectations. Learn more about these methods at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing).
+Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your request and expectations. Learn more about these methods at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing).
 
 Running simple component test expectations.
 
