@@ -2,9 +2,15 @@ name: Build
 
 on:
   pull_request:
+    paths-ignore:
+     - 'docs/**'
+     - 'README.md'
     branches: 
       - master
   push:
+    paths-ignore:
+     - 'docs/**'
+     - 'README.md'
     branches: 
       - master
 

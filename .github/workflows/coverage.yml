@@ -2,6 +2,9 @@ name: Coverage
 
 on:
   push:
+    paths-ignore:
+     - 'docs/**'
+     - 'README.md'
     branches: 
       - master
 
