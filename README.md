@@ -42,9 +42,11 @@ pactum can be used for
 
 Component testing is defined as a software testing type, in which the testing is performed on each component separately without integrating with other components.  
 
-### Simple Component Test Case
+### Simple Component Test Cases
 
-Running a single component test expectation.
+Tests in **pactum** are highly descriptive. It uses numerous descriptive methods to build your request and expectations. Learn more about these methods at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing).
+
+Running simple component test expectations.
 
 ```javascript
 const pactum = require('pactum');
@@ -53,6 +55,17 @@ it('should be a teapot', async () => {
   await pactum
     .get('http://httpbin.org/status/418')
     .expectStatus(418);
+});
+
+it('should save a new user', async () => {
+  await pactum
+    .post('https://jsonplaceholder.typicode.com/users')
+    .withHeader('Authorization', 'Basic xxxx')
+    .withJson({
+      name: 'bolt',
+      email: 'bolt@swift.run'
+    })
+    .expectStatus(200);
 });
 ```
 
@@ -63,50 +76,61 @@ mocha /path/to/test
 
 ### Complex HTTP Assertions
 
-**Pactum** can make numerous assertions on HTTP responses. It allows verification of returned status codes, headers, json objects, json schemas & response times.
+**Pactum** can make numerous assertions on HTTP responses. It allows verification of returned status codes, headers, json objects, json schemas & response times. Learn more about available assertions at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 
-Running a complex component test expectation.
+Running complex component test expectations.
 
 ```javascript
 const pactum = require('pactum');
 
-it('should add a new post', () => {
+it('should have a user with id', () => {
   return pactum
-    .post('https://jsonplaceholder.typicode.com/posts')
-    .withJson({
-      title: 'foo',
-      body: 'bar',
-      userId: 1
-    })
-    .withHeaders({
-      "Authorization": "Basic xxxx"
-    })
+    .get('https://jsonplaceholder.typicode.com/users/1')
     .expectStatus(201)
-    .expectHeader('content-type', 'application/json; charset=utf-8')
-    .expectJson({
-      id: '1',
-      users: [
-        {
-          name: 'Mike'
-          country: 'IND'
-        },
-        {
-          name: 'Mac'
-          country: 'US'
-        }
-      ]
-    })
+    .expectHeaderContains('content-type', 'application/json')
+    // performs deep equal
+    .expectJson([
+      {
+        "id": 1,
+        "name": "Bolt",
+        "createdAt": "2020-08-19T14:26:44.169Z",
+        "address": [
+          {
+            "city": "Boston",
+            "zip": "523004"
+          },
+          {
+            "city": "NewYork",
+            "zip": "690323"
+          }
+        ]
+      }
+    ])
+    // performs partial deep equal
+    .expectJsonLike([
+      {
+        "id": 1,
+        "name": "Bolt",
+        "address": [
+          {
+            "city": "NewYork"
+          }
+        ]
+      }
+    ])
     .expectJsonSchema({
-      type: 'object',
-      properties: {
-        id: {
-          type: 'number'
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'number'
+          }
         }
-      },
-      required: ['id']
+      }
     })
-    .expectJsonQuery('users[0].name', 'Mike')
-    .expectJsonQueryLike('users[*].country', ['IND', 'US'])
+    .expectJsonQuery('[0].name', 'Bolt')
+    .expectJsonQueryLike('[0].address[*].city', ['Boston', 'NewYork'])
     .expectResponseTime(100);
 });
 ```
@@ -199,7 +223,7 @@ it('return multiple data', async () => {
 
 During component testing, the service under test might be talking to other external services. Instead of talking to real external services, it will be communicating with a mock server.
 
-**Pactum** comes with a mock server where you will able to control the behavior of each external service. Interactions are a way to instruct the mock server to simulate the behavior of external services.
+**Pactum** comes with a mock server where you will able to control the behavior of each external service. Interactions are a way to instruct the mock server to simulate the behavior of external services. Learn more about interactions at [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions).
 
 Running a component test expectation with mocking external dependency (AWS DynamoDB).
 
@@ -211,29 +235,32 @@ before(() => {
   return pactum.mock.start(3000);
 });
 
-it('should not get non existing user', () => {
+it('should get jon snow details', () => {
   return pactum
     // adds interaction to mock server
     .addMockInteraction({
       withRequest: {
-        method: 'POST',
-        path: '/',
-        headers: {
-          'x-amz-target': 'DynamoDB_20120810.GetItem'
-        },
-        body: {
-          Key: { UserName: { S: 'brave' } },
-          TableName: 'Users'
-        }
+        method: 'GET',
+        path: '/api/address/4'
       },
       willRespondWith: {
         status: 200,
-        body: { Items: [] }
+        body: {
+          city: 'WinterFell',
+          country: 'The North'
+        }
       }
     })
-    .get('http://localhost:3333/users')
-    .withQuery('name', 'brave')
-    .expectStatus(404);
+    .get('http://localhost:3333/users/4')
+    .expectStatus(404)
+    .expectJson({
+      id: 1,
+      name: 'Jon Snow',
+      address: {
+        city: 'WinterFell',
+        country: 'The North'
+      }
+    });
 });
 
 after(() => {
@@ -296,8 +323,7 @@ it('GET - one interaction', async () => {
     .expectJsonLike({
       id: 1,
       name: 'fake'
-    })
-    .toss();
+    });
 });
 
 after(async () => {
