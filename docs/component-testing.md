@@ -56,8 +56,8 @@ HTTP requests are messages sent by the client to initiate an action on the serve
 | Method                              | Description                               |
 | ----------------------------------- | ----------------------------------------- |
 | `get('url')`                        | HTTP method                               |
-| `withQueryParam('postId', '1')`          | set of parameters attached to the url     |
-| `withQueryParams({'postId': '1'})`  | set of parameters attached to the url     |
+| `withQueryParam('postId', '1')`     | query parameter attached to the url       |
+| `withQueryParams({'postId': '1'})`  | query parameters attached to the url      |
 | `withHeaders({})`                   | request headers                           |
 | `withBody('Hello')`                 | request body                              |
 | `withJson({id: 1})`                 | request json object                       |
