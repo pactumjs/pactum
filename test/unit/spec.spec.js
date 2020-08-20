@@ -4,55 +4,55 @@ const Spec = require('../../src/models/Spec');
 
 describe('Spec', () => {
 
-  it('withQuery - invalid', () => {
+  it('withQueryParam - invalid', () => {
     let err;
     try {
       const spec = new Spec();
-      spec.withQuery();
+      spec.withQueryParam();
     } catch (error) {
       err = error;
     }
     expect(err.toString()).equals('Error: Invalid key in query parameter for request - undefined');
   });
 
-  it('withQuery - empty key', () => {
+  it('withQueryParam - empty key', () => {
     let err;
     try {
       const spec = new Spec();
-      spec.withQuery('');
+      spec.withQueryParam('');
     } catch (error) {
       err = error;
     }
     expect(err.toString()).equals('Error: Invalid key in query parameter for request - ');
   });
 
-  it('withQuery - null key', () => {
+  it('withQueryParam - null key', () => {
     let err;
     try {
       const spec = new Spec();
-      spec.withQuery(null);
+      spec.withQueryParam(null);
     } catch (error) {
       err = error;
     }
     expect(err.toString()).equals('Error: Invalid key in query parameter for request - null');
   });
 
-  it('withQuery - no value', () => {
+  it('withQueryParam - no value', () => {
     let err;
     try {
       const spec = new Spec();
-      spec.withQuery('some');
+      spec.withQueryParam('some');
     } catch (error) {
       err = error;
     }
     expect(err.toString()).equals('Error: Invalid value in query parameter for request - undefined');
   });
 
-  it('withQuery - no value', () => {
+  it('withQueryParam - no value', () => {
     let err;
     try {
       const spec = new Spec();
-      spec.withQuery('some', null);
+      spec.withQueryParam('some', null);
     } catch (error) {
       err = error;
     }

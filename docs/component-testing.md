@@ -56,7 +56,7 @@ HTTP requests are messages sent by the client to initiate an action on the serve
 | Method                              | Description                               |
 | ----------------------------------- | ----------------------------------------- |
 | `get('url')`                        | HTTP method                               |
-| `withQuery('postId', '1')`          | set of parameters attached to the url     |
+| `withQueryParam('postId', '1')`          | set of parameters attached to the url     |
 | `withQueryParams({'postId': '1'})`  | set of parameters attached to the url     |
 | `withHeaders({})`                   | request headers                           |
 | `withBody('Hello')`                 | request body                              |
@@ -76,8 +76,8 @@ const pactum = require('pactum');
 it('GET - with query', async () => {
   await pactum
     .get('https://jsonplaceholder.typicode.com/comments')
-    .withQuery('postId', 1)
-    .withQuery('id', 1)
+    .withQueryParam('postId', 1)
+    .withQueryParam('id', 1)
     .expectStatus(200)
     .toss();
 });
@@ -326,7 +326,7 @@ describe('JSON Placeholder', () => {
   it('GET - with query', async () => {
     await pactum
       .get('https://jsonplaceholder.typicode.com/comments')
-      .withQuery('postId', 1)
+      .withQueryParam('postId', 1)
       .expectStatus(200)
       .expectHeaderContains('content-type', 'application/json')
       .expectJsonLike([
@@ -412,7 +412,7 @@ describe('Mock', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('name', 'fake')
+      .withQueryParam('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -448,7 +448,7 @@ describe('Mock', () => {
         }
       })
       .get('http://localhost:9393/api/projects')
-      .withQuery('name', 'fake')
+      .withQueryParam('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,

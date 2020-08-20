@@ -112,7 +112,7 @@ describe('Mock', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('name', 'fake')
+      .withQueryParam('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -145,8 +145,8 @@ describe('Mock', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('id', 1)
-      .withQuery('name', 'fake')
+      .withQueryParam('id', 1)
+      .withQueryParam('name', 'fake')
       .withQueryParams({ 'age': 27 })
       .expectStatus(200)
       .expectJsonLike({

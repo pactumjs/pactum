@@ -177,7 +177,7 @@ const pactum = {
    * @example
    * await pactum
    *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .withQuery('postId', 1)
+   *  .withQueryParam('postId', 1)
    *  .expectStatus(200)
    *  .expectJsonLike({
    *    userId: 1,

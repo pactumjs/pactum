@@ -413,7 +413,7 @@ it('Matchers - Path & Query', () => {
       }
     })
     .get('http://localhost:9393/api/projects/1')
-    .withQuery('date', '12/00/9632')
+    .withQueryParam('date', '12/00/9632')
     .expectStatus(200);
 });
 

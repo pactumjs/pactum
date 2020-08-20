@@ -25,7 +25,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('date', '12/00/9632')
+      .withQueryParam('date', '12/00/9632')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -56,7 +56,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('date', '12/00/9632')
+      .withQueryParam('date', '12/00/9632')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -87,7 +87,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('date', '12/00/9632')
+      .withQueryParam('date', '12/00/9632')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -118,7 +118,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('date', '12/00/9632')
+      .withQueryParam('date', '12/00/9632')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -149,7 +149,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('date', '2020-06-24')
+      .withQueryParam('date', '2020-06-24')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -262,7 +262,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('date', '12/00/2020')
+      .withQueryParam('date', '12/00/2020')
       .withHeaders({
         'x-request-id': 'DynamoDB.2018.PutItem'
       })

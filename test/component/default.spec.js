@@ -72,8 +72,8 @@ describe('Pact - Default Mock Interaction', () => {
   it('GET - one interaction - with multiple queries', async () => {
     await pactum
       .get('http://localhost:9393/api/projects/2')
-      .withQuery('id', 2)
-      .withQuery('name', 'fake')
+      .withQueryParam('id', 2)
+      .withQueryParam('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -201,8 +201,8 @@ describe('Pact - Default Pact Interaction', () => {
   it('GET - one interaction - with multiple queries', async () => {
     await pactum
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('id', 1)
-      .withQuery('name', 'fake')
+      .withQueryParam('id', 1)
+      .withQueryParam('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -290,8 +290,8 @@ describe('Pact - Default Mock Interactions', () => {
   it('GET - one interaction - with multiple queries', async () => {
     await pactum
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('id', 1)
-      .withQuery('name', 'fake')
+      .withQueryParam('id', 1)
+      .withQueryParam('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -383,8 +383,8 @@ describe('Pact - Default Pact Interactions', () => {
   it('GET - one interaction - with multiple queries', async () => {
     await pactum
       .get('http://localhost:9393/api/projects/1')
-      .withQuery('id', 1)
-      .withQuery('name', 'fake')
+      .withQueryParam('id', 1)
+      .withQueryParam('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,

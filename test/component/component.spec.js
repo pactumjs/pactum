@@ -27,7 +27,7 @@ xdescribe('JSON Placeholder', () => {
   it('GET - with query', async () => {
     await pactum
       .get('https://jsonplaceholder.typicode.com/comments')
-      .withQuery('postId', 1)
+      .withQueryParam('postId', 1)
       .expectStatus(200)
       .expectHeaderContains('content-type', 'application/json')
       .expectJsonLike([

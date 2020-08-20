@@ -120,8 +120,7 @@ class Spec {
    *  .expectJsonLike({
    *    userId: 1,
    *    id: 1
-   *   })
-   *  .toss();
+   *   });
    */
   addMockInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction, true);
@@ -134,33 +133,32 @@ class Spec {
    * Add as an interaction to the mock server
    * @param {PactInteraction} rawInteraction - interaction details
    * @example
-   * await pactum
-   *  .addPactInteraction({
-   *    provider: 'project-provider',
-   *    state: 'when there is a project with id 1',
-   *    uponReceiving: 'a request for project 1',
-   *    withRequest: {
+   *  await pactum
+   *   .addPactInteraction({
+   *     provider: 'project-provider',
+   *     state: 'when there is a project with id 1',
+   *     uponReceiving: 'a request for project 1',
+   *     withRequest: {
    *      method: 'GET',
    *      path: '/api/projects/1'
-   *    },
-   *    willRespondWith: {
+   *     },
+   *     willRespondWith: {
    *      status: 200,
    *      headers: {
-   *        'Content-Type': 'application/json'
+   *       'Content-Type': 'application/json'
    *      },
    *      body: {
    *        id: 1,
    *        name: 'fake'
    *      }
-   *    }
-   *  })
-   *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .expectStatus(200)
-   *  .expectJsonLike({
-   *    userId: 1,
-   *    id: 1
+   *     }
    *   })
-   *  .toss();
+   *   .get('https://jsonplaceholder.typicode.com/posts')
+   *   .expectStatus(200)
+   *   .expectJsonLike({
+   *     userId: 1,
+   *     id: 1
+   *    });
    */
   addPactInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction, false);
@@ -175,13 +173,12 @@ class Spec {
    * @example
    * await pactum
    *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .withQuery('postId', 1)
+   *  .withQueryParam('postId', 1)
    *  .expectStatus(200)
    *  .expectJsonLike({
    *    userId: 1,
    *    id: 1
-   *   })
-   *  .toss();
+   *   });
    */
   get(url) {
     validateRequestUrl(this._request, url);
@@ -210,8 +207,7 @@ class Spec {
    *  .withJson({
    *    title: 'foo'
    *  })
-   *  .expectStatus(200)
-   *  .toss();
+   *  .expectStatus(200);
    */
   patch(url) {
     validateRequestUrl(this._request, url);
@@ -231,8 +227,7 @@ class Spec {
    *    body: 'bar',
    *    userId: 1
    *  })
-   *  .expectStatus(201)
-   *  .toss();
+   *  .expectStatus(201);
    */
   post(url) {
     validateRequestUrl(this._request, url);
@@ -253,8 +248,7 @@ class Spec {
    *    body: 'bar',
    *    userId: 1
    *  })
-   *  .expectStatus(200)
-   *  .toss();
+   *  .expectStatus(200);
    */
   put(url) {
     validateRequestUrl(this._request, url);
@@ -269,8 +263,7 @@ class Spec {
    * @example
    * await pactum
    *  .delete('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectStatus(200)
-   *  .toss();
+   *  .expectStatus(200);
    */
   delete(url) {
     validateRequestUrl(this._request, url);
@@ -281,16 +274,8 @@ class Spec {
 
   /**
    * appends query param to the request url - /comments?postId=1
-   * @param {string} key - query parameter key
-   * @param {string} value - query parameter value
-   * @example
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/comments')
-   *  .withQuery('postId', '1')
-   *  .withQuery('userId', '2')
-   *  .expectStatus(200)
-   *  .toss();
-   * @summary generated url will look like - /comments?postId=1&userId=2
+   * @deprecated use withQueryParam
+   * @see withQueryParam
    */
   withQuery(key, value) {
     if (!helper.isValidString(key)) {
@@ -307,14 +292,29 @@ class Spec {
   }
 
   /**
+   * appends query param to the request url - /comments?postId=1
+   * @param {string} key - query parameter key
+   * @param {string} value - query parameter value
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/comments')
+   *  .withQueryParam('postId', '1')
+   *  .withQueryParam('userId', '2')
+   *  .expectStatus(200);
+   * @summary generated url will look like - /comments?postId=1&userId=2
+   */
+  withQueryParam(key, value) {
+    return this.withQuery(key, value);
+  }
+
+  /**
    * adds query params to the request url - /comments?postId=1
    * @param {object} params - query params
    * @example
    * await pactum
    *  .get('https://jsonplaceholder.typicode.com/comments')
    *  .withQueryParams({ 'postId': '1' })
-   *  .expectStatus(200)
-   *  .toss();
+   *  .expectStatus(200);
    * @summary generated url will look like - /comments?postId=1&userId=2
    */
   withQueryParams(params) {
@@ -335,8 +335,7 @@ class Spec {
    * await pactum
    *  .post('http://www.graph.com/graphql')
    *  .withGraphQLQuery(`{ hello }`)
-   *  .expectStatus(200)
-   *  .toss();
+   *  .expectStatus(200);
    */
   withGraphQLQuery(query) {
     if (typeof query !== 'string') {
@@ -363,8 +362,7 @@ class Spec {
    *  .withGraphQLVariables({
    *    "episode": "JEDI"
    *  })
-   *  .expectStatus(200)
-   *  .toss();
+   *  .expectStatus(200);
    */
   withGraphQLVariables(variables) {
     if (!helper.isValidObject(variables)) {
@@ -388,8 +386,7 @@ class Spec {
    *    body: 'bar',
    *    userId: 1
    *  })
-   *  .expectStatus(201)
-   *  .toss();
+   *  .expectStatus(201);
    */
   withJson(json) {
     if (typeof json !== 'object') {
@@ -432,8 +429,7 @@ class Spec {
    *    body: 'bar',
    *    userId: 1
    *  })
-   *  .expectStatus(201)
-   *  .toss();
+   *  .expectStatus(201);
    */
   withHeaders(headers) {
     if (!helper.isValidObject(headers)) {
@@ -455,8 +451,7 @@ class Spec {
    *  .withBody(JSON.stringify({
    *    title: 'foo',
    *  }))
-   *  .expectStatus(201)
-   *  .toss();
+   *  .expectStatus(201);
    */
   withBody(body) {
     if (typeof this._request.data !== 'undefined') {
@@ -475,8 +470,7 @@ class Spec {
    *   .withFormData({
    *     'user': 'drake'
    *   })
-   *   .expectStatus(200)
-   *   .toss()
+   *   .expectStatus(200);
    */
   withForm(form) {
     if (!helper.isValidObject(form)) {
@@ -500,8 +494,7 @@ class Spec {
    *   .post('https://jsonplaceholder.typicode.com/upload')
    *   .withMultiPartFormData('file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' })
    *   .withMultiPartFormData('user', 'drake')
-   *   .expectStatus(200)
-   *   .toss()
+   *   .expectStatus(200);
    *
    * @example
    * const form = new pactum.request.FormData();
@@ -509,8 +502,7 @@ class Spec {
    * await pactum
    *  .post('https://jsonplaceholder.typicode.com/upload')
    *  .withMultiPartFormData(form)
-   *  .expectStatus(200)
-   *  .toss()
+   *  .expectStatus(200);
    */
   withMultiPartFormData(key, value, options) {
     if (key instanceof FormData) {
@@ -618,8 +610,7 @@ class Spec {
    * await pactum
    *  .get('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectHeader('content-type', 'application/json; charset=utf-8')
-   *  .expectHeader('connection', /\w+/)
-   *  .toss();
+   *  .expectHeader('connection', /\w+/);
    */
   expectHeader(header, value) {
     this._expect.headers.push({
@@ -636,8 +627,7 @@ class Spec {
    * @example
    * await pactum
    *  .get('https://jsonplaceholder.typicode.com/comments')
-   *  .expectHeaderContains('content-type', 'application/json')
-   *  .toss();
+   *  .expectHeaderContains('content-type', 'application/json');
    */
   expectHeaderContains(header, value) {
     this._expect.headerContains.push({
@@ -666,8 +656,7 @@ class Spec {
    *  .expectJson({
    *    userId: 1,
    *    user: 'frank'
-   *  })
-   *  .toss();
+   *  });
    */
   expectJson(json) {
     this._expect.json.push(json);
@@ -684,8 +673,7 @@ class Spec {
    *    postId: 1,
    *    id: 1,
    *    name: /\w+/g
-   *  }])
-   *  .toss();
+   *  }]);
    */
   expectJsonLike(json) {
     this._expect.jsonLike.push(json);
@@ -706,8 +694,7 @@ class Spec {
    *      }
    *    },
    *    "required": ["userId", "id"]
-   *  })
-   *  .toss()
+   *  });
    */
   expectJsonSchema(schema) {
     this._expect.jsonSchema.push(schema);
