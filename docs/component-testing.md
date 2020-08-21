@@ -154,14 +154,14 @@ The request method indicates the method to be performed on the resource identifi
 
 #### pactum
 
-| Method   | Description                                | Usage                                 |
-| -------- | ------------------------------------------ | ------------------------------------- |
-| `get`    | performs a GET request on the resource     | `await pactum.get('url').toss()`      |
-| `post`   | performs a POST request on the resource    | `await pactum.post('url').toss()`     |
-| `put`    | performs a PUT request on the resource     | `await pactum.put('url').toss()`      |
-| `delete` | performs a DELETE request on the resource  | `await pactum.delete('url').toss()`   |
-| `patch`  | performs a PATCH request on the resource   | `await pactum.patch('url').toss()`    |
-| `head`   | performs a HEAD request on the resource    | `await pactum.head('url').toss()`     |
+| Method   | Description                                | Usage                          |
+| -------- | ------------------------------------------ | ------------------------------ |
+| `get`    | performs a GET request on the resource     | `await pactum.get('url')`      |
+| `post`   | performs a POST request on the resource    | `await pactum.post('url')`     |
+| `put`    | performs a PUT request on the resource     | `await pactum.put('url')`      |
+| `delete` | performs a DELETE request on the resource  | `await pactum.delete('url')`   |
+| `patch`  | performs a PATCH request on the resource   | `await pactum.patch('url')`    |
+| `head`   | performs a HEAD request on the resource    | `await pactum.head('url')`     |
 
 ```javascript
 // performs a delete request

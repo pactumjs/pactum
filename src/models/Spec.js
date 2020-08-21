@@ -110,6 +110,16 @@ class Spec {
    * adds a mock interaction to the server
    * @param {BasicInteraction} basicInteraction
    * @see addMockInteraction for more options
+   * @example
+   * await pactum
+   *  .addInteraction({
+   *    get: '/api/address/4'
+   *    return: {
+   *      city: 'WinterFell'
+   *    }
+   *  })
+   *  .get('/api/users/4')
+   *  .expectStatus(200);
    */
   addInteraction(basicInteraction) {
     const rawInteraction = {

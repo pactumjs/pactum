@@ -116,6 +116,16 @@ const pactum = {
    * adds a mock interaction to the server
    * @param {BasicInteraction} interaction 
    * @see addMockInteraction for more options
+   * @example
+   * await pactum
+   *  .addInteraction({
+   *    get: '/api/address/4'
+   *    return: {
+   *      city: 'WinterFell'
+   *    }
+   *  })
+   *  .get('/api/users/4')
+   *  .expectStatus(200);
    */
   addInteraction(interaction) {
     const spec = new Spec(server);
@@ -148,8 +158,7 @@ const pactum = {
    *  .expectJsonLike({
    *    userId: 1,
    *    id: 1
-   *   })
-   *  .toss();
+   *   });
    */
   addMockInteraction(interaction) {
     const spec = new Spec(server);
@@ -185,8 +194,7 @@ const pactum = {
    *  .expectJsonLike({
    *    userId: 1,
    *    id: 1
-   *   })
-   *  .toss();
+   *   });
    */
   addPactInteraction(interaction) {
     const spec = new Spec(server);
@@ -204,8 +212,7 @@ const pactum = {
    *  .expectJsonLike({
    *    userId: 1,
    *    id: 1
-   *   })
-   *  .toss();
+   *   });
    */
   get(url) {
     return new Spec(server).get(url);
@@ -228,8 +235,7 @@ const pactum = {
    *  .withJson({
    *    title: 'foo'
    *  })
-   *  .expectStatus(200)
-   *  .toss();
+   *  .expectStatus(200);
    */
   patch(url) {
     return new Spec(server).patch(url);
@@ -246,8 +252,7 @@ const pactum = {
    *    body: 'bar',
    *    userId: 1
    *  })
-   *  .expectStatus(201)
-   *  .toss();
+   *  .expectStatus(201);
    */
   post(url) {
     return new Spec(server).post(url);
@@ -265,8 +270,7 @@ const pactum = {
    *    body: 'bar',
    *    userId: 1
    *  })
-   *  .expectStatus(200)
-   *  .toss();
+   *  .expectStatus(200);
    */
   put(url) {
     return new Spec(server).put(url);
@@ -278,8 +282,7 @@ const pactum = {
    * @example
    * await pactum
    *  .delete('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectStatus(200)
-   *  .toss();
+   *  .expectStatus(200);
    */
   delete(url) {
     return new Spec(server).delete(url);
