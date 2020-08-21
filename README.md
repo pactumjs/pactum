@@ -225,7 +225,7 @@ During component testing, the service under test might be talking to other exter
 
 **Pactum** comes with a mock server where you will able to control the behavior of each external service. Interactions are a way to instruct the mock server to simulate the behavior of external services. Learn more about interactions at [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions).
 
-Running a component test expectation with mocking external dependency (AWS DynamoDB).
+Running a component test expectation with mocking an external dependency.
 
 ```javascript
 const pactum = require('pactum');
@@ -238,17 +238,11 @@ before(() => {
 it('should get jon snow details', () => {
   return pactum
     // adds interaction to mock server
-    .addMockInteraction({
-      withRequest: {
-        method: 'GET',
-        path: '/api/address/4'
-      },
-      willRespondWith: {
-        status: 200,
-        body: {
-          city: 'WinterFell',
-          country: 'The North'
-        }
+    .addInteraction({
+      get: '/api/address/4',
+      return: {
+        city: 'WinterFell',
+        country: 'The North'
       }
     })
     .get('http://localhost:3333/users/4')
