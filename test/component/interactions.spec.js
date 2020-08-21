@@ -2,6 +2,69 @@ const pactum = require('../../src/index');
 const { like, term, eachLike } = pactum.matchers;
 
 
+describe('Basic Interactions', () => {
+
+  it('GET - string', async () => {
+    await pactum
+      .addInteraction('/api/projects/1')
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(200);
+  });
+
+  it('GET - override status', async () => {
+    await pactum
+      .addInteraction({
+        get: '/api/projects/1',
+        status: 202
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(202);
+  });
+
+  it('POST - override return', async () => {
+    await pactum
+      .addInteraction({
+        post: '/api/projects',
+        return: { id: 1 }
+      })
+      .post('http://localhost:9393/api/projects')
+      .withJson({ name: 'Potter' })
+      .expectStatus(200)
+      .expectJson({
+        id: 1
+      });
+  });
+
+  it('PUT - with query', async () => {
+    await pactum
+      .addInteraction({
+        put: '/api/projects/1'
+      })
+      .put('http://localhost:9393/api/projects/1')
+      .withQueryParam('skip', true)
+      .expectStatus(200);
+  });
+
+  it('PATCH', async () => {
+    await pactum
+      .addInteraction({
+        patch: '/api/projects/1'
+      })
+      .patch('http://localhost:9393/api/projects/1')
+      .expectStatus(200);
+  });
+
+  it('DELETE', async () => {
+    await pactum
+      .addInteraction({
+        delete: '/api/projects/1'
+      })
+      .delete('http://localhost:9393/api/projects/1')
+      .expectStatus(200);
+  });
+
+});
+
 describe('Mock', () => {
 
   it('GET - one interaction', async () => {

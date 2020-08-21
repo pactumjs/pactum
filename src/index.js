@@ -17,6 +17,18 @@ const logger = require('./helpers/logger');
  */
 
 /**
+ * basic mock interaction
+ * @typedef {object} BasicInteraction
+ * @property {string} [get] - get request path
+ * @property {string} [post] - post request path
+ * @property {string} [put] - put request path
+ * @property {string} [patch] - patch request path
+ * @property {string} [delete] - delete request path
+ * @property {number} [status=200] - status code to return
+ * @property {any}  [return=''] - body to return 
+ */
+
+/**
  * pact interaction details
  * @typedef {object} PactInteraction
  * @property {string} [id] - unique id of the interaction
@@ -40,7 +52,7 @@ const logger = require('./helpers/logger');
  * pact interaction request details
  * @typedef {object} PactInteractionRequest
  * @property {RequestMethod} method - request method
- * @property {string} path - request method
+ * @property {string} path - request path
  * @property {object} [headers] - request headers
  * @property {object} [query] - request query
  * @property {GraphQLRequest} [graphQL] - graphQL request
@@ -101,7 +113,17 @@ const pactum = {
   handler,
 
   /**
-   * Add as an mock interaction to the mock server
+   * adds a mock interaction to the server
+   * @param {BasicInteraction} interaction 
+   * @see addMockInteraction for more options
+   */
+  addInteraction(interaction) {
+    const spec = new Spec(server);
+    return spec.addInteraction(interaction);
+  },
+
+  /**
+   * adds a mock interaction to the server
    * @param {MockInteraction} interaction - interaction details
    * @example
    * await pactum
@@ -135,7 +157,7 @@ const pactum = {
   },
 
   /**
-   * Add as an pact interaction to the mock server
+   * adds a pact interaction to the server
    * @param {PactInteraction} interaction - interaction details
    * @example
    * await pactum

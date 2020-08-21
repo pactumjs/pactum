@@ -13,6 +13,18 @@ const config = require('../config');
  */
 
 /**
+ * basic mock interaction
+ * @typedef {object} BasicInteraction
+ * @property {string} [get] - get request path
+ * @property {string} [post] - post request path
+ * @property {string} [put] - put request path
+ * @property {string} [patch] - patch request path
+ * @property {string} [delete] - delete request path
+ * @property {number} [status=200] - status code to return
+ * @property {any}  [return=''] - body to return 
+ */
+
+/**
  * pact interaction details
  * @typedef {object} PactInteraction
  * @property {string} [id] - unique id of the interaction
@@ -95,7 +107,26 @@ class Spec {
   }
 
   /**
-   * Add as an interaction to the mock server
+   * adds a mock interaction to the server
+   * @param {BasicInteraction} basicInteraction
+   * @see addMockInteraction for more options
+   */
+  addInteraction(basicInteraction) {
+    const rawInteraction = {
+      withRequest: getRequestFromBasicInteraction(basicInteraction),
+      willRespondWith: {
+        status: basicInteraction.status || 200,
+        body: basicInteraction.return || ''
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    log.debug('Mock Interaction added to Mock Server -', interaction.id);
+    this.mockInteractions.set(interaction.id, interaction);
+    return this;
+  }
+
+  /**
+   * adds a mock interaction to the server
    * @param {MockInteraction} rawInteraction - interaction details
    * @example
    * await pactum
@@ -130,7 +161,7 @@ class Spec {
   }
 
   /**
-   * Add as an interaction to the mock server
+   * adds a pact interaction to the server
    * @param {PactInteraction} rawInteraction - interaction details
    * @example
    *  await pactum
@@ -802,6 +833,34 @@ function validateRequestUrl(request, url) {
   if (!helper.isValidString(url)) {
     throw new PactumRequestError(`Invalid request url - ${url}`);
   }
+}
+
+function getRequestFromBasicInteraction(interaction) {
+  const request = {
+    method: 'GET',
+    ignoreQuery: true,
+    ignoreBody: true
+  };
+  if (typeof interaction === 'string') {
+    request.path = interaction;
+  } else {
+    if (interaction.get) {
+      request.path = interaction.get;
+    } else if (interaction.post) {
+      request.method = 'POST';
+      request.path = interaction.post;
+    } else if (interaction.put) {
+      request.method = 'PUT';
+      request.path = interaction.put;
+    } else if (interaction.patch) {
+      request.method = 'PATCH';
+      request.path = interaction.patch;
+    } else if (interaction.delete) {
+      request.method = 'DELETE';
+      request.path = interaction.delete;
+    }
+  }
+  return request;
 }
 
 module.exports = Spec;
