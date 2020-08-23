@@ -1,12 +1,25 @@
 const Interaction = require('../models/interaction');
 const { PactumConfigurationError } = require('../helpers/errors');
 const log = require('../helpers/logger');
+const helper = require('../helpers/helper');
 
 const config = require('../config');
 
 /**
  * request method
  * @typedef {('GET'|'POST'|'PUT'|'DELETE'|'PATCH'|'HEAD')} RequestMethod
+ */
+
+/**
+ * basic mock interaction
+ * @typedef {object} BasicInteraction
+ * @property {string} [get] - get request path
+ * @property {string} [post] - post request path
+ * @property {string} [put] - put request path
+ * @property {string} [patch] - patch request path
+ * @property {string} [delete] - delete request path
+ * @property {number} [status=200] - status code to return
+ * @property {any}  [return=''] - body to return 
  */
 
 /**
@@ -133,6 +146,7 @@ class Mock {
   }
 
   /**
+   * @deprecated
    * set default port number to run mock server
    * @param {number} port - port number of mock server
    */
@@ -145,6 +159,74 @@ class Mock {
   }
 
   /**
+   * adds a basic mock interaction
+   * @param {BasicInteraction} basicInteraction
+   */
+  addInteraction(basicInteraction) {
+    const rawInteraction = {
+      withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
+      willRespondWith: {
+        status: basicInteraction.status || 200,
+        body: basicInteraction.return || ''
+      }
+    };
+    return this.addMockInteraction(rawInteraction);
+  }
+
+  /**
+   * adds basic mock interactions
+   * @param {BasicInteraction[]} basicInteractions
+   */
+  addInteractions(basicInteractions) {
+    const rawInteractions = [];
+    for (let i = 0; i < basicInteractions.length; i++) {
+      const basicInteraction = basicInteractions[i];
+      const rawInteraction = {
+        withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
+        willRespondWith: {
+          status: basicInteraction.status || 200,
+          body: basicInteraction.return || ''
+        }
+      };
+      rawInteractions.push(rawInteraction);
+    }
+    return this.addMockInteractions(rawInteractions);
+  }
+
+  /**
+   * adds a mock interaction
+   * @param {MockInteraction} interaction 
+   */
+  addMockInteraction(interaction) {
+    return this.addDefaultMockInteraction(interaction);
+  }
+
+  /**
+   * adds mock interactions
+   * @param {MockInteraction[]} interactions 
+   */
+  addMockInteractions(interactions) {
+    return this.addDefaultMockInteractions(interactions);
+  }
+
+  /**
+   * adds a pact interaction
+   * @param {PactInteraction} interaction 
+   */
+  addPactInteraction(interaction) {
+    return this.addDefaultPactInteraction(interaction);
+  }
+
+  /**
+   * adds pact interactions
+   * @param {PactInteraction[]} interactions 
+   */
+  addPactInteractions(interactions) {
+    return this.addDefaultPactInteractions(interactions);
+  }
+
+  /**
+   * @deprecated
    * add a mock interaction to default list
    * @param {MockInteraction} interaction - mock interaction
    */
@@ -157,6 +239,7 @@ class Mock {
   }
 
   /**
+   * @deprecated
    * add mock interactions to default list
    * @param {MockInteraction[]} interactions - mock interactions array
    */
@@ -177,6 +260,7 @@ class Mock {
   }
 
   /**
+   * @deprecated
    * add a pact interaction to default list
    * @param {PactInteraction} interaction - pact interaction
    */
@@ -189,6 +273,7 @@ class Mock {
   }
 
   /**
+   * @deprecated
    * add pact interactions to default list
    * @param {PactInteraction[]} interactions - mock interactions array
    */

@@ -107,7 +107,7 @@ class Spec {
   }
 
   /**
-   * adds a mock interaction to the server
+   * adds a basic mock interaction to the server
    * @param {BasicInteraction} basicInteraction
    * @see addMockInteraction for more options
    * @example
@@ -123,16 +123,13 @@ class Spec {
    */
   addInteraction(basicInteraction) {
     const rawInteraction = {
-      withRequest: getRequestFromBasicInteraction(basicInteraction),
+      withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
       willRespondWith: {
         status: basicInteraction.status || 200,
         body: basicInteraction.return || ''
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
-    log.debug('Mock Interaction added to Mock Server -', interaction.id);
-    this.mockInteractions.set(interaction.id, interaction);
-    return this;
+    return this.addMockInteraction(rawInteraction);
   }
 
   /**
@@ -843,34 +840,6 @@ function validateRequestUrl(request, url) {
   if (!helper.isValidString(url)) {
     throw new PactumRequestError(`Invalid request url - ${url}`);
   }
-}
-
-function getRequestFromBasicInteraction(interaction) {
-  const request = {
-    method: 'GET',
-    ignoreQuery: true,
-    ignoreBody: true
-  };
-  if (typeof interaction === 'string') {
-    request.path = interaction;
-  } else {
-    if (interaction.get) {
-      request.path = interaction.get;
-    } else if (interaction.post) {
-      request.method = 'POST';
-      request.path = interaction.post;
-    } else if (interaction.put) {
-      request.method = 'PUT';
-      request.path = interaction.put;
-    } else if (interaction.patch) {
-      request.method = 'PATCH';
-      request.path = interaction.patch;
-    } else if (interaction.delete) {
-      request.method = 'DELETE';
-      request.path = interaction.delete;
-    }
-  }
-  return request;
 }
 
 module.exports = Spec;

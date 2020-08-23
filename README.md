@@ -353,7 +353,7 @@ Running **pactum** as a standalone *mock server*.
 const pactum = require('pactum');
 const { regex } = pactum.matchers;
 
-pactum.mock.addDefaultMockInteraction({
+pactum.mock.addMockInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/projects',
@@ -372,6 +372,19 @@ pactum.mock.addDefaultMockInteraction({
     }
   }
 });
+
+pactum.mock.addInteractions([
+  {
+    get: '/api/user/1'
+    return: {
+      name: 'stark'
+    }
+  },
+  {
+    get: '/api/user/2'
+    status: 404
+  }
+]);
 
 pactum.mock.start(3000);
 ```

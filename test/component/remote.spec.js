@@ -2,9 +2,11 @@ const pactum = require('../../src/index');
 
 describe('Remote- post single mock interaction', () => {
 
+  let id;
+
   before(async () => {
     pactum.mock.clearDefaultInteractions();
-    const response = await pactum
+    id = await pactum
       .post('http://localhost:9393/api/pactum/mockInteraction')
       .withJson([{
         withRequest: {
@@ -24,8 +26,7 @@ describe('Remote- post single mock interaction', () => {
       }])
       .expectStatus(200)
       .expectJsonLike([/\w+/])
-      .toss();
-    this.id = response.json[0];
+      .returns('[0]');
   });
 
   it('get all mock interactions', async () => {
@@ -53,7 +54,7 @@ describe('Remote- post single mock interaction', () => {
 
   it('get single mock interaction', async () => {
     await pactum
-      .get(`http://localhost:9393/api/pactum/mockInteraction?id=${this.id}`)
+      .get(`http://localhost:9393/api/pactum/mockInteraction?id=${id}`)
       .expectStatus(200)
       .expectJson([{
         willRespondWith: {
@@ -87,7 +88,7 @@ describe('Remote- post single mock interaction', () => {
 
   after(async () => {
     await pactum
-      .delete(`http://localhost:9393/api/pactum/mockInteraction?id${this.id}`)
+      .delete(`http://localhost:9393/api/pactum/mockInteraction?id=${id}`)
       .expectStatus(200)
       .toss();
   });
@@ -96,8 +97,10 @@ describe('Remote- post single mock interaction', () => {
 
 describe('Remote- post single pact interaction', () => {
 
+  let id;
+
   before(async () => {
-    const response = await pactum
+    id = await pactum
       .post('http://localhost:9393/api/pactum/pactInteraction')
       .withJson([{
         provider: 'big',
@@ -120,8 +123,7 @@ describe('Remote- post single pact interaction', () => {
       }])
       .expectStatus(200)
       .expectJsonLike([/\w+/])
-      .toss();
-    this.id = response.json[0];
+      .returns('[0]');
   });
 
   it('get all mock interactions', async () => {
@@ -152,7 +154,7 @@ describe('Remote- post single pact interaction', () => {
 
   it('get single mock interaction', async () => {
     await pactum
-      .get(`http://localhost:9393/api/pactum/pactInteraction?id=${this.id}`)
+      .get(`http://localhost:9393/api/pactum/pactInteraction?id=${id}`)
       .expectStatus(200)
       .expectJson([{
         provider: 'big',
@@ -200,7 +202,7 @@ describe('Remote- post single pact interaction', () => {
 
   after(async () => {
     await pactum
-      .delete(`http://localhost:9393/api/pactum/pactInteraction?id=${this.id}`)
+      .delete(`http://localhost:9393/api/pactum/pactInteraction?id=${id}`)
       .expectStatus(200)
       .toss();
   });

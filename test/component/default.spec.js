@@ -4,7 +4,7 @@ const config = require('../../src/config');
 describe('Pact - Default Mock Interaction', () => {
 
   before(() => {
-    pactum.mock.addDefaultMockInteraction({
+    pactum.mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -40,20 +40,10 @@ describe('Pact - Default Mock Interaction', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
-      withRequest: {
-        method: 'POST',
-        path: '/api/projects',
-        ignoreBody: true
-      },
-      willRespondWith: {
-        status: 200,
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: {
-          message: 'ok'
-        }
+    pactum.mock.addInteraction({
+      post: '/api/projects',
+      return: {
+        message: 'ok'
       }
     });
   });
@@ -143,7 +133,7 @@ describe('Pact - Default Mock Interaction', () => {
 describe('Pact - Default Pact Interaction', () => {
 
   before(() => {
-    pactum.mock.addDefaultPactInteraction({
+    pactum.mock.addPactInteraction({
       provider: 'p',
       state: 'when there is a project with id 1',
       uponReceiving: 'a request for project 1',
@@ -236,44 +226,34 @@ describe('Pact - Default Mock Interactions', () => {
             name: 'fake'
           }
         }
-      },
-      {
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1',
-          query: {
-            id: 1,
-            name: 'fake'
-          }
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'bake'
-          }
-        }
-      },
-      {
-        withRequest: {
-          method: 'POST',
-          path: '/api/projects',
-          ignoreBody: true
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            message: 'ok'
-          }
-        }
       }
     ]);
+    pactum.mock.addMockInteractions([{
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1',
+        query: {
+          id: 1,
+          name: 'fake'
+        }
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'bake'
+        }
+      }
+    }]);
+    pactum.mock.addInteractions([{
+      post: '/api/projects',
+      return: {
+        message: 'ok'
+      }
+    }])
   });
 
   it('GET - one interaction', async () => {
@@ -342,7 +322,9 @@ describe('Pact - Default Pact Interactions', () => {
             name: 'fake'
           }
         }
-      },
+      }
+    ]);
+    pactum.mock.addPactInteractions([
       {
         provider: 'p',
         state: 'when there is a project with id 1',

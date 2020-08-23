@@ -210,6 +210,7 @@ function registerPactumRemoteRoutes(server) {
       case '/api/pactum/pactInteraction':
         handleRemoteInteractions(req, res, server, 'PACT');
         break;
+      // save pacts
       // publish pacts
       default:
         res.writeHead(404, { "Content-Type": "text/plain" });
@@ -272,7 +273,6 @@ function handleRemoteInteractions(req, response, server, interactionType) {
     res.status(400);
     res.send({ error: error.message });
   }
-
 }
 
 function bodyParser(req, res, next) {
