@@ -126,7 +126,7 @@ describe('Remote- post single pact interaction', () => {
       .returns('[0]');
   });
 
-  it('get all mock interactions', async () => {
+  it('get all pact interactions', async () => {
     await pactum
       .get('http://localhost:9393/api/pactum/pactInteraction')
       .expectStatus(200)
@@ -152,7 +152,7 @@ describe('Remote- post single pact interaction', () => {
       .toss();
   });
 
-  it('get single mock interaction', async () => {
+  it('get single pact interaction', async () => {
     await pactum
       .get(`http://localhost:9393/api/pactum/pactInteraction?id=${id}`)
       .expectStatus(200)
@@ -178,7 +178,7 @@ describe('Remote- post single pact interaction', () => {
       .toss();
   });
 
-  it('exercise single mock interaction', async () => {
+  it('exercise single pact interaction', async () => {
     await pactum
       .get(`http://localhost:9393/api/projects/1`)
       .expectStatus(200)
@@ -189,7 +189,7 @@ describe('Remote- post single pact interaction', () => {
       .toss();
   });
 
-  it('exercise single mock interaction - second iteration', async () => {
+  it('exercise single pact interaction - second iteration', async () => {
     await pactum
       .get(`http://localhost:9393/api/projects/1`)
       .expectStatus(200)
@@ -198,6 +198,18 @@ describe('Remote- post single pact interaction', () => {
         name: 'fake'
       })
       .toss();
+  });
+
+  it('save pacts invalid method', async () => {
+    await pactum
+      .get(`http://localhost:9393/api/pactum/pacts/save`)
+      .expectStatus(405);
+  });
+
+  it('save pacts', async () => {
+    await pactum
+      .post(`http://localhost:9393/api/pactum/pacts/save`)
+      .expectStatus(200);
   });
 
   after(async () => {

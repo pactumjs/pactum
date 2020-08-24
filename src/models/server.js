@@ -210,7 +210,9 @@ function registerPactumRemoteRoutes(server) {
       case '/api/pactum/pactInteraction':
         handleRemoteInteractions(req, res, server, 'PACT');
         break;
-      // save pacts
+      case '/api/pactum/pacts/save':
+        savePactsRemote(req, res);
+        break;
       // publish pacts
       default:
         res.writeHead(404, { "Content-Type": "text/plain" });
@@ -273,6 +275,24 @@ function handleRemoteInteractions(req, response, server, interactionType) {
     res.status(400);
     res.send({ error: error.message });
   }
+}
+
+function savePactsRemote(req, response) {
+  log.info('Saving Pacts (Remote)');
+  const res = new ExpressResponse(response);
+  try {
+    if (req.method === 'POST') {
+      store.save();
+      res.status(200);
+    } else {
+      res.status(405);
+    }
+  } catch (error) {
+    log.error('Error Saving Pacts (Remote)');
+    log.error(error);
+    res.status(500);
+  }
+  res.send();
 }
 
 function bodyParser(req, res, next) {
