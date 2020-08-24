@@ -321,15 +321,4 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: Invalid retry strategy');
   });
 
-  it('valid request', async () => {
-    let err;
-    try {
-      const spec = new Spec();
-      await spec.get('http://localhost:3000');
-    } catch (error) {
-      err = error;
-    }
-    expect(err).not.undefined;
-  });
-
 });
