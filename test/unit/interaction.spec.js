@@ -4,8 +4,9 @@ const sandbox = require('sinon').createSandbox();
 const Interaction = require('../../src/models/interaction');
 const Matcher = require('../../src/models/matcher');
 const helper = require('../../src/helpers/helper');
+const config = require('../../src/config');
 
-describe('Interaction', () => {
+describe('Interaction - Mock', () => {
 
   before(() => {
     this.matcher = new Matcher();
@@ -1154,6 +1155,25 @@ describe('Interaction', () => {
     expect(function () { new Interaction(rawInteraction, true); }).throws('Invalid interaction response onCall provided');
   });
 
+  
+
+  after(() => {
+    sandbox.restore();
+  });
+
+});
+
+describe('Interaction - Pact', () => {
+
+  before(() => {
+    this.matcher = new Matcher();
+    this.helperGetRandomIdStub = sandbox.stub(helper, 'getRandomId');
+  });
+
+  beforeEach(() => {
+    config.pact.consumer = 'unit-test-consumer';
+  });
+
   it('valid pact interaction', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {
@@ -1179,7 +1199,7 @@ describe('Interaction', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "count": 0,
-      "consumer": '',
+      "consumer": 'unit-test-consumer',
       "mock": false,
       "provider": 'pro',
       "state": 'a state',
@@ -1213,6 +1233,88 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "rawInteraction": {
+        "provider": 'pro',
+        "state": 'a state',
+        "uponReceiving": 'description',
+        "willRespondWith": {
+          "body": {
+            "id": 1,
+            "name": "fake"
+          },
+          "headers": {
+            "content-type": "application/json"
+          },
+          "status": 200
+        },
+        "withRequest": {
+          "method": "GET",
+          "path": "/api/projects/1"
+        }
+      },
+    });
+  });
+
+  it('valid pact interaction - with custom consumer name', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      consumer: 'custom-consumer',
+      provider: 'pro',
+      state: 'a state',
+      uponReceiving: 'description',
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    const interaction = new Interaction(rawInteraction, false);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "count": 0,
+      "consumer": 'custom-consumer',
+      "mock": false,
+      "provider": 'pro',
+      "state": 'a state',
+      "uponReceiving": 'description',
+      "willRespondWith": {
+        "body": {
+          "id": 1,
+          "name": "fake"
+        },
+        "headers": {
+          "content-type": "application/json"
+        },
+        "rawBody": {
+          "id": 1,
+          "name": "fake"
+        },
+        "status": 200,
+        "delay": {
+          "type": "NONE",
+          "value": 0
+        }
+      },
+      "withRequest": {
+        "body": undefined,
+        "headers": undefined,
+        "ignoreBody": false,
+        "ignoreQuery": false,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": undefined,
+        "matchingRules": {}
+      },
+      "rawInteraction": {
+        "consumer": "custom-consumer",
         "provider": 'pro',
         "state": 'a state',
         "uponReceiving": 'description',
@@ -1413,7 +1515,32 @@ describe('Interaction', () => {
     expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support function response`);
   });
 
+  it('invalid pact interaction - no consumer name', () => {
+    config.pact.consumer = '';
+    const rawInteraction = {
+      provider: 'some',
+      state: 'a state',
+      uponReceiving: 'description',
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws('Consumer Name should be set before adding a pact interaction -> pactum.pact.setConsumerName()');
+  });
+
   after(() => {
+    config.pact.consumer = '';
     sandbox.restore();
   });
 

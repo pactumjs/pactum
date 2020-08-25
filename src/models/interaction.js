@@ -155,7 +155,7 @@ class Interaction {
   }
 
   validateRequiredFieldsPact(rawInteraction) {
-    const { provider, state, uponReceiving } = rawInteraction;
+    const { provider, state, uponReceiving, consumer } = rawInteraction;
     if (typeof provider !== 'string' || !provider) {
       throw new PactumInteractionError(`Invalid provider name provided - ${provider}`);
     }
@@ -164,6 +164,9 @@ class Interaction {
     }
     if (typeof uponReceiving !== 'string' || !uponReceiving) {
       throw new PactumInteractionError(`Invalid upon receiving description provided - ${uponReceiving}`);
+    }
+    if (!consumer && !config.pact.consumer) {
+      throw new PactumInteractionError(`Consumer Name should be set before adding a pact interaction -> pactum.pact.setConsumerName()`);
     }
   }
 

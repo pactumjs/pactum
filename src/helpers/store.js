@@ -25,42 +25,40 @@ const store = {
   },
 
   /**
-   * add interaction in the store
+   * adds a pact interaction to the store
    * @param {Interaction} interaction
    */
   addInteraction(interaction) {
     const { id, provider, state, uponReceiving, mock } = interaction;
     const consumer = interaction.consumer || config.pact.consumer;
-    if (consumer && provider && state && uponReceiving && !mock) {
-      const key = `${consumer}-${provider}`;
-      let pact;
-      if (this.pacts.has(key)) {
-        pact = this.pacts.get(key);
-      } else {
-        pact = new Contract(consumer, provider);
-        this.pacts.set(key, pact);
-      }
-      const pactInteraction = new PactInteraction();
-      pactInteraction.id = id;
-      pactInteraction.providerState = state;
-      pactInteraction.description = uponReceiving;
-      pactInteraction.request.method = interaction.withRequest.method;
-      pactInteraction.request.path = interaction.withRequest.path;
-      pactInteraction.request.query = helper.getPlainQuery(interaction.withRequest.query);
-      pactInteraction.request.headers = interaction.withRequest.headers;
-      pactInteraction.request.body = interaction.withRequest.body;
-      pactInteraction.response.status = interaction.willRespondWith.status;
-      pactInteraction.response.body = interaction.willRespondWith.body;
-      helper.setMatchingRules(pactInteraction.response.matchingRules, interaction.willRespondWith.rawBody, '$.body');
-      pact.interactions.push(pactInteraction);
+    const key = `${consumer}-${provider}`;
+    let pact;
+    if (this.pacts.has(key)) {
+      pact = this.pacts.get(key);
+    } else {
+      pact = new Contract(consumer, provider);
+      this.pacts.set(key, pact);
     }
+    const pactInteraction = new PactInteraction();
+    pactInteraction.id = id;
+    pactInteraction.providerState = state;
+    pactInteraction.description = uponReceiving;
+    pactInteraction.request.method = interaction.withRequest.method;
+    pactInteraction.request.path = interaction.withRequest.path;
+    pactInteraction.request.query = helper.getPlainQuery(interaction.withRequest.query);
+    pactInteraction.request.headers = interaction.withRequest.headers;
+    pactInteraction.request.body = interaction.withRequest.body;
+    pactInteraction.response.status = interaction.willRespondWith.status;
+    pactInteraction.response.body = interaction.willRespondWith.body;
+    helper.setMatchingRules(pactInteraction.response.matchingRules, interaction.willRespondWith.rawBody, '$.body');
+    pact.interactions.push(pactInteraction);
   },
 
   save() {
     for (const [key, pact] of this.pacts.entries()) {
       const dir = `${config.pact.dir}`;
       if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, {recursive: true});
+        fs.mkdirSync(dir, { recursive: true });
       }
       for (let i = 0; i < pact.interactions.length; i++) {
         const interaction = pact.interactions[i];

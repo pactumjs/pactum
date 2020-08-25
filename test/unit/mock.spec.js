@@ -5,8 +5,13 @@ const Server = require('../../src/models/server');
 
 const Mock = require('../../src/exports/mock');
 const helper = require('../../src/helpers/helper');
+const config = require('../../src/config');
 
 describe('Mock', () => {
+
+  before(() => {
+    config.pact.consumer = 'unit-test-consumer';
+  });
 
   beforeEach(() => {
     this.server = new Server();
@@ -287,6 +292,10 @@ describe('Mock', () => {
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  after(() => {
+    config.pact.consumer = '';
   });
 
 });
