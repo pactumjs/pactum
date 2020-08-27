@@ -2,6 +2,9 @@
 
 ![Build](https://github.com/ASaiAnudeep/pactum/workflows/Build/badge.svg?branch=master)
 ![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
+![Downloads](https://img.shields.io/npm/dt/pactum)
+![Size](https://img.shields.io/bundlephobia/minzip/pactum)
+![Platform](https://img.shields.io/node/v/pactum)
 
 **pactum** is a REST API Testing Tool used for e2e testing, integration testing, component testing & contract testing of API endpoints. It comes with a *mock server* & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
