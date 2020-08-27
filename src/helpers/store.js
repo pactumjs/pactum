@@ -99,9 +99,9 @@ const store = {
   async publish(options) {
     validatePublishOptions(options);
     const { consumerVersion, tags, pactBroker, pactBrokerUsername, pactBrokerPassword, pactFilesOrDirs } = options;
-    const url = pactBroker || process.env.PACT_BROKER_URL;
-    const user = pactBrokerUsername || process.env.PACT_BROKER_USERNAME;
-    const pass = pactBrokerPassword || process.env.PACT_BROKER_PASSWORD;
+    const url = pactBroker || config.pact.brokerUrl;
+    const user = pactBrokerUsername || config.pact.brokerUser;
+    const pass = pactBrokerPassword || config.pact.brokerPass;
     const _pacts = this._getPacts(pactFilesOrDirs);
     const opts = { url, consumerVersion, user, pass, tags };
     const consumers = await this._publishPacts(_pacts, opts);

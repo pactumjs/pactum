@@ -4,17 +4,19 @@ const { PactumConfigurationError } = require('../helpers/errors');
 
 /**
  * @typedef {object} PublishOptions
- * @property {string[]} pactFilesOrDirs - array of pact files or directories
- * @property {string} pactBroker - pact broker url
+ * @property {string[]} pactFilesOrDirs - array of pact files or directories (PACT_DIR)
+ * @property {string} pactBroker - pact broker url (PACT_BROKER_URL)
  * @property {string} consumerVersion - version of the consumer
- * @property {string} pactBrokerUsername - pact broker user name
- * @property {string} pactBrokerPassword - pact broker password
+ * @property {string} pactBrokerUsername - pact broker user name (PACT_BROKER_USERNAME)
+ * @property {string} pactBrokerPassword - pact broker password (PACT_BROKER_PASSWORD)
  * @property {string[]} tags - tags
  */
 
 class Pact {
 
   /**
+   * @alias PACT_DIR
+   * 
    * sets directory for saving pact files
    * @param {string} dir - directory for saving pact files
    * @default './pacts/'
@@ -27,6 +29,8 @@ class Pact {
   }
 
   /**
+   * @alias PACT_CONSUMER_NAME
+   * 
    * sets the name of the consumer
    * @param {string} name - name of the consumer
    */
