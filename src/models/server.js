@@ -62,9 +62,9 @@ class Server {
 
   removeInteraction(id) {
     if (this.mockInteractions.has(id)) {
-      this.mockInteractions.delete(id);
+      this.removeMockInteraction(id);
     } else if (this.pactInteractions.has(id)) {
-      this.pactInteractions.delete(id);
+      this.removePactInteraction(id);
     } else {
       log.warn('Unable to remove interaction. Interaction not found with id', id);
     }
@@ -213,7 +213,9 @@ function registerPactumRemoteRoutes(server) {
       case '/api/pactum/pacts/save':
         savePactsRemote(req, res);
         break;
-      // publish pacts
+      case '/api/pactum/pacts/publish':
+        publishPactsRemote(req, res);
+        break;
       default:
         res.writeHead(404, { "Content-Type": "text/plain" });
         res.write("404 Not Found\n");
@@ -283,6 +285,24 @@ function savePactsRemote(req, response) {
   try {
     if (req.method === 'POST') {
       store.save();
+      res.status(200);
+    } else {
+      res.status(405);
+    }
+  } catch (error) {
+    log.error('Error Saving Pacts (Remote)');
+    log.error(error);
+    res.status(500);
+  }
+  res.send();
+}
+
+async function publishPactsRemote(req, response) {
+  log.info('Publishing Pacts (Remote)');
+  const res = new ExpressResponse(response);
+  try {
+    if (req.method === 'POST') {
+      await store.publish(req.body);
       res.status(200);
     } else {
       res.status(405);

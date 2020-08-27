@@ -1,4 +1,5 @@
 const fs = require('fs');
+const phin = require('phin');
 const config = require('../config');
 const helper = require('./helper');
 const log = require('./logger');
@@ -55,27 +56,117 @@ const store = {
   },
 
   save() {
+    const dir = `${config.pact.dir}`;
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
     for (const [key, pact] of this.pacts.entries()) {
-      const dir = `${config.pact.dir}`;
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
+      const _pact = JSON.parse(JSON.stringify(pact));
+      _pact.interactions = this._getExercisedInteractions(_pact.interactions);
+      if (_pact.interactions.length > 0) {
+        fs.writeFileSync(`${dir}/${key}.json`, JSON.stringify(_pact, null, 2));
+      } else {
+        log.warn(`No interactions exercised for provider - ${_pact.provider.name}`);
       }
-      for (let i = 0; i < pact.interactions.length; i++) {
-        const interaction = pact.interactions[i];
-        const id = interaction.id;
-        if (!this.interactionExerciseCounter.has(id)) {
-          log.warn('Pact interaction not exercised');
-          log.warn({
-            request: interaction.request,
-            response: {
-              status: interaction.response.status,
-              body: interaction.response.body
+    }
+  },
+
+  _getExercisedInteractions(interactions) {
+    const _exercisedInteractions = [];
+    for (let i = 0; i < interactions.length; i++) {
+      const interaction = interactions[i];
+      const id = interaction.id;
+      if (!this.interactionExerciseCounter.has(id)) {
+        log.warn(`Pact Interaction Not Exercised | Id: ${id}`);
+        const msg = {
+          request: interaction.request,
+          response: interaction.response
+        };
+        log.warn(JSON.stringify(msg, null, 2));
+      } else {
+        _exercisedInteractions.push(interaction);
+      }
+      delete interaction.id;
+    }
+    return _exercisedInteractions;
+  },
+
+  /**
+   * publish contracts
+   * @param {PublishOptions} options - publish options
+   */
+  async publish(options) {
+    // validate options
+    const { consumerVersion, tags, pactBroker, pactBrokerUsername, pactBrokerPassword, pactFilesOrDirs } = options;
+    const url = pactBroker || process.env.PACT_BROKER_URL;
+    const user = pactBrokerUsername || process.env.PACT_BROKER_USERNAME;
+    const pass = pactBrokerPassword || process.env.PACT_BROKER_PASSWORD;
+    const _pacts = this._getPacts(pactFilesOrDirs);
+    const opts = { url, consumerVersion, user, pass, tags };
+    const consumers = await this._publishPacts(_pacts, opts);
+    await this._publishTags(consumers, opts);
+  },
+
+  _getPacts(pactFilesOrDirs) {
+    let _pacts = [];
+    if (pactFilesOrDirs) {
+      const filePaths = helper.getLocalPactFiles(pactFilesOrDirs);
+      for (const filePath of filePaths) {
+        const rawData = fs.readFileSync(filePath);
+        _pacts.push(JSON.parse(rawData));
+      }
+    } else {
+      for (const [key, pact] of this.pacts.entries()) {
+        const _pact = JSON.parse(JSON.stringify(pact));
+        _pact.interactions = this._getExercisedInteractions(_pact.interactions);
+        if (_pact.interactions.length > 0) {
+          _pacts.push(_pact);
+        } else {
+          log.warn(`No interactions exercised for provider - ${_pact.provider.name}`);
+        }
+      }
+    }
+    return _pacts;
+  },
+
+  async _publishPacts(_pacts, options) {
+    const consumers = new Set();
+    const { url, consumerVersion, user, pass } = options;
+    for (let i = 0; i < _pacts.length; i++) {
+      const _pact = _pacts[i];
+      const consumer = _pact.consumer.name;
+      const provider = _pact.provider.name;
+      consumers.add(consumer);
+      await phin({
+        url: `${url}/pacts/provider/${provider}/consumer/${consumer}/version/${consumerVersion}`,
+        method: 'PUT',
+        core: {
+          auth: `${user}:${pass}`
+        },
+        data: _pact
+      });
+    }
+    return consumers;
+  },
+
+  async _publishTags(consumers, options) {
+    const { url, consumerVersion, user, pass, tags } = options;
+    if (tags) {
+      for (const consumer of consumers) {
+        for (let i = 0; i < tags.length; i++) {
+          const tag = tags[i];
+          await phin({
+            url: `${url}/pacticipants/${consumer}/versions/${consumerVersion}/tags/${tag}`,
+            method: 'PUT',
+            core: {
+              auth: `${user}:${pass}`
+            },
+            headers: {
+              'Content-Type': 'application/json'
             }
           });
         }
-        delete interaction.id;
       }
-      fs.writeFileSync(`${dir}/${key}.json`, JSON.stringify(pact, null, 2));
     }
   }
 

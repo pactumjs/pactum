@@ -1,4 +1,5 @@
 const pactum = require('../../src/index');
+const store = require('../../src/helpers/store');
 
 describe('Remote- post single mock interaction', () => {
 
@@ -236,6 +237,442 @@ describe('Remote- invalid requests', () => {
       .patch('http://localhost:9393/api/pactum/mockInteraction')
       .expectStatus(405)
       .toss();
+  });
+
+});
+
+describe('Remote - Save Pacts', () => {
+
+  it('save interactions - not exercised', async () => {
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote',
+        state: 'liquid',
+        uponReceiving: 'vapour',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .post('http://localhost:9393/api/pactum/pacts/save')
+      .expectStatus(200);
+    // validate pact files
+  });
+
+  it('save interactions - after one interaction exercised', async () => {
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote',
+        state: 'liquid',
+        uponReceiving: 'vapour',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote',
+        state: 'solid',
+        uponReceiving: 'goods',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/2'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .get(`http://localhost:9393/api/projects/1`)
+      .expectStatus(200);
+    await pactum
+      .post('http://localhost:9393/api/pactum/pacts/save')
+      .expectStatus(200);
+    // validate pact files
+  });
+
+  it('save interactions - all interactions exercised from single provider', async () => {
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote',
+        state: 'liquid',
+        uponReceiving: 'vapour',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote',
+        state: 'solid',
+        uponReceiving: 'goods',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/2'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .get(`http://localhost:9393/api/projects/1`)
+      .expectStatus(200);
+    await pactum
+      .get(`http://localhost:9393/api/projects/2`)
+      .expectStatus(200);
+    await pactum
+      .post('http://localhost:9393/api/pactum/pacts/save')
+      .expectStatus(200);
+    // validate pact files
+  });
+
+  it('save interactions - all interactions exercised from multiple providers', async () => {
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote-1',
+        state: 'liquid',
+        uponReceiving: 'vapour',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote-2',
+        state: 'solid',
+        uponReceiving: 'goods',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/2'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .get(`http://localhost:9393/api/projects/1`)
+      .expectStatus(200);
+    await pactum
+      .get(`http://localhost:9393/api/projects/2`)
+      .expectStatus(200);
+    await pactum
+      .post('http://localhost:9393/api/pactum/pacts/save')
+      .expectStatus(200);
+    // validate pact files
+  });
+
+  afterEach(() => {
+    store.pacts.clear();
+    store.interactionExerciseCounter.clear();
+    pactum.mock.reset();
+  });
+
+});
+
+describe('Remote - Publish Pacts', () => {
+
+  it('publish interactions - not exercised', async () => {
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote',
+        state: 'liquid',
+        uponReceiving: 'vapour',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .post('http://localhost:9393/api/pactum/pacts/publish')
+      .withJson({
+        pactBroker: 'http://localhost:9393',
+        consumerVersion: '1.2.3',
+        pactBrokerUsername: 'user',
+        pactBrokerPassword: 'pass'
+      })
+      .expectStatus(200);
+  });
+
+  it('publish interactions - all interactions exercised from multiple providers', async () => {
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote-1',
+        state: 'liquid',
+        uponReceiving: 'vapour',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote-2',
+        state: 'solid',
+        uponReceiving: 'goods',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/2'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .get(`http://localhost:9393/api/projects/1`)
+      .expectStatus(200);
+    await pactum
+      .get(`http://localhost:9393/api/projects/2`)
+      .expectStatus(200);
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'PUT',
+          path: '/pacts/provider/remote-1/consumer/consumer/version/1.2.3',
+          headers: {
+            authorization: 'Basic dXNlcjpwYXNz'
+          },
+          body: {
+            "consumer": {
+              "name": "consumer"
+            },
+            "provider": {
+              "name": "remote-1"
+            },
+            "interactions": [
+              {
+                "description": "vapour",
+                "providerState": "liquid",
+                "request": {
+                  "method": "GET",
+                  "path": "/api/projects/1",
+                  "query": ""
+                },
+                "response": {
+                  "status": 200,
+                  "headers": {},
+                  "matchingRules": {}
+                }
+              }
+            ],
+            "metadata": {
+              "pactSpecification": {
+                "version": "2.0.0"
+              }
+            }
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .addMockInteraction({
+        withRequest: {
+          method: 'PUT',
+          path: '/pacts/provider/remote-2/consumer/consumer/version/1.2.3',
+          headers: {
+            authorization: 'Basic dXNlcjpwYXNz'
+          },
+          body: {
+            "consumer": {
+              "name": "consumer"
+            },
+            "provider": {
+              "name": "remote-2"
+            },
+            "interactions": [
+              {
+                "description": "goods",
+                "providerState": "solid",
+                "request": {
+                  "method": "GET",
+                  "path": "/api/projects/2",
+                  "query": ""
+                },
+                "response": {
+                  "status": 200,
+                  "headers": {},
+                  "matchingRules": {}
+                }
+              }
+            ],
+            "metadata": {
+              "pactSpecification": {
+                "version": "2.0.0"
+              }
+            }
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/pactum/pacts/publish')
+      .withJson({
+        pactBroker: 'http://localhost:9393',
+        consumerVersion: '1.2.3',
+        pactBrokerUsername: 'user',
+        pactBrokerPassword: 'pass'
+      })
+      .expectStatus(200);
+  });
+
+  it('publish interactions - one interaction exercised with tags', async () => {
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote-1',
+        state: 'liquid',
+        uponReceiving: 'vapour',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .withJson([{
+        provider: 'remote-2',
+        state: 'solid',
+        uponReceiving: 'goods',
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/2'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }])
+      .expectStatus(200);
+    await pactum
+      .get(`http://localhost:9393/api/projects/1`)
+      .expectStatus(200);
+    await pactum
+      .addMockInteraction({
+        withRequest: {
+          method: 'PUT',
+          path: '/pacts/provider/remote-1/consumer/consumer/version/1.2.3',
+          headers: {
+            authorization: 'Basic dXNlcjpwYXNz'
+          },
+          body: {
+            "consumer": {
+              "name": "consumer"
+            },
+            "provider": {
+              "name": "remote-1"
+            },
+            "interactions": [
+              {
+                "description": "vapour",
+                "providerState": "liquid",
+                "request": {
+                  "method": "GET",
+                  "path": "/api/projects/1",
+                  "query": ""
+                },
+                "response": {
+                  "status": 200,
+                  "headers": {},
+                  "matchingRules": {}
+                }
+              }
+            ],
+            "metadata": {
+              "pactSpecification": {
+                "version": "2.0.0"
+              }
+            }
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .addMockInteraction({
+        withRequest: {
+          method: 'PUT',
+          path: '/pacticipants/consumer/versions/1.2.3/tags/prod',
+          headers: {
+            authorization: 'Basic dXNlcjpwYXNz'
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .addMockInteraction({
+        withRequest: {
+          method: 'PUT',
+          path: '/pacticipants/consumer/versions/1.2.3/tags/latest',
+          headers: {
+            authorization: 'Basic dXNlcjpwYXNz'
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/pactum/pacts/publish')
+      .withJson({
+        pactBroker: 'http://localhost:9393',
+        consumerVersion: '1.2.3',
+        pactBrokerUsername: 'user',
+        pactBrokerPassword: 'pass',
+        tags: ['latest', 'prod']
+      })
+      .expectStatus(200);
+  });
+
+  afterEach(() => {
+    store.pacts.clear();
+    store.interactionExerciseCounter.clear();
+    pactum.mock.reset();
   });
 
 });

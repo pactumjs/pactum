@@ -319,6 +319,13 @@ class Mock {
     log.debug('Cleared default interactions with ids', ids);
   }
 
+  /**
+   * clear all interactions
+   */
+  reset() {
+    _server.clearAllInteractions();
+  }
+
 }
 
 module.exports = Mock;
