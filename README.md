@@ -246,7 +246,7 @@ it('should get jon snow details', () => {
       }
     })
     .get('http://localhost:3333/users/4')
-    .expectStatus(404)
+    .expectStatus(200)
     .expectJson({
       id: 4,
       name: 'Jon Snow',
