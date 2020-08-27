@@ -3,6 +3,7 @@ const phin = require('phin');
 const config = require('../config');
 const helper = require('./helper');
 const log = require('./logger');
+const { PactumOptionsError } = require('./errors');
 const { Contract, PactInteraction } = require('../models/contract');
 
 const store = {
@@ -96,7 +97,7 @@ const store = {
    * @param {PublishOptions} options - publish options
    */
   async publish(options) {
-    // validate options
+    validatePublishOptions(options);
     const { consumerVersion, tags, pactBroker, pactBrokerUsername, pactBrokerPassword, pactFilesOrDirs } = options;
     const url = pactBroker || process.env.PACT_BROKER_URL;
     const user = pactBrokerUsername || process.env.PACT_BROKER_USERNAME;
@@ -171,5 +172,33 @@ const store = {
   }
 
 };
+
+function validatePublishOptions(options) {
+  if (!options) {
+    throw new PactumOptionsError('Invalid publish options provided');
+  }
+  if (!options.pactBroker && !process.env.PACT_BROKER_URL) {
+    throw new PactumOptionsError('Missing pactBroker option from publish options');
+  }
+  if (!options.pactBrokerUsername && !process.env.PACT_BROKER_USERNAME) {
+    throw new PactumOptionsError('Missing pactBrokerUsername option from publish options');
+  }
+  if (!options.pactBrokerPassword && !process.env.PACT_BROKER_PASSWORD) {
+    throw new PactumOptionsError('Missing pactBrokerPassword option from publish options');
+  }
+  if (!options.consumerVersion) {
+    throw new PactumOptionsError('Missing consumerVersion option from publish options');
+  }
+  if (typeof options.tags !== 'undefined') {
+    if (!Array.isArray(options.tags)) {
+      throw new PactumOptionsError('Invalid tags option in publish options. Tags should be array of strings');
+    }
+    for (let i = 0; i < options.tags.length; i++) {
+      if (!options.tags[i]) {
+        throw new PactumOptionsError('Invalid tag in publish options. Tags should be array of non empty strings');
+      }
+    }
+  }
+}
 
 module.exports = store;
