@@ -21,11 +21,19 @@ describe('request', () => {
     expect(() => request.setDefaultHeader()).throws('Invalid header key provided - undefined');
   });
 
+  it('removeDefaultHeader - undefined', () => {
+    expect(() => request.removeDefaultHeader()).throws('Invalid header key provided - undefined');
+  });
+
+  it('removeDefaultHeader - which is not present', () => {
+    request.removeDefaultHeader('present');
+  });
+
   it('setDefaultHeaders - null', () => {
     expect(() => request.setDefaultHeaders(null)).throws('Invalid headers provided - null');
   });
 
-  it('setDefaultHeader & setDefaultHeaders', () => {
+  it('setDefaultHeader & setDefaultHeaders & remove', () => {
     request.setDefaultHeader('hello', 'world');
     request.setDefaultHeader('no', 'space');
     request.setDefaultHeaders({
@@ -37,6 +45,13 @@ describe('request', () => {
       'no': 'space',
       'gta': 'v'
     });
+    request.removeDefaultHeader('no');
+    expect(config.request.headers).deep.equals({
+      'hello': 'space',
+      'gta': 'v'
+    });
+    request.removeDefaultHeaders();
+    expect(config.request.headers).deep.equals({});
   });
 
   it('setDefaultTimeout - null', () => {

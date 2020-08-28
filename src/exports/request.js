@@ -52,6 +52,24 @@ const request = {
       throw new PactumRequestError(`Invalid base url provided - ${url}`);
     }
     config.request.baseUrl = url;
+  },
+
+  /**
+   * removes the default header
+   * @param {string} key - header key
+   */
+  removeDefaultHeader(key) {
+    if (!key) {
+      throw new PactumRequestError(`Invalid header key provided - ${key}`);
+    }
+    delete config.request.headers[key];
+  },
+
+  /**
+   * removes all default headers
+   */
+  removeDefaultHeaders() {
+    config.request.headers = {};
   }
 
 };
