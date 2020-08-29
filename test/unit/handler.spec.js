@@ -44,7 +44,7 @@ describe('Retry Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid retry handler name');
+    expect(err.message).equals('Invalid custom retry handler name');
   });
 
   it('empty handler name', () => {
@@ -54,7 +54,7 @@ describe('Retry Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid retry handler name');
+    expect(err.message).equals('Invalid custom retry handler name');
   });
 
   it('invalid handler function', () => {
@@ -64,7 +64,7 @@ describe('Retry Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Retry handler should be a function');
+    expect(err.message).equals('Custom retry handler should be a function');
   });
 
 });
@@ -78,7 +78,7 @@ describe('Return Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid return handler name');
+    expect(err.message).equals('Invalid custom return handler name');
   });
 
   it('empty handler name', () => {
@@ -88,7 +88,7 @@ describe('Return Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid return handler name');
+    expect(err.message).equals('Invalid custom return handler name');
   });
 
   it('invalid handler function', () => {
@@ -98,7 +98,41 @@ describe('Return Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Return handler should be a function');
+    expect(err.message).equals('Custom return handler should be a function');
+  });
+
+});
+
+describe('State Handler', () => {
+
+  it('invalid handler name', () => {
+    let err;
+    try {
+      handler.addStateHandler();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Invalid custom state handler name');
+  });
+
+  it('empty handler name', () => {
+    let err;
+    try {
+      handler.addStateHandler('');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Invalid custom state handler name');
+  });
+
+  it('invalid handler function', () => {
+    let err;
+    try {
+      handler.addStateHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Custom state handler should be a function');
   });
 
 });
