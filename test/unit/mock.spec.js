@@ -29,6 +29,17 @@ describe('Mock', () => {
     expect(this.serverStartStub.callCount).equals(1, 'should start the server');
   });
 
+  it('start with port', async () => {
+    const mock = new Mock(this.server);
+    await mock.start(3000);
+    expect(this.serverStartStub.callCount).equals(1, 'should start the server');
+  });
+
+  it('start with invalid port', async () => {
+    const mock = new Mock(this.server);
+    expect(() => mock.start({})).throws('Invalid port number provided');
+  });
+
   it('stop', async () => {
     const mock = new Mock(this.server);
     await mock.stop();
@@ -296,6 +307,7 @@ describe('Mock', () => {
 
   after(() => {
     config.pact.consumer = '';
+    config.mock.port = 9393;
   });
 
 });

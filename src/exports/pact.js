@@ -23,7 +23,7 @@ class Pact {
    */
   setPactFilesDirectory(dir) {
     if (typeof dir !== 'string') {
-      throw new PactumConfigurationError(`Invalid directory for saving pact files - ${dir}`);
+      throw new PactumConfigurationError(`Invalid directory provided for saving pact files - ${dir}`);
     }
     config.pact.dir = dir;
   }

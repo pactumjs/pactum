@@ -153,7 +153,7 @@ class Mock {
   setDefaultPort(port) {
     log.debug('Setting default port number for mock server', port);
     if (typeof port !== 'number') {
-      throw new PactumConfigurationError(`Invalid default port number - ${port}`);
+      throw new PactumConfigurationError(`Invalid port number provided - ${port}`);
     }
     config.mock.port = port;
   }

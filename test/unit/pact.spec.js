@@ -95,3 +95,19 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
 });
+
+describe('Pact', () => {
+
+  it('setPactFilesDirectory - undefined', () => {
+    expect(() => pact.setPactFilesDirectory()).throws('Invalid directory provided for saving pact files - undefined');
+  });
+
+  it('setConsumerName - undefined', () => {
+    expect(() => pact.setConsumerName()).throws('Invalid consumer name - undefined');
+  });
+
+  after(() => {
+    pact.setPactFilesDirectory('./pacts/');
+  })
+
+});
