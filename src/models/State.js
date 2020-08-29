@@ -1,4 +1,5 @@
 const handler = require('../exports/handler');
+const { PactumHandlerError } = require('../helpers/errors');
 
 class State {
 
@@ -7,6 +8,9 @@ class State {
   }
 
   add(name, data) {
+    if (typeof name !== 'string' || name === '') {
+      throw new PactumHandlerError(`Invalid custom state handler name provided`);
+    }
     this.handlers.push({ name, data });
   }
 

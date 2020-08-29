@@ -6,6 +6,20 @@
   "files": [
     "/src"
   ],
+  "exports": {
+    ".": {
+      "require": "./src/index.js"
+    },
+    "./handler": {
+      "require": "./src/exports/handler.js"
+    },
+    "./matcher": {
+      "require": "./src/exports/matcher.js"
+    },
+    "./request": {
+      "require": "./src/exports/request.js"
+    }
+  },
   "scripts": {
     "test": "npm run test:unit && npm run test:component",
     "test:unit": "mocha --timeout 10000 ./test/unit/",

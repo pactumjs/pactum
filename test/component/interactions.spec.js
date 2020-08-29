@@ -1,5 +1,6 @@
 const pactum = require('../../src/index');
-const { like, term, eachLike } = pactum.matchers;
+const { like, term } = pactum.matchers;
+const { eachLike } = require('../../src/exports/matcher');
 
 
 describe('Basic Interactions', () => {

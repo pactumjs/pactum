@@ -115,7 +115,7 @@ const pactum = {
   /**
    * runs the specified state handler
    * @param {string} name - name of the state handler
-   * @param {any} data - data to be passed to the context
+   * @param {any} [data] - data to be passed to the context
    * @example
    * await pactum
    *  .setState('there are users in the system')

@@ -4,6 +4,17 @@ const Spec = require('../../src/models/Spec');
 
 describe('Spec', () => {
 
+  it('setState - undefined', () => {
+    let err;
+    try {
+      const spec = new Spec();
+      spec.setState();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: Invalid custom state handler name provided');
+  });
+
   it('withQueryParam - invalid', () => {
     let err;
     try {
