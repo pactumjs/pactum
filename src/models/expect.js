@@ -179,12 +179,8 @@ class Expect {
       if (typeof requiredHandler.handler === 'function') {
         requiredHandler.handler(request, response, requiredHandler.data);
       } else {
-        const customExpectHandler = handler.getExpectHandler(requiredHandler.handler);
-        if (customExpectHandler) {
-          customExpectHandler(request, response, requiredHandler.data);
-        } else {
-          throw new Error(`Custom Expect Handler Not Found - ${requiredHandler.handler}`)
-        }
+        const handlerFun = handler.getExpectHandler(requiredHandler.handler);
+        handlerFun(request, response, requiredHandler.data);
       }
     }
   }

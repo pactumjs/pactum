@@ -1,5 +1,6 @@
 const pactum = require('../../src/index');
 const handler = require('../../src/exports/handler');
+const expect = require('chai').expect;
 
 describe('State', () => {
 
@@ -30,6 +31,21 @@ describe('State', () => {
     await pactum
       .get('http://localhost:9393/api/projects/99')
       .expectStatus(404);
+  });
+
+  it('state not found', async () => {
+    let err;
+    try {
+      await pactum
+      .setState('invalid state')
+      .get('http://localhost:9393/api/projects/98')
+      .expectJson({
+        id: 98
+      });  
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Custom State Handler Not Found - invalid state');
   });
 
 });

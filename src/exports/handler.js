@@ -1,3 +1,5 @@
+const { PactumHandlerError } = require('../helpers/errors');
+
 const expectHandlers = {};
 const retryHandlers = {};
 const returnHandlers = {};
@@ -20,7 +22,8 @@ const handler = {
   },
 
   getExpectHandler(name) {
-    return expectHandlers[name];
+    if (expectHandlers[name]) return expectHandlers[name];
+    throw new PactumHandlerError(`Custom Expect Handler Not Found - ${name}`);
   },
 
   /**
@@ -36,7 +39,8 @@ const handler = {
   },
 
   getRetryHandler(name) {
-    return retryHandlers[name];
+    if (retryHandlers[name]) return retryHandlers[name];
+    throw new PactumHandlerError(`Custom Retry Handler Not Found - ${name}`);
   },
 
   /**
@@ -68,17 +72,18 @@ const handler = {
   },
 
   getStateHandler(name) {
-    return stateHandlers[name];
+    if (stateHandlers[name]) return stateHandlers[name];
+    throw new PactumHandlerError(`Custom State Handler Not Found - ${name}`);
   }
 
 }
 
 function isValidHandler(name, func, type) {
   if (typeof name !== 'string' || name === '') {
-    throw new Error(`Invalid custom ${type} handler name`);
+    throw new PactumHandlerError(`Invalid custom ${type} handler name`);
   }
   if (typeof func !== 'function') {
-    throw new Error(`Custom ${type} handler should be a function`);
+    throw new PactumHandlerError(`Custom ${type} handler should be a function`);
   }
 }
 

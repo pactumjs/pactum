@@ -68,12 +68,8 @@ class Tosser {
           retry = strategy(this.request, this.response);
         }
         if (typeof strategy === 'string') {
-          const retryHandler = handler.getRetryHandler(strategy);
-          if (retryHandler) {
-            retry = retryHandler(this.request, this.response);
-          } else {
-            throw new Error(`Retry Handler Not Found - ${strategy}`);
-          }
+          const handlerFun = handler.getRetryHandler(strategy);
+          retry = handlerFun(this.request, this.response);
         }
         if (retry) {
           await helper.sleep(delay);
