@@ -113,6 +113,16 @@ const pactum = {
   handler,
 
   /**
+   * runs the specified state handler
+   * @param {string} name - name of the state handler
+   * @param {any} data - data to be attached to the context
+   */
+  setState(name, data) {
+    const spec = new Spec(server);
+    return spec.setState(name, data);
+  },
+
+  /**
    * adds a mock interaction to the server
    * @param {BasicInteraction} interaction 
    * @see addMockInteraction for more options

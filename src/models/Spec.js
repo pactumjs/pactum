@@ -1,6 +1,7 @@
 const FormData = require('form-data');
 const Tosser = require('./Tosser');
 const Expect = require('./expect');
+const State = require('./State');
 const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
@@ -100,10 +101,21 @@ class Spec {
     this._response = {};
     this._returns = [];
     this._expect = new Expect();
+    this._state = new State();
     this.previousLogLevel = null;
     this.server = server;
     this.mockInteractions = new Map();
     this.pactInteractions = new Map();
+  }
+
+  /**
+   * runs the specified state handler
+   * @param {string} name - name of the state handler
+   * @param {any} data - data to be attached to the context
+   */
+  setState(name, data) {
+    this._state.add(name, data);
+    return this;
   }
 
   /**
@@ -623,7 +635,7 @@ class Spec {
    *  .expect((req, res, data) => { -- assertion code -- });
    */
   expect(handler, data) {
-    this._expect.customExpectHandlers.push({handler, data});
+    this._expect.customExpectHandlers.push({ handler, data });
     return this;
   }
 
@@ -805,24 +817,8 @@ class Spec {
    * executes the test case
    */
   async toss() {
-    const tosser = new Tosser({
-      request: this._request,
-      server: this.server,
-      expect: this._expect,
-      returns: this._returns,
-      mockInteractions: this.mockInteractions,
-      pactInteractions: this.pactInteractions,
-      previousLogLevel: this.previousLogLevel
-    });
-    tosser.updateRequest();
-    tosser.addInteractionsToServer();
-    await tosser.setResponse();
-    tosser.setPreviousLogLevel();
-    tosser.removeInteractionsFromServer();
-    tosser.validateError();
-    tosser.validateInteractions();
-    tosser.validateResponse();
-    return tosser.getOutput();
+    const tosser = new Tosser(this);
+    return tosser.toss();
   }
 
   then(resolve, reject) {

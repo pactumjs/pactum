@@ -7,15 +7,30 @@ const handler = require('../exports/handler');
 
 class Tosser {
 
-  constructor(params) {
-    this.request = params.request;
-    this.server = params.server;
-    this.mockInteractions = params.mockInteractions;
-    this.pactInteractions = params.pactInteractions;
-    this.expect = params.expect;
-    this.previousLogLevel = params.previousLogLevel;
-    this.returns = params.returns;
+  constructor(spec) {
+    this.spec = spec;
+    this.request = spec._request;
+    this.server = spec.server;
+    this.state = spec._state;
+    this.expect = spec._expect;
+    this.returns = spec._returns;
+    this.mockInteractions = spec.mockInteractions;
+    this.pactInteractions = spec.pactInteractions;
+    this.previousLogLevel = spec.previousLogLevel;
     this.response = {};
+  }
+
+  async toss() {
+    this.updateRequest();
+    await this.setState()
+    this.addInteractionsToServer();
+    await this.setResponse();
+    this.setPreviousLogLevel();
+    this.removeInteractionsFromServer();
+    this.validateError();
+    this.validateInteractions();
+    this.validateResponse();
+    return this.getOutput();
   }
 
   updateRequest() {
@@ -27,6 +42,10 @@ class Tosser {
     this.request.timeout = this.request.timeout || config.request.timeout;
     setHeaders(this.request);
     setMultiPartFormData(this.request);
+  }
+
+  setState() {
+    return this.state.set(this.spec);
   }
 
   addInteractionsToServer() {
