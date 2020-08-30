@@ -1,15 +1,12 @@
 const Spec = require('./models/Spec');
-const Server = require('./models/server');
-const Matcher = require('./models/matcher');
 
-const Mock = require('./exports/mock');
-const Pact = require('./exports/pact');
+const mock = require('./exports/mock');
+const pact = require('./exports/pact');
 const request = require('./exports/request');
 const provider = require('./exports/provider');
-const Settings = require('./exports/settings');
+const settings = require('./exports/settings');
 const handler = require('./exports/handler');
-
-const logger = require('./helpers/logger');
+const matchers = require('./exports/matcher');
 
 /**
  * request method
@@ -96,11 +93,6 @@ const logger = require('./helpers/logger');
  * @typedef {PactInteractionResponse & MockInteractionResponseType} MockInteractionResponse
  */
 
-const server = new Server();
-const matchers = new Matcher();
-const mock = new Mock(server);
-const pact = new Pact();
-const settings = new Settings(pact, request, mock, logger);
 
 const pactum = {
 
@@ -123,7 +115,7 @@ const pactum = {
    *  .expectStatus(200);
    */
   setState(name, data) {
-    const spec = new Spec(server);
+    const spec = new Spec(mock._server);
     return spec.setState(name, data);
   },
 
@@ -143,7 +135,7 @@ const pactum = {
    *  .expectStatus(200);
    */
   addInteraction(interaction) {
-    const spec = new Spec(server);
+    const spec = new Spec(mock._server);
     return spec.addInteraction(interaction);
   },
 
@@ -176,7 +168,7 @@ const pactum = {
    *   });
    */
   addMockInteraction(interaction) {
-    const spec = new Spec(server);
+    const spec = new Spec(mock._server);
     return spec.addMockInteraction(interaction);
   },
 
@@ -212,7 +204,7 @@ const pactum = {
    *   });
    */
   addPactInteraction(interaction) {
-    const spec = new Spec(server);
+    const spec = new Spec(mock._server);
     return spec.addPactInteraction(interaction);
   },
 
@@ -230,7 +222,7 @@ const pactum = {
    *   });
    */
   get(url) {
-    return new Spec(server).get(url);
+    return new Spec(mock._server).get(url);
   },
 
   /**
@@ -238,7 +230,7 @@ const pactum = {
    * @param {string} url - HTTP url
    */
   head(url) {
-    return new Spec(server).head(url);
+    return new Spec(mock._server).head(url);
   },
 
   /**
@@ -253,7 +245,7 @@ const pactum = {
    *  .expectStatus(200);
    */
   patch(url) {
-    return new Spec(server).patch(url);
+    return new Spec(mock._server).patch(url);
   },
 
   /**
@@ -270,7 +262,7 @@ const pactum = {
    *  .expectStatus(201);
    */
   post(url) {
-    return new Spec(server).post(url);
+    return new Spec(mock._server).post(url);
   },
 
   /**
@@ -288,7 +280,7 @@ const pactum = {
    *  .expectStatus(200);
    */
   put(url) {
-    return new Spec(server).put(url);
+    return new Spec(mock._server).put(url);
   },
 
   /**
@@ -300,7 +292,7 @@ const pactum = {
    *  .expectStatus(200);
    */
   delete(url) {
-    return new Spec(server).delete(url);
+    return new Spec(mock._server).delete(url);
   }
 
 };

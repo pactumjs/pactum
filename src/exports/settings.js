@@ -1,18 +1,13 @@
-class settings {
+const logger = require('../helpers/logger');
 
-  constructor(pact, request, mock, logger) {
-    this._pact = pact;
-    this._request = request;
-    this._mock = mock;
-    this._logger = logger;
-  }
+const settings = {
 
   /**
    * sets log level
    * @param {('TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR')} level - log level
    */
   setLogLevel(level) {
-    this._logger.setLevel(level);
+    logger.setLevel(level);
   }
 
 }

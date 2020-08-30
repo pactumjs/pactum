@@ -12,7 +12,7 @@ const { PactumConfigurationError } = require('../helpers/errors');
  * @property {string[]} tags - tags
  */
 
-class Pact {
+const pact = {
 
   /**
    * @alias PACT_DIR
@@ -26,7 +26,7 @@ class Pact {
       throw new PactumConfigurationError(`Invalid directory provided for saving pact files - ${dir}`);
     }
     config.pact.dir = dir;
-  }
+  },
 
   /**
    * @alias PACT_CONSUMER_NAME
@@ -39,14 +39,14 @@ class Pact {
       throw new PactumConfigurationError(`Invalid consumer name - ${name}`);
     }
     config.pact.consumer = name;
-  }
+  },
 
   /**
    * saves all the contracts(pact files) in the specified directory
    */
   save() {
     store.save();
-  }
+  },
 
   /**
    * publish pact files to pact broker
@@ -58,4 +58,4 @@ class Pact {
 
 }
 
-module.exports = Pact;
+module.exports = pact;

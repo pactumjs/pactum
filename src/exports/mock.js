@@ -1,4 +1,5 @@
 const Interaction = require('../models/interaction');
+const Server = require('../models/server');
 const { PactumConfigurationError } = require('../helpers/errors');
 const log = require('../helpers/logger');
 const helper = require('../helpers/helper');
@@ -115,17 +116,10 @@ const config = require('../config');
  * @typedef {PactInteractionResponse & MockInteractionResponseType} MockInteractionResponse
  */
 
-let _server;
+const mock = {
 
-class Mock {
-
-  constructor(ser) {
-    if (typeof ser !== 'object' || ser === null) {
-      throw new PactumConfigurationError(`Invalid server provided to mock - ${ser}`);
-    }
-    _server = ser;
-    this.interactionIds = new Set();
-  }
+  _server: new Server(),
+  _interactionIds: new Set(),
 
   /**
    * starts server on specified port or defaults to 9393
@@ -135,15 +129,15 @@ class Mock {
     if (port) {
       this.setDefaultPort(port);
     }
-    return _server.start();
-  }
+    return this._server.start();
+  },
 
   /**
    * stops server on specified port or defaults to 9393
    */
   stop() {
-    return _server.stop();
-  }
+    return this._server.stop();
+  },
 
   /**
    * @deprecated
@@ -156,7 +150,7 @@ class Mock {
       throw new PactumConfigurationError(`Invalid port number provided - ${port}`);
     }
     config.mock.port = port;
-  }
+  },
 
   /**
    * adds a basic mock interaction
@@ -171,7 +165,7 @@ class Mock {
       }
     };
     return this.addMockInteraction(rawInteraction);
-  }
+  },
 
   /**
    * adds basic mock interactions
@@ -191,7 +185,7 @@ class Mock {
       rawInteractions.push(rawInteraction);
     }
     return this.addMockInteractions(rawInteractions);
-  }
+  },
 
   /**
    * adds a mock interaction
@@ -199,7 +193,7 @@ class Mock {
    */
   addMockInteraction(interaction) {
     return this.addDefaultMockInteraction(interaction);
-  }
+  },
 
   /**
    * adds mock interactions
@@ -207,7 +201,7 @@ class Mock {
    */
   addMockInteractions(interactions) {
     return this.addDefaultMockInteractions(interactions);
-  }
+  },
 
   /**
    * adds a pact interaction
@@ -215,7 +209,7 @@ class Mock {
    */
   addPactInteraction(interaction) {
     return this.addDefaultPactInteraction(interaction);
-  }
+  },
 
   /**
    * adds pact interactions
@@ -223,7 +217,7 @@ class Mock {
    */
   addPactInteractions(interactions) {
     return this.addDefaultPactInteractions(interactions);
-  }
+  },
 
   /**
    * @deprecated
@@ -232,11 +226,11 @@ class Mock {
    */
   addDefaultMockInteraction(interaction) {
     const interactionObj = new Interaction(interaction, true);
-    _server.addMockInteraction(interactionObj.id, interactionObj);
-    this.interactionIds.add(interactionObj.id);
+    this._server.addMockInteraction(interactionObj.id, interactionObj);
+    this._interactionIds.add(interactionObj.id);
     log.debug('Added default mock interaction with id', interactionObj.id);
     return interactionObj.id;
-  }
+  },
 
   /**
    * @deprecated
@@ -251,13 +245,13 @@ class Mock {
     const ids = [];
     for (let i = 0; i < interactions.length; i++) {
       const interactionObj = new Interaction(interactions[i], true);
-      _server.addMockInteraction(interactionObj.id, interactionObj);
+      this._server.addMockInteraction(interactionObj.id, interactionObj);
       ids.push(interactionObj.id);
-      this.interactionIds.add(interactionObj.id);
+      this._interactionIds.add(interactionObj.id);
     }
     log.debug('Added default mock interactions with ids', ids);
     return ids;
-  }
+  },
 
   /**
    * @deprecated
@@ -266,11 +260,11 @@ class Mock {
    */
   addDefaultPactInteraction(interaction) {
     const interactionObj = new Interaction(interaction);
-    _server.addPactInteraction(interactionObj.id, interactionObj);
-    this.interactionIds.add(interactionObj.id);
+    this._server.addPactInteraction(interactionObj.id, interactionObj);
+    this._interactionIds.add(interactionObj.id);
     log.debug('Added default pact interactions with id', interactionObj.id);
     return interactionObj.id;
-  }
+  },
 
   /**
    * @deprecated
@@ -285,13 +279,13 @@ class Mock {
     const ids = [];
     for (let i = 0; i < interactions.length; i++) {
       const interactionObj = new Interaction(interactions[i], false);
-      _server.addPactInteraction(interactionObj.id, interactionObj);
+      this._server.addPactInteraction(interactionObj.id, interactionObj);
       ids.push(interactionObj.id);
-      this.interactionIds.add(interactionObj.id);
+      this._interactionIds.add(interactionObj.id);
     }
     log.debug('Added default pact interactions with ids', ids);
     return ids;
-  }
+  },
 
   /**
    * removes specified default interaction from server
@@ -301,31 +295,31 @@ class Mock {
     if (typeof interactionId !== 'string' || !interactionId) {
       throw new PactumConfigurationError(`Invalid interaction id - ${interactionId}`);
     }
-    _server.removeInteraction(interactionId);
-  }
+    this._server.removeInteraction(interactionId);
+  },
 
   /**
    * removes all default interactions
    */
   clearDefaultInteractions() {
     const ids = [];
-    for (const id of this.interactionIds) {
+    for (const id of this._interactionIds) {
       ids.push(id);
-      _server.removeInteraction(id);
+      this._server.removeInteraction(id);
     }
     for (let i = 0; i < ids.length; i++) {
-      this.interactionIds.delete(ids[i]);
+      this._interactionIds.delete(ids[i]);
     }
     log.debug('Cleared default interactions with ids', ids);
-  }
+  },
 
   /**
    * clear all interactions
    */
   reset() {
-    _server.clearAllInteractions();
+    this._server.clearAllInteractions();
   }
 
 }
 
-module.exports = Mock;
+module.exports = mock;
