@@ -1,10 +1,11 @@
 const pactum = require('../../src/index');
+const mock = require('../../src/exports/mock');
 const config = require('../../src/config');
 
 describe('Pact - Default Mock Interaction', () => {
 
   before(() => {
-    pactum.mock.addMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -20,7 +21,7 @@ describe('Pact - Default Mock Interaction', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/projects/2',
@@ -40,7 +41,7 @@ describe('Pact - Default Mock Interaction', () => {
         }
       }
     });
-    pactum.mock.addInteraction({
+    mock.addInteraction({
       post: '/api/projects',
       return: {
         message: 'ok'
@@ -125,7 +126,7 @@ describe('Pact - Default Mock Interaction', () => {
   });
 
   after(() => {
-    pactum.mock.clearDefaultInteractions();
+    mock.reset();
   });
 
 });
@@ -133,7 +134,7 @@ describe('Pact - Default Mock Interaction', () => {
 describe('Pact - Default Pact Interaction', () => {
 
   before(() => {
-    pactum.mock.addPactInteraction({
+    mock.addPactInteraction({
       provider: 'p',
       state: 'when there is a project with id 1',
       uponReceiving: 'a request for project 1',
@@ -152,7 +153,7 @@ describe('Pact - Default Pact Interaction', () => {
         }
       }
     });
-    pactum.mock.addDefaultPactInteraction({
+    mock.addPactInteraction({
       provider: 'p',
       state: 'when there is a project with id 1',
       uponReceiving: 'a request for project 1',
@@ -202,7 +203,7 @@ describe('Pact - Default Pact Interaction', () => {
   });
 
   after(() => {
-    pactum.mock.clearDefaultInteractions();
+    mock.reset();
   });
 
 });
@@ -210,7 +211,7 @@ describe('Pact - Default Pact Interaction', () => {
 describe('Pact - Default Mock Interactions', () => {
 
   before(() => {
-    pactum.mock.addDefaultMockInteractions([
+    mock.addMockInteractions([
       {
         withRequest: {
           method: 'GET',
@@ -228,7 +229,7 @@ describe('Pact - Default Mock Interactions', () => {
         }
       }
     ]);
-    pactum.mock.addMockInteractions([{
+    mock.addMockInteractions([{
       withRequest: {
         method: 'GET',
         path: '/api/projects/1',
@@ -248,7 +249,7 @@ describe('Pact - Default Mock Interactions', () => {
         }
       }
     }]);
-    pactum.mock.addInteractions([{
+    mock.addInteractions([{
       post: '/api/projects',
       return: {
         message: 'ok'
@@ -295,7 +296,7 @@ describe('Pact - Default Mock Interactions', () => {
   });
 
   after(() => {
-    pactum.mock.clearDefaultInteractions();
+    mock.reset();
   });
 
 });
@@ -303,7 +304,7 @@ describe('Pact - Default Mock Interactions', () => {
 describe('Pact - Default Pact Interactions', () => {
 
   before(() => {
-    pactum.mock.addDefaultPactInteractions([
+    mock.addPactInteractions([
       {
         provider: 'p',
         state: 'when there is a project with id 1',
@@ -324,7 +325,7 @@ describe('Pact - Default Pact Interactions', () => {
         }
       }
     ]);
-    pactum.mock.addPactInteractions([
+    mock.addPactInteractions([
       {
         provider: 'p',
         state: 'when there is a project with id 1',
@@ -376,7 +377,7 @@ describe('Pact - Default Pact Interactions', () => {
   });
 
   after(() => {
-    pactum.mock.clearDefaultInteractions();
+    mock.reset();
   });
 
 });
@@ -422,7 +423,7 @@ describe('Pact - Defaults', () => {
 describe('OnCall - Mock Interactions', () => {
 
   before(() => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'

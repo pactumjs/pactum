@@ -1,14 +1,15 @@
 const expect = require('chai').expect;
 const pactum = require('../../src/index');
+const mock = require('../../src/exports/mock');
 
 describe('Provider Verification - Pact Broker', () => {
 
   before(() => {
-    return pactum.mock.start();
+    return mock.start();
   });
 
   it('single interaction - valid - without authentication', () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest'
@@ -28,7 +29,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1'
@@ -95,7 +96,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents'
@@ -116,7 +117,7 @@ describe('Provider Verification - Pact Broker', () => {
         ]
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/pacts/provider/facade/consumer/ms/pact-version/96f74491025ab7b36a4d4314e82857903b0dc2f2/verification-results',
@@ -139,7 +140,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   it('single interaction - valid - with pact broker user & password', () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest',
@@ -162,7 +163,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1',
@@ -232,7 +233,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents'
@@ -253,7 +254,7 @@ describe('Provider Verification - Pact Broker', () => {
         ]
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/pacts/provider/facade/consumer/ms/pact-version/96f74491025ab7b36a4d4314e82857903b0dc2f2/verification-results',
@@ -279,7 +280,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   it('single interaction - valid - with pact broker token', () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest',
@@ -302,7 +303,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1',
@@ -372,7 +373,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents'
@@ -393,7 +394,7 @@ describe('Provider Verification - Pact Broker', () => {
         ]
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/pacts/provider/facade/consumer/ms/pact-version/96f74491025ab7b36a4d4314e82857903b0dc2f2/verification-results',
@@ -418,7 +419,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   it('single interaction - valid - without publishing results', () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest'
@@ -438,7 +439,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1'
@@ -505,7 +506,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents'
@@ -536,7 +537,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   it('single interaction - valid - with state handlers', () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest'
@@ -556,7 +557,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1'
@@ -603,7 +604,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents',
@@ -618,7 +619,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/pacts/provider/facade/consumer/ms/pact-version/96f74491025ab7b36a4d4314e82857903b0dc2f2/verification-results',
@@ -644,7 +645,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   it('single interaction - valid - expect just status', () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest'
@@ -664,7 +665,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1'
@@ -707,7 +708,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents',
@@ -722,7 +723,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/pacts/provider/facade/consumer/ms/pact-version/96f74491025ab7b36a4d4314e82857903b0dc2f2/verification-results',
@@ -748,7 +749,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   it('single interaction - valid - expect headers', () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest'
@@ -768,7 +769,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1'
@@ -814,7 +815,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents',
@@ -832,7 +833,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/pacts/provider/facade/consumer/ms/pact-version/96f74491025ab7b36a4d4314e82857903b0dc2f2/verification-results',
@@ -858,7 +859,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   it('single interaction - valid - custom provider headers', () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest'
@@ -878,7 +879,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1'
@@ -924,7 +925,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents',
@@ -945,7 +946,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/pacts/provider/facade/consumer/ms/pact-version/96f74491025ab7b36a4d4314e82857903b0dc2f2/verification-results',
@@ -974,7 +975,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   it('single interaction - fail status', async () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest'
@@ -994,7 +995,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1'
@@ -1037,7 +1038,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents',
@@ -1052,7 +1053,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/pacts/provider/facade/consumer/ms/pact-version/96f74491025ab7b36a4d4314e82857903b0dc2f2/verification-results',
@@ -1084,7 +1085,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   it('single interaction - fail headers', async () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest'
@@ -1104,7 +1105,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1'
@@ -1150,7 +1151,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents',
@@ -1165,7 +1166,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/pacts/provider/facade/consumer/ms/pact-version/96f74491025ab7b36a4d4314e82857903b0dc2f2/verification-results',
@@ -1197,7 +1198,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   it('single interaction - fail body', async () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/latest'
@@ -1217,7 +1218,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/pacts/provider/user-service/consumer/ms/version/1.0.1'
@@ -1264,7 +1265,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/v1/bank-info/intents',
@@ -1279,7 +1280,7 @@ describe('Provider Verification - Pact Broker', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'POST',
         path: '/pacts/provider/facade/consumer/ms/pact-version/96f74491025ab7b36a4d4314e82857903b0dc2f2/verification-results',
@@ -1311,11 +1312,11 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   afterEach(() => {
-    pactum.mock.clearDefaultInteractions();
+    mock.reset();
   });
 
   after(() => {
-    return pactum.mock.stop();
+    return mock.stop();
   });
 
 });
@@ -1323,11 +1324,11 @@ describe('Provider Verification - Pact Broker', () => {
 describe('Provider Verification - Local Pacts', () => {
 
   before(() => {
-    return pactum.mock.start();
+    return mock.start();
   });
 
   it('multiple interactions - valid', () => {
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -1340,7 +1341,7 @@ describe('Provider Verification - Local Pacts', () => {
         }
       }
     });
-    pactum.mock.addDefaultMockInteraction({
+    mock.addMockInteraction({
       withRequest: {
         method: 'GET',
         path: '/api/projects/2'
@@ -1373,11 +1374,11 @@ describe('Provider Verification - Local Pacts', () => {
   });
 
   afterEach(() => {
-    pactum.mock.clearDefaultInteractions();
+    mock.reset();
   });
 
   after(() => {
-    return pactum.mock.stop();
+    return mock.stop();
   });
 
 });

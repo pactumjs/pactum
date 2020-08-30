@@ -41,7 +41,7 @@ describe('Mock', () => {
     expect(this.serverStopStub.callCount).equals(1, 'should stop the server');
   });
 
-  it('addDefaultMockInteraction - valid', () => {
+  it('addMockInteraction - valid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {
       withRequest: {
@@ -59,18 +59,18 @@ describe('Mock', () => {
         }
       }
     };
-    const id = mock.addDefaultMockInteraction(rawInteraction);
+    const id = mock.addMockInteraction(rawInteraction);
     expect(id).to.equals('random');
     expect(this.serverAddMockInteractionStub.callCount).equals(1, 'should add a default mock interaction');
   });
 
-  it('addDefaultMockInteraction - invalid', () => {
+  it('addMockInteraction - invalid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {};
-    expect(() => { mock.addDefaultMockInteraction(rawInteraction); }).throws('Invalid interaction request provided - undefined');
+    expect(() => { mock.addMockInteraction(rawInteraction); }).throws('Invalid interaction request provided - undefined');
   });
 
-  it('addDefaultPactInteraction - valid', () => {
+  it('addPactInteraction - valid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {
       provider: 'pro',
@@ -91,42 +91,36 @@ describe('Mock', () => {
         }
       }
     };
-    const id = mock.addDefaultPactInteraction(rawInteraction);
+    const id = mock.addPactInteraction(rawInteraction);
     expect(id).to.equals('random');
     expect(this.serverAddPactInteractionStub.callCount).equals(1, 'should add a default pact interaction');
   });
 
-  it('addDefaultPactInteraction - invalid', () => {
+  it('addPactInteraction - invalid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {};
-    expect(() => { mock.addDefaultPactInteraction(rawInteraction); }).throws('Invalid provider name provided - undefined');
+    expect(() => { mock.addPactInteraction(rawInteraction); }).throws('Invalid provider name provided - undefined');
   });
 
-  it('removeDefaultMockInteraction - invalid interaction id', () => {
-    expect(() => { mock.removeDefaultInteraction(null); }).throws('Invalid interaction id - null');
+  it('removeInteraction - invalid interaction id - null', () => {
+    expect(() => { mock.removeInteraction(null); }).throws('Invalid interaction id - null');
   });
 
-  it('removeDefaultMockInteraction - invalid interaction id', () => {
-    expect(() => { mock.removeDefaultInteraction(''); }).throws('Invalid interaction id - ');
+  it('removeInteraction - invalid interaction id', () => {
+    expect(() => { mock.removeInteraction(''); }).throws('Invalid interaction id - ');
   });
 
-  it('removeDefaultMockInteraction - invalid interaction id', () => {
-    expect(() => { mock.removeDefaultInteraction(); }).throws('Invalid interaction id - undefined');
+  it('removeInteraction - invalid interaction id - undefined', () => {
+    expect(() => { mock.removeInteraction(); }).throws('Invalid interaction id - undefined');
   });
 
-  it('removeDefaultInteraction', () => {
-    mock.removeDefaultInteraction('id');
+  it('removeInteraction', () => {
+    mock.removeInteraction('id');
     expect(this.serverRemoveInteractionStub.callCount).equals(1, 'should remove default mock interaction');
     expect(this.serverRemoveInteractionStub.args[0]).deep.equals(['id']);
   });
 
-  it('clearDefaultInteractions - one or more interactions', () => {
-    mock._interactionIds.add('1');
-    mock.clearDefaultInteractions();
-    expect(this.serverRemoveInteractionStub.callCount).gte(1, 'should remove default interaction');
-  });
-
-  it('addDefaultMockInteractions - single - valid', () => {
+  it('addMockInteractions - single - valid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteractions = [{
       withRequest: {
@@ -144,12 +138,12 @@ describe('Mock', () => {
         }
       }
     }];
-    const id = mock.addDefaultMockInteractions(rawInteractions);
+    const id = mock.addMockInteractions(rawInteractions);
     expect(id).to.deep.equals(['random']);
     expect(this.serverAddMockInteractionStub.callCount).equals(1, 'should add a default mock interaction');
   });
 
-  it('addDefaultMockInteractions - multiples - valid', () => {
+  it('addMockInteractions - multiples - valid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteractions = [
       {
@@ -185,18 +179,18 @@ describe('Mock', () => {
         }
       }
     ];
-    const id = mock.addDefaultMockInteractions(rawInteractions);
+    const id = mock.addMockInteractions(rawInteractions);
     expect(id).to.deep.equals(['random', 'random']);
     expect(this.serverAddMockInteractionStub.callCount).equals(2, 'should add two default mock interactions');
   });
 
-  it('addDefaultMockInteractions - invalid', () => {
+  it('addMockInteractions - invalid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {};
-    expect(() => { mock.addDefaultMockInteractions(rawInteraction); }).throws('Invalid mock interactions array passed');
+    expect(() => { mock.addMockInteractions(rawInteraction); }).throws('Invalid mock interactions array passed');
   });
 
-  it('addDefaultPactInteractions - single - valid', () => {
+  it('addPactInteractions - single - valid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteractions = [{
       provider: 'pro',
@@ -217,12 +211,12 @@ describe('Mock', () => {
         }
       }
     }];
-    const id = mock.addDefaultPactInteractions(rawInteractions);
+    const id = mock.addPactInteractions(rawInteractions);
     expect(id).to.deep.equals(['random']);
     expect(this.serverAddPactInteractionStub.callCount).equals(1, 'should add a default pact interaction');
   });
 
-  it('addDefaultPactInteractions - multiples - valid', () => {
+  it('addPactInteractions - multiples - valid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteractions = [
       {
@@ -264,15 +258,15 @@ describe('Mock', () => {
         }
       }
     ];
-    const id = mock.addDefaultPactInteractions(rawInteractions);
+    const id = mock.addPactInteractions(rawInteractions);
     expect(id).to.deep.equals(['random', 'random']);
     expect(this.serverAddPactInteractionStub.callCount).equals(2, 'should add two default pact interactions');
   });
 
-  it('addDefaultPactInteractions - invalid', () => {
+  it('addPactInteractions - invalid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {};
-    expect(() => { mock.addDefaultPactInteractions(rawInteraction); }).throws('Invalid pact interactions array passed');
+    expect(() => { mock.addPactInteractions(rawInteraction); }).throws('Invalid pact interactions array passed');
   });
 
   afterEach(() => {

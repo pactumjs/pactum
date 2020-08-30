@@ -1,6 +1,6 @@
 const Interaction = require('../models/interaction');
 const Server = require('../models/server');
-const { PactumConfigurationError } = require('../helpers/errors');
+const { PactumConfigurationError, PactumInteractionError } = require('../helpers/errors');
 const log = require('../helpers/logger');
 const helper = require('../helpers/helper');
 
@@ -119,7 +119,6 @@ const config = require('../config');
 const mock = {
 
   _server: new Server(),
-  _interactionIds: new Set(),
 
   /**
    * starts server on specified port or defaults to 9393
@@ -192,7 +191,10 @@ const mock = {
    * @param {MockInteraction} interaction 
    */
   addMockInteraction(interaction) {
-    return this.addDefaultMockInteraction(interaction);
+    const interactionObj = new Interaction(interaction, true);
+    this._server.addMockInteraction(interactionObj.id, interactionObj);
+    log.debug('Added default mock interaction with id', interactionObj.id);
+    return interactionObj.id;
   },
 
   /**
@@ -200,7 +202,18 @@ const mock = {
    * @param {MockInteraction[]} interactions 
    */
   addMockInteractions(interactions) {
-    return this.addDefaultMockInteractions(interactions);
+    if (!Array.isArray(interactions)) {
+      throw new PactumInteractionError(`Invalid mock interactions array passed - ${interactions}`);
+    }
+    const ids = [];
+    for (let i = 0; i < interactions.length; i++) {
+      const interactionObj = new Interaction(interactions[i], true);
+      this._server.addMockInteraction(interactionObj.id, interactionObj);
+      ids.push(interactionObj.id);
+      // this._interactionIds.add(interactionObj.id);
+    }
+    log.debug('Added default mock interactions with ids', ids);
+    return ids;
   },
 
   /**
@@ -208,7 +221,10 @@ const mock = {
    * @param {PactInteraction} interaction 
    */
   addPactInteraction(interaction) {
-    return this.addDefaultPactInteraction(interaction);
+    const interactionObj = new Interaction(interaction);
+    this._server.addPactInteraction(interactionObj.id, interactionObj);
+    log.debug('Added default pact interactions with id', interactionObj.id);
+    return interactionObj.id;
   },
 
   /**
@@ -216,72 +232,14 @@ const mock = {
    * @param {PactInteraction[]} interactions 
    */
   addPactInteractions(interactions) {
-    return this.addDefaultPactInteractions(interactions);
-  },
-
-  /**
-   * @deprecated
-   * add a mock interaction to default list
-   * @param {MockInteraction} interaction - mock interaction
-   */
-  addDefaultMockInteraction(interaction) {
-    const interactionObj = new Interaction(interaction, true);
-    this._server.addMockInteraction(interactionObj.id, interactionObj);
-    this._interactionIds.add(interactionObj.id);
-    log.debug('Added default mock interaction with id', interactionObj.id);
-    return interactionObj.id;
-  },
-
-  /**
-   * @deprecated
-   * add mock interactions to default list
-   * @param {MockInteraction[]} interactions - mock interactions array
-   */
-  addDefaultMockInteractions(interactions) {
     if (!Array.isArray(interactions)) {
-      // use a new type of error
-      throw new PactumConfigurationError(`Invalid mock interactions array passed - ${interactions}`);
-    }
-    const ids = [];
-    for (let i = 0; i < interactions.length; i++) {
-      const interactionObj = new Interaction(interactions[i], true);
-      this._server.addMockInteraction(interactionObj.id, interactionObj);
-      ids.push(interactionObj.id);
-      this._interactionIds.add(interactionObj.id);
-    }
-    log.debug('Added default mock interactions with ids', ids);
-    return ids;
-  },
-
-  /**
-   * @deprecated
-   * add a pact interaction to default list
-   * @param {PactInteraction} interaction - pact interaction
-   */
-  addDefaultPactInteraction(interaction) {
-    const interactionObj = new Interaction(interaction);
-    this._server.addPactInteraction(interactionObj.id, interactionObj);
-    this._interactionIds.add(interactionObj.id);
-    log.debug('Added default pact interactions with id', interactionObj.id);
-    return interactionObj.id;
-  },
-
-  /**
-   * @deprecated
-   * add pact interactions to default list
-   * @param {PactInteraction[]} interactions - mock interactions array
-   */
-  addDefaultPactInteractions(interactions) {
-    if (!Array.isArray(interactions)) {
-      // use a new type of error
-      throw new PactumConfigurationError(`Invalid pact interactions array passed - ${interactions}`);
+      throw new PactumInteractionError(`Invalid pact interactions array passed - ${interactions}`);
     }
     const ids = [];
     for (let i = 0; i < interactions.length; i++) {
       const interactionObj = new Interaction(interactions[i], false);
       this._server.addPactInteraction(interactionObj.id, interactionObj);
       ids.push(interactionObj.id);
-      this._interactionIds.add(interactionObj.id);
     }
     log.debug('Added default pact interactions with ids', ids);
     return ids;
@@ -291,26 +249,11 @@ const mock = {
    * removes specified default interaction from server
    * @param {string} interactionId - id of the interaction
    */
-  removeDefaultInteraction(interactionId) {
+  removeInteraction(interactionId) {
     if (typeof interactionId !== 'string' || !interactionId) {
-      throw new PactumConfigurationError(`Invalid interaction id - ${interactionId}`);
+      throw new PactumInteractionError(`Invalid interaction id - ${interactionId}`);
     }
     this._server.removeInteraction(interactionId);
-  },
-
-  /**
-   * removes all default interactions
-   */
-  clearDefaultInteractions() {
-    const ids = [];
-    for (const id of this._interactionIds) {
-      ids.push(id);
-      this._server.removeInteraction(id);
-    }
-    for (let i = 0; i < ids.length; i++) {
-      this._interactionIds.delete(ids[i]);
-    }
-    log.debug('Cleared default interactions with ids', ids);
   },
 
   /**
