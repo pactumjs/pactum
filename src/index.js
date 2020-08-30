@@ -7,6 +7,7 @@ const provider = require('./exports/provider');
 const settings = require('./exports/settings');
 const handler = require('./exports/handler');
 const matchers = require('./exports/matcher');
+const state = require('./exports/state');
 
 /**
  * request method
@@ -103,6 +104,7 @@ const pactum = {
   provider,
   settings,
   handler,
+  state,
 
   /**
    * runs the specified state handler

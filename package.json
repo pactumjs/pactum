@@ -13,7 +13,9 @@
     "./mock": "./src/exports/mock.js",
     "./pact": "./src/exports/pact.js",
     "./provider": "./src/exports/provider.js",
-    "./request": "./src/exports/request.js"
+    "./request": "./src/exports/request.js",
+    "./settings": "./src/exports/settings.js",
+    "./state": "./src/exports/state.js"
   },
   "scripts": {
     "test": "npm run test:unit && npm run test:component",

@@ -1,5 +1,7 @@
 const pactum = require('../../src/index');
 const handler = require('../../src/exports/handler');
+const state = require('../../src/exports/state');
+const mock = require('../../src/exports/mock');
 const expect = require('chai').expect;
 
 describe('State', () => {
@@ -13,6 +15,11 @@ describe('State', () => {
         return: { id }
       });
     });
+    handler.addStateHandler('there is a user with id', (ctx) => {
+      mock.addInteraction({
+        get: `/api/users/${ctx.data}`
+      })
+    })
   });
 
   it('using a single sate in multiple specs', async () => {
@@ -46,6 +53,13 @@ describe('State', () => {
       err = error;
     }
     expect(err.message).equals('Custom State Handler Not Found - invalid state');
+  });
+
+  it('set state from state object', async () => {
+    await state.set('there is a user with id', 10);
+    await pactum
+      .get('http://localhost:9393/api/users/10')
+      .expectStatus(200);
   });
 
 });
