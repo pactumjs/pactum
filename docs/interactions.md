@@ -20,12 +20,12 @@ Interactions can be added or removed from the mock server in the following ways.
   * `pactum.addPactInteraction({ })` - auto removed after the test case execution
   * `pactum.addMockInteraction({ })` - auto removed after the test case execution
 * When using pactum as a **testing tool** or **mock server**
-  * `pactum.mock.addDefaultMockInteraction({ })`
-  * `pactum.mock.addDefaultPactInteraction({ })`
-  * `pactum.mock.addDefaultMockInteractions([{ }])`
-  * `pactum.mock.addDefaultPactInteractions([{ }])`
-  * `pactum.mock.removeDefaultInteraction('')`
-  * `pactum.mock.clearDefaultInteractions()`
+  * `pactum.mock.addMockInteraction({ })`
+  * `pactum.mock.addPactInteraction({ })`
+  * `pactum.mock.addMockInteractions([{ }])`
+  * `pactum.mock.addPactInteractions([{ }])`
+  * `pactum.mock.removeInteraction('')`
+  * `pactum.mock.reset()`
 * Through **remote api**
   * `/api/pactum/mockInteraction`
   * `/api/pactum/pactInteraction`
@@ -105,7 +105,7 @@ pactum.addMockInteraction({
 });
 
 // Dynamic Object (change behavior on consecutive calls)
-pactum.addDefaultMockInteraction({
+pactum.addMockInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/projects/1'

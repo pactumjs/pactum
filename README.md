@@ -112,7 +112,7 @@ it('should have a user with id', () => {
     // performs partial deep equal
     .expectJsonLike([
       {
-        "id": 1,
+        "id": /\d+/,
         "name": "Bolt",
         "address": [
           {
@@ -159,50 +159,24 @@ it('should add a new post', () => {
 });
 ```
 
-It also allows us to add custom retry handlers that are ideal to wait for specific conditions to happen before attempting to make assertions on the response.  
-
-```javascript
-const pactum = require('pactum');
-
-it('should get the newly added post', () => {
-  return pactum
-    .get('https://jsonplaceholder.typicode.com/posts/12')
-    .retry({
-      count: 2,
-      delay: 2000,
-      strategy: (req, res) => { return res.statusCode === 202 }
-    })
-    .expectStatus(200);
-});
-
-pactum.handler.addRetryHandler('waitForPost', (req, res) => { /* Custom Retry Strategy Code */});
-
-it('should get the newly added post', () => {
-  return pactum
-    .get('https://jsonplaceholder.typicode.com/posts/12')
-    .retry({
-      strategy: 'waitForPost' // Default Count: 3 & Delay: 1000 milliseconds
-    })
-    .expectStatus(200);
-});
-
-```
-
 ### Nested Dependent HTTP Calls
 
 API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to next tests using [json-query](https://www.npmjs.com/package/json-query) or custom functions.
 
 ```javascript
 const pactum = require('pactum');
+const expect = require('chai').expect;
 
 it('should return all posts and first post should have comments', async () => {
   const postID = await pactum
     .get('http://jsonplaceholder.typicode.com/posts')
     .expectStatus(200)
     .returns('[0].id');
-  await pactum
+  const response = await pactum
     .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
     .expectStatus(200);
+  const comments = response.json;
+  expect(comments).deep.equals([]);
 });
 
 pactum.handler.addReturnHandler('GetFirstPostId', (req, res) => { return res.json[0].id; });
@@ -218,6 +192,69 @@ it('return multiple data', async () => {
     .expectStatus(200);
   await pactum
     .get(`http://jsonplaceholder.typicode.com/posts/${ids[1]}/comments`)
+    .expectStatus(200);
+});
+```
+
+### State Handlers
+
+State handlers helps us to set up data or getting the application into specific state. **pactum** run these state handlers before making a request.
+
+```javascript
+const pactum = require('pactum');
+const handler = require('pactum/handler');
+const db = require('path/to/db');
+
+handler.addStateHandler('there are no users', async (ctx) => { 
+  await db.clearUsers();
+});
+
+it('should get an user', async () => {
+  await pactum
+    .setState('there are no users')
+    .get('/api/users')
+    .expectJson([]);
+});
+
+
+handler.addStateHandler('there is a user in the system', async (ctx) => { 
+  await db.addUser(ctx.data);
+});
+
+it('should get an user', async () => {
+  await pactum
+    .setState('there is a user in the system', { name: 'snow' })
+    .get('/api/users')
+    .expectStatus(200);
+});
+```
+
+### Retry Mechanism
+
+**pactum** also allows us to add custom retry handlers that are ideal to wait for specific conditions to happen before attempting to make assertions on the response.  
+
+```javascript
+const pactum = require('pactum');
+
+it('should get the newly added post', async () => {
+  await pactum
+    .get('https://jsonplaceholder.typicode.com/posts/12')
+    .retry({
+      count: 2,
+      delay: 2000,
+      strategy: (req, res) => { return res.statusCode === 202 }
+    })
+    .expectStatus(200);
+});
+
+pactum.handler.addRetryHandler('waitForPost', (req, res) => { /* Custom Retry Strategy Code */});
+
+it('should get the newly added post', async () => {
+  await pactum
+    .get('https://jsonplaceholder.typicode.com/posts/12')
+    .retry({
+      strategy: 'waitForPost' // Default Count: 3 & Delay: 1000 milliseconds
+    })
     .expectStatus(200);
 });
 ```

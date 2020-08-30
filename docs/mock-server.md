@@ -56,14 +56,14 @@ Stops the mock server.
 pactum.mock.stop();
 ```
 
-#### addDefaultMockInteraction
+#### addMockInteraction
 Type: `Function`<br>
 Returns: `string` - interaction id
 
 Adds a mock interaction to the server.
 
 ```javascript
-pactum.mock.addDefaultMockInteraction({
+pactum.mock.addMockInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/projects/1'
@@ -81,14 +81,14 @@ pactum.mock.addDefaultMockInteraction({
 });
 ```
 
-#### addDefaultMockInteractions
+#### addMockInteractions
 Type: `Function`<br>
 Returns: `string[]` - interaction id's
 
 Adds multiple mock interactions to the server.
 
 ```javascript
-pactum.mock.addDefaultMockInteractions([
+pactum.mock.addMockInteractions([
   {
     withRequest: {
       method: 'GET',
@@ -235,7 +235,7 @@ const pactum = require('pactum');
 
 pactum.mock.setDefaultPort(3000);
 
-pactum.mock.addDefaultMockInteraction({
+pactum.mock.addMockInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/projects/1'

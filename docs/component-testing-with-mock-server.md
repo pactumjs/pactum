@@ -110,7 +110,7 @@ after(async () => {
 ```
 
 The scope of each interaction added through `pactum.addMockInteraction()` will be restricted to current spec (`it` block)
-To add mock interactions that will be consumed in all the specs use - `pactum.mock.addDefaultMockInteraction()`
+To add mock interactions that will be consumed in all the specs use - `pactum.mock.addMockInteraction()`
 
 ```javascript
 const pactum = require('pactum');
@@ -119,7 +119,7 @@ before(async () => {
   await pactum.mock.start();
 
   // adds a default mock interaction
-  pactum.mock.addDefaultMockInteraction({
+  pactum.mock.addMockInteraction({
     withRequest: {
       method: 'GET',
       path: '/api/currency/INR'
@@ -173,7 +173,7 @@ after(async () => {
 Methods to add a mock interaction:
 
 * `pactum.addMockInteraction()`
-* `pactum.mock.addDefaultMockInteraction()`
+* `pactum.mock.addMockInteraction()`
 
 | Property                | Type    | Required | Description                |
 | ----------------------- | ------- | -------- | -------------------------- |
