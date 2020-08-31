@@ -117,8 +117,7 @@ const pactum = {
    *  .expectStatus(200);
    */
   setState(name, data) {
-    const spec = new Spec(mock._server);
-    return spec.setState(name, data);
+    return new Spec().setState(name, data);
   },
 
   /**
@@ -137,8 +136,7 @@ const pactum = {
    *  .expectStatus(200);
    */
   addInteraction(interaction) {
-    const spec = new Spec(mock._server);
-    return spec.addInteraction(interaction);
+    return new Spec().addInteraction(interaction);
   },
 
   /**
@@ -170,8 +168,7 @@ const pactum = {
    *   });
    */
   addMockInteraction(interaction) {
-    const spec = new Spec(mock._server);
-    return spec.addMockInteraction(interaction);
+    return new Spec().addMockInteraction(interaction);
   },
 
   /**
@@ -206,8 +203,7 @@ const pactum = {
    *   });
    */
   addPactInteraction(interaction) {
-    const spec = new Spec(mock._server);
-    return spec.addPactInteraction(interaction);
+    return new Spec().addPactInteraction(interaction);
   },
 
   /**
@@ -224,7 +220,7 @@ const pactum = {
    *   });
    */
   get(url) {
-    return new Spec(mock._server).get(url);
+    return new Spec().get(url);
   },
 
   /**
@@ -232,7 +228,7 @@ const pactum = {
    * @param {string} url - HTTP url
    */
   head(url) {
-    return new Spec(mock._server).head(url);
+    return new Spec().head(url);
   },
 
   /**
@@ -247,7 +243,7 @@ const pactum = {
    *  .expectStatus(200);
    */
   patch(url) {
-    return new Spec(mock._server).patch(url);
+    return new Spec().patch(url);
   },
 
   /**
@@ -264,7 +260,7 @@ const pactum = {
    *  .expectStatus(201);
    */
   post(url) {
-    return new Spec(mock._server).post(url);
+    return new Spec().post(url);
   },
 
   /**
@@ -282,7 +278,7 @@ const pactum = {
    *  .expectStatus(200);
    */
   put(url) {
-    return new Spec(mock._server).put(url);
+    return new Spec().put(url);
   },
 
   /**
@@ -294,7 +290,7 @@ const pactum = {
    *  .expectStatus(200);
    */
   delete(url) {
-    return new Spec(mock._server).delete(url);
+    return new Spec().delete(url);
   }
 
 };

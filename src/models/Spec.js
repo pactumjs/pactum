@@ -6,7 +6,7 @@ const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
-const config = require('../config');
+const mock = require('../exports/mock');
 
 /**
  * request method
@@ -95,7 +95,7 @@ const config = require('../config');
 
 class Spec {
 
-  constructor(server) {
+  constructor() {
     this.id = helper.getRandomId();
     this._request = {};
     this._response = {};
@@ -103,7 +103,7 @@ class Spec {
     this._expect = new Expect();
     this._state = new State();
     this.previousLogLevel = null;
-    this.server = server;
+    this.server = mock._server;
     this.mockInteractions = new Map();
     this.pactInteractions = new Map();
   }
@@ -329,25 +329,6 @@ class Spec {
 
   /**
    * appends query param to the request url - /comments?postId=1
-   * @deprecated use withQueryParam
-   * @see withQueryParam
-   */
-  withQuery(key, value) {
-    if (!helper.isValidString(key)) {
-      throw new PactumRequestError(`Invalid key in query parameter for request - ${key}`);
-    }
-    if (value === undefined || value === null) {
-      throw new PactumRequestError(`Invalid value in query parameter for request - ${value}`);
-    }
-    if (this._request.qs === undefined) {
-      this._request.qs = {};
-    }
-    this._request.qs[key] = value;
-    return this;
-  }
-
-  /**
-   * appends query param to the request url - /comments?postId=1
    * @param {string} key - query parameter key
    * @param {string} value - query parameter value
    * @example
@@ -359,7 +340,17 @@ class Spec {
    * @summary generated url will look like - /comments?postId=1&userId=2
    */
   withQueryParam(key, value) {
-    return this.withQuery(key, value);
+    if (!helper.isValidString(key)) {
+      throw new PactumRequestError(`Invalid key in query parameter for request - ${key}`);
+    }
+    if (value === undefined || value === null) {
+      throw new PactumRequestError(`Invalid value in query parameter for request - ${value}`);
+    }
+    if (this._request.qs === undefined) {
+      this._request.qs = {};
+    }
+    this._request.qs[key] = value;
+    return this;
   }
 
   /**
