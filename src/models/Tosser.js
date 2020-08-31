@@ -139,7 +139,7 @@ class Tosser {
 }
 
 function setBaseUrl(request) {
-  if (config.request.baseUrl) {
+  if (config.request.baseUrl && !request.url.startsWith('http')) {
     request.url = config.request.baseUrl + request.url;
   }
 }
