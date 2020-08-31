@@ -111,10 +111,15 @@ class LikeJson {
       const eItem = expected[i];
       let aItem = actual[i];
       const newExpectedPath = expectedPath + `[${i}]`;
-      const actualPathResp = this.compare(aItem, eItem, newExpectedPath, newExpectedPath);
-      if (actualPathResp === '') {
-        seen.add(i);
-        continue;
+      let actualPathResp = '';
+      if (seen.has(i)) {
+        actualPathResp = `Json doesn't have expected value at '${newExpectedPath}'`;
+      } else {
+        actualPathResp = this.compare(aItem, eItem, newExpectedPath, newExpectedPath);
+        if (actualPathResp === '') {
+          seen.add(i);
+          continue;
+        }
       }
       for (let j = i + 1; j < actual.length; j++) {
         if (!seen.has(j)) {

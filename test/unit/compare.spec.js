@@ -461,6 +461,23 @@ describe('JSON Like - Array', () => {
     expect(res.message).equals(`Json doesn't have value '3' at '$[1][0]' but found '2'`);
   });
 
+  it('array equals - multiple expected items - number', () => {
+    const actual = [1, 2, 3, 2];
+    const expected = [2, 2];
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('array not equals - multiple expected items - number', () => {
+    const actual = [1, 2, 3];
+    const expected = [2, 2];
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have expected value at '$[1]'`);
+  });
+
 });
 
 describe('JSON Like Array of Objects', () => {
@@ -1150,7 +1167,7 @@ describe('JSON Like Array of Objects', () => {
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
-    expect(res.message).equals(`Json doesn't have value '1' at '$[3].id' but found '4'`);
+    expect(res.message).equals(`Json doesn't have expected value at '$[3]'`);
   });
 
 });
