@@ -1,2 +1,2 @@
-const Matcher = require('../models/matcher');
-module.exports = new Matcher();
+const matchers = require('../models/matcher');
+module.exports = matchers;

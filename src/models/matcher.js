@@ -1,5 +1,6 @@
 const { PactumMatcherError } = require('../helpers/errors');
-class Matcher {
+
+const matcher = {
 
   /**
    * type matching
@@ -7,7 +8,7 @@ class Matcher {
    */
   like(value) {
     return like(value);
-  }
+  },
 
   /**
    * type matching
@@ -15,7 +16,7 @@ class Matcher {
    */
   somethingLike(value) {
     return like(value);
-  }
+  },
 
   /**
    * regex matching
@@ -25,7 +26,7 @@ class Matcher {
    */
   term(options) {
     return term(options);
-  }
+  },
 
   /**
    * regex matching
@@ -35,7 +36,7 @@ class Matcher {
    */
   regex(options) {
     return term(options);
-  }
+  },
 
   /**
    * array matcher
@@ -58,7 +59,7 @@ class Matcher {
       json_class: "Pact::ArrayLike",
       min,
     };
-  }
+  },
 
   /**
    * contains matching
@@ -127,4 +128,4 @@ function term(options) {
   };
 }
 
-module.exports = Matcher;
+module.exports = matcher;

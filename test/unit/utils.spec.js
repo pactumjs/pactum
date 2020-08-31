@@ -1,14 +1,13 @@
 const expect = require('chai').expect;
 
 const Interaction = require('../../src/models/interaction');
-const Matcher = require('../../src/models/matcher');
+const matcher = require('../../src/models/matcher');
 const utils = require('../../src/helpers/utils');
 
 describe('getMatchingInteraction', () => {
 
   beforeEach(() => {
     this.interactionsMap = new Map();
-    this.matcher = new Matcher();
   });
 
   it('single - matching', () => {
@@ -276,8 +275,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: this.matcher.like('1'),
-          name: this.matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: matcher.like('1'),
+          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
           married: 'true'
         }
       },
@@ -313,8 +312,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: this.matcher.like('1'),
-          name: this.matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
+          id: matcher.like('1'),
+          name: matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
           married: 'true'
         }
       },
@@ -350,8 +349,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: this.matcher.like('1'),
-          name: this.matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
+          id: matcher.like('1'),
+          name: matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
           married: 'true'
         }
       },
@@ -504,8 +503,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         body: {
-          id: this.matcher.like('1'),
-          name: this.matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: matcher.like('1'),
+          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
           married: 'true'
         }
       },
@@ -542,8 +541,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         body: {
-          id: this.matcher.like('1'),
-          name: this.matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
+          id: matcher.like('1'),
+          name: matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
           married: 'true'
         }
       },
@@ -580,8 +579,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         body: {
-          id: this.matcher.like('1'),
-          name: this.matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
+          id: matcher.like('1'),
+          name: matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
           married: 'true'
         }
       },
@@ -617,13 +616,13 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: this.matcher.like('1'),
-          name: this.matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: matcher.like('1'),
+          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
           married: 'true'
         },
         body: {
-          id: this.matcher.like('1'),
-          name: this.matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: matcher.like('1'),
+          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
           married: 'true'
         }
       },
@@ -664,12 +663,12 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: this.matcher.like('1'),
-          name: this.matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: matcher.like('1'),
+          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
           married: 'true'
         },
         body: {
-          id: this.matcher.like('1'),
+          id: matcher.like('1'),
           married: 'true'
         }
       },

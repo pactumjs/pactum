@@ -1,8 +1,7 @@
 const expect = require('chai').expect;
 const helper = require('../../src/helpers/helper');
-const Matcher = require('../../src/models/matcher');
+const matcher = require('../../src/models/matcher');
 
-const matcher = new Matcher();
 const { like, term, eachLike } = matcher;
 
 describe('helper - setValueFromMatcher', () => {

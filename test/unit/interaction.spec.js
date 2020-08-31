@@ -2,14 +2,13 @@ const expect = require('chai').expect;
 const sandbox = require('sinon').createSandbox();
 
 const Interaction = require('../../src/models/interaction');
-const Matcher = require('../../src/models/matcher');
+const matcher = require('../../src/models/matcher');
 const helper = require('../../src/helpers/helper');
 const config = require('../../src/config');
 
 describe('Interaction - Mock', () => {
 
   before(() => {
-    this.matcher = new Matcher();
     this.helperGetRandomIdStub = sandbox.stub(helper, 'getRandomId');
   });
 
@@ -183,8 +182,8 @@ describe('Interaction - Mock', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: this.matcher.like(1),
-          name: this.matcher.regex({ generate: 'Jon', matcher: '/\w+/g' })
+          id: matcher.like(1),
+          name: matcher.regex({ generate: 'Jon', matcher: '/\w+/g' })
         }
       },
       willRespondWith: {
@@ -384,8 +383,8 @@ describe('Interaction - Mock', () => {
         method: 'GET',
         path: '/api/projects/1',
         body: {
-          id: this.matcher.like(1),
-          name: this.matcher.regex({ generate: 'Jon', matcher: '/\w+/g' })
+          id: matcher.like(1),
+          name: matcher.regex({ generate: 'Jon', matcher: '/\w+/g' })
         }
       },
       willRespondWith: {
@@ -1166,7 +1165,6 @@ describe('Interaction - Mock', () => {
 describe('Interaction - Pact', () => {
 
   before(() => {
-    this.matcher = new Matcher();
     this.helperGetRandomIdStub = sandbox.stub(helper, 'getRandomId');
   });
 
