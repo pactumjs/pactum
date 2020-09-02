@@ -13,6 +13,11 @@ const config = {
     baseUrl: process.env.PACTUM_REQUEST_BASE_URL || '',
     timeout: process.env.PACTUM_REQUEST_TIMEOUT ? parseInt(process.env.PACTUM_REQUEST_TIMEOUT) : 3000,
     headers: {}
+  },
+  data: {
+    template: {
+      processed: false
+    }
   }
 };
 
