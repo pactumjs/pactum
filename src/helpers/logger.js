@@ -1,4 +1,4 @@
-const colors = require('colors');
+const { options, cyan, magenta, blue, green, yellow, red } = require('./colors');
 
 const LEVEL_TRACE = 3;
 const LEVEL_DEBUG = 4;
@@ -36,7 +36,7 @@ class Logger {
     this.level = process.env.PACTUM_LOG_LEVEL || 'INFO';
     this.levelValue = getLevelValue(this.level);
     if (process.env.PACTUM_DISABLE_LOG_COLORS === 'true') {
-      colors.disable();
+      options.disableColors = true;
     }
   }
 
@@ -51,35 +51,35 @@ class Logger {
 
   trace(...msg) {
     if (this.levelValue <= LEVEL_TRACE) {
-      process.stdout.write(`${'PACTUM'.cyan} ${'TRACE'.magenta} `);
+      process.stdout.write(`${cyan('PACTUM')} ${magenta('TRACE')} `);
       this.console.debug(...msg);
     }
   }
 
   debug(...msg) {
     if (this.levelValue <= LEVEL_DEBUG) {
-      process.stdout.write(`${'PACTUM'.cyan} ${'DEBUG'.blue} `);
+      process.stdout.write(`${cyan('PACTUM')} ${blue('DEBUG')} `);
       this.console.debug(...msg);
     }
   }
 
   info(...msg) {
     if (this.levelValue <= LEVEL_INFO) {
-      process.stdout.write(`${'PACTUM'.cyan} ${'INFO'.green} `);
+      process.stdout.write(`${cyan('PACTUM')} ${green('INFO')} `);
       this.console.info(...msg);
     }
   }
 
   warn(...msg) {
     if (this.levelValue <= LEVEL_WARN) {
-      process.stdout.write(`${'PACTUM'.cyan} ${'WARN'.yellow} `);
+      process.stdout.write(`${cyan('PACTUM')} ${yellow('WARN')} `);
       this.console.warn(...msg);
     }
   }
 
   error(...msg) {
     if (this.levelValue <= LEVEL_ERROR) {
-      process.stdout.write(`${'PACTUM'.cyan} ${'ERROR'.red} `);
+      process.stdout.write(`${cyan('PACTUM')} ${red('ERROR')} `);
       this.console.error(...msg);
     }
   }

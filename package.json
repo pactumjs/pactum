@@ -56,7 +56,6 @@
   "author": "Anudeep <asa.anudeep4@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "colors": "^1.4.0",
     "deep-extend": "^0.6.0",
     "djv": "^2.1.3-alpha.0",
     "form-data": "^3.0.0",
