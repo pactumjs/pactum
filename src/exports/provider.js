@@ -3,6 +3,7 @@ const fs = require('fs');
 const helper = require('../helpers/helper');
 const Compare = require('../helpers/compare');
 const log = require('../helpers/logger');
+const { gray, green, red } = require('../helpers/colors');
 const { PactumConfigurationError } = require('../helpers/errors');
 
 /**
@@ -150,12 +151,12 @@ class Provider {
       const isValid = await this._validateInteraction(interaction);
       if (isValid.equal) {
         this.testPassedCount = this.testPassedCount + 1;
-        log.info(`     ${'√'.green} ${interaction.description.gray}`);
+        log.info(`     ${green('√')} ${gray(interaction.description)}`);
       } else {
         success = false;
         this.testFailedCount = this.testFailedCount + 1;
-        log.info(`     ${'X'.red} ${interaction.description.gray}`);
-        log.error(`       ${isValid.message.red}`);
+        log.info(`     ${red('X')} ${gray(interaction.description)}`);
+        log.error(`       ${red(isValid.message)}`);
       }
     }
     return success;
@@ -306,9 +307,9 @@ class Provider {
 
   printSummary() {
     log.info();
-    log.info(` ${this.testPassedCount} passing`.green);
+    log.info(green(` ${this.testPassedCount} passing`));
     if (this.testFailedCount > 0) {
-      log.info(` ${this.testFailedCount} failing`.red);
+      log.info(red(` ${this.testFailedCount} failing`));
       throw 'Provider Verification Failed';
     }
   }
