@@ -1,6 +1,6 @@
 const config = require('../config');
 
-const dataTemplate = {};
+let dataTemplate = {};
 
 const loader = {
 
@@ -25,6 +25,10 @@ const loader = {
 
   getDataTemplate() {
     return dataTemplate;
+  },
+
+  resetDataTemplate() {
+    dataTemplate = {};
   }
 
 };

@@ -1,13 +1,14 @@
 const extend = require('deep-extend');
 
 const loader = require('../exports/loader');
+const logger = require('./logger');
 const config = require('../config');
 
 const dataProcessor = {
 
   template: {},
 
-  processTemplate() {
+  processTemplates() {
     if (!config.data.template.processed) {
       const orgTemplate = loader.getDataTemplate();
       this.template = JSON.parse(JSON.stringify(orgTemplate));
@@ -16,15 +17,11 @@ const dataProcessor = {
     }
   },
 
-  processData() {
-
-  },
-
   processDataTemplates(data) {
     if (typeof data !== 'object') return data;
     if (!data) return data;
     const templateName = data['@DATA:TEMPLATE@'];
-    const overrides = data['@OVERRIDES@'];
+    const overrides = data['@EXTENDS@'];
     if (templateName) {
       const templateValue = this.template[templateName];
       if (templateValue) {
@@ -35,8 +32,7 @@ const dataProcessor = {
           data = this.processDataTemplates(data);
         }
       } else {
-        console.log('Template Not Found')
-        // template not found
+        logger.warn(`Template Not Found - ${templateName}`);
       }
     } else {
       for (prop in data) {
