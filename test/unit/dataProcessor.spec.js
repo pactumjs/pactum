@@ -10,6 +10,7 @@ describe('Data Processing - Templates', () => {
     config.data.template.processed = false;
     dp.processTemplates();
     expect(dp.template).deep.equals({});
+    expect(config.data.template.enabled).equals(false);
     expect(config.data.template.processed).equals(true);
   });
 
@@ -71,6 +72,7 @@ describe('Data Processing - Templates', () => {
         'Zip': '524004'
       }
     });
+    expect(config.data.template.enabled).equals(true);
     expect(config.data.template.processed).equals(true);
   });
 
@@ -159,6 +161,7 @@ describe('Data Processing - Templates', () => {
   });
 
   afterEach(() => {
+    config.data.template.enabled = false;
     config.data.template.processed = false;
     ld.resetDataTemplates();
   })

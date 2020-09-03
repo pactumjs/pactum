@@ -4,6 +4,7 @@ const helper = require('../helpers/helper');
 const config = require('../config');
 const log = require('../helpers/logger');
 const handler = require('../exports/handler');
+const processor = require('../helpers/dataProcessor');
 
 class Tosser {
 
@@ -42,6 +43,8 @@ class Tosser {
     this.request.timeout = this.request.timeout || config.request.timeout;
     setHeaders(this.request);
     setMultiPartFormData(this.request);
+    processor.processTemplates();
+    this.request.data = processor.processData(this.request.data);
   }
 
   setState() {

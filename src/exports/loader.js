@@ -30,6 +30,7 @@ const loader = {
   resetDataTemplates() {
     dataTemplate = {};
     config.data.template.processed = false;
+    config.data.template.enabled = false;
   }
 
 };

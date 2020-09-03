@@ -14,11 +14,16 @@ const dataProcessor = {
       this.template = JSON.parse(JSON.stringify(orgTemplate));
       this.template = this.processDataTemplates(this.template);
       config.data.template.processed = true;
+      if (Object.keys(this.template).length > 0) {
+        config.data.template.enabled = true;
+      }
     }
   },
 
   processData(data) {
-    data = this.processDataTemplates(data);
+    if (config.data.template.enabled) {
+      data = this.processDataTemplates(data);
+    }
     return data;
   },
 

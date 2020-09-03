@@ -16,6 +16,7 @@ const config = {
   },
   data: {
     template: {
+      enabled: false,
       processed: false
     }
   }
