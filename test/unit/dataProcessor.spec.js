@@ -41,13 +41,13 @@ describe('Data Processing - Templates', () => {
     expect(config.data.template.processed).equals(true);
   });
 
-  it('processTemplates - simple with Extends', () => {
+  it('processTemplates - simple with Overrides', () => {
     ld.loadDataTemplate({
       'User': {
         'Name': 'Snow',
         'Address': {
           '@DATA:TEMPLATE@': 'Address',
-          '@EXTENDS@': {
+          '@OVERRIDES@': {
             'Zip': '524003'
           }
         }
@@ -95,33 +95,33 @@ describe('Data Processing - Templates', () => {
     expect(config.data.template.processed).equals(true);
   });
 
-  it('processTemplates - complex array of objects with Extends', () => {
+  it('processTemplates - complex array of objects with Overrides', () => {
     ld.loadDataTemplate({
       'User': {
         'Name': 'Snow',
         'Age': 12,
         'Nation': 'The North',
-        'Address': [
-          {
-            '@DATA:TEMPLATE@': 'Address',
-            '@EXTENDS@': {
-              'Castle': 'The Wall'
-            }
-          },
-          {
-            '@DATA:TEMPLATE@': 'Address'
-          }
-        ]
+        'Address': []
       },
       'Address': {
         'Castle': 'WinterFell',
         'Region': 'North'
       },
-      'User:NoAddress': {
+      'User:Address': {
         '@DATA:TEMPLATE@': 'User',
-        '@EXTENDS@': {
+        '@OVERRIDES@': {
           'Hostage': null,
-          'Address': [] 
+          'Address': [
+            {
+              '@DATA:TEMPLATE@': 'Address',
+              '@OVERRIDES@': {
+                'Castle': 'The Wall'
+              }
+            },
+            {
+              '@DATA:TEMPLATE@': 'Address'
+            }
+          ] 
         }
       }
     });
@@ -131,6 +131,13 @@ describe('Data Processing - Templates', () => {
         'Name': 'Snow',
         'Age': 12,
         'Nation': 'The North',
+        'Address': []
+      },
+      'Address': {
+        'Castle': 'WinterFell',
+        'Region': 'North'
+      },
+      'User:Address': {
         'Address': [
           {
             'Castle': 'The Wall',
@@ -141,13 +148,7 @@ describe('Data Processing - Templates', () => {
             'Region': 'North'
           }
         ]
-      },
-      'Address': {
-        'Castle': 'WinterFell',
-        'Region': 'North'
-      },
-      'User:NoAddress': {
-        'Address': [],
+,
         'Age': 12,
         'Name': 'Snow',
         'Nation': 'The North',
@@ -180,7 +181,7 @@ describe('Data Processing - Data', () => {
         },
         {
           '@DATA:TEMPLATE@': 'User',
-          '@EXTENDS@': {
+          '@OVERRIDES@': {
             Age: 12
           }
         }
@@ -253,10 +254,10 @@ describe('Data Processing - Data', () => {
     ]);
   });
 
-  it('processData - with basic template with extends - object', () => {
+  it('processData - with basic template with overrides - object', () => {
     let data = {
       '@DATA:TEMPLATE@': 'User',
-      '@EXTENDS@': {
+      '@OVERRIDES@': {
         Name: 'Stark',
         Address: [
           {
@@ -276,11 +277,10 @@ describe('Data Processing - Data', () => {
     });
   });
 
-  // not working as expected for arrays at root
-  xit('processData - with basic template & extends - array', () => {
+  it('processData - with basic template & overrides - array', () => {
     let data = {
       '@DATA:TEMPLATE@': 'Users',
-      '@EXTENDS@': [
+      '@OVERRIDES@': [
         {
           Name: 'Stark'
         }
@@ -289,7 +289,7 @@ describe('Data Processing - Data', () => {
     data = dp.processData(data);
     expect(data).deep.equals([
       {
-        Name: 'Snow'
+        Name: 'Stark'
       },
       {
         Name: 'Snow',

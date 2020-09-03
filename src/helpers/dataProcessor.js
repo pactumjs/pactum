@@ -1,4 +1,4 @@
-const extend = require('deep-extend');
+const override = require('deep-override');
 
 const loader = require('../exports/loader');
 const logger = require('./logger');
@@ -26,14 +26,14 @@ const dataProcessor = {
     if (typeof data !== 'object') return data;
     if (!data) return data;
     const templateName = data['@DATA:TEMPLATE@'];
-    const overrides = data['@EXTENDS@'];
+    const overrides = data['@OVERRIDES@'];
     if (templateName) {
       const templateValue = this.template[templateName];
       if (templateValue) {
         data = JSON.parse(JSON.stringify(templateValue));
         data = this.processDataTemplates(data);
         if (overrides) {
-          extend(data, overrides);
+          override(data, overrides);
           data = this.processDataTemplates(data);
         }
       } else {
