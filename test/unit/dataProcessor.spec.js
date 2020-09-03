@@ -4,7 +4,7 @@ const dp = require('../../src/helpers/dataProcessor');
 const ld = require('../../src/exports/loader');
 const config = require('../../src/config');
 
-describe('Data Processing - Processing Templates', () => {
+describe('Data Processing - Templates', () => {
 
   it('processTemplates - empty template', () => {
     config.data.template.processed = false;
@@ -159,7 +159,147 @@ describe('Data Processing - Processing Templates', () => {
 
   afterEach(() => {
     config.data.template.processed = false;
-    ld.resetDataTemplate();
+    ld.resetDataTemplates();
   })
+
+});
+
+describe('Data Processing - Data', () => {
+
+  before(() => {
+    ld.resetDataTemplates();
+    ld.loadDataTemplate({
+      'User': {
+        Name: 'Snow'
+      }
+    });
+    ld.loadDataTemplate({
+      'Users': [
+        {
+          '@DATA:TEMPLATE@': 'User'
+        },
+        {
+          '@DATA:TEMPLATE@': 'User',
+          '@EXTENDS@': {
+            Age: 12
+          }
+        }
+      ]
+    });
+    dp.processTemplates();
+  });
+
+  it('processData - empty object', () => {
+    let data = {}
+    data = dp.processData(data);
+    expect(data).deep.equals({});
+  });
+
+  it('processData - null', () => {
+    let data = null;
+    data = dp.processData(data);
+    expect(data).to.be.null;
+  });
+
+  it('processData - empty string', () => {
+    let data = '';
+    data = dp.processData(data);
+    expect(data).equals('');
+  });
+
+  it('processData - non empty string', () => {
+    let data = 'Hello';
+    data = dp.processData(data);
+    expect(data).equals('Hello');
+  });
+
+  it('processData - no template', () => {
+    let data = {
+      Name: 'King',
+      Age: 12,
+      Country: null
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals({
+      Name: 'King',
+      Age: 12,
+      Country: null
+    });
+  });
+
+  it('processData - with basic template - object', () => {
+    let data = {
+      '@DATA:TEMPLATE@': 'User'
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals({
+      Name: 'Snow'
+    });
+  });
+
+  it('processData - with basic template - array', () => {
+    let data = {
+      '@DATA:TEMPLATE@': 'Users'
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals([
+      {
+        Name: 'Snow'
+      },
+      {
+        Name: 'Snow',
+        Age: 12
+      }
+    ]);
+  });
+
+  it('processData - with basic template with extends - object', () => {
+    let data = {
+      '@DATA:TEMPLATE@': 'User',
+      '@EXTENDS@': {
+        Name: 'Stark',
+        Address: [
+          {
+            Street: 'Kings Road'
+          }
+        ]
+      }
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals({
+      Name: 'Stark',
+      Address: [
+        {
+          Street: 'Kings Road'
+        }
+      ]
+    });
+  });
+
+  // not working as expected for arrays at root
+  xit('processData - with basic template & extends - array', () => {
+    let data = {
+      '@DATA:TEMPLATE@': 'Users',
+      '@EXTENDS@': [
+        {
+          Name: 'Stark'
+        }
+      ]
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals([
+      {
+        Name: 'Snow'
+      },
+      {
+        Name: 'Snow',
+        Age: 12
+      }
+    ]);
+  });
+
+  after(() => {
+    ld.resetDataTemplates();
+  });
 
 });

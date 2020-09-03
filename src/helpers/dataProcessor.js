@@ -17,6 +17,11 @@ const dataProcessor = {
     }
   },
 
+  processData(data) {
+    data = this.processDataTemplates(data);
+    return data;
+  },
+
   processDataTemplates(data) {
     if (typeof data !== 'object') return data;
     if (!data) return data;

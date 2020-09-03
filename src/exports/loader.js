@@ -27,8 +27,9 @@ const loader = {
     return dataTemplate;
   },
 
-  resetDataTemplate() {
+  resetDataTemplates() {
     dataTemplate = {};
+    config.data.template.processed = false;
   }
 
 };
