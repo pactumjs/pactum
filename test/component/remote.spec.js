@@ -7,7 +7,7 @@ describe('Remote- post single mock interaction', () => {
   let id;
 
   before(async () => {
-    mock.reset();
+    mock.clearInteractions();
     id = await pactum
       .post('http://localhost:9393/api/pactum/mockInteraction')
       .withJson([{
@@ -395,7 +395,7 @@ describe('Remote - Save Pacts', () => {
   afterEach(() => {
     store.pacts.clear();
     store.interactionExerciseCounter.clear();
-    mock.reset();
+    mock.clearInteractions();
   });
 
 });
@@ -673,7 +673,7 @@ describe('Remote - Publish Pacts', () => {
   afterEach(() => {
     store.pacts.clear();
     store.interactionExerciseCounter.clear();
-    mock.reset();
+    mock.clearInteractions();
   });
 
 });

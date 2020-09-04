@@ -259,8 +259,24 @@ const mock = {
   /**
    * clear all interactions
    */
-  reset() {
+  clearInteractions() {
     this._server.clearAllInteractions();
+  },
+
+  /**
+   * returns true if interaction is exercised
+   * @param {string} id - id of the interaction
+   */
+  isInteractionExercised(id) {
+    return this._server.getInteractionDetails(id).exercised;
+  },
+
+  /**
+   * returns interaction call count
+   * @param {string} id - id of the interaction
+   */
+  getInteractionCallCount(id) {
+    return this._server.getInteractionDetails(id).callCount;
   }
 
 }

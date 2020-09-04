@@ -1312,7 +1312,7 @@ describe('Provider Verification - Pact Broker', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.clearInteractions();
   });
 
   after(() => {
@@ -1374,7 +1374,7 @@ describe('Provider Verification - Local Pacts', () => {
   });
 
   afterEach(() => {
-    mock.reset();
+    mock.clearInteractions();
   });
 
   after(() => {

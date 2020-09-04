@@ -24,8 +24,8 @@ Interactions can be added or removed from the mock server in the following ways.
   * `pactum.mock.addPactInteraction({ })`
   * `pactum.mock.addMockInteractions([{ }])`
   * `pactum.mock.addPactInteractions([{ }])`
-  * `pactum.mock.removeInteraction('')`
-  * `pactum.mock.reset()`
+  * `pactum.mock.removeInteraction('id')`
+  * `pactum.mock.clearInteractions()`
 * Through **remote api**
   * `/api/pactum/mockInteraction`
   * `/api/pactum/pactInteraction`

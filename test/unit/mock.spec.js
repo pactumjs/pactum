@@ -269,6 +269,11 @@ describe('Mock', () => {
     expect(() => { mock.addPactInteractions(rawInteraction); }).throws('Invalid pact interactions array passed');
   });
 
+  it('getInteractionCallCount - not exist', () => {
+    const count = mock.getInteractionCallCount('NOT_EXIST');
+    expect(count).equals(0);
+  });
+
   afterEach(() => {
     sandbox.restore();
   });

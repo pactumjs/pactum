@@ -95,6 +95,21 @@ class Server {
     this.clearPactInteractions();
   }
 
+  getInteractionDetails(id) {
+    let interaction = {};
+    if (this.mockInteractions.has(id)) {
+      interaction = this.mockInteractions.get(id);  
+    } else if (this.pactInteractions.has(id)) {
+      interaction = this.pactInteractions.get(id);
+    } else {
+      log.warn(`Interaction Not Found - ${id}`);
+    }
+    return {
+      exercised: interaction.exercised || false,
+      callCount: interaction.count || 0
+    }
+  }
+
 }
 
 /**

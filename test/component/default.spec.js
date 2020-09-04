@@ -1,3 +1,4 @@
+const expect = require('chai').expect;
 const pactum = require('../../src/index');
 const mock = require('../../src/exports/mock');
 const config = require('../../src/config');
@@ -6,6 +7,7 @@ describe('Pact - Default Mock Interaction', () => {
 
   before(() => {
     mock.addMockInteraction({
+      id: 'GET_FIRST_PROJECT',
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -50,14 +52,23 @@ describe('Pact - Default Mock Interaction', () => {
   });
 
   it('GET - one interaction', async () => {
+    expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(0, 'interaction should be called once');
+    expect(mock.isInteractionExercised('GET_FIRST_PROJECT')).equals(false, 'interaction should not be exercised');
     await pactum
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
         name: 'fake'
-      })
-      .toss();
+      });
+    expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(1, 'interaction should be called once');
+    expect(mock.isInteractionExercised('GET_FIRST_PROJECT')).equals(true, 'interaction should be exercised');
+    await pactum
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(200)
+    expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(2, 'interaction should be called twice');
+    expect(mock.isInteractionExercised('GET_FIRST_PROJECT')).equals(true, 'interaction should be exercised');
+
   });
 
   it('GET - one interaction - with multiple queries', async () => {
@@ -126,7 +137,7 @@ describe('Pact - Default Mock Interaction', () => {
   });
 
   after(() => {
-    mock.reset();
+    mock.clearInteractions();
   });
 
 });
@@ -135,6 +146,7 @@ describe('Pact - Default Pact Interaction', () => {
 
   before(() => {
     mock.addPactInteraction({
+      id: 'GET_FIRST_PROJECT',
       provider: 'p',
       state: 'when there is a project with id 1',
       uponReceiving: 'a request for project 1',
@@ -187,6 +199,8 @@ describe('Pact - Default Pact Interaction', () => {
         name: 'fake'
       })
       .toss();
+    expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(1, 'interaction should be called once');
+    expect(mock.isInteractionExercised('GET_FIRST_PROJECT')).equals(true, 'interaction should be exercised');
   });
 
   it('GET - one interaction - with multiple queries', async () => {
@@ -203,7 +217,7 @@ describe('Pact - Default Pact Interaction', () => {
   });
 
   after(() => {
-    mock.reset();
+    mock.clearInteractions();
   });
 
 });
@@ -296,7 +310,7 @@ describe('Pact - Default Mock Interactions', () => {
   });
 
   after(() => {
-    mock.reset();
+    mock.clearInteractions();
   });
 
 });
@@ -377,7 +391,7 @@ describe('Pact - Default Pact Interactions', () => {
   });
 
   after(() => {
-    mock.reset();
+    mock.clearInteractions();
   });
 
 });
