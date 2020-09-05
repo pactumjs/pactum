@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 
 const dp = require('../../src/helpers/dataProcessor');
-const ld = require('../../src/exports/loader');
+const bin = require('../../src/exports/bin');
 const config = require('../../src/config');
 
 describe('Data Processing - Templates', () => {
@@ -43,7 +43,7 @@ describe('Data Processing - Templates', () => {
   });
 
   it('processTemplates - simple with Overrides', () => {
-    ld.loadDataTemplate({
+    bin.loadDataTemplate({
       'User': {
         'Name': 'Snow',
         'Address': {
@@ -77,7 +77,7 @@ describe('Data Processing - Templates', () => {
   });
 
   it('processTemplates - template not found', () => {
-    ld.loadDataTemplates([{
+    bin.loadDataTemplates([{
       'User': {
         'Name': 'Snow',
         'Address': {
@@ -98,7 +98,7 @@ describe('Data Processing - Templates', () => {
   });
 
   it('processTemplates - complex array of objects with Overrides', () => {
-    ld.loadDataTemplate({
+    bin.loadDataTemplate({
       'User': {
         'Name': 'Snow',
         'Age': 12,
@@ -163,7 +163,7 @@ describe('Data Processing - Templates', () => {
   afterEach(() => {
     config.data.template.enabled = false;
     config.data.template.processed = false;
-    ld.clearDataTemplates();
+    bin.clearDataTemplates();
   });
 
 });
@@ -178,7 +178,7 @@ describe('Data Processing - Maps', () => {
   });
 
   it('processMaps - already processed', () => {
-    ld.loadDataMap({
+    bin.loadDataMap({
       Users: [
         {
           Name: 'Snow',
@@ -194,7 +194,7 @@ describe('Data Processing - Maps', () => {
   });
 
   it('processMaps - with basic data map', () => {
-    ld.loadDataMap({
+    bin.loadDataMap({
       User: {
         Name: '@DATA:MAP::Users[0].Name@',
         House: '@DATA:MAP::Users[0].House@'
@@ -232,7 +232,7 @@ describe('Data Processing - Maps', () => {
   });
 
   it('processMaps - complex array of objects', () => {
-    ld.loadDataMaps([
+    bin.loadDataMaps([
       {
         User: {
           'Name': '@DATA:MAP::Defaults.User.Name@',
@@ -293,7 +293,7 @@ describe('Data Processing - Maps', () => {
   afterEach(() => {
     config.data.map.enabled = false;
     config.data.map.processed = false;
-    ld.clearDataMaps();
+    bin.clearDataMaps();
   });
 
 });
@@ -301,13 +301,13 @@ describe('Data Processing - Maps', () => {
 describe('Data Processing - Actual Data - Only Templates', () => {
 
   before(() => {
-    ld.clearDataTemplates();
-    ld.loadDataTemplate({
+    bin.clearDataTemplates();
+    bin.loadDataTemplate({
       'User': {
         Name: 'Snow'
       }
     });
-    ld.loadDataTemplate({
+    bin.loadDataTemplate({
       'Users': [
         {
           '@DATA:TEMPLATE@': 'User'
@@ -432,7 +432,7 @@ describe('Data Processing - Actual Data - Only Templates', () => {
   });
 
   after(() => {
-    ld.clearDataTemplates();
+    bin.clearDataTemplates();
   });
 
 });
@@ -440,8 +440,8 @@ describe('Data Processing - Actual Data - Only Templates', () => {
 describe('Data Processing - Actual Data - Only Maps', () => {
 
   before(() => {
-    ld.clearDataMaps();
-    ld.loadDataMap({
+    bin.clearDataMaps();
+    bin.loadDataMap({
       User: {
         Name: 'Snow',
         Age: 18
@@ -452,7 +452,7 @@ describe('Data Processing - Actual Data - Only Maps', () => {
         Year: 2020
       }
     });
-    ld.loadDataMap({
+    bin.loadDataMap({
       Address: [
         {
           'Type': 'Home',
@@ -534,7 +534,7 @@ describe('Data Processing - Actual Data - Only Maps', () => {
   });
 
   after(() => {
-    ld.clearDataMaps();
+    bin.clearDataMaps();
   });
 
 });
@@ -542,15 +542,15 @@ describe('Data Processing - Actual Data - Only Maps', () => {
 describe('Data Processing - Actual Data - Both Templates & Maps', () => {
 
   before(() => {
-    ld.clearDataTemplates();
-    ld.clearDataMaps();
-    ld.loadDataTemplate({
+    bin.clearDataTemplates();
+    bin.clearDataMaps();
+    bin.loadDataTemplate({
       'User': {
         Name: '@DATA:MAP::User.Name@',
         Age: '@DATA:MAP::User.Age@'
       }
     });
-    ld.loadDataTemplate({
+    bin.loadDataTemplate({
       'Users': [
         {
           '@DATA:TEMPLATE@': 'User'
@@ -564,7 +564,7 @@ describe('Data Processing - Actual Data - Both Templates & Maps', () => {
         }
       ]
     });
-    ld.loadDataMap({
+    bin.loadDataMap({
       User: {
         Name: 'Snow',
         Age: 18
@@ -631,8 +631,8 @@ describe('Data Processing - Actual Data - Both Templates & Maps', () => {
   });
 
   after(() => {
-    ld.clearDataTemplates();
-    ld.clearDataMaps();
+    bin.clearDataTemplates();
+    bin.clearDataMaps();
   });
 
 });

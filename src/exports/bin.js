@@ -3,7 +3,7 @@ const config = require('../config');
 let dataMap = {};
 let dataTemplate = {};
 
-const loader = {
+const bin = {
 
   /**
    * loads data map
@@ -65,4 +65,4 @@ const loader = {
 
 };
 
-module.exports = loader;
+module.exports = bin;

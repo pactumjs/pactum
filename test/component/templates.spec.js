@@ -3,7 +3,7 @@ const pactum = require('../../src/index');
 describe('Templates & Maps', () => {
 
   before(() => {
-    pactum.loader.loadDataTemplate({
+    pactum.bin.loadDataTemplate({
       'User.NewUser': {
         FirstName: 'Jon',
         LastName: 'Snow',
@@ -15,7 +15,7 @@ describe('Templates & Maps', () => {
         Realm: 'The North'
       }
     });
-    pactum.loader.loadDataMap({
+    pactum.bin.loadDataMap({
       User: {
         FirstName: 'Jon',
         LastName: 'Snow',
@@ -154,8 +154,8 @@ describe('Templates & Maps', () => {
   });
 
   after(() => {
-    pactum.loader.clearDataTemplates();
-    pactum.loader.clearDataMaps();
+    pactum.bin.clearDataTemplates();
+    pactum.bin.clearDataMaps();
   });
 
 });

@@ -8,7 +8,7 @@ const settings = require('./exports/settings');
 const handler = require('./exports/handler');
 const matchers = require('./exports/matcher');
 const state = require('./exports/state');
-const loader = require('./exports/loader');
+const bin = require('./exports/bin');
 
 /**
  * request method
@@ -106,7 +106,7 @@ const pactum = {
   settings,
   handler,
   state,
-  loader,
+  bin,
 
   /**
    * runs the specified state handler
