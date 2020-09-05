@@ -1,13 +1,13 @@
 const pactum = require('../../src/index');
 
-describe('Templates', () => {
+describe('Templates & Maps', () => {
 
   before(() => {
     pactum.loader.loadDataTemplate({
       'User.NewUser': {
         FirstName: 'Jon',
         LastName: 'Snow',
-        Country: 'North',
+        Country: '@DATA:MAP::User.Country@',
         Addresses: []
       },
       'User.Address': {
@@ -15,6 +15,16 @@ describe('Templates', () => {
         Realm: 'The North'
       }
     });
+    pactum.loader.loadDataMap({
+      User: {
+        FirstName: 'Jon',
+        LastName: 'Snow',
+        Country: 'North'
+      },
+      Castle: {
+        Wall: 'Castle Black'
+      }
+    })
   });
 
   it('new user with pure template', async () => {
@@ -41,7 +51,7 @@ describe('Templates', () => {
       .expectStatus(200);
   });
 
-  it('new user with pure  - override existing property', async () => {
+  it('new user with pure - override existing property', async () => {
     await pactum
       .addMockInteraction({
         withRequest: {
@@ -68,7 +78,7 @@ describe('Templates', () => {
       .expectStatus(200);
   });
 
-  it('new user with pure  - override existing property with template', async () => {
+  it('new user with pure - override existing property with template & map', async () => {
     await pactum
       .addMockInteraction({
         withRequest: {
@@ -104,7 +114,7 @@ describe('Templates', () => {
       .expectStatus(200);
   });
 
-  it('new user with pure  - nested override', async () => {
+  it('new user with pure - nested override', async () => {
     await pactum
       .addMockInteraction({
         withRequest: {
@@ -134,7 +144,7 @@ describe('Templates', () => {
             {
               '@DATA:TEMPLATE@': 'User.Address',
               '@OVERRIDES@': {
-                Castle: 'Castle Black'
+                Castle: '@DATA:MAP::Castle.Wall@'
               }
             }
           ]
@@ -145,6 +155,7 @@ describe('Templates', () => {
 
   after(() => {
     pactum.loader.clearDataTemplates();
+    pactum.loader.clearDataMaps();
   });
 
 });

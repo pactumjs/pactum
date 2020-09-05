@@ -43,6 +43,7 @@ class Tosser {
     this.request.timeout = this.request.timeout || config.request.timeout;
     setHeaders(this.request);
     setMultiPartFormData(this.request);
+    processor.processMaps();
     processor.processTemplates();
     this.request.data = processor.processData(this.request.data);
   }
