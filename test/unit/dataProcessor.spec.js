@@ -298,7 +298,7 @@ describe('Data Processing - Maps', () => {
 
 });
 
-describe('Data Processing - Data', () => {
+describe('Data Processing - Actual Data - Only Templates', () => {
 
   before(() => {
     ld.clearDataTemplates();
@@ -433,6 +433,206 @@ describe('Data Processing - Data', () => {
 
   after(() => {
     ld.clearDataTemplates();
+  });
+
+});
+
+describe('Data Processing - Actual Data - Only Maps', () => {
+
+  before(() => {
+    ld.clearDataMaps();
+    ld.loadDataMap({
+      User: {
+        Name: 'Snow',
+        Age: 18
+      },
+      Education: {
+        Degree: 'Black Brother',
+        Passed: true,
+        Year: 2020
+      }
+    });
+    ld.loadDataMap({
+      Address: [
+        {
+          'Type': 'Home',
+          'Castle': 'WinterFell'
+        },
+        {
+          'Type': 'Work',
+          'Castle': 'Castle Black'
+        }
+      ]
+    });
+    dp.processMaps();
+  });
+
+  it('processData - empty object', () => {
+    let data = {}
+    data = dp.processData(data);
+    expect(data).deep.equals({});
+  });
+
+  it('processData - null', () => {
+    let data = null;
+    data = dp.processData(data);
+    expect(data).to.be.null;
+  });
+
+  it('processData - empty string', () => {
+    let data = '';
+    data = dp.processData(data);
+    expect(data).equals('');
+  });
+
+  it('processData - non empty string', () => {
+    let data = 'Hello';
+    data = dp.processData(data);
+    expect(data).equals('Hello');
+  });
+
+  it('processData - no map', () => {
+    let data = {
+      Name: 'King',
+      Age: 12,
+      Country: null
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals({
+      Name: 'King',
+      Age: 12,
+      Country: null
+    });
+  });
+
+  it('processData - with basic map - object', () => {
+    let data = {
+      'Name': '@DATA:MAP::User.Name@'
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals({
+      Name: 'Snow'
+    });
+  });
+
+  it('processData - with basic map - array', () => {
+    let data = {
+      'Address': '@DATA:MAP::Address@'
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals({
+      Address: [
+        {
+          'Type': 'Home',
+          'Castle': 'WinterFell'
+        },
+        {
+          'Type': 'Work',
+          'Castle': 'Castle Black'
+        }
+      ]});
+  });
+
+  after(() => {
+    ld.clearDataMaps();
+  });
+
+});
+
+describe('Data Processing - Actual Data - Both Templates & Maps', () => {
+
+  before(() => {
+    ld.clearDataTemplates();
+    ld.clearDataMaps();
+    ld.loadDataTemplate({
+      'User': {
+        Name: '@DATA:MAP::User.Name@',
+        Age: '@DATA:MAP::User.Age@'
+      }
+    });
+    ld.loadDataTemplate({
+      'Users': [
+        {
+          '@DATA:TEMPLATE@': 'User'
+        },
+        {
+          '@DATA:TEMPLATE@': 'User',
+          '@OVERRIDES@': {
+            Age: 12,
+            Education: '@DATA:MAP::Education@'
+          }
+        }
+      ]
+    });
+    ld.loadDataMap({
+      User: {
+        Name: 'Snow',
+        Age: 18
+      },
+      Education: {
+        Degree: 'Black Brother',
+        Passed: true,
+        Year: 2020
+      }
+    });
+    dp.processMaps();
+    dp.processTemplates();
+  });
+
+  it('processData - with basic template with overrides - object', () => {
+    let data = {
+      '@DATA:TEMPLATE@': 'User',
+      '@OVERRIDES@': {
+        Name: 'Stark',
+        Address: [
+          {
+            Street: 'Kings Road'
+          }
+        ]
+      }
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals({
+      Name: 'Stark',
+      Age: 18,
+      Address: [
+        {
+          Street: 'Kings Road'
+        }
+      ]
+    });
+  });
+
+  it('processData - with basic template & overrides - array', () => {
+    let data = {
+      '@DATA:TEMPLATE@': 'Users',
+      '@OVERRIDES@': [
+        {
+          Name: 'Stark'
+        }
+      ]
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals([
+      {
+        Name: 'Stark',
+        Age: 18
+      },
+      {
+        Name: 'Snow',
+        Age: 12,
+        Education: {
+          Degree: 'Black Brother',
+          Passed: true,
+          Year: 2020
+        }
+      }
+    ]);
+  });
+
+  after(() => {
+    ld.clearDataTemplates();
+    ld.clearDataMaps();
   });
 
 });

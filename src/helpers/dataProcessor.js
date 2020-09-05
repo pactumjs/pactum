@@ -42,6 +42,9 @@ const dataProcessor = {
     if (config.data.template.enabled) {
       data = this.processDataTemplates(data);
     }
+    if (config.data.map.enabled) {
+      data = this.processDataMaps(data);
+    }
     return data;
   },
 
