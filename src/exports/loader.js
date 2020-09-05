@@ -25,7 +25,7 @@ const loader = {
   },
 
   getDataMap() {
-    return dataTemplate;
+    return dataMap;
   },
 
   clearDataMaps() {

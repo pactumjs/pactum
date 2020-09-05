@@ -123,7 +123,7 @@ describe('Data Processing - Templates', () => {
             {
               '@DATA:TEMPLATE@': 'Address'
             }
-          ] 
+          ]
         }
       }
     });
@@ -150,7 +150,7 @@ describe('Data Processing - Templates', () => {
             'Region': 'North'
           }
         ]
-,
+        ,
         'Age': 12,
         'Name': 'Snow',
         'Nation': 'The North',
@@ -164,7 +164,137 @@ describe('Data Processing - Templates', () => {
     config.data.template.enabled = false;
     config.data.template.processed = false;
     ld.clearDataTemplates();
-  })
+  });
+
+});
+
+describe('Data Processing - Maps', () => {
+
+  it('processMaps - empty map', () => {
+    dp.processMaps();
+    expect(dp.map).deep.equals({});
+    expect(config.data.map.enabled).equals(false);
+    expect(config.data.map.processed).equals(true);
+  });
+
+  it('processMaps - already processed', () => {
+    ld.loadDataMap({
+      Users: [
+        {
+          Name: 'Snow',
+          House: 'Stark'
+        }
+      ]
+    });
+    config.data.map.processed = true;
+    dp.processMaps();
+    expect(dp.map).deep.equals({});
+    expect(config.data.map.enabled).equals(false);
+    expect(config.data.map.processed).equals(true);
+  });
+
+  it('processMaps - with basic data map', () => {
+    ld.loadDataMap({
+      User: {
+        Name: '@DATA:MAP::Users[0].Name@',
+        House: '@DATA:MAP::Users[0].House@'
+      },
+      Users: [
+        {
+          Name: 'Snow',
+          House: 'Stark'
+        },
+        {
+          Name: 'Sand',
+          House: 'Martel'
+        }
+      ]
+    });
+    dp.processMaps();
+    expect(dp.map).deep.equals({
+      User: {
+        Name: 'Snow',
+        House: 'Stark'
+      },
+      Users: [
+        {
+          Name: 'Snow',
+          House: 'Stark'
+        },
+        {
+          Name: 'Sand',
+          House: 'Martel'
+        }
+      ]
+    });
+    expect(config.data.map.enabled).equals(true);
+    expect(config.data.map.processed).equals(true);
+  });
+
+  it('processMaps - complex array of objects', () => {
+    ld.loadDataMaps([
+      {
+        User: {
+          'Name': '@DATA:MAP::Defaults.User.Name@',
+          'Age': '@DATA:MAP::Defaults.User.Age@',
+          'Address': '@DATA:MAP::Defaults.Address[Type=Home]@'
+        }
+      },
+      {
+        Defaults: {
+          'User': {
+            'Name': 'Snow',
+            'Age': 18
+          },
+          'Address': [
+            {
+              'Type': 'Home',
+              'Castle': '@DATA:MAP::Defaults.Castle@'
+            },
+            {
+              'Type': 'Work',
+              'Castle': 'Castle Black'
+            }
+          ],
+          'Castle': 'WinterFell'
+        }
+      }
+    ]);
+    dp.processMaps();
+    expect(dp.map).deep.equals({
+      User: {
+        'Name': 'Snow',
+        'Age': 18,
+        'Address': {
+          'Type': 'Home',
+          'Castle': 'WinterFell'
+        }
+      },
+      Defaults: {
+        'User': {
+          'Name': 'Snow',
+          'Age': 18
+        },
+        'Address': [
+          {
+            'Type': 'Home',
+            'Castle': 'WinterFell'
+          },
+          {
+            'Type': 'Work',
+            'Castle': 'Castle Black'
+          }
+        ],
+        'Castle': 'WinterFell'
+      }
+    });
+  });
+
+  afterEach(() => {
+    config.data.map.enabled = false;
+    config.data.map.processed = false;
+    ld.clearDataMaps();
+  });
 
 });
 
