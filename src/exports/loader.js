@@ -1,8 +1,38 @@
 const config = require('../config');
 
+let dataMap = {};
 let dataTemplate = {};
 
 const loader = {
+
+  /**
+   * loads data map
+   * @param {object} map
+   */
+  loadDataMap(map) {
+    Object.assign(dataMap, map);
+    config.data.map.processed = false;
+  },
+
+  /**
+   * loads data maps
+   * @param {object[]} maps
+   */
+  loadDataMaps(maps) {
+    for (let i = 0; i < maps.length; i++) {
+      this.loadDataMap(maps[i]);
+    }
+  },
+
+  getDataMap() {
+    return dataTemplate;
+  },
+
+  clearDataMaps() {
+    dataMap = {};
+    config.data.map.processed = false;
+    config.data.map.enabled = false;
+  },
 
   /**
    * loads data template
@@ -27,7 +57,7 @@ const loader = {
     return dataTemplate;
   },
 
-  resetDataTemplates() {
+  clearDataTemplates() {
     dataTemplate = {};
     config.data.template.processed = false;
     config.data.template.enabled = false;

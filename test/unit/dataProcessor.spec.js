@@ -163,7 +163,7 @@ describe('Data Processing - Templates', () => {
   afterEach(() => {
     config.data.template.enabled = false;
     config.data.template.processed = false;
-    ld.resetDataTemplates();
+    ld.clearDataTemplates();
   })
 
 });
@@ -171,7 +171,7 @@ describe('Data Processing - Templates', () => {
 describe('Data Processing - Data', () => {
 
   before(() => {
-    ld.resetDataTemplates();
+    ld.clearDataTemplates();
     ld.loadDataTemplate({
       'User': {
         Name: 'Snow'
@@ -302,7 +302,7 @@ describe('Data Processing - Data', () => {
   });
 
   after(() => {
-    ld.resetDataTemplates();
+    ld.clearDataTemplates();
   });
 
 });

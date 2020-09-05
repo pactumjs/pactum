@@ -144,7 +144,7 @@ describe('Templates', () => {
   });
 
   after(() => {
-    pactum.loader.resetDataTemplates();
+    pactum.loader.clearDataTemplates();
   });
 
 });

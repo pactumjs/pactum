@@ -15,6 +15,10 @@ const config = {
     headers: {}
   },
   data: {
+    map: {
+      enabled: false,
+      processed: false
+    },
     template: {
       enabled: false,
       processed: false
