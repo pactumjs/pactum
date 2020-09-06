@@ -1,3 +1,37 @@
+interface StateHandlerContext {
+  data?: any;
+  spec?: object;
+}
+
+type expectHandlerFunction = (req: object, res: object) => void;
+type retryHandlerFunction = (req: object, res: object) => boolean;
+type returnHandlerFunction = (req: object, res: object) => any;
+type stateHandlerFunction = (ctx: StateHandlerContext) => any;
+
+class handler {
+
+  /**
+   * adds a custom expect handler
+   */
+  addExpectHandler(name: string, func: expectHandlerFunction): void;
+
+  /**
+   * adds a custom retry handler
+   */
+  addRetryHandler(name: string, func: retryHandlerFunction): void;
+
+  /**
+   * adds a custom return handler
+   */
+  addReturnHandler(name: string, func: returnHandlerFunction): void;
+
+  /**
+   * adds a custom state handler
+   */
+  addStateHandler(name: string, func: stateHandlerFunction): void;
+
+}
+
 interface BasicInteraction {
   get?: string;
   post?: string;
@@ -188,6 +222,7 @@ class mock {
 }
 
 declare namespace pactum {
+  const handler: handler;
   const mock: mock;
 }
 
