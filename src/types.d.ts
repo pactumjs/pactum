@@ -221,9 +221,48 @@ class mock {
   getInteractionCallCount(id: string): number;
 }
 
+interface PublishOptions {
+  pactFilesOrDirs?: string[];
+  pactBroker: string;
+  pactBrokerUsername: string;
+  pactBrokerPassword: string;
+  consumerVersion: string;
+  tags?: string[];
+}
+
+class pact {
+
+  /**
+   * @env PACT_DIR
+   * 
+   * sets directory for saving pact files
+   * @default './pacts/'
+   */
+  setPactFilesDirectory(dir: string): void;
+
+  /**
+   * @env PACT_CONSUMER_NAME
+   * 
+   * sets the name of the consumer
+   */
+  setConsumerName(name: string): void
+
+  /**
+   * saves contracts in local system
+   */
+  save(): void;
+
+  /**
+   * publishes pact files to pact broker
+   */
+  publish(options: PublishOptions): void;
+
+}
+
 declare namespace pactum {
   const handler: handler;
   const mock: mock;
+  const pact: pact;
 }
 
 export = pactum;
