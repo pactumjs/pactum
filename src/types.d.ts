@@ -223,9 +223,9 @@ class mock {
 
 interface PublishOptions {
   pactFilesOrDirs?: string[];
-  pactBroker: string;
-  pactBrokerUsername: string;
-  pactBrokerPassword: string;
+  pactBroker?: string;
+  pactBrokerUsername?: string;
+  pactBrokerPassword?: string;
   consumerVersion: string;
   tags?: string[];
 }
@@ -255,14 +255,43 @@ class pact {
   /**
    * publishes pact files to pact broker
    */
-  publish(options: PublishOptions): void;
+  publish(options: PublishOptions): Promise<void>;
 
+}
+
+interface StateHandler {
+  [x: string]: () => {}
+}
+
+interface ProviderOptions {
+  providerBaseUrl: string;
+  provider: string;
+  /** provider version, required to publish verification results to pact broker */
+  providerVersion?: string;
+  /** provider state handlers. A map of 'string -> () => Promise' */
+  stateHandlers?: StateHandler;
+  /** Custom Header(s) added to all request played against provider */
+  customProviderHeaders?: object;
+  pactFilesOrDirs?: string[];
+  pactBrokerUrl?: string;
+  pactBrokerUsername?: string;
+  pactBrokerPassword?: string;
+  pactBrokerToken?: string;
+  publishVerificationResult?: boolean;
+}
+
+class provider {
+  /**
+   * runs provider verification
+   */
+  validate(options: ProviderOptions): void;
 }
 
 declare namespace pactum {
   const handler: handler;
   const mock: mock;
   const pact: pact;
+  const provider: provider;
 }
 
 export = pactum;

@@ -6,22 +6,6 @@ const log = require('../helpers/logger');
 const { gray, green, red } = require('../helpers/colors');
 const { PactumConfigurationError } = require('../helpers/errors');
 
-/**
- * provider options
- * @typedef {object} ProviderOptions
- * @property {string} providerBaseUrl - running API provider host endpoint.
- * @property {string} provider - name of the provider.
- * @property {string} [providerVersion] - provider version, required to publish verification results to a broker
- * @property {any} [stateHandlers] - provider state handlers. A map of 'string -> () => Promise', where each string is the state to setup, and the function is used to configure the state in the Provider.
- * @property {any} [customProviderHeaders] - Header(s) to add to any requests to the provider service. eg { 'Authorization': 'Basic cGFjdDpwYWN0'}.
- * @property {string[]} [pactFilesOrDirs] - array of local pact files or directories
- * @property {string} [pactBrokerUrl] - URL of the Pact Broker to retrieve pacts from. Required if not using pactFilesOrDirs.
- * @property {string} [pactBrokerUsername] - username for Pact Broker basic authentication.
- * @property {string} [pactBrokerPassword] - password for Pact Broker basic authentication.
- * @property {string} [pactBrokerToken] - bearer token for Pact Broker authentication.
- * @property {boolean} [publishVerificationResult] - publish verification result to Broker
- */
-
 class Provider {
 
   /**
@@ -318,10 +302,6 @@ class Provider {
 
 const provider = {
 
-  /**
-   * validate provider
-   * @param {ProviderOptions} options - provider options
-   */
   validate(options) {
     const providerObj = new Provider(options);
     return providerObj.validate();
