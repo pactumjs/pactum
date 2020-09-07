@@ -326,12 +326,23 @@ class request {
   removeDefaultHeaders(): void;
 }
 
+type LogLevel = 'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR';
+
+class settings {
+  /**
+   * sets log level
+   * @env PACTUM_LOG_LEVEL
+   */
+  setLogLevel(level: LogLevel): void;
+}
+
 declare namespace pactum {
   const handler: handler;
   const mock: mock;
   const pact: pact;
   const provider: provider;
   const request: request;
+  const settings: settings;
 }
 
 export = pactum;
