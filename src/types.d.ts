@@ -287,11 +287,51 @@ class provider {
   validate(options: ProviderOptions): void;
 }
 
+import FormData from 'form-data';
+
+class request {
+  FormData: FormData
+
+  /**
+   * adds a default header to all the requests
+   */
+  setDefaultHeader(key: string, value: string): void;
+
+  /**
+   * adds default headers to all the requests
+   */
+  setDefaultHeaders(headers: object): void;
+
+  /**
+   * sets a default timeout to all the requests in ms
+   * @default 3000 ms
+   * @env PACTUM_REQUEST_TIMEOUT
+   */
+  setDefaultTimeout(timeout: number): void;
+
+  /**
+   * sets base url
+   * @env PACTUM_REQUEST_BASE_URL 
+   */
+  setBaseUrl(url: string): void;
+
+  /**
+   * removes default header
+   */
+  removeDefaultHeader(key: string): void;
+  
+  /**
+   * removes all default headers
+   */
+  removeDefaultHeaders(): void;
+}
+
 declare namespace pactum {
   const handler: handler;
   const mock: mock;
   const pact: pact;
   const provider: provider;
+  const request: request;
 }
 
 export = pactum;
