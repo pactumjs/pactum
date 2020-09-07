@@ -8,91 +8,6 @@ const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
 const mock = require('../exports/mock');
 
-/**
- * request method
- * @typedef {('GET'|'POST'|'PUT'|'DELETE'|'PATCH'|'HEAD')} RequestMethod
- */
-
-/**
- * basic mock interaction
- * @typedef {object} BasicInteraction
- * @property {string} [get] - get request path
- * @property {string} [post] - post request path
- * @property {string} [put] - put request path
- * @property {string} [patch] - patch request path
- * @property {string} [delete] - delete request path
- * @property {number} [status=200] - status code to return
- * @property {any}  [return=''] - body to return 
- */
-
-/**
- * pact interaction details
- * @typedef {object} PactInteraction
- * @property {string} [id] - unique id of the interaction
- * @property {string} provider - name of the provider
- * @property {string} state - state of the provider
- * @property {string} uponReceiving - description of the request
- * @property {PactInteractionRequest} withRequest - interaction request details
- * @property {PactInteractionResponse} willRespondWith - interaction response details
- */
-
-/**
- * mock interaction details
- * @typedef {object} MockInteraction
- * @property {string} [id] - unique id of the interaction
- * @property {string} [provider] - name of the provider
- * @property {MockInteractionRequest} withRequest - interaction request details
- * @property {MockInteractionResponse} willRespondWith - interaction response details
- */
-
-/**
- * pact interaction request details
- * @typedef {object} PactInteractionRequest
- * @property {RequestMethod} method - request method
- * @property {string} path - request method
- * @property {object} [headers] - request headers
- * @property {object} [query] - request query
- * @property {GraphQLRequest} [graphQL] - graphQL request
- * @property {object} [body] - request body
- */
-
-/**
- * @typedef {Object} MockInteractionRequestType
- * @property {boolean} ignoreQuery - ignores request query while matching
- * @property {boolean} ignoreBody - ignores request body while matching
- *
- * mock interaction request details
- * @typedef {PactInteractionRequest & MockInteractionRequestType} MockInteractionRequest
- */
-
-/**
- * graphQL request details
- * @typedef {object} GraphQLRequest
- * @property {string} query - graphQL query
- * @property {string} [variables] - graphQL variables
- */
-
-/**
- * pact interaction response details
- * @typedef {object} PactInteractionResponse
- * @property {number} status - response status code
- * @property {object} [headers] - response headers
- * @property {object} [body] - response body
- */
-
-/**
- * @typedef {Object} MockInteractionResponseType
- * @property {number} [fixedDelay] - response fixed delay in ms
- * @property {object} [randomDelay] - response random delay
- * @property {number} randomDelay.min - min delay in ms
- * @property {number} randomDelay.max - max delay in ms
- * @property {Object.<number, MockInteractionResponse>} onCall - behavior on consecutive calls
- *
- * mock interaction response details
- * @typedef {PactInteractionResponse & MockInteractionResponseType} MockInteractionResponse
- */
-
-
 class Spec {
 
   constructor() {
@@ -108,36 +23,11 @@ class Spec {
     this.pactInteractions = new Map();
   }
 
-  /**
-   * runs the specified state handler
-   * @param {string} name - name of the state handler
-   * @param {any} [data] - data to be passed to the context
-   * @example
-   * await pactum
-   *  .setState('there are users in the system')
-   *  .get('/api/users')
-   *  .expectStatus(200);
-   */
   setState(name, data) {
     this._state.add(name, data);
     return this;
   }
 
-  /**
-   * adds a basic mock interaction to the server
-   * @param {BasicInteraction} basicInteraction
-   * @see addMockInteraction for more options
-   * @example
-   * await pactum
-   *  .addInteraction({
-   *    get: '/api/address/4'
-   *    return: {
-   *      city: 'WinterFell'
-   *    }
-   *  })
-   *  .get('/api/users/4')
-   *  .expectStatus(200);
-   */
   addInteraction(basicInteraction) {
     const rawInteraction = {
       withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
@@ -149,34 +39,6 @@ class Spec {
     return this.addMockInteraction(rawInteraction);
   }
 
-  /**
-   * adds a mock interaction to the server
-   * @param {MockInteraction} rawInteraction - interaction details
-   * @example
-   * await pactum
-   *  .addMockInteraction({
-   *    withRequest: {
-   *      method: 'GET',
-   *      path: '/api/projects/1'
-   *    },
-   *    willRespondWith: {
-   *      status: 200,
-   *      headers: {
-   *        'Content-Type': 'application/json'
-   *      },
-   *      body: {
-   *        id: 1,
-   *        name: 'fake'
-   *      }
-   *    }
-   *  })
-   *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .expectStatus(200)
-   *  .expectJsonLike({
-   *    userId: 1,
-   *    id: 1
-   *   });
-   */
   addMockInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction, true);
     log.debug('Mock Interaction added to Mock Server -', interaction.id);
@@ -184,37 +46,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * adds a pact interaction to the server
-   * @param {PactInteraction} rawInteraction - interaction details
-   * @example
-   *  await pactum
-   *   .addPactInteraction({
-   *     provider: 'project-provider',
-   *     state: 'when there is a project with id 1',
-   *     uponReceiving: 'a request for project 1',
-   *     withRequest: {
-   *      method: 'GET',
-   *      path: '/api/projects/1'
-   *     },
-   *     willRespondWith: {
-   *      status: 200,
-   *      headers: {
-   *       'Content-Type': 'application/json'
-   *      },
-   *      body: {
-   *        id: 1,
-   *        name: 'fake'
-   *      }
-   *     }
-   *   })
-   *   .get('https://jsonplaceholder.typicode.com/posts')
-   *   .expectStatus(200)
-   *   .expectJsonLike({
-   *     userId: 1,
-   *     id: 1
-   *    });
-   */
   addPactInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction, false);
     log.debug('Pact Interaction added to Mock Server -', interaction.id);
@@ -222,19 +53,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
-   * @param {string} url - HTTP url
-   * @example
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .withQueryParam('postId', 1)
-   *  .expectStatus(200)
-   *  .expectJsonLike({
-   *    userId: 1,
-   *    id: 1
-   *   });
-   */
   get(url) {
     validateRequestUrl(this._request, url);
     this._request.url = url;
@@ -242,10 +60,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * The HEAD method asks for a response identical to that of a GET request, but without the response body.
-   * @param {string} url - HTTP url
-   */
   head(url) {
     validateRequestUrl(this._request, url);
     this._request.url = url;
@@ -253,17 +67,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * The PATCH method is used to apply partial modifications to a resource.
-   * @param {string} url - HTTP url
-   * @example
-   * await pactum
-   *  .patch('https://jsonplaceholder.typicode.com/posts/1')
-   *  .withJson({
-   *    title: 'foo'
-   *  })
-   *  .expectStatus(200);
-   */
   patch(url) {
     validateRequestUrl(this._request, url);
     this._request.url = url;
@@ -271,19 +74,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * The POST method is used to submit an entity to the specified resource, often causing a change in state or side effects on the server.
-   * @param {string} url - HTTP url
-   * @example
-   * await pactum
-   *  .post('https://jsonplaceholder.typicode.com/posts')
-   *  .withJson({
-   *    title: 'foo',
-   *    body: 'bar',
-   *    userId: 1
-   *  })
-   *  .expectStatus(201);
-   */
   post(url) {
     validateRequestUrl(this._request, url);
     this._request.url = url;
@@ -291,20 +81,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * The PUT method replaces all current representations of the target resource with the request payload.
-   * @param {string} url - HTTP url
-   * @example
-   * await pactum
-   *  .put('https://jsonplaceholder.typicode.com/posts/1')
-   *  .withJson({
-   *    id: 1,
-   *    title: 'foo',
-   *    body: 'bar',
-   *    userId: 1
-   *  })
-   *  .expectStatus(200);
-   */
   put(url) {
     validateRequestUrl(this._request, url);
     this._request.url = url;
@@ -327,18 +103,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * appends query param to the request url - /comments?postId=1
-   * @param {string} key - query parameter key
-   * @param {string} value - query parameter value
-   * @example
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/comments')
-   *  .withQueryParam('postId', '1')
-   *  .withQueryParam('userId', '2')
-   *  .expectStatus(200);
-   * @summary generated url will look like - /comments?postId=1&userId=2
-   */
   withQueryParam(key, value) {
     if (!helper.isValidString(key)) {
       throw new PactumRequestError(`Invalid key in query parameter for request - ${key}`);
@@ -353,16 +117,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * adds query params to the request url - /comments?postId=1
-   * @param {object} params - query params
-   * @example
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/comments')
-   *  .withQueryParams({ 'postId': '1' })
-   *  .expectStatus(200);
-   * @summary generated url will look like - /comments?postId=1&userId=2
-   */
   withQueryParams(params) {
     if (!helper.isValidObject(params) || Object.keys(params).length === 0) {
       throw new PactumRequestError(`Invalid query parameters object - ${params ? JSON.stringify(params) : params}`);
@@ -374,15 +128,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * appends graphQL query to the request body
-   * @param {string} query - graphQL query
-   * @example
-   * await pactum
-   *  .post('http://www.graph.com/graphql')
-   *  .withGraphQLQuery(`{ hello }`)
-   *  .expectStatus(200);
-   */
   withGraphQLQuery(query) {
     if (typeof query !== 'string') {
       throw new PactumRequestError(`Invalid graphQL query - ${query}`);
@@ -394,22 +139,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * appends graphQL variables to the request body
-   * @param {object} variables - JSON object of graphQL variables
-   * @example
-   * await pactum
-   *  .post('http://www.graph.com/graphql')
-   *  .withGraphQLQuery(`
-   *    hero(episode: $episode) {
-   *      name
-   *    }`
-   *  )
-   *  .withGraphQLVariables({
-   *    "episode": "JEDI"
-   *  })
-   *  .expectStatus(200);
-   */
   withGraphQLVariables(variables) {
     if (!helper.isValidObject(variables)) {
       throw new PactumRequestError(`Invalid graphQL variables - ${variables}`);
@@ -421,19 +150,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * attaches json object to the request body
-   * @param {object} json - json object
-   * @example
-   * await pactum
-   *  .post('https://jsonplaceholder.typicode.com/posts')
-   *  .withJson({
-   *    title: 'foo',
-   *    body: 'bar',
-   *    userId: 1
-   *  })
-   *  .expectStatus(201);
-   */
   withJson(json) {
     if (typeof json !== 'object') {
       throw new PactumRequestError(`Invalid json in request - ${json}`);
@@ -442,17 +158,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * appends header to the request
-   * @param {string} key - header key
-   * @param {string} value - header value
-   * @example
-   * await pactum
-   *  .post('')
-   *  .withHeader('Authorization', 'Basic xxx')
-   *  .withHeader('Accept', 'json')
-   *  .expectStatus(200)
-   */
   withHeader(key, value) {
     if (!this._request.headers) {
       this._request.headers = {};
@@ -461,22 +166,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * attaches headers to the request
-   * @param {object} headers - request headers with key-value pairs
-   * @example
-   * await pactum
-   *  .post('https://jsonplaceholder.typicode.com/posts')
-   *  .withHeaders({
-   *    'content-type': 'application/json'
-   *  })
-   *  .withJson({
-   *    title: 'foo',
-   *    body: 'bar',
-   *    userId: 1
-   *  })
-   *  .expectStatus(201);
-   */
   withHeaders(headers) {
     if (!helper.isValidObject(headers)) {
       throw new PactumRequestError(`Invalid headers in request - ${headers}`);
@@ -488,17 +177,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * attaches body to the request
-   * @param {string|Buffer} body - request body
-   * @example
-   * await pactum
-   *  .post('https://jsonplaceholder.typicode.com/posts')
-   *  .withBody(JSON.stringify({
-   *    title: 'foo',
-   *  }))
-   *  .expectStatus(201);
-   */
   withBody(body) {
     if (typeof this._request.data !== 'undefined') {
       throw new PactumRequestError(`Duplicate body in request - ${this._request.data}`);

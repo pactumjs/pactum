@@ -3,7 +3,7 @@
   "version": "2.0.3",
   "description": "REST API endpoint testing tool with a mock server & compatible with pact.io for contract testing",
   "main": "./src/index.js",
-  "types": "./src/types.d.ts",
+  "types": "./src/index.d.ts",
   "files": [
     "/src"
   ],
