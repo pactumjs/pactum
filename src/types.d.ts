@@ -336,6 +336,20 @@ class settings {
   setLogLevel(level: LogLevel): void;
 }
 
+class state {
+  /**
+   * runs the specified state handler
+   * @example
+   * await state.set('there is a user in system');
+   */
+  set(name: string): Promise<void>;
+  /**
+   * @example
+   * await state.set('there is a user in system with', { name: 'stark' });
+   */
+  set(name: string, data: any): Promise<void>;
+}
+
 declare namespace pactum {
   const handler: handler;
   const mock: mock;
@@ -343,6 +357,7 @@ declare namespace pactum {
   const provider: provider;
   const request: request;
   const settings: settings;
+  const state: state;
 }
 
 export = pactum;
