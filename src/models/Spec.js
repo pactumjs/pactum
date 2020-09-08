@@ -185,17 +185,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * attaches form data to the request with header - "application/x-www-form-urlencoded"
-   * @param {object} form - form object
-   * @example
-   * await pactum
-   *   .post('https://jsonplaceholder.typicode.com/posts')
-   *   .withFormData({
-   *     'user': 'drake'
-   *   })
-   *   .expectStatus(200);
-   */
   withForm(form) {
     if (!helper.isValidObject(form)) {
       throw new PactumRequestError(`Invalid form provided - ${form}`);
@@ -207,27 +196,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * attaches multi part form data to the request with header - "multipart/form-data"
-   * @param {string|FormData} key - key to append
-   * @param {string|Buffer|Array|ArrayBuffer} value - value to append
-   * @param {FormData.AppendOptions} [options] - form data append options
-   * @see https://www.npmjs.com/package/form-data
-   * @example
-   *  await pactum
-   *   .post('https://jsonplaceholder.typicode.com/upload')
-   *   .withMultiPartFormData('file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' })
-   *   .withMultiPartFormData('user', 'drake')
-   *   .expectStatus(200);
-   *
-   * @example
-   * const form = new pactum.request.FormData();
-   * form.append('my_file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' });
-   * await pactum
-   *  .post('https://jsonplaceholder.typicode.com/upload')
-   *  .withMultiPartFormData(form)
-   *  .expectStatus(200);
-   */
   withMultiPartFormData(key, value, options) {
     if (key instanceof FormData) {
       this._request._multiPartFormData = key;
@@ -240,20 +208,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * retry request on specific conditions
-   * @param {object} options - retry options
-   * @param {number} [options.count=3] - maximum number of retries
-   * @param {number} [options.delay=1000] - delay between each request in milliseconds
-   * @param {function|string} options.strategy - retry strategy function (return true to retry)
-   * @example
-   * await pactum
-   *  .get('/some/url)
-   *  .retry({
-   *     strategy: (req, res) => res.statusCode !== 200
-   *   })
-   *  .expectStatus(200);
-   */
   retry(options) {
     if (!options) {
       throw new PactumRequestError('Invalid retry options');
@@ -293,49 +247,16 @@ class Spec {
     return this;
   }
 
-  /**
-   * runs specified custom expect handler
-   * @param {string|function} handler - name of the custom expect handler or function itself
-   * @param {any} data - additional data
-   * @example
-   * pactum.handler.addExpectHandler('hasAddress', (req, res, data) => {
-   *   const json = res.json;
-   *   assert.strictEqual(json.type, data);
-   * });
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/users/1')
-   *  .expect('isUser')
-   *  .expect('hasAddress', 'home')
-   *  .expect((req, res, data) => { -- assertion code -- });
-   */
   expect(handler, data) {
     this._expect.customExpectHandlers.push({ handler, data });
     return this;
   }
 
-  /**
-   * expects a status code on the response
-   * @param {number} statusCode - expected HTTP stats code
-   * @example
-   * await pactum
-   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectStatus(200);
-   */
   expectStatus(statusCode) {
     this._expect.statusCode = statusCode;
     return this;
   }
 
-  /**
-   * expects a header in the response
-   * @param {string} header - expected header key
-   * @param {string} value - expected header value
-   * @example
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectHeader('content-type', 'application/json; charset=utf-8')
-   *  .expectHeader('connection', /\w+/);
-   */
   expectHeader(header, value) {
     this._expect.headers.push({
       key: header,
@@ -344,15 +265,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * expects a header in the response
-   * @param {string} header - expected header value
-   * @param {string} value - expected header value
-   * @example
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/comments')
-   *  .expectHeaderContains('content-type', 'application/json');
-   */
   expectHeaderContains(header, value) {
     this._expect.headerContains.push({
       key: header,
@@ -371,125 +283,41 @@ class Spec {
     return this;
   }
 
-  /**
-   * expects a exact json object in the response
-   * @param {object} json - expected json object
-   * @example
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectJson({
-   *    userId: 1,
-   *    user: 'frank'
-   *  });
-   */
   expectJson(json) {
     this._expect.json.push(json);
     return this;
   }
 
-  /**
-   * expects a partial json object in the response
-   * @param {object} json - expected json object
-   * @example
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/comments')
-   *  .expectJsonLike([{
-   *    postId: 1,
-   *    id: 1,
-   *    name: /\w+/g
-   *  }]);
-   */
   expectJsonLike(json) {
     this._expect.jsonLike.push(json);
     return this;
   }
 
-  /**
-   * expects the response to match with json schema
-   * @param {object} schema - expected JSON schema
-   * @see https://json-schema.org/learn/
-   * @example
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectJsonSchema({
-   *    "properties": {
-   *      "userId": {
-   *        "type": "number"
-   *      }
-   *    },
-   *    "required": ["userId", "id"]
-   *  });
-   */
   expectJsonSchema(schema) {
     this._expect.jsonSchema.push(schema);
     return this;
   }
 
-  /**
-   * expects the json at path equals to the value
-   * @param {string} path - json path
-   * @param {any} value - value to be asserted
-   * @see https://www.npmjs.com/package/json-query
-   * @example
-   * await pactum
-   *  .get('some-url')
-   *  .expectJsonQuery('[0].name', 'Matt')
-   *  .expectJsonQuery('[*].name', ['Matt', 'Pet', 'Don']);
-   */
   expectJsonQuery(path, value) {
     this._expect.jsonQuery.push({ path, value });
     return this;
   }
 
-  /**
-   * expects the json at path to be like the value
-   * @param {string} path - json path
-   * @param {any} value - value to be asserted
-   * @see https://www.npmjs.com/package/json-query
-   * @example
-   * await pactum
-   *  .get('some-url')
-   *  .expectJsonQueryLike('[*].name', ['Matt', 'Pet', 'Don']);
-   */
   expectJsonQueryLike(path, value) {
     this._expect.jsonQueryLike.push({ path, value });
     return this;
   }
 
-  /**
-   * expects request completes within a specified duration (ms)
-   * @param {number} value - response time in milliseconds
-   */
   expectResponseTime(value) {
     this._expect.responseTime = value;
     return this;
   }
 
-  /**
-   * returns custom response
-   * @param {string|function} handler - return handler (json-query/handler function)
-   * @example
-   * const id = await pactum
-   *  .get('some-url')
-   *  .expectStatus(200)
-   *  .returns('user.id') // json query
-   * // 'id' will be equal to '123' if response is { user: { id: 123 }}
-   * 
-   * const resp = await pactum
-   *  .get('some-url')
-   *  .expectStatus(200)
-   *  .returns([0].name)
-   *  .returns((req, res) => { return res.json[0].id }) // custom function
-   * // 'resp' will be an array containing ['name', 'id']
-   */
   returns(handler) {
     this._returns.push(handler);
     return this;
   }
 
-  /**
-   * executes the test case
-   */
   async toss() {
     const tosser = new Tosser(this);
     return tosser.toss();

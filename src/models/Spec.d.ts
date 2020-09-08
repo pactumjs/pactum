@@ -1,4 +1,14 @@
+import FormData from 'form-data';
 import { BasicInteraction, MockInteraction, PactInteraction } from '../exports/mock';
+import { ExpectHandlerFunction, RetryHandlerFunction, ReturnHandlerFunction } from '../exports/handler';
+
+declare interface RetryOptions {
+  /** maximum number of retries - defaults to 3 */
+  count?: number;
+  /** delay between retries - defaults to 3 */
+  delay?: number;
+  strategy?: string|RetryHandlerFunction;
+}
 
 export = Spec;
 
@@ -249,6 +259,212 @@ declare class Spec {
    *   .expectStatus(200);
    */
   withForm(form: any): Spec;
+
+  /**
+   * attaches multi part form data to the request with header - "multipart/form-data"
+   * @see https://www.npmjs.com/package/form-data
+   * @example
+   * const form = new pactum.request.FormData();
+   * form.append('my_file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' });
+   * await pactum
+   *  .post('https://jsonplaceholder.typicode.com/upload')
+   *  .withMultiPartFormData(form)
+   *  .expectStatus(200);
+   */
+  withMultiPartFormData(form: FormData): Spec;
+  
+  /**
+   * attaches multi part form data to the request with header - "multipart/form-data"
+   * @see https://www.npmjs.com/package/form-data
+   * @example
+   *  await pactum
+   *   .post('https://jsonplaceholder.typicode.com/upload')
+   *   .withMultiPartFormData('file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' })
+   *   .withMultiPartFormData('user', 'drake')
+   *   .expectStatus(200);
+   */
+  withMultiPartFormData(key: string, value: string|Buffer|Array|ArrayBuffer, options?: FormData.AppendOptions): Spec;
+
+  /**
+   * retry request on specific conditions before making assertions
+   * @example
+   * await pactum
+   *  .get('/some/url)
+   *  .retry({
+   *     strategy: (req, res) => res.statusCode !== 200
+   *   })
+   *  .expectStatus(200);
+   */
+  retry(options: RetryOptions): Spec;
+
+  // TODO - log level
+
+  // TODO - timeout
+
+  /**
+   * runs specified custom expect handler
+   * @example
+   * handler.addExpectHandler('hasAddress', (req, res, data) => {
+   *   const json = res.json;
+   *   assert.strictEqual(json.type, data);
+   * });
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/users/1')
+   *  .expect('isUser')
+   *  .expect('hasAddress', 'home');
+   */
+  expect(handlerName: string, data?: any): Spec;
+
+  /**
+   * runs specified custom expect handler
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/users/1')
+   *  .expect('isUser')
+   *  .expect((req, res, data) => { -- assertion code -- });
+   */
+  expect(handler: ExpectHandlerFunction): Spec;
+
+  /**
+   * expects a status code on the response
+   * @example
+   * await pactum
+   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectStatus(200);
+   */
+  expectStatus(code: number): Spec;
+
+  /**
+   * expects a header on the response
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectHeader('content-type', 'application/json; charset=utf-8')
+   *  .expectHeader('connection', /\w+/);
+   */
+  expectHeader(header: string, value: any): Spec
+
+  /**
+   * expects a header in the response
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/comments')
+   *  .expectHeaderContains('content-type', 'application/json');
+   */
+  expectHeaderContains(header: string, value: any): Spec
+
+  expectBody(body: any): Spec;
+
+  expectBodyContains(value: any): Spec;
+
+  /**
+   * expects a exact json object in the response
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectJson({
+   *    userId: 1,
+   *    user: 'frank'
+   *  });
+   */
+  expectJson(json: object): Spec;
+
+  /**
+   * expects a partial json object in the response
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/comments')
+   *  .expectJsonLike([{
+   *    postId: 1,
+   *    id: 1,
+   *    name: /\w+/g
+   *  }]);
+   */
+  expectJsonLike(json: object): Spec;
+
+  /**
+   * expects the response to match with json schema
+   * @see https://json-schema.org/learn/
+   * @example
+   * await pactum
+   *  .get('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectJsonSchema({
+   *    "properties": {
+   *      "userId": {
+   *        "type": "number"
+   *      }
+   *    },
+   *    "required": ["userId", "id"]
+   *  });
+   */
+  expectJsonSchema(schema: object): Spec;
+
+  /**
+   * expects the json at path equals to the value
+   * @see https://www.npmjs.com/package/json-query
+   * @example
+   * await pactum
+   *  .get('some-url')
+   *  .expectJsonQuery('[0].name', 'Matt')
+   *  .expectJsonQuery('[*].name', ['Matt', 'Pet', 'Don']);
+   */
+  expectJsonQuery(path: string, query: any): Spec;
+
+  /**
+   * expects the json at path to be like the value (uses expectJsonLike internally)
+   * @see https://www.npmjs.com/package/json-query
+   * @example
+   * await pactum
+   *  .get('some-url')
+   *  .expectJsonQueryLike('[*].name', ['Matt', 'Pet', 'Don']);
+   */
+  expectJsonQueryLike(path: string, value: any): Spec;
+
+  /**
+   * expects request completes within a specified duration (ms)
+   */
+  expectResponseTime(value: number): Spec;
+
+  /**
+   * returns custom response from json response using custom handler
+   * @example
+   * const id = await pactum
+   *  .get('some-url')
+   *  .expectStatus(200)
+   *  .returns('GetUserId');
+   */
+  returns(handlerName: string): Spec;
+
+  /**
+   * returns custom response from json response using json-query
+   * @example
+   * const id = await pactum
+   *  .get('some-url')
+   *  .expectStatus(200)
+   *  .returns('user.id') // json query
+   * // 'id' will be equal to '123' if response is { user: { id: 123 }}
+   * 
+   */
+  returns(query: string): Spec;
+
+  /**
+   * returns custom response from json response using custom function
+   * @example
+   * const resp = await pactum
+   *  .get('some-url')
+   *  .expectStatus(200)
+   *  .returns('[0].name')
+   *  .returns((req, res) => { return res.json[0].id }) // custom function
+   * // 'resp' will be an array containing ['name', 'id']
+   * 
+   */
+  returns(handler: ReturnHandlerFunction): Spec;
+
+  /**
+   * executes the test case
+   */
+  toss(): Promise<T>;
+  then(): Promise<T>;
 }
 
 declare namespace Spec {}

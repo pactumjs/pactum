@@ -3,27 +3,27 @@ interface StateHandlerContext {
   spec?: object;
 }
 
-type expectHandlerFunction = (req: object, res: object) => void;
-type retryHandlerFunction = (req: object, res: object) => boolean;
-type returnHandlerFunction = (req: object, res: object) => any;
-type stateHandlerFunction = (ctx: StateHandlerContext) => any;
+export type ExpectHandlerFunction = (req: object, res: object) => void;
+export type RetryHandlerFunction = (req: object, res: object) => boolean;
+export type ReturnHandlerFunction = (req: object, res: object) => any;
+export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
 
 /**
  * adds a custom expect handler
  */
-export function addExpectHandler(name: string, func: expectHandlerFunction): void;
+export function addExpectHandler(name: string, func: ExpectHandlerFunction): void;
 
 /**
  * adds a custom retry handler
  */
-export function addRetryHandler(name: string, func: retryHandlerFunction): void;
+export function addRetryHandler(name: string, func: RetryHandlerFunction): void;
 
 /**
  * adds a custom return handler
  */
-export function addReturnHandler(name: string, func: returnHandlerFunction): void;
+export function addReturnHandler(name: string, func: ReturnHandlerFunction): void;
 
 /**
  * adds a custom state handler
  */
-export function addStateHandler(name: string, func: stateHandlerFunction): void;
+export function addStateHandler(name: string, func: StateHandlerFunction): void;
