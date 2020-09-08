@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const matcher = require('../../src/models/matcher');
+const matcher = require('../../src/exports/matcher');
 
 describe('Matchers', () => {
 

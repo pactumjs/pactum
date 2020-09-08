@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 const sandbox = require('sinon').createSandbox();
 
 const Interaction = require('../../src/models/interaction');
-const matcher = require('../../src/models/matcher');
+const matcher = require('../../src/exports/matcher');
 const helper = require('../../src/helpers/helper');
 const config = require('../../src/config');
 

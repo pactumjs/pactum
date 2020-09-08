@@ -2,7 +2,7 @@ import { BasicInteraction, MockInteraction, PactInteraction } from './exports/mo
 import * as Spec from './models/Spec';
 // TODO bin
 export * as handler from './exports/handler';
-// TODO matchers
+export * as matchers from './exports/matcher';
 export * as mock from './exports/mock';
 export * as pact from './exports/pact';
 export * as provider from './exports/provider';
