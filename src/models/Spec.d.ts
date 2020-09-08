@@ -1,6 +1,7 @@
 import FormData from 'form-data';
 import { BasicInteraction, MockInteraction, PactInteraction } from '../exports/mock';
 import { ExpectHandlerFunction, RetryHandlerFunction, ReturnHandlerFunction } from '../exports/handler';
+import { LogLevel } from '../exports/settings';
 
 declare interface RetryOptions {
   /** maximum number of retries - defaults to 3 */
@@ -147,7 +148,14 @@ declare class Spec {
    */
   put(url: string): Spec;
   
-  // TODO - delete
+  /**
+   * The DELETE method deletes the specified resource.
+   * @example
+   * await pactum
+   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectStatus(200);
+   */
+  delete(url: string): Spec;
 
   /**
    * appends query param to the request url - /comments?postId=1&user=snow
@@ -297,9 +305,15 @@ declare class Spec {
    */
   retry(options: RetryOptions): Spec;
 
-  // TODO - log level
+  /**
+   * overrides default log level for current spec
+   */
+  __setLogLevel(level: LogLevel): Spec;
 
-  // TODO - timeout
+  /**
+   * overrides default timeout for current request in ms
+   */
+  withRequestTimeout(timeout: number): Spec;
 
   /**
    * runs specified custom expect handler

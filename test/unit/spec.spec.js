@@ -299,7 +299,7 @@ describe('Spec', () => {
       const spec = new Spec();
       await spec
         .post('/')
-        .__setRequestTimeout("1000");
+        .withRequestTimeout("1000");
     } catch (error) {
       err = error;
     }

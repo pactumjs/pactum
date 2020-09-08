@@ -66,7 +66,7 @@ HTTP requests are messages sent by the client to initiate an action on the serve
 | `withForm({})`                      | object to send as form data               |
 | `withMultiPartFormData('','', {})`  | object to send as multi part form data    |
 | `__setLogLevel('DEBUG')`            | sets log level for troubleshooting        |
-| `__setRequestTimeout(2000)`         | sets request timeout                      |
+| `withRequestTimeout(2000)`         | sets request timeout                      |
 | `retry({})`                         | retry options                             |                
 
 ```javascript

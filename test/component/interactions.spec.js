@@ -568,7 +568,7 @@ describe('Mock', () => {
     await pactum
       .post('http://localhost:9393/api/projects')
       .__setLogLevel('DEBUG')
-      .__setRequestTimeout(1000)
+      .withRequestTimeout(1000)
       .withJson({
         parent: {
           child: [1, { grand: 3 }]

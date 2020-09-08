@@ -88,14 +88,6 @@ class Spec {
     return this;
   }
 
-  /**
-   * The DELETE method deletes the specified resource.
-   * @param {string} url - HTTP url
-   * @example
-   * await pactum
-   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectStatus(200);
-   */
   delete(url) {
     validateRequestUrl(this._request, url);
     this._request.url = url;
@@ -225,21 +217,13 @@ class Spec {
     return this;
   }
 
-  /**
-   * overrides default log level for current spec
-   * @param {('TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR')} level - log level
-   */
   __setLogLevel(level) {
     this.previousLogLevel = log.level;
     log.setLevel(level);
     return this;
   }
 
-  /**
-   * overrides default timeout for current request
-   * @param {number} timeout - request timeout in milliseconds
-   */
-  __setRequestTimeout(timeout) {
+  withRequestTimeout(timeout) {
     if (typeof timeout !== 'number') {
       throw new PactumRequestError(`Invalid timeout provided - ${timeout}`);
     }
