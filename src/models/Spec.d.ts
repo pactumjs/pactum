@@ -14,7 +14,7 @@ declare interface RetryOptions {
 export = Spec;
 
 declare class Spec {
-  constructor() {};
+  constructor();
 
   /**
    * runs the specified state handler
@@ -152,10 +152,10 @@ declare class Spec {
    * The DELETE method deletes the specified resource.
    * @example
    * await pactum
-   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
+   *  .del('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectStatus(200);
    */
-  delete(url: string): Spec;
+  del(url: string): Spec;
 
   /**
    * appends query param to the request url - /comments?postId=1&user=snow
@@ -343,7 +343,7 @@ declare class Spec {
    * expects a status code on the response
    * @example
    * await pactum
-   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
+   *  .del('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectStatus(200);
    */
   expectStatus(code: number): Spec;

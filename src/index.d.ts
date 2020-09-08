@@ -142,6 +142,13 @@ export function post(url: string): Spec;
  */
 export function put(url: string): Spec;
 
-// TODO - delete
+/**
+ * The DELETE method deletes the specified resource.
+ * @example
+ * await pactum
+ *  .del('https://jsonplaceholder.typicode.com/posts/1')
+ *  .expectStatus(200);
+ */
+export function del(url: string): Spec;
 
 export namespace pactum { }

@@ -63,11 +63,11 @@ const pactum = {
    * @param {string} url - HTTP url
    * @example
    * await pactum
-   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
+   *  .del('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectStatus(200);
    */
-  delete(url) {
-    return new Spec().delete(url);
+  del(url) {
+    return new Spec().del(url);
   }
 
 };

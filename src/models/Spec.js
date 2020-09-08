@@ -88,7 +88,7 @@ class Spec {
     return this;
   }
 
-  delete(url) {
+  del(url) {
     validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'DELETE';
