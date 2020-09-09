@@ -55,7 +55,7 @@ describe('Retries', () => {
   });
 
   it('custom retry strategy', async () => {
-    pactum.handler.addRetryHandler('RetryTill200', (req, res) => res.statusCode !== 200);
+    pactum.handler.addRetryHandler('RetryTill200', ({res}) => res.statusCode !== 200);
     await pactum
       .addMockInteraction({
         withRequest: {

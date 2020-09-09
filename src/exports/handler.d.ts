@@ -1,11 +1,24 @@
+import * as Spec from '../models/Spec';
+
 interface StateHandlerContext {
   data?: any;
-  spec?: object;
+  spec?: Spec;
 }
 
-export type ExpectHandlerFunction = (req: object, res: object) => void;
-export type RetryHandlerFunction = (req: object, res: object) => boolean;
-export type ReturnHandlerFunction = (req: object, res: object) => any;
+interface RequestResponseContext {
+  req: object;
+  res: object;
+}
+
+interface RequestResponseDataContext {
+  req: object;
+  res: object;
+  data?: any;
+}
+
+export type ExpectHandlerFunction = (ctx: RequestResponseDataContext) => void;
+export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
+export type ReturnHandlerFunction = (ctx: RequestResponseContext) => any;
 export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
 
 /**

@@ -58,14 +58,6 @@ const pactum = {
     return new Spec().put(url);
   },
 
-  /**
-   * The DELETE method deletes the specified resource.
-   * @param {string} url - HTTP url
-   * @example
-   * await pactum
-   *  .del('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectStatus(200);
-   */
   del(url) {
     return new Spec().del(url);
   }

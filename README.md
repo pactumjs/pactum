@@ -143,7 +143,7 @@ It also allows us to add custom expect handlers that are ideal to make assertion
 ```javascript
 const pactum = require('pactum');
 
-pactum.handler.addExpectHandler('isNewPost', (req, res) => { /* Custom Assertion Code */})
+pactum.handler.addExpectHandler('isNewPost', ({req, res, data}) => { /* Custom Assertion Code */})
 
 it('should add a new post', () => {
   return pactum
@@ -155,7 +155,7 @@ it('should add a new post', () => {
     })
     .expectStatus(201)
     .expect('isNewPost')
-    .expect((req, res) => { /* Custom Assertion Code */ });
+    .expect(({req, res, data}) => { /* Custom Assertion Code */ });
 });
 ```
 
@@ -179,14 +179,14 @@ it('should return all posts and first post should have comments', async () => {
   expect(comments).deep.equals([]);
 });
 
-pactum.handler.addReturnHandler('GetFirstPostId', (req, res) => { return res.json[0].id; });
+pactum.handler.addReturnHandler('GetFirstPostId', ({res}) => { return res.json[0].id; });
 
 it('return multiple data', async () => {
   const ids = await pactum
     .get('http://jsonplaceholder.typicode.com/posts')
     .expectStatus(200)
     .returns('GetFirstPostId')
-    .returns((req, res) => { return res.json[1].id; });
+    .returns(({res}) => { return res.json[1].id; });
   await pactum
     .get(`http://jsonplaceholder.typicode.com/posts/${ids[0]}/comments`)
     .expectStatus(200);
@@ -242,12 +242,12 @@ it('should get the newly added post', async () => {
     .retry({
       count: 2,
       delay: 2000,
-      strategy: (req, res) => { return res.statusCode === 202 }
+      strategy: ({res}) => { return res.statusCode === 202 }
     })
     .expectStatus(200);
 });
 
-pactum.handler.addRetryHandler('waitForPost', (req, res) => { /* Custom Retry Strategy Code */});
+pactum.handler.addRetryHandler('waitForPost', ({req, res}) => { /* Custom Retry Strategy Code */});
 
 it('should get the newly added post', async () => {
   await pactum

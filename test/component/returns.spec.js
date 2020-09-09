@@ -64,7 +64,7 @@ describe('Returns', () => {
   });
 
   it('return with custom handler function', async () => {
-    pactum.handler.addReturnHandler('GetID', (_, res) => res.json.id);
+    pactum.handler.addReturnHandler('GetID', ({ res }) => res.json.id);
     const response = await pactum
       .addMockInteraction({
         withRequest: {
@@ -85,7 +85,7 @@ describe('Returns', () => {
   });
 
   it('multiple returns', async () => {
-    pactum.handler.addReturnHandler('GetID', (_, res) => res.json.id);
+    pactum.handler.addReturnHandler('GetID', ({ res }) => res.json.id);
     const response = await pactum
       .addMockInteraction({
         withRequest: {
