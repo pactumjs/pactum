@@ -1,6 +1,6 @@
 import { BasicInteraction, MockInteraction, PactInteraction } from './exports/mock';
 import * as Spec from './models/Spec';
-// TODO bin
+
 export * as consumer from './exports/consumer';
 export * as handler from './exports/handler';
 export * as matchers from './exports/matcher';
@@ -8,6 +8,7 @@ export * as mock from './exports/mock';
 export * as provider from './exports/provider';
 export * as request from './exports/request';
 export * as settings from './exports/settings';
+export * as stash from './exports/stash';
 export * as state from './exports/state';
 
 /**

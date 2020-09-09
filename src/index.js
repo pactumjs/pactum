@@ -8,7 +8,7 @@ const settings = require('./exports/settings');
 const handler = require('./exports/handler');
 const matchers = require('./exports/matcher');
 const state = require('./exports/state');
-const bin = require('./exports/bin');
+const stash = require('./exports/stash');
 
 const pactum = {
 
@@ -20,7 +20,7 @@ const pactum = {
   settings,
   handler,
   state,
-  bin,
+  stash,
 
   setState(name, data) {
     return new Spec().setState(name, data);

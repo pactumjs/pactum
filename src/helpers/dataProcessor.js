@@ -1,7 +1,7 @@
 const override = require('deep-override');
 const jq = require('json-query');
 
-const bin = require('../exports/bin');
+const stash = require('../exports/stash');
 const logger = require('./logger');
 const config = require('../config');
 
@@ -16,7 +16,7 @@ const dataProcessor = {
 
   processMaps() {
     if (!config.data.map.processed) {
-      const orgMap = bin.getDataMap();
+      const orgMap = stash.getDataMap();
       this.map = JSON.parse(JSON.stringify(orgMap));
       this.map = this.processDataMaps(this.map);
       config.data.map.processed = true;
@@ -28,7 +28,7 @@ const dataProcessor = {
 
   processTemplates() {
     if (!config.data.template.processed) {
-      const orgTemplate = bin.getDataTemplate();
+      const orgTemplate = stash.getDataTemplate();
       this.template = JSON.parse(JSON.stringify(orgTemplate));
       this.template = this.processDataTemplates(this.template);
       config.data.template.processed = true;

@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 
 const dp = require('../../src/helpers/dataProcessor');
-const bin = require('../../src/exports/bin');
+const stash = require('../../src/exports/stash');
 const config = require('../../src/config');
 
 describe('Data Processing - Templates', () => {
@@ -43,7 +43,7 @@ describe('Data Processing - Templates', () => {
   });
 
   it('processTemplates - simple with Overrides', () => {
-    bin.loadDataTemplate({
+    stash.loadDataTemplate({
       'User': {
         'Name': 'Snow',
         'Address': {
@@ -77,7 +77,7 @@ describe('Data Processing - Templates', () => {
   });
 
   it('processTemplates - template not found', () => {
-    bin.loadDataTemplates([{
+    stash.loadDataTemplates([{
       'User': {
         'Name': 'Snow',
         'Address': {
@@ -98,7 +98,7 @@ describe('Data Processing - Templates', () => {
   });
 
   it('processTemplates - complex array of objects with Overrides', () => {
-    bin.loadDataTemplate({
+    stash.loadDataTemplate({
       'User': {
         'Name': 'Snow',
         'Age': 12,
@@ -163,7 +163,7 @@ describe('Data Processing - Templates', () => {
   afterEach(() => {
     config.data.template.enabled = false;
     config.data.template.processed = false;
-    bin.clearDataTemplates();
+    stash.clearDataTemplates();
   });
 
 });
@@ -178,7 +178,7 @@ describe('Data Processing - Maps', () => {
   });
 
   it('processMaps - already processed', () => {
-    bin.loadDataMap({
+    stash.loadDataMap({
       Users: [
         {
           Name: 'Snow',
@@ -194,7 +194,7 @@ describe('Data Processing - Maps', () => {
   });
 
   it('processMaps - with basic data map', () => {
-    bin.loadDataMap({
+    stash.loadDataMap({
       User: {
         Name: '@DATA:MAP::Users[0].Name@',
         House: '@DATA:MAP::Users[0].House@'
@@ -232,7 +232,7 @@ describe('Data Processing - Maps', () => {
   });
 
   it('processMaps - complex array of objects', () => {
-    bin.loadDataMaps([
+    stash.loadDataMaps([
       {
         User: {
           'Name': '@DATA:MAP::Defaults.User.Name@',
@@ -293,7 +293,7 @@ describe('Data Processing - Maps', () => {
   afterEach(() => {
     config.data.map.enabled = false;
     config.data.map.processed = false;
-    bin.clearDataMaps();
+    stash.clearDataMaps();
   });
 
 });
@@ -301,13 +301,13 @@ describe('Data Processing - Maps', () => {
 describe('Data Processing - Actual Data - Only Templates', () => {
 
   before(() => {
-    bin.clearDataTemplates();
-    bin.loadDataTemplate({
+    stash.clearDataTemplates();
+    stash.loadDataTemplate({
       'User': {
         Name: 'Snow'
       }
     });
-    bin.loadDataTemplate({
+    stash.loadDataTemplate({
       'Users': [
         {
           '@DATA:TEMPLATE@': 'User'
@@ -432,7 +432,7 @@ describe('Data Processing - Actual Data - Only Templates', () => {
   });
 
   after(() => {
-    bin.clearDataTemplates();
+    stash.clearDataTemplates();
   });
 
 });
@@ -440,8 +440,8 @@ describe('Data Processing - Actual Data - Only Templates', () => {
 describe('Data Processing - Actual Data - Only Maps', () => {
 
   before(() => {
-    bin.clearDataMaps();
-    bin.loadDataMap({
+    stash.clearDataMaps();
+    stash.loadDataMap({
       User: {
         Name: 'Snow',
         Age: 18
@@ -452,7 +452,7 @@ describe('Data Processing - Actual Data - Only Maps', () => {
         Year: 2020
       }
     });
-    bin.loadDataMap({
+    stash.loadDataMap({
       Address: [
         {
           'Type': 'Home',
@@ -534,7 +534,7 @@ describe('Data Processing - Actual Data - Only Maps', () => {
   });
 
   after(() => {
-    bin.clearDataMaps();
+    stash.clearDataMaps();
   });
 
 });
@@ -542,15 +542,15 @@ describe('Data Processing - Actual Data - Only Maps', () => {
 describe('Data Processing - Actual Data - Both Templates & Maps', () => {
 
   before(() => {
-    bin.clearDataTemplates();
-    bin.clearDataMaps();
-    bin.loadDataTemplate({
+    stash.clearDataTemplates();
+    stash.clearDataMaps();
+    stash.loadDataTemplate({
       'User': {
         Name: '@DATA:MAP::User.Name@',
         Age: '@DATA:MAP::User.Age@'
       }
     });
-    bin.loadDataTemplate({
+    stash.loadDataTemplate({
       'Users': [
         {
           '@DATA:TEMPLATE@': 'User'
@@ -564,7 +564,7 @@ describe('Data Processing - Actual Data - Both Templates & Maps', () => {
         }
       ]
     });
-    bin.loadDataMap({
+    stash.loadDataMap({
       User: {
         Name: 'Snow',
         Age: 18
@@ -631,8 +631,8 @@ describe('Data Processing - Actual Data - Both Templates & Maps', () => {
   });
 
   after(() => {
-    bin.clearDataTemplates();
-    bin.clearDataMaps();
+    stash.clearDataTemplates();
+    stash.clearDataMaps();
   });
 
 });
