@@ -1,7 +1,7 @@
 const Spec = require('./models/Spec');
 
 const mock = require('./exports/mock');
-const pact = require('./exports/pact');
+const consumer = require('./exports/consumer');
 const request = require('./exports/request');
 const provider = require('./exports/provider');
 const settings = require('./exports/settings');
@@ -14,7 +14,7 @@ const pactum = {
 
   mock,
   matchers,
-  pact,
+  consumer,
   request,
   provider,
   settings,

@@ -326,9 +326,12 @@ If the pact interaction is not exercised, the test will fail.
 
 ```javascript
 const pactum = require('pactum');
+const mock = pactum.mock;
+const consumer = pactum.consumer;
 
 before(async () => {
-  await pactum.mock.start();
+  consumer.setConsumerName('consumer-service');
+  await mock.start();
 });
 
 it('GET - one interaction', async () => {
@@ -361,9 +364,11 @@ it('GET - one interaction', async () => {
 });
 
 after(async () => {
-  await pactum.mock.stop();
+  await mock.stop();
+  await consumer.publish(/* publish options */);
 });
 ```
+
 Learn more about **pactum** as a consumer tester at [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
 
 ### Provider Verification

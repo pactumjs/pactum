@@ -1,6 +1,6 @@
 export interface PublishOptions {
   pactFilesOrDirs?: string[];
-  pactBroker?: string;
+  pactBrokerUrl?: string;
   pactBrokerUsername?: string;
   pactBrokerPassword?: string;
   consumerVersion: string;

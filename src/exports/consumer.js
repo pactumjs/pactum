@@ -2,7 +2,7 @@ const config = require('../config');
 const store = require('../helpers/store');
 const { PactumConfigurationError } = require('../helpers/errors');
 
-const pact = {
+const consumer = {
 
   setPactFilesDirectory(dir) {
     if (typeof dir !== 'string') {
@@ -28,4 +28,4 @@ const pact = {
 
 }
 
-module.exports = pact;
+module.exports = consumer;

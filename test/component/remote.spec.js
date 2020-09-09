@@ -421,7 +421,7 @@ describe('Remote - Publish Pacts', () => {
     await pactum
       .post('http://localhost:9393/api/pactum/pacts/publish')
       .withJson({
-        pactBroker: 'http://localhost:9393',
+        pactBrokerUrl: 'http://localhost:9393',
         consumerVersion: '1.2.3',
         pactBrokerUsername: 'user',
         pactBrokerPassword: 'pass'
@@ -551,7 +551,7 @@ describe('Remote - Publish Pacts', () => {
       })
       .post('http://localhost:9393/api/pactum/pacts/publish')
       .withJson({
-        pactBroker: 'http://localhost:9393',
+        pactBrokerUrl: 'http://localhost:9393',
         consumerVersion: '1.2.3',
         pactBrokerUsername: 'user',
         pactBrokerPassword: 'pass'
@@ -661,7 +661,7 @@ describe('Remote - Publish Pacts', () => {
       })
       .post('http://localhost:9393/api/pactum/pacts/publish')
       .withJson({
-        pactBroker: 'http://localhost:9393',
+        pactBrokerUrl: 'http://localhost:9393',
         consumerVersion: '1.2.3',
         pactBrokerUsername: 'user',
         pactBrokerPassword: 'pass',
