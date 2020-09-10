@@ -6,15 +6,15 @@
 ![Size](https://img.shields.io/bundlephobia/minzip/pactum)
 ![Platform](https://img.shields.io/node/v/pactum)
 
-**pactum** is a REST API Testing Tool used for e2e testing, integration testing, component testing & contract testing of API endpoints. It comes with a *mock server* & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
+**pactum** is a REST API Testing Tool used to write e2e, integration, contract & component or service level tests. It comes with a powerful *mock server* which can control the state of external dependencies & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
-In simple words, **pactum** helps in testing API endpoints. It comes with an HTTP server that acts as a mock server or a service virtualization tool which enables us to control the state of all external dependencies. It is *simple*, *fast*, *easy* and *fun* to use.
+This library is used with test runners like **cucumber**, **mocha** or **jest**. It is *simple*, *fast*, *easy* and *fun* to use.
 
 ## Documentation
 
-Learn more about **pactum** from following links
+This readme offers an introduction to the library. For more information visit the following links.
 
-* [Pactum](https://github.com/ASaiAnudeep/pactum/wiki)
+* [API Testing](https://github.com/ASaiAnudeep/pactum/wiki)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 * [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
   * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
@@ -28,28 +28,22 @@ Learn more about **pactum** from following links
 # install pactum as a dev dependency
 npm install --save-dev pactum
 
-# install a test framework to run pactum tests
-# mocha / jest / jasmine
+# install a test runner to run pactum tests
+# mocha / jest / cucumber
 npm install --save-dev mocha
 ```
 
 # Usage
 
-pactum can be used for
+**pactum** can be used for all levels of testing in a test pyramid. It can also act as an standalone mock server to generate contracts for consumer driven contract testing.
 
-* [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
-* [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
-* [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
+## API Testing
 
-## Component Testing
+Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your request and expectations. Learn more about these methods at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing).
 
-Component testing is defined as a software testing type, in which the testing is performed on each component separately without integrating with other components.  
+### Simple Test Cases
 
-### Simple Component Test Cases
-
-Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your request and expectations. Learn more about these methods at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing).
-
-Running simple component test expectations.
+Running simple api test expectations.
 
 ```javascript
 const pactum = require('pactum');
@@ -79,13 +73,11 @@ mocha /path/to/test
 
 ### Complex HTTP Assertions
 
-**Pactum** can make numerous assertions on HTTP responses. It allows verification of returned status codes, headers, json objects, json schemas & response times. Learn more about available assertions at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+It allows verification of returned status codes, headers, body, json objects, json schemas & response times. Learn more about available assertions at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 
 Running complex component test expectations.
 
 ```javascript
-const pactum = require('pactum');
-
 it('should have a user with id', () => {
   return pactum
     .get('https://jsonplaceholder.typicode.com/users/1')
@@ -132,36 +124,28 @@ it('should have a user with id', () => {
         }
       }
     })
-    .expectJsonQuery('[0].name', 'Bolt')
     .expectJsonQueryLike('[0].address[*].city', ['Boston', 'NewYork'])
     .expectResponseTime(100);
 });
 ```
 
-It also allows us to add custom expect handlers that are ideal to make assertions that are specific to your case. You can bring your own assertion library or take advantage of popular assertion libraries like [chai](https://www.npmjs.com/package/chai)
+It also allows us to add custom expect handlers that are ideal to make assertions that are specific to your use case. You can bring your own assertion library or take advantage of popular assertion libraries like [chai](https://www.npmjs.com/package/chai)
 
 ```javascript
-const pactum = require('pactum');
-
-pactum.handler.addExpectHandler('isNewPost', ({req, res, data}) => { /* Custom Assertion Code */})
-
-it('should add a new post', () => {
-  return pactum
-    .post('https://jsonplaceholder.typicode.com/posts')
-    .withJson({
-      title: 'foo',
-      body: 'bar',
-      userId: 1
-    })
-    .expectStatus(201)
-    .expect('isNewPost')
-    .expect(({req, res, data}) => { /* Custom Assertion Code */ });
-});
+await pactum
+  .post('https://jsonplaceholder.typicode.com/posts')
+  .withJson({
+    title: 'foo',
+    body: 'bar',
+    userId: 1
+  })
+  .expectStatus(201)
+  .expect(({res}) => { /* Custom Assertion Code */ });
 ```
 
 ### Nested Dependent HTTP Calls
 
-API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to next tests using [json-query](https://www.npmjs.com/package/json-query) or custom functions.
+API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to next tests using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions. Learn more about it at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 
 ```javascript
 const pactum = require('pactum');
@@ -178,90 +162,53 @@ it('should return all posts and first post should have comments', async () => {
   const comments = response.json;
   expect(comments).deep.equals([]);
 });
-
-pactum.handler.addReturnHandler('GetFirstPostId', ({res}) => { return res.json[0].id; });
-
-it('return multiple data', async () => {
-  const ids = await pactum
-    .get('http://jsonplaceholder.typicode.com/posts')
-    .expectStatus(200)
-    .returns('GetFirstPostId')
-    .returns(({res}) => { return res.json[1].id; });
-  await pactum
-    .get(`http://jsonplaceholder.typicode.com/posts/${ids[0]}/comments`)
-    .expectStatus(200);
-  await pactum
-    .get(`http://jsonplaceholder.typicode.com/posts/${ids[1]}/comments`)
-    .expectStatus(200);
-});
-```
-
-### State Handlers
-
-State handlers helps us to set up data or getting the application into specific state. **pactum** run these state handlers before making a request.
-
-```javascript
-const pactum = require('pactum');
-const handler = require('pactum/handler');
-const db = require('path/to/db');
-
-handler.addStateHandler('there are no users', async (ctx) => { 
-  await db.clearUsers();
-});
-
-it('should get an user', async () => {
-  await pactum
-    .setState('there are no users')
-    .get('/api/users')
-    .expectJson([]);
-});
-
-
-handler.addStateHandler('there is a user in the system', async (ctx) => { 
-  await db.addUser(ctx.data);
-});
-
-it('should get an user', async () => {
-  await pactum
-    .setState('there is a user in the system', { name: 'snow' })
-    .get('/api/users')
-    .expectStatus(200);
-});
 ```
 
 ### Retry Mechanism
 
-**pactum** also allows us to add custom retry handlers that are ideal to wait for specific conditions to happen before attempting to make assertions on the response.  
+Some API operations will take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response.  
 
 ```javascript
-const pactum = require('pactum');
-
-it('should get the newly added post', async () => {
-  await pactum
-    .get('https://jsonplaceholder.typicode.com/posts/12')
-    .retry({
-      count: 2,
-      delay: 2000,
-      strategy: ({res}) => { return res.statusCode === 202 }
-    })
-    .expectStatus(200);
-});
-
-pactum.handler.addRetryHandler('waitForPost', ({req, res}) => { /* Custom Retry Strategy Code */});
-
-it('should get the newly added post', async () => {
-  await pactum
-    .get('https://jsonplaceholder.typicode.com/posts/12')
-    .retry({
-      strategy: 'waitForPost' // Default Count: 3 & Delay: 1000 milliseconds
-    })
-    .expectStatus(200);
-});
+await pactum
+  .get('https://jsonplaceholder.typicode.com/posts/12')
+  .retry({
+    count: 2,
+    delay: 2000,
+    strategy: ({res}) => { return res.statusCode === 202 }
+  })
+  .expectStatus(200);
 ```
 
-### Mocking External Services (Dependencies)
+### Data Management
 
-During component testing, the service under test might be talking to other external services. Instead of talking to real external services, it will be communicating with a mock server.
+Data management is made easy with this library by using the concept of *Data Templates* & *Data Maps*. Learn more about data management with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+
+```javascript
+const stash = pactum.stash;
+
+stash.loadDataTemplate({
+  'User.New': {
+    FirstName: 'Jon',
+    LastName: 'Snow'
+  }      
+});
+
+await pactum
+  .post('/api/users')
+  // json will be replaced with above template & overrides last name
+  .withJson({
+    '@DATA:TEMPLATE@': 'User.New',
+    '@OVERRIDES@': {
+      'LastName': 'Dragon'
+    }
+  });
+```
+
+Learn more about api testing with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+
+## Component Testing
+
+Component testing is defined as a software testing type, in which the testing is performed on each component separately without integrating with other components. So the service under test might be talking to a mock server, instead of talking to real external services.
 
 **Pactum** comes with a mock server where you will able to control the behavior of each external service. Interactions are a way to instruct the mock server to simulate the behavior of external services. Learn more about interactions at [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions).
 
