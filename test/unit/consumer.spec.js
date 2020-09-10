@@ -1,12 +1,12 @@
 const expect = require('chai').expect;
-const pact = require('../../src/index').pact;
+const consumer = require('../../src/index').consumer;
 
-describe('Provider Verification - Pact Broker', () => {
+describe('Consumer Expectations - Pact Broker', () => {
 
   it('no options', async () => {
     let err;
     try {
-      await pact.publish();
+      await consumer.publish();
     } catch (error) {
       err = error;
     }
@@ -16,18 +16,18 @@ describe('Provider Verification - Pact Broker', () => {
   it('empty options', async () => {
     let err;
     try {
-      await pact.publish({});
+      await consumer.publish({});
     } catch (error) {
       err = error;
     }
-    expect(err.toString()).equals('Error: Missing pactBroker option from publish options');
+    expect(err.toString()).equals('Error: Missing pactBrokerUrl option from publish options');
   });
 
   it('missing pactBrokerUsername', async () => {
     let err;
     try {
-      await pact.publish({
-        pactBroker: 'abc'
+      await consumer.publish({
+        pactBrokerUrl: 'abc'
       });
     } catch (error) {
       err = error;
@@ -38,8 +38,8 @@ describe('Provider Verification - Pact Broker', () => {
   it('missing pactBrokerPassword', async () => {
     let err;
     try {
-      await pact.publish({
-        pactBroker: 'abc',
+      await consumer.publish({
+        pactBrokerUrl: 'abc',
         pactBrokerUsername: 'abc'
       });
     } catch (error) {
@@ -51,8 +51,8 @@ describe('Provider Verification - Pact Broker', () => {
   it('missing consumerVersion', async () => {
     let err;
     try {
-      await pact.publish({
-        pactBroker: 'abc',
+      await consumer.publish({
+        pactBrokerUrl: 'abc',
         pactBrokerUsername: 'abc',
         pactBrokerPassword: 'abc'
       });
@@ -65,8 +65,8 @@ describe('Provider Verification - Pact Broker', () => {
   it('invalid tags', async () => {
     let err;
     try {
-      await pact.publish({
-        pactBroker: 'abc',
+      await consumer.publish({
+        pactBrokerUrl: 'abc',
         pactBrokerUsername: 'abc',
         pactBrokerPassword: 'abc',
         consumerVersion: '0',
@@ -81,8 +81,8 @@ describe('Provider Verification - Pact Broker', () => {
   it('empty tags', async () => {
     let err;
     try {
-      await pact.publish({
-        pactBroker: 'abc',
+      await consumer.publish({
+        pactBrokerUrl: 'abc',
         pactBrokerUsername: 'abc',
         pactBrokerPassword: 'abc',
         consumerVersion: '0',
@@ -96,18 +96,18 @@ describe('Provider Verification - Pact Broker', () => {
 
 });
 
-describe('Pact', () => {
+describe('Consumer Expectations - Pact', () => {
 
   it('setPactFilesDirectory - undefined', () => {
-    expect(() => pact.setPactFilesDirectory()).throws('Invalid directory provided for saving pact files - undefined');
+    expect(() => consumer.setPactFilesDirectory()).throws('Invalid directory provided for saving pact files - undefined');
   });
 
   it('setConsumerName - undefined', () => {
-    expect(() => pact.setConsumerName()).throws('Invalid consumer name - undefined');
+    expect(() => consumer.setConsumerName()).throws('Invalid consumer name - undefined');
   });
 
   after(() => {
-    pact.setPactFilesDirectory('./pacts/');
+    consumer.setPactFilesDirectory('./pacts/');
   })
 
 });

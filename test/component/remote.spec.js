@@ -90,7 +90,7 @@ describe('Remote- post single mock interaction', () => {
 
   after(async () => {
     await pactum
-      .delete(`http://localhost:9393/api/pactum/mockInteraction?id=${id}`)
+      .del(`http://localhost:9393/api/pactum/mockInteraction?id=${id}`)
       .expectStatus(200)
       .toss();
   });
@@ -216,7 +216,7 @@ describe('Remote- post single pact interaction', () => {
 
   after(async () => {
     await pactum
-      .delete(`http://localhost:9393/api/pactum/pactInteraction?id=${id}`)
+      .del(`http://localhost:9393/api/pactum/pactInteraction?id=${id}`)
       .expectStatus(200)
       .toss();
   });
@@ -421,7 +421,7 @@ describe('Remote - Publish Pacts', () => {
     await pactum
       .post('http://localhost:9393/api/pactum/pacts/publish')
       .withJson({
-        pactBroker: 'http://localhost:9393',
+        pactBrokerUrl: 'http://localhost:9393',
         consumerVersion: '1.2.3',
         pactBrokerUsername: 'user',
         pactBrokerPassword: 'pass'
@@ -467,7 +467,7 @@ describe('Remote - Publish Pacts', () => {
       .get(`http://localhost:9393/api/projects/2`)
       .expectStatus(200);
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'PUT',
           path: '/pacts/provider/remote-1/consumer/consumer/version/1.2.3',
@@ -508,7 +508,7 @@ describe('Remote - Publish Pacts', () => {
           status: 200
         }
       })
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'PUT',
           path: '/pacts/provider/remote-2/consumer/consumer/version/1.2.3',
@@ -551,7 +551,7 @@ describe('Remote - Publish Pacts', () => {
       })
       .post('http://localhost:9393/api/pactum/pacts/publish')
       .withJson({
-        pactBroker: 'http://localhost:9393',
+        pactBrokerUrl: 'http://localhost:9393',
         consumerVersion: '1.2.3',
         pactBrokerUsername: 'user',
         pactBrokerPassword: 'pass'
@@ -594,7 +594,7 @@ describe('Remote - Publish Pacts', () => {
       .get(`http://localhost:9393/api/projects/1`)
       .expectStatus(200);
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'PUT',
           path: '/pacts/provider/remote-1/consumer/consumer/version/1.2.3',
@@ -635,7 +635,7 @@ describe('Remote - Publish Pacts', () => {
           status: 200
         }
       })
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'PUT',
           path: '/pacticipants/consumer/versions/1.2.3/tags/prod',
@@ -647,7 +647,7 @@ describe('Remote - Publish Pacts', () => {
           status: 200
         }
       })
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'PUT',
           path: '/pacticipants/consumer/versions/1.2.3/tags/latest',
@@ -661,7 +661,7 @@ describe('Remote - Publish Pacts', () => {
       })
       .post('http://localhost:9393/api/pactum/pacts/publish')
       .withJson({
-        pactBroker: 'http://localhost:9393',
+        pactBrokerUrl: 'http://localhost:9393',
         consumerVersion: '1.2.3',
         pactBrokerUsername: 'user',
         pactBrokerPassword: 'pass',

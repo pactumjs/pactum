@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const helper = require('../../src/helpers/helper');
-const matcher = require('../../src/models/matcher');
+const matcher = require('../../src/exports/matcher');
 
 const { like, term, eachLike } = matcher;
 

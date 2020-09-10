@@ -5,7 +5,7 @@ describe('Returns', () => {
 
   it('default return value', async () => {
     const response = await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users'
@@ -25,7 +25,7 @@ describe('Returns', () => {
 
   it('custom return function', async () => {
     const response = await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users'
@@ -45,7 +45,7 @@ describe('Returns', () => {
 
   it('return with json query', async () => {
     const response = await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users'
@@ -64,9 +64,9 @@ describe('Returns', () => {
   });
 
   it('return with custom handler function', async () => {
-    pactum.handler.addReturnHandler('GetID', (_, res) => res.json.id);
+    pactum.handler.addReturnHandler('GetID', ({ res }) => res.json.id);
     const response = await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users'
@@ -85,9 +85,9 @@ describe('Returns', () => {
   });
 
   it('multiple returns', async () => {
-    pactum.handler.addReturnHandler('GetID', (_, res) => res.json.id);
+    pactum.handler.addReturnHandler('GetID', ({ res }) => res.json.id);
     const response = await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users'

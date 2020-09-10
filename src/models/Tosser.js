@@ -73,7 +73,8 @@ class Tosser {
         }
         if (typeof strategy === 'string') {
           const handlerFun = handler.getRetryHandler(strategy);
-          retry = handlerFun(this.request, this.response);
+          const ctx = { req: this.request, res: this.response };
+          retry = handlerFun(ctx);
         }
         if (retry) {
           await helper.sleep(delay);
@@ -125,7 +126,8 @@ class Tosser {
       if (typeof _handler === 'string') {
         const _customHandlerFun = handler.getReturnHandler(_handler);
         if (_customHandlerFun) {
-          outputs.push(_customHandlerFun(this.request, this.response));
+          const ctx = { req: this.request, res: this.response };
+          outputs.push(_customHandlerFun(ctx));
         } else {
           outputs.push(jqy(_handler, { data: this.response.json }).value);
         }

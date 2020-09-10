@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 
 const Interaction = require('../../src/models/interaction');
-const matcher = require('../../src/models/matcher');
+const matcher = require('../../src/exports/matcher');
 const utils = require('../../src/helpers/utils');
 
 describe('getMatchingInteraction', () => {

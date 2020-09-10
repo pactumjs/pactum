@@ -8,7 +8,7 @@ describe('Request', () => {
   it('with baseurl', async () => {
     request.setBaseUrl('http://localhost:9393');
     await pactum
-      .addInteraction({
+      .useInteraction({
         get: '/users'
       })
       .get('/users')
@@ -18,7 +18,7 @@ describe('Request', () => {
   it('with baseurl override', async () => {
     request.setBaseUrl('http://localhost:9392');
     await pactum
-      .addInteraction({
+      .useInteraction({
         get: '/users'
       })
       .get('http://localhost:9393/users')
@@ -29,7 +29,7 @@ describe('Request', () => {
     request.setBaseUrl('http://localhost:9393');
     request.setDefaultHeader('x', 'a');
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/users',
@@ -49,7 +49,7 @@ describe('Request', () => {
     request.setBaseUrl('http://localhost:9393');
     request.setDefaultHeader('x', 'a');
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/users',
@@ -70,7 +70,7 @@ describe('Request', () => {
     request.setBaseUrl('http://localhost:9393');
     request.setDefaultHeader('x', 'a');
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/users',

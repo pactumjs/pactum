@@ -98,8 +98,8 @@ const store = {
    */
   async publish(options) {
     validatePublishOptions(options);
-    const { consumerVersion, tags, pactBroker, pactBrokerUsername, pactBrokerPassword, pactFilesOrDirs } = options;
-    const url = pactBroker || config.pact.brokerUrl;
+    const { consumerVersion, tags, pactBrokerUrl, pactBrokerUsername, pactBrokerPassword, pactFilesOrDirs } = options;
+    const url = pactBrokerUrl || config.pact.brokerUrl;
     const user = pactBrokerUsername || config.pact.brokerUser;
     const pass = pactBrokerPassword || config.pact.brokerPass;
     const _pacts = this._getPacts(pactFilesOrDirs);
@@ -177,8 +177,8 @@ function validatePublishOptions(options) {
   if (!options) {
     throw new PactumOptionsError('Invalid publish options provided');
   }
-  if (!options.pactBroker && !process.env.PACT_BROKER_URL) {
-    throw new PactumOptionsError('Missing pactBroker option from publish options');
+  if (!options.pactBrokerUrl && !process.env.PACT_BROKER_URL) {
+    throw new PactumOptionsError('Missing pactBrokerUrl option from publish options');
   }
   if (!options.pactBrokerUsername && !process.env.PACT_BROKER_USERNAME) {
     throw new PactumOptionsError('Missing pactBrokerUsername option from publish options');

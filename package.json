@@ -1,8 +1,9 @@
 {
   "name": "pactum",
-  "version": "2.0.3",
-  "description": "REST API endpoint testing tool with a mock server & compatible with pact.io for contract testing",
+  "version": "2.0.5",
+  "description": "REST API Testing Tool to write e2e, integration, contract & component or service level tests",
   "main": "./src/index.js",
+  "types": "./src/index.d.ts",
   "files": [
     "/src"
   ],
@@ -26,10 +27,18 @@
   "keywords": [
     "api",
     "REST",
+    "automate",
     "testing",
-    "component testing",
-    "contract testing",
-    "consumer driven testing",
+    "component",
+    "service",
+    "contract",
+    "integration",
+    "e2e",
+    "bdd",
+    "tdd",
+    "cucumber",
+    "mocha",
+    "jest",
     "fake",
     "mock",
     "mocking",

@@ -66,7 +66,7 @@ HTTP requests are messages sent by the client to initiate an action on the serve
 | `withForm({})`                      | object to send as form data               |
 | `withMultiPartFormData('','', {})`  | object to send as multi part form data    |
 | `__setLogLevel('DEBUG')`            | sets log level for troubleshooting        |
-| `__setRequestTimeout(2000)`         | sets request timeout                      |
+| `withRequestTimeout(2000)`         | sets request timeout                      |
 | `retry({})`                         | retry options                             |                
 
 ```javascript
@@ -159,7 +159,7 @@ The request method indicates the method to be performed on the resource identifi
 | `get`    | performs a GET request on the resource     | `await pactum.get('url')`      |
 | `post`   | performs a POST request on the resource    | `await pactum.post('url')`     |
 | `put`    | performs a PUT request on the resource     | `await pactum.put('url')`      |
-| `delete` | performs a DELETE request on the resource  | `await pactum.delete('url')`   |
+| `del`    | performs a DELETE request on the resource  | `await pactum.del('url')`      |
 | `patch`  | performs a PATCH request on the resource   | `await pactum.patch('url')`    |
 | `head`   | performs a HEAD request on the resource    | `await pactum.head('url')`     |
 
@@ -167,7 +167,7 @@ The request method indicates the method to be performed on the resource identifi
 // performs a delete request
 it('DELETE', async () => {
   await pactum
-    .delete('https://jsonplaceholder.typicode.com/posts/1')
+    .del('https://jsonplaceholder.typicode.com/posts/1')
     .expectStatus(200)
     .toss();
 });

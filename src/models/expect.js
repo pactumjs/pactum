@@ -180,7 +180,8 @@ class Expect {
         requiredHandler.handler(request, response, requiredHandler.data);
       } else {
         const handlerFun = handler.getExpectHandler(requiredHandler.handler);
-        handlerFun(request, response, requiredHandler.data);
+        const ctx = { req: request, res: response, data: requiredHandler.data };
+        handlerFun(ctx);
       }
     }
   }

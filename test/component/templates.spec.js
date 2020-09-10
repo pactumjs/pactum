@@ -3,7 +3,7 @@ const pactum = require('../../src/index');
 describe('Templates & Maps', () => {
 
   before(() => {
-    pactum.bin.loadDataTemplate({
+    pactum.stash.loadDataTemplate({
       'User.NewUser': {
         FirstName: 'Jon',
         LastName: 'Snow',
@@ -15,7 +15,7 @@ describe('Templates & Maps', () => {
         Realm: 'The North'
       }
     });
-    pactum.bin.loadDataMap({
+    pactum.stash.loadDataMap({
       User: {
         FirstName: 'Jon',
         LastName: 'Snow',
@@ -29,7 +29,7 @@ describe('Templates & Maps', () => {
 
   it('new user with pure template', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/users',
@@ -53,7 +53,7 @@ describe('Templates & Maps', () => {
 
   it('new user with pure - override existing property', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/users',
@@ -80,7 +80,7 @@ describe('Templates & Maps', () => {
 
   it('new user with pure - override existing property with template & map', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/users',
@@ -116,7 +116,7 @@ describe('Templates & Maps', () => {
 
   it('new user with pure - nested override', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/users',
@@ -154,8 +154,8 @@ describe('Templates & Maps', () => {
   });
 
   after(() => {
-    pactum.bin.clearDataTemplates();
-    pactum.bin.clearDataMaps();
+    pactum.stash.clearDataTemplates();
+    pactum.stash.clearDataMaps();
   });
 
 });

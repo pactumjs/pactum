@@ -7,14 +7,14 @@ describe('Basic Interactions', () => {
 
   it('GET - string', async () => {
     await pactum
-      .addInteraction('/api/projects/1')
+      .useInteraction('/api/projects/1')
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200);
   });
 
   it('GET - override status', async () => {
     await pactum
-      .addInteraction({
+      .useInteraction({
         get: '/api/projects/1',
         status: 202
       })
@@ -24,7 +24,7 @@ describe('Basic Interactions', () => {
 
   it('POST - override return', async () => {
     await pactum
-      .addInteraction({
+      .useInteraction({
         post: '/api/projects',
         return: { id: 1 }
       })
@@ -38,7 +38,7 @@ describe('Basic Interactions', () => {
 
   it('PUT - with query', async () => {
     await pactum
-      .addInteraction({
+      .useInteraction({
         put: '/api/projects/1'
       })
       .put('http://localhost:9393/api/projects/1')
@@ -48,7 +48,7 @@ describe('Basic Interactions', () => {
 
   it('PATCH', async () => {
     await pactum
-      .addInteraction({
+      .useInteraction({
         patch: '/api/projects/1'
       })
       .patch('http://localhost:9393/api/projects/1')
@@ -57,10 +57,10 @@ describe('Basic Interactions', () => {
 
   it('DELETE', async () => {
     await pactum
-      .addInteraction({
+      .useInteraction({
         delete: '/api/projects/1'
       })
-      .delete('http://localhost:9393/api/projects/1')
+      .del('http://localhost:9393/api/projects/1')
       .expectStatus(200);
   });
 
@@ -70,7 +70,7 @@ describe('Mock', () => {
 
   it('GET - one interaction', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -110,7 +110,7 @@ describe('Mock', () => {
 
   it('GET - one interaction - without body', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -130,7 +130,7 @@ describe('Mock', () => {
 
   it('GET - one interaction - bad response', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -156,7 +156,7 @@ describe('Mock', () => {
 
   it('GET - one interaction - with one query', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -187,7 +187,7 @@ describe('Mock', () => {
 
   it('GET - one interaction - with multiple queries', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -222,7 +222,7 @@ describe('Mock', () => {
 
   it('GET - one interaction - with query params', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -257,7 +257,7 @@ describe('Mock', () => {
 
   it('GET - one interaction - with headers', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -294,7 +294,7 @@ describe('Mock', () => {
 
   it('GET - one interaction - with fixed delay', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -334,7 +334,7 @@ describe('Mock', () => {
 
   it('GET - one interaction - with random delay', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -377,7 +377,7 @@ describe('Mock', () => {
 
   it('POST - one interaction', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects'
@@ -402,7 +402,7 @@ describe('Mock', () => {
 
   it('POST - one interaction - with body', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects',
@@ -435,7 +435,7 @@ describe('Mock', () => {
 
   it('POST - one interaction - with ignore body', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects',
@@ -465,7 +465,7 @@ describe('Mock', () => {
 
   it('POST - one interaction - with form data', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects',
@@ -497,7 +497,7 @@ describe('Mock', () => {
     const fs = require('fs');
     const path = require('path');
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects',
@@ -528,7 +528,7 @@ describe('Mock', () => {
     const form = new pactum.request.FormData();
     form.append('file', fs.readFileSync(path.resolve('./test/component/base.spec.js')), { contentType: 'application/js', filename: 'interactions.spec.js' });
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects',
@@ -568,7 +568,7 @@ describe('Mock', () => {
     await pactum
       .post('http://localhost:9393/api/projects')
       .__setLogLevel('DEBUG')
-      .__setRequestTimeout(1000)
+      .withRequestTimeout(1000)
       .withJson({
         parent: {
           child: [1, { grand: 3 }]
@@ -611,7 +611,7 @@ describe('Mock', () => {
 
   it('GET - empty on call', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -628,7 +628,7 @@ describe('Mock', () => {
 
   it('GET - 0th on call', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -652,7 +652,7 @@ describe('Pact - matchers', () => {
 
   it('GET - one interaction', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -695,7 +695,7 @@ describe('Pact - matchers', () => {
 
   it('GET - one interaction - array body', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects'
@@ -734,7 +734,7 @@ describe('Pact - VALID', () => {
 
   it('GET - one interaction', async () => {
     await pactum
-      .addPactInteraction({
+      .usePactInteraction({
         provider: 'test-provider',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',
@@ -764,7 +764,7 @@ describe('Pact - VALID', () => {
 
   it('GET - one interaction', async () => {
     await pactum
-      .addPactInteraction({
+      .usePactInteraction({
         provider: 'test-provider',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',
@@ -810,7 +810,7 @@ describe('Pact - VALID', () => {
 
   it('GET - one interaction - array body', async () => {
     await pactum
-      .addPactInteraction({
+      .usePactInteraction({
         provider: 'test-provider-2',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',

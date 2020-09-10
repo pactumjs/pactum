@@ -10,7 +10,7 @@ describe('State', () => {
     handler.addStateHandler('there is a project with id', (ctx) => {
       const spec = ctx.spec;
       const id = ctx.data;
-      spec.addInteraction({
+      spec.useInteraction({
         get: `/api/projects/${id}`,
         return: { id }
       });
