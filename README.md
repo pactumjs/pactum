@@ -39,7 +39,7 @@ npm install --save-dev mocha
 
 ## API Testing
 
-Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your request and expectations. Learn more about these methods at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing).
+Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations. Learn more about these methods at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing).
 
 ### Simple Test Cases
 
@@ -224,7 +224,7 @@ before(() => {
 
 it('should get jon snow details', () => {
   return pactum
-    // adds interaction to mock server & removes it after the specd
+    // adds interaction to mock server & removes it after the spec
     .useInteraction({
       get: '/api/address/4',
       return: {
