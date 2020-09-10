@@ -5,7 +5,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - like', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -36,7 +36,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - somethingLike', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -67,7 +67,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - regex instance', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -98,7 +98,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - regex string', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -129,7 +129,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - query regex date', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -160,7 +160,7 @@ describe('Request Matchers', () => {
 
   it('POST - one interaction - term instance', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects/1',
@@ -184,7 +184,7 @@ describe('Request Matchers', () => {
 
   it('POST - one interaction - term string', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -215,7 +215,7 @@ describe('Request Matchers', () => {
 
   it('POST - one interaction - each like', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects/1',
@@ -239,7 +239,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - contains', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -276,7 +276,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - headers like', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -307,7 +307,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - multiple headers like', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -339,7 +339,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - path regex object', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: regex({ generate: '/api/projects/1', matcher: /\/api\/projects\/\d+/g })
@@ -366,7 +366,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - path regex matcher instance', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: regex(/\/api\/projects\/\d+/)
@@ -393,7 +393,7 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - path regex matcher string', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: regex('/api/projects/\\d+')

@@ -224,8 +224,8 @@ before(() => {
 
 it('should get jon snow details', () => {
   return pactum
-    // adds interaction to mock server
-    .addInteraction({
+    // adds interaction to mock server & removes it after the specd
+    .useInteraction({
       get: '/api/address/4',
       return: {
         city: 'WinterFell',
@@ -283,7 +283,7 @@ before(async () => {
 
 it('GET - one interaction', async () => {
   await pactum
-    .addPactInteraction({
+    .usePactInteraction({
       provider: 'projects-service',
       state: 'when there is a project with id 1',
       uponReceiving: 'a request for project 1',

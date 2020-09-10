@@ -4,7 +4,7 @@ describe('Dynamic', () => {
 
   it('GET - without query', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
@@ -29,7 +29,7 @@ describe('Dynamic', () => {
 
   it('GET - with query', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -58,7 +58,7 @@ describe('Dynamic', () => {
 
   it('GET - ignore query - first record', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
@@ -96,7 +96,7 @@ describe('Dynamic', () => {
 
   it('GET - ignore query - second record', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',

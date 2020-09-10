@@ -467,7 +467,7 @@ describe('Remote - Publish Pacts', () => {
       .get(`http://localhost:9393/api/projects/2`)
       .expectStatus(200);
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'PUT',
           path: '/pacts/provider/remote-1/consumer/consumer/version/1.2.3',
@@ -508,7 +508,7 @@ describe('Remote - Publish Pacts', () => {
           status: 200
         }
       })
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'PUT',
           path: '/pacts/provider/remote-2/consumer/consumer/version/1.2.3',
@@ -594,7 +594,7 @@ describe('Remote - Publish Pacts', () => {
       .get(`http://localhost:9393/api/projects/1`)
       .expectStatus(200);
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'PUT',
           path: '/pacts/provider/remote-1/consumer/consumer/version/1.2.3',
@@ -635,7 +635,7 @@ describe('Remote - Publish Pacts', () => {
           status: 200
         }
       })
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'PUT',
           path: '/pacticipants/consumer/versions/1.2.3/tags/prod',
@@ -647,7 +647,7 @@ describe('Remote - Publish Pacts', () => {
           status: 200
         }
       })
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'PUT',
           path: '/pacticipants/consumer/versions/1.2.3/tags/latest',

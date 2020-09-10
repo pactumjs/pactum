@@ -100,7 +100,7 @@ describe('Pact - Default Mock Interaction', () => {
 
   it('GET - one interaction - overwrite default', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'

@@ -28,7 +28,7 @@ class Spec {
     return this;
   }
 
-  addInteraction(basicInteraction) {
+  useInteraction(basicInteraction) {
     const rawInteraction = {
       withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
       willRespondWith: {
@@ -36,17 +36,17 @@ class Spec {
         body: basicInteraction.return || ''
       }
     };
-    return this.addMockInteraction(rawInteraction);
+    return this.useMockInteraction(rawInteraction);
   }
 
-  addMockInteraction(rawInteraction) {
+  useMockInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction, true);
     log.debug('Mock Interaction added to Mock Server -', interaction.id);
     this.mockInteractions.set(interaction.id, interaction);
     return this;
   }
 
-  addPactInteraction(rawInteraction) {
+  usePactInteraction(rawInteraction) {
     const interaction = new Interaction(rawInteraction, false);
     log.debug('Pact Interaction added to Mock Server -', interaction.id);
     this.pactInteractions.set(interaction.id, interaction);

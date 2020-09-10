@@ -20,7 +20,7 @@ describe('Expects', () => {
   it('custom expect handler', async () => {
 
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users/1'
@@ -39,7 +39,7 @@ describe('Expects', () => {
 
   it('ad hoc expect handler', async () => {
     await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users/1'
@@ -72,7 +72,7 @@ describe('Expects', () => {
     let err;
     try {
       await pactum
-        .addMockInteraction({
+        .useMockInteraction({
           withRequest: {
             method: 'GET',
             path: '/api/address/1'
@@ -96,7 +96,7 @@ describe('Expects', () => {
     let err;
     try {
       await pactum
-        .addMockInteraction({
+        .useMockInteraction({
           withRequest: {
             method: 'GET',
             path: '/api/users/1'
@@ -241,7 +241,7 @@ describe('Expects', () => {
     let err;
     try {
       await pactum
-        .addMockInteraction({
+        .useMockInteraction({
           withRequest: {
             method: 'GET',
             path: '/api/users/1'
@@ -281,7 +281,7 @@ describe('Expects', () => {
     let err;
     try {
       await pactum
-        .addMockInteraction({
+        .useMockInteraction({
           withRequest: {
             method: 'GET',
             path: '/api'
@@ -300,7 +300,7 @@ describe('Expects', () => {
 
   it('json query - on root object', () => {
     return pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users'
@@ -324,7 +324,7 @@ describe('Expects', () => {
 
   it('json query - on root array', () => {
     return pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users'
@@ -349,7 +349,7 @@ describe('Expects', () => {
     let err;
     try {
       await pactum
-        .addMockInteraction({
+        .useMockInteraction({
           withRequest: {
             method: 'GET',
             path: '/api/users'
@@ -377,7 +377,7 @@ describe('Expects', () => {
 
   it('json query like - on root object', () => {
     return pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users'
@@ -402,7 +402,7 @@ describe('Expects', () => {
     let err;
     try {
       await pactum
-      .addMockInteraction({
+      .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/users'

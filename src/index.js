@@ -26,16 +26,16 @@ const pactum = {
     return new Spec().setState(name, data);
   },
 
-  addInteraction(interaction) {
-    return new Spec().addInteraction(interaction);
+  useInteraction(interaction) {
+    return new Spec().useInteraction(interaction);
   },
   
-  addMockInteraction(interaction) {
-    return new Spec().addMockInteraction(interaction);
+  useMockInteraction(interaction) {
+    return new Spec().useMockInteraction(interaction);
   },
 
-  addPactInteraction(interaction) {
-    return new Spec().addPactInteraction(interaction);
+  usePactInteraction(interaction) {
+    return new Spec().usePactInteraction(interaction);
   },
 
   get(url) {

@@ -22,10 +22,10 @@ export * as state from './exports/state';
 export function setState(name: string, data?: any): Spec;
 
 /**
- * adds a basic mock interaction to the server
+ * adds a basic mock interaction to the server & auto removed after execution
  * @example
  * await pactum
- *  .addInteraction({
+ *  .useInteraction({
  *    get: '/api/address/4'
  *    return: {
  *      city: 'WinterFell'
@@ -34,13 +34,13 @@ export function setState(name: string, data?: any): Spec;
  *  .get('/api/users/4')
  *  .expectStatus(200);
  */
-export function addInteraction(interaction: BasicInteraction): Spec;
+export function useInteraction(interaction: BasicInteraction): Spec;
 
 /**
- * adds a mock interaction to the server
+ * adds a mock interaction to the server & auto removed after execution
  * @example
  * await pactum
- *  .addMockInteraction({
+ *  .useMockInteraction({
  *    withRequest: {
  *      method: 'GET',
  *      path: '/api/projects/1'
@@ -56,13 +56,13 @@ export function addInteraction(interaction: BasicInteraction): Spec;
  *  .get('http://localhost:9393/projects/1')
  *  .expectStatus(200);
  */
-export function addMockInteraction(interaction: MockInteraction): Spec;
+export function useMockInteraction(interaction: MockInteraction): Spec;
 
 /** 
- * adds a pact interaction to the server
+ * adds a pact interaction to the server & auto removed after execution
  * @example
  * await pactum
- *  .addPactInteraction({
+ *  .usePactInteraction({
  *    provider: 'project-provider',
  *    state: 'when there is a project with id 1',
  *    uponReceiving: 'a request for project 1',
@@ -81,7 +81,7 @@ export function addMockInteraction(interaction: MockInteraction): Spec;
  *  .get('http://localhost:9393/projects/1')
  *  .expectStatus(200);
  */
-export function addPactInteraction(interaction: PactInteraction): Spec;
+export function usePactInteraction(interaction: PactInteraction): Spec;
 
 /**
  * The GET method requests a representation of the specified resource.
