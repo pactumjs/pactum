@@ -129,7 +129,37 @@ it('should have a user with id', () => {
 });
 ```
 
-It also allows us to add custom expect handlers that are ideal to make assertions that are specific to your use case. You can bring your own assertion library or take advantage of popular assertion libraries like [chai](https://www.npmjs.com/package/chai)
+It also allows us to make assertions in a more descriptive way.
+
+```javascript
+const pactum = require('../../src/index');
+const expect = pactum.expect;
+
+describe('Chai Like Assertions', () => {
+
+  let request = pactum.spec();
+  let response;
+
+  it('given a user is requested', () => {
+    request.get('http://localhost:9393/api/users/snow');
+  });
+
+  it('should return a response', async () => {
+    response = await request.toss();
+  });
+
+  it('should return a status 200', () => {
+    expect(response).to.have.status(200);
+  });
+
+  it('should return a valid user', async () => {
+    expect(response).to.have.json({ name: 'snow'});
+  });
+
+});
+```
+
+We can add custom expect handlers that are ideal to make assertions that are specific to our use case. We can take advantage of popular assertion libraries like [chai](https://www.npmjs.com/package/chai)
 
 ```javascript
 await pactum

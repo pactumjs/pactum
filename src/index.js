@@ -9,6 +9,7 @@ const handler = require('./exports/handler');
 const matchers = require('./exports/matcher');
 const state = require('./exports/state');
 const stash = require('./exports/stash');
+const expect = require('./exports/expect');
 
 const pactum = {
 
@@ -21,6 +22,11 @@ const pactum = {
   handler,
   state,
   stash,
+  expect,
+
+  spec() {
+    return new Spec();
+  },
 
   setState(name, data) {
     return new Spec().setState(name, data);
