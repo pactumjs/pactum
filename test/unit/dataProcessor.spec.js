@@ -43,7 +43,7 @@ describe('Data Processing - Templates', () => {
   });
 
   it('processTemplates - simple with Overrides', () => {
-    stash.loadDataTemplate({
+    stash.loadDataTemplates({
       'User': {
         'Name': 'Snow',
         'Address': {
@@ -77,14 +77,14 @@ describe('Data Processing - Templates', () => {
   });
 
   it('processTemplates - template not found', () => {
-    stash.loadDataTemplates([{
+    stash.loadDataTemplates({
       'User': {
         'Name': 'Snow',
         'Address': {
           '@DATA:TEMPLATE@': 'Address_Not_Found'
         }
       }
-    }]);
+    });
     dp.processTemplates();
     expect(dp.template).deep.equals({
       'User': {
@@ -98,7 +98,7 @@ describe('Data Processing - Templates', () => {
   });
 
   it('processTemplates - complex array of objects with Overrides', () => {
-    stash.loadDataTemplate({
+    stash.loadDataTemplates({
       'User': {
         'Name': 'Snow',
         'Age': 12,
@@ -178,7 +178,7 @@ describe('Data Processing - Maps', () => {
   });
 
   it('processMaps - already processed', () => {
-    stash.loadDataMap({
+    stash.loadDataMaps({
       Users: [
         {
           Name: 'Snow',
@@ -194,7 +194,7 @@ describe('Data Processing - Maps', () => {
   });
 
   it('processMaps - with basic data map', () => {
-    stash.loadDataMap({
+    stash.loadDataMaps({
       User: {
         Name: '@DATA:MAP::Users[0].Name@',
         House: '@DATA:MAP::Users[0].House@'
@@ -232,15 +232,14 @@ describe('Data Processing - Maps', () => {
   });
 
   it('processMaps - complex array of objects', () => {
-    stash.loadDataMaps([
-      {
+    stash.loadDataMaps({
         User: {
           'Name': '@DATA:MAP::Defaults.User.Name@',
           'Age': '@DATA:MAP::Defaults.User.Age@',
           'Address': '@DATA:MAP::Defaults.Address[Type=Home]@'
         }
-      },
-      {
+      });
+    stash.loadDataMaps({
         Defaults: {
           'User': {
             'Name': 'Snow',
@@ -258,8 +257,7 @@ describe('Data Processing - Maps', () => {
           ],
           'Castle': 'WinterFell'
         }
-      }
-    ]);
+      });
     dp.processMaps();
     expect(dp.map).deep.equals({
       User: {
@@ -302,12 +300,12 @@ describe('Data Processing - Actual Data - Only Templates', () => {
 
   before(() => {
     stash.clearDataTemplates();
-    stash.loadDataTemplate({
+    stash.loadDataTemplates({
       'User': {
         Name: 'Snow'
       }
     });
-    stash.loadDataTemplate({
+    stash.loadDataTemplates({
       'Users': [
         {
           '@DATA:TEMPLATE@': 'User'
@@ -441,7 +439,7 @@ describe('Data Processing - Actual Data - Only Maps', () => {
 
   before(() => {
     stash.clearDataMaps();
-    stash.loadDataMap({
+    stash.loadDataMaps({
       User: {
         Name: 'Snow',
         Age: 18
@@ -452,7 +450,7 @@ describe('Data Processing - Actual Data - Only Maps', () => {
         Year: 2020
       }
     });
-    stash.loadDataMap({
+    stash.loadDataMaps({
       Address: [
         {
           'Type': 'Home',
@@ -544,13 +542,13 @@ describe('Data Processing - Actual Data - Both Templates & Maps', () => {
   before(() => {
     stash.clearDataTemplates();
     stash.clearDataMaps();
-    stash.loadDataTemplate({
+    stash.loadDataTemplates({
       'User': {
         Name: '@DATA:MAP::User.Name@',
         Age: '@DATA:MAP::User.Age@'
       }
     });
-    stash.loadDataTemplate({
+    stash.loadDataTemplates({
       'Users': [
         {
           '@DATA:TEMPLATE@': 'User'
@@ -564,7 +562,7 @@ describe('Data Processing - Actual Data - Both Templates & Maps', () => {
         }
       ]
     });
-    stash.loadDataMap({
+    stash.loadDataMaps({
       User: {
         Name: 'Snow',
         Age: 18

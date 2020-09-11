@@ -8,7 +8,7 @@
 
 **pactum** is a REST API Testing Tool used to write e2e, integration, contract & component or service level tests. It comes with a powerful *mock server* which can control the state of external dependencies & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
-This library is used with test runners like **cucumber**, **mocha** or **jest**. It is *simple*, *fast*, *easy* and *fun* to use.
+This library can be integrated with test runners like **cucumber**, **mocha**, **jest** or any other runners. It is *simple*, *fast*, *easy* and *fun* to use.
 
 ## Documentation
 
@@ -129,7 +129,37 @@ it('should have a user with id', () => {
 });
 ```
 
-It also allows us to add custom expect handlers that are ideal to make assertions that are specific to your use case. You can bring your own assertion library or take advantage of popular assertion libraries like [chai](https://www.npmjs.com/package/chai)
+It also allows us to break assertions into multiple steps that makes our expectations much more clearer.
+
+```javascript
+const pactum = require('../../src/index');
+const expect = pactum.expect;
+
+describe('Chai Like Assertions', () => {
+
+  let spec = pactum.spec();
+  let response;
+
+  it('given a user is requested', () => {
+    spec.get('http://localhost:9393/api/users/snow');
+  });
+
+  it('should return a response', async () => {
+    response = await spec.toss();
+  });
+
+  it('should return a status 200', () => {
+    expect(response).to.have.status(200);
+  });
+
+  it('should return a valid user', async () => {
+    spec.response().to.have.json({ name: 'snow'});
+  });
+
+});
+```
+
+We can also add custom expect handlers that are ideal to make much more complicated assertions by taking advantage of popular assertion libraries like [chai](https://www.npmjs.com/package/chai)
 
 ```javascript
 await pactum
@@ -166,7 +196,7 @@ it('should return all posts and first post should have comments', async () => {
 
 ### Retry Mechanism
 
-Some API operations will take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response.  
+Some API operations will take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response. (*Make sure to update test runners default timeout*) 
 
 ```javascript
 await pactum
@@ -186,7 +216,7 @@ Data management is made easy with this library by using the concept of *Data Tem
 ```javascript
 const stash = pactum.stash;
 
-stash.loadDataTemplate({
+stash.loadDataTemplates({
   'User.New': {
     FirstName: 'Jon',
     LastName: 'Snow'
@@ -337,7 +367,7 @@ Learn more about **pactum** as a provider verifier at [Provider Verification](ht
 
 Mock Server allows you to mock any server or service via HTTP or HTTPS, such as a REST endpoint. Simply it is a simulator for HTTP-based APIs.
 
-**pactum** can act as a standalone *mock server* or as a *service virtualization* tool. It comes with a powerful request & response matching.
+**pactum** can act as a standalone *mock server* or as a *service virtualization* tool. It comes with a **powerful request & response matching**.
 
 Running **pactum** as a standalone *mock server*.
 
@@ -364,19 +394,6 @@ pactum.mock.addMockInteraction({
     }
   }
 });
-
-pactum.mock.addInteractions([
-  {
-    get: '/api/user/1'
-    return: {
-      name: 'stark'
-    }
-  },
-  {
-    get: '/api/user/2'
-    status: 404
-  }
-]);
 
 pactum.mock.start(3000);
 ```

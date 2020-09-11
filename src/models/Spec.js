@@ -7,13 +7,14 @@ const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
 const mock = require('../exports/mock');
+const chaiExpect = require('../exports/expect');
 
 class Spec {
 
   constructor() {
     this.id = helper.getRandomId();
     this._request = {};
-    this._response = {};
+    this._response = null;
     this._returns = [];
     this._expect = new Expect();
     this._state = new State();
@@ -311,6 +312,13 @@ class Spec {
     this.toss()
       .then(res => resolve(res))
       .catch(err => reject(err));
+  }
+
+  response() {
+    if (!this._response) {
+      throw new PactumRequestError(`'response()' should be called after resolving 'toss()'`);
+    }
+    return chaiExpect(this._response);
   }
 
 }

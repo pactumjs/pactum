@@ -176,11 +176,11 @@ class Expect {
   _validateCustomExpectHandlers(request, response) {
     for (let i = 0; i < this.customExpectHandlers.length; i++) {
       const requiredHandler = this.customExpectHandlers[i];
+      const ctx = { req: request, res: response, data: requiredHandler.data };
       if (typeof requiredHandler.handler === 'function') {
-        requiredHandler.handler(request, response, requiredHandler.data);
+        requiredHandler.handler(ctx);
       } else {
         const handlerFun = handler.getExpectHandler(requiredHandler.handler);
-        const ctx = { req: request, res: response, data: requiredHandler.data };
         handlerFun(ctx);
       }
     }

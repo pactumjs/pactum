@@ -10,13 +10,13 @@ interface RequestResponseContext {
   res: object;
 }
 
-interface RequestResponseDataContext {
+interface ExpectHandlerContext {
   req: object;
   res: object;
   data?: any;
 }
 
-export type ExpectHandlerFunction = (ctx: RequestResponseDataContext) => void;
+export type ExpectHandlerFunction = (ctx: ExpectHandlerContext) => void;
 export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
 export type ReturnHandlerFunction = (ctx: RequestResponseContext) => any;
 export type StateHandlerFunction = (ctx: StateHandlerContext) => any;

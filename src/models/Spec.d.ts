@@ -2,6 +2,7 @@ import FormData from 'form-data';
 import { BasicInteraction, MockInteraction, PactInteraction } from '../exports/mock';
 import { ExpectHandlerFunction, RetryHandlerFunction, ReturnHandlerFunction } from '../exports/handler';
 import { LogLevel } from '../exports/settings';
+import { Expect } from '../exports/expect';
 
 declare interface RetryOptions {
   /** maximum number of retries - defaults to 3 */
@@ -478,7 +479,12 @@ declare class Spec {
    * executes the test case
    */
   toss(): Promise<T>;
-  then(): Promise<T>;
+
+  /**
+   * returns chai like assertions
+   * @requires .toss() should be called beforehand.
+   */
+  response(): Expect;
 }
 
 declare namespace Spec {}
