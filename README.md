@@ -159,7 +159,7 @@ describe('Chai Like Assertions', () => {
 });
 ```
 
-We can add custom expect handlers that are ideal to make assertions that are specific to our use case. We can take advantage of popular assertion libraries like [chai](https://www.npmjs.com/package/chai)
+We can also add custom expect handlers that are ideal to make much more complicated assertions by taking advantage of popular assertion libraries like [chai](https://www.npmjs.com/package/chai)
 
 ```javascript
 await pactum
@@ -196,7 +196,7 @@ it('should return all posts and first post should have comments', async () => {
 
 ### Retry Mechanism
 
-Some API operations will take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response.  
+Some API operations will take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response. (*Make sure to update test runners default timeout*) 
 
 ```javascript
 await pactum
@@ -367,7 +367,7 @@ Learn more about **pactum** as a provider verifier at [Provider Verification](ht
 
 Mock Server allows you to mock any server or service via HTTP or HTTPS, such as a REST endpoint. Simply it is a simulator for HTTP-based APIs.
 
-**pactum** can act as a standalone *mock server* or as a *service virtualization* tool. It comes with a powerful request & response matching.
+**pactum** can act as a standalone *mock server* or as a *service virtualization* tool. It comes with a **powerful request & response matching**.
 
 Running **pactum** as a standalone *mock server*.
 
@@ -394,19 +394,6 @@ pactum.mock.addMockInteraction({
     }
   }
 });
-
-pactum.mock.addInteractions([
-  {
-    get: '/api/user/1'
-    return: {
-      name: 'stark'
-    }
-  },
-  {
-    get: '/api/user/2'
-    status: 404
-  }
-]);
 
 pactum.mock.start(3000);
 ```
