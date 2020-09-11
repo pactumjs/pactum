@@ -20,7 +20,6 @@ class Expect {
     this.headerContains = [];
     this.responseTime = null;
     this.customExpectHandlers = [];
-    this.chaiExpect = null;
   }
 
   validate(request, response) {
@@ -177,7 +176,7 @@ class Expect {
   _validateCustomExpectHandlers(request, response) {
     for (let i = 0; i < this.customExpectHandlers.length; i++) {
       const requiredHandler = this.customExpectHandlers[i];
-      const ctx = { req: request, res: response, data: requiredHandler.data, expect: this.chaiExpect };
+      const ctx = { req: request, res: response, data: requiredHandler.data };
       if (typeof requiredHandler.handler === 'function') {
         requiredHandler.handler(ctx);
       } else {

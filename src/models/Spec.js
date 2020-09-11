@@ -17,7 +17,6 @@ class Spec {
     this._response = null;
     this._returns = [];
     this._expect = new Expect();
-    this._expect.chaiExpect = chaiExpect;
     this._state = new State();
     this.previousLogLevel = null;
     this.server = mock._server;

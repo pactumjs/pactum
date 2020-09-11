@@ -1,5 +1,4 @@
 import * as Spec from '../models/Spec';
-import { Expect } from './expect';
 
 interface StateHandlerContext {
   data?: any;
@@ -15,7 +14,6 @@ interface ExpectHandlerContext {
   req: object;
   res: object;
   data?: any;
-  expect(response: any): Expect;
 }
 
 export type ExpectHandlerFunction = (ctx: ExpectHandlerContext) => void;

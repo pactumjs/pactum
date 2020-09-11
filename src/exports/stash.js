@@ -5,15 +5,9 @@ let dataTemplate = {};
 
 const stash = {
 
-  loadDataMap(map) {
-    Object.assign(dataMap, map);
-    config.data.map.processed = false;
-  },
-
   loadDataMaps(maps) {
-    for (let i = 0; i < maps.length; i++) {
-      this.loadDataMap(maps[i]);
-    }
+    Object.assign(dataMap, maps);
+    config.data.map.processed = false;
   },
 
   getDataMap() {
@@ -26,15 +20,9 @@ const stash = {
     config.data.map.enabled = false;
   },
 
-  loadDataTemplate(template) {
-    Object.assign(dataTemplate, template);
-    config.data.template.processed = false;
-  },
-
   loadDataTemplates(templates) {
-    for (let i = 0; i < templates.length; i++) {
-      this.loadDataTemplate(templates[i]);
-    }
+    Object.assign(dataTemplate, templates);
+    config.data.template.processed = false;
   },
 
   getDataTemplate() {
