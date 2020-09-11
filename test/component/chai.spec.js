@@ -3,11 +3,11 @@ const expect = pactum.expect;
 
 describe('Chai Like Assertions', () => {
 
-  let request = pactum.spec();
+  let spec = pactum.spec();
   let response;
 
   it('Given a user with name snow', () => {
-    request.useInteraction({
+    spec.useInteraction({
       get: '/api/users',
       return: {
         name: 'snow'
@@ -16,11 +16,11 @@ describe('Chai Like Assertions', () => {
   });
 
   it('When a user is requested', () => {
-    request.get('http://localhost:9393/api/users');
+    spec.get('http://localhost:9393/api/users');
   });
 
   it('should return a response', async () => {
-    response = await request.toss();
+    response = await spec.toss();
   });
 
   it('should return a status 200', () => {
@@ -38,7 +38,7 @@ describe('Chai Like Assertions', () => {
     expect(response).to.have.jsonQuery('name', 'snow');
     expect(response).to.have.jsonQueryLike('name', 'snow');
     expect(response).to.have.body(`{"name":"snow"}`);
-    expect(response).to.have.bodyContains(`snow`);
+    spec.response().to.have.bodyContains(`snow`);
   });
 
   it('should return a valid schema', async () => {

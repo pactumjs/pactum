@@ -137,15 +137,15 @@ const expect = pactum.expect;
 
 describe('Chai Like Assertions', () => {
 
-  let request = pactum.spec();
+  let spec = pactum.spec();
   let response;
 
   it('given a user is requested', () => {
-    request.get('http://localhost:9393/api/users/snow');
+    spec.get('http://localhost:9393/api/users/snow');
   });
 
   it('should return a response', async () => {
-    response = await request.toss();
+    response = await spec.toss();
   });
 
   it('should return a status 200', () => {
@@ -153,7 +153,7 @@ describe('Chai Like Assertions', () => {
   });
 
   it('should return a valid user', async () => {
-    expect(response).to.have.json({ name: 'snow'});
+    spec.response().to.have.json({ name: 'snow'});
   });
 
 });

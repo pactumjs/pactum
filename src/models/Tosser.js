@@ -84,6 +84,7 @@ class Tosser {
         }
       }
     }
+    this.spec._response = this.response;
   }
 
   setPreviousLogLevel() {

@@ -332,4 +332,17 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: Invalid retry strategy');
   });
 
+  it('response() called before toss()', async () => {
+    let err;
+    try {
+      const spec = new Spec();
+      await spec
+        .post('/')
+        .response();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals(`Error: 'response()' should be called after resolving 'toss()'`);
+  });
+
 });
