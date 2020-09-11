@@ -129,7 +129,7 @@ it('should have a user with id', () => {
 });
 ```
 
-It also allows us to make assertions in a more descriptive way.
+It also allows us to break assertions into multiple steps that makes our expectations much more clearer.
 
 ```javascript
 const pactum = require('../../src/index');

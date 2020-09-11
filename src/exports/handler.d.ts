@@ -1,4 +1,5 @@
 import * as Spec from '../models/Spec';
+import { Expect } from './expect';
 
 interface StateHandlerContext {
   data?: any;
@@ -10,13 +11,14 @@ interface RequestResponseContext {
   res: object;
 }
 
-interface RequestResponseDataContext {
+interface ExpectHandlerContext {
   req: object;
   res: object;
   data?: any;
+  expect(response: any): Expect;
 }
 
-export type ExpectHandlerFunction = (ctx: RequestResponseDataContext) => void;
+export type ExpectHandlerFunction = (ctx: ExpectHandlerContext) => void;
 export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
 export type ReturnHandlerFunction = (ctx: RequestResponseContext) => any;
 export type StateHandlerFunction = (ctx: StateHandlerContext) => any;

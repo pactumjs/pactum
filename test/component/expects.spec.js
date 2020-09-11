@@ -52,7 +52,10 @@ describe('Expects', () => {
         }
       })
       .get('http://localhost:9393/api/users/1')
-      .expect((req, res) => { expect(res.json).deep.equals({ id: 1 }); })
+      .expect(({ res, expect: _expect }) => { 
+        _expect(res).to.have.status(200);
+        expect(res.json).deep.equals({ id: 1 }); 
+      })
       .expectStatus(200);
   });
 
