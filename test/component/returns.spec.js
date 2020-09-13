@@ -39,7 +39,7 @@ describe('Returns', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .returns((_, resp) => resp.json.id);
+      .returns(({res}) => res.json.id);
     expect(response).equals(1);
   });
 

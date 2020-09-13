@@ -1,4 +1,16 @@
 import * as Spec from '../models/Spec';
+import { IncomingMessage } from 'http';
+
+interface Request {
+  url: string;
+  method: string;
+  timeout: number;
+  data?: any;
+}
+
+interface Response extends IncomingMessage {
+  json?: object;
+}
 
 interface StateHandlerContext {
   data?: any;
@@ -6,13 +18,11 @@ interface StateHandlerContext {
 }
 
 interface RequestResponseContext {
-  req: object;
-  res: object;
+  req: Request;
+  res: Response;
 }
 
-interface ExpectHandlerContext {
-  req: object;
-  res: object;
+interface ExpectHandlerContext extends RequestResponseContext {
   data?: any;
 }
 

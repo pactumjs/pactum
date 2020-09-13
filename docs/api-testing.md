@@ -8,13 +8,16 @@ API Testing in general can greatly improve the efficiency of our testing strateg
 
 Instead of using different tools for each test type, **pactum** comes with all the popular features in a single bundle.
 
-So the question is **Why pactum? & What makes pactum fun & easy?**
+##### Why pactum?
 
 * Extremely lightweight.
 * Quick & easy to send requests & validate responses.
-* Not tied with any of the test runners. You are allowed to choose the test runner like **mocha**, **cucumber**, **jest** or any other that supports promises.
+* Easy to chain multiple requests.
+* Fully customizable Retry Mechanism.
+* Out of the box Data Management.
+* Works with any of the test runners like **mocha**, **cucumber**, **jest**.
 * Ideal for *component testing*, *contract testing* & *e2e testing*.
-* Ability to control the behavior of external services with a powerful mock server. (*once you are familiar with api-testing using pactum make sure to read about component testing using pactum*)
+* Ability to control the behavior of external services with a powerful mock server. (*learn more at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)*)
 
 Lets get started with API Testing.
 
@@ -24,6 +27,9 @@ Lets get started with API Testing.
 * [API](#api)
   * [Request Making](#request-making)
   * [Response Validation](#response-validation)
+  * [Nested Dependent HTTP Calls](#nested-dependent-http-calls)
+  * [Retry Mechanism](#retry-mechanism)
+  * [Data Management](#data-management)
 
 
 ## Getting Started
@@ -112,9 +118,9 @@ Use `pactum.spec()` to get an instance of the spec. With **spec** you can build 
 
 Once the request is built, perform the request by calling `.toss()` method and wait for the promise to resolve. 
 
-**Assertions should be maid after the request is performed & resolved**.
+**Assertions should be made after the request is performed & resolved**.
 
-Assertions can be maid either by using `pactum.expect` or `spec.response()`.
+Assertions can be made either by using `pactum.expect` or `spec.response()`.
 
 ```javascript
 const pactum = require('pactum');
@@ -507,14 +513,526 @@ it('get people', async () => {
 });
 ```
 
+#### Custom Expect Handlers
+
+You can also add custom expect handlers to this library for making much more complicated assertions that are ideal to your requirement. You can bring your own assertion library or take advantage of popular libraries like [chai](https://www.npmjs.com/package/chai).
+
+##### AdHoc
+
+You can simply pass a function as a parameter to `expect` method & then write your own logic that performs assertions. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects.
+
+```javascript
+const chai = require('chai');
+const expect = chai.expect;
+
+const pactum = require('pactum');
+const _expect = pactum.expect;
+
+it('post should have a item with title -"some title"', async () => {
+  const response = await pactum
+    .get('https://jsonplaceholder.typicode.com/posts/5')
+    .expect((ctx) => {
+      const res = ctx.res;
+      _expect(res).to.have.status(200);
+      expect(res.json.title).equals('some title');
+    });
+});
+```
+
+##### Common
+
+There might be a use case you wanted to perform same set of assertions. For such scenarios, you can add custom expect handlers that you can use at different places. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects & *data* (custom data).
+
+```javascript
+const chai = require('chai');
+const expect = chai.expect;
+
+const pactum = require('pactum');
+const _expect = pactum.expect;
+const handler = pactum.handler;
+
+before(() => {
+  handler.addExpectHandler('to have user details', (ctx) => {
+    const res = ctx.res;
+    const user = res.json;
+    expect(user).deep.equals({ id: 1 });
+    _expect(res).to.have.status(200);
+    _expect(res).to.have.responseTimeLessThan(500);
+    _expect(res).to.have.jsonSchema({ /* some schema */ });
+  });
+});
+
+it('should have a post with id 5', async () => {
+  const response = await pactum
+    .get('https://jsonplaceholder.typicode.com/posts/5')
+    .expect('to have user details');
+});
+
+it('should have a post with id 5', async () => {
+  const response = await pactum
+    .get('https://jsonplaceholder.typicode.com/posts/6')
+    .expect('to have user details');
+});
+```
+
+You are also allowed to pass custom data to common expect handlers.
+
+```javascript
+before(() => {
+  handler.addExpectHandler('to have user details', (ctx) => {
+    const res = ctx.res;
+    const req = ctx.req;
+    const data = ctx.data;
+    /*
+     Add custom logic to perform based on req (request) & data (custom data passed)
+     */
+  });
+});
+
+it('should have a post with id 5', async () => {
+  const response = await pactum
+    .get('https://jsonplaceholder.typicode.com/posts/5')
+    .expect('to have user details', 5); // data = 5
+});
+
+it('should have a post with id 5', async () => {
+  const response = await pactum
+    .get('https://jsonplaceholder.typicode.com/posts/6')
+    .expect('to have user details', { id: 6 }); // data = { id: 6 }
+});
+```
 
 ### Request Settings
-TODO - Request Settings
 
-TODO - Returns
+This library also offers us to set default options for all the requests that are sent through it.
 
-TODO - Retry
+#### setBaseUrl
 
-TODO - Data Management
+Sets the base URL for all the HTTP requests.
 
-TODO - State Handlers
+```javascript
+const pactum = require('pactum');
+const request = pactum.request;
+
+before(() => {
+  request.setBaseUrl('http://localhost:3000');
+});
+
+it('should have a post with id 5', async () => {
+  // request will be sent to http://localhost:3000/api/projects
+  await pactum
+    .get('/api/projects');
+});
+```
+
+#### setDefaultTimeout
+
+Sets the default timeout for all the HTTP requests.
+The default value is **3000 ms**
+
+```javascript
+pactum.request.setDefaultTimeout(5000);
+```
+
+#### setDefaultHeader
+
+Sets default headers for all the HTTP requests.
+
+```javascript
+pactum.request.setDefaultHeader('Authorization', 'Basic xxxxx');
+pactum.request.setDefaultHeader('content-type', 'application/json');
+```
+
+### Nested Dependent HTTP Calls
+
+API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to next tests using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions.
+
+Use `returns` method to return custom response from the received JSON.
+
+#### json-query
+
+```javascript
+const pactum = require('pactum');
+
+it('should return all posts and first post should have comments', async () => {
+  const postID = await pactum
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .returns('[0].id');
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
+    .expectStatus(200);
+});
+```
+
+Use multiple `returns` methods to return array of custom response from the received JSON.
+
+```javascript
+const pactum = require('pactum');
+
+it('first & second posts should have comments', async () => {
+  const ids = await pactum
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .returns('[0].id')
+    .returns('[1].id');
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${ids[0]}/comments`)
+    .expectStatus(200);
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${ids[1]}/comments`)
+    .expectStatus(200);
+});
+```
+
+#### AdHoc Handler
+
+We can also use a custom handler function to return data. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects. 
+
+```javascript
+const pactum = require('pactum');
+
+it('should return all posts and first post should have comments', async () => {
+  const postID = await pactum
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .returns((ctx) => { return ctx.res.json[0].id });
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
+    .expectStatus(200);
+});
+```
+
+#### Common Handler
+
+We can also use a custom common handler function to return data & use it at different places.
+
+```javascript
+const pactum = require('pactum');
+const handler = pactum.handler;
+
+before(() => {
+  handler.addReturnHandler('user id', (ctx) => {
+    const res = ctx.res;
+    return res.json[0].id;
+  });
+});
+
+it('should return all posts and first post should have comments', async () => {
+  const postID = await pactum
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .returns('user id');
+  await pactum
+    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
+    .expectStatus(200);
+});
+```
+
+**Note**: *While evaluating the string passed to the returns function, the library sees if there is handler function with the name. If not found it will execute the json-query.*
+
+### Retry Mechanism
+
+Not all APIs perform simple CRUD operations. Some operations take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response. (*Make sure to update test runners default timeout*) 
+
+Use `retry` method to specify your retry strategy. It accepts options object as an argument. If the strategy function returns true, it will perform the request again.
+
+##### retryOptions
+
+| Property  | Type       | Description                                |
+| --------- | ---------- | ------------------------------------------ |
+| count     | `number`   | number of times to retry - defaults to 3   |
+| delay     | `number`   | delay between retries - defaults to 1000ms |
+| strategy  | `function` | retry strategy function - returns boolean  |
+| strategy  | `string`   | retry strategy handler name                | 
+
+#### AdHoc Handler
+
+We can use a custom handler function to return a boolean. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects. 
+
+
+```javascript
+await pactum
+  .get('https://jsonplaceholder.typicode.com/posts/12')
+  .retry({
+    count: 2,
+    delay: 2000,
+    strategy: ({res}) => { return res.statusCode === 202 }
+  })
+  .expectStatus(200);
+```
+
+#### Common Handler
+
+We can also use a custom common handler function to return data & use it at different places.
+
+```javascript
+const pactum = require('pactum');
+const handler = pactum.handler;
+
+before(() => {
+  handler.addRetryHandler('on 404', (ctx) => {
+    const res = ctx.res;
+    if (res.statusCode === 404) {
+      return true;
+    } else {
+      return false
+    }
+  });
+});
+
+it('should get posts', async () => {
+  await pactum
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .retry({
+      strategy: 'on 404'
+    })
+    .expectStatus(200);
+});
+```
+
+### Data Management
+
+As the functionality of the application grows, the scope of the testing grows with it. At one point test data management becomes complex.
+
+Lets say you have a numerous test cases around adding a new user to your system. To add a new user you post the following JSON to `/api/users` endpoint.
+
+```json
+{
+  "FirstName": "Jon",
+  "LastName": "Snow",
+  "Age": 26,
+  "House": "Castle Black"
+}
+```
+
+Now lets assume, your application no longer accepts the above JSON. It needs a new field `Gender` in the JSON. It will be tedious to update all you existing test cases to add the new field.
+
+```json
+{
+  "FirstName": "Jon",
+  "LastName": "Snow",
+  "Age": 26,
+  "Gender": "male",
+  "House": "Castle Black"
+}
+```
+
+
+To solve this kind of problems, **pactum** comes with a concept of *Data Templates* & *Data Maps* to manage your test data. It helps us to re-use data across tests.
+
+#### Data Template
+
+A Data Template is a standard format for a particular resource. Once a template is defined, we can be use it across all the tests to perform a request.
+
+Use `stash.loadDataTemplates` to add a data template. To use the template in the tests, use `@DATA:TEMPLATE@` as key & name of the template as value.
+
+```javascript
+const pactum = require('pactum');
+const stash = pactum.stash;
+
+before(() => {
+  stash.loadDataTemplates({
+    'User:New': {
+      "FirstName": "Jon",
+      "LastName": "Snow",
+      "Age": 26,
+      "Gender": "male",
+      "House": "Castle Black"
+    }
+  })
+});
+
+it('adds a new user', async () => {
+  await pactum
+    .post('/api/users')
+    .withJson({
+      '@DATA:TEMPLATE@': 'User:New'
+    })
+    .expectStatus(200);
+    /*
+      The value of the template will be posted to /api/users
+      {
+        "FirstName": "Jon",
+        "LastName": "Snow",
+        "Age": 26,
+        "Gender": "male",
+        "House": "Castle Black"
+      }
+    */
+});
+```
+
+The exact resource is not going to be used across every test. Every test might need specific values. This library supports overriding of specific values & extending the data template. This allows tests to be customized as much as you'd like when using templates.
+
+```javascript
+it('should not add a user with negative age', async () => {
+  await pactum
+    .post('/api/users')
+    .withJson({
+      '@DATA:TEMPLATE@': 'User:New',
+      '@OVERRIDES@': {
+        'Age': -1,
+        'House': 'WinterFell'
+      }
+    })
+    .expectStatus(400);
+    /*
+      The value of the template with overridden values will be posted to /api/users
+      {
+        "FirstName": "Jon",
+        "LastName": "Snow",
+        "Age": -1,
+        "Gender": "male",
+        "House": "WinterFell"
+      }
+    */
+});
+```
+
+Templates can also reference other templates. *Be cautious not to create circular dependencies*
+
+```javascript
+const pactum = require('pactum');
+const stash = pactum.stash;
+
+before(() => {
+  stash.loadDataTemplates({
+    'User:New': {
+      "FirstName": "Jon",
+      "LastName": "Snow",
+      "Age": 26,
+      "Gender": "male",
+      "House": "Castle Black"
+    },
+    'User:New:WithEmptyAddress': {
+      '@DATA:TEMPLATE@': 'User:New',
+      '@OVERRIDES@': {
+        'Address': []
+      }
+    },
+    'User:New:WithAddress': {
+      '@DATA:TEMPLATE@': 'User:New',
+      '@OVERRIDES@': {
+        'Address': [
+          {
+            '@DATA:TEMPLATE@': 'Address:New'
+          }
+        ]
+      }
+    },
+    'Address:New': {
+      'Street': 'Kings Road',
+      'Country': 'WestRos'
+    }
+  });
+});
+
+it('should add a user with address', async () => {
+  await pactum
+    .post('/api/users')
+    .withJson({
+      '@DATA:TEMPLATE@': 'User:WithAddress',
+      '@OVERRIDES@': {
+        'Age': 36,
+        'Address': [
+          {
+            'Country': 'Beyond The Wall',
+            'Zip': 524004
+          }
+        ]
+      }
+    })
+    .expectStatus(400);
+    /*
+      The value of the template with overridden values will be posted to /api/users
+      {
+        "FirstName": "Jon",
+        "LastName": "Snow",
+        "Age": 36,
+        "Gender": "male",
+        "House": "WinterFell",
+        "Address": [
+          {
+            'Street': 'Kings Road',
+            'Country': 'Beyond The Wall',
+            'Zip': 524004       
+          }
+        ]
+      }
+    */
+});
+```
+
+#### Data Map
+
+A Data Map is a collection of data that can be referenced in data templates or in your tests. Major difference between a data template & a data map is
+
+* When a data template is used, current object will be replaced.
+* When a data map is used, current objects value will be replaced.
+
+Use `stash.loadDataMaps` to add a data map. To use the map in the tests or in the template, use `@DATA:MAP::<json-query>@` as the value.
+
+```javascript
+const pactum = require('pactum');
+const stash = pactum.stash;
+
+before(() => {
+  stash.loadDataMaps({
+    'User': {
+      'FirstName': 'Jon',
+      'LastName': 'Snow',
+      'Country': 'North'
+    }
+  });
+  stash.loadDataTemplates({
+    'User:New': {
+      "FirstName": "@DATA:MAP::User.FirstName@",
+      "LastName": "@DATA:MAP::User.LastName@",
+      "Age": 26,
+      "Gender": "male",
+      "House": "Castle Black"
+    }
+  });
+});
+
+/*
+  The template `User:New` will be 
+  {
+    "FirstName": "Jon",
+    "LastName": "Snow",
+    "Age": 26,
+    "Gender": "male",
+    "House": "Castle Black"
+  }
+*/
+```
+
+It's perfectly legal to refer other data maps from a data map. *Be cautious not to create circular dependencies*
+
+```javascript
+const pactum = require('pactum');
+const stash = pactum.stash;
+
+before(() => {
+  stash.loadDataMaps({
+    'User': {
+      'Default': {
+        'FirstName': '@DATA:MAP::User.FirstNames[0]@',
+        'LastName': '@DATA:MAP::User.LastNames[0]@',
+        'Country': 'North'
+      },
+      'FirstNames': [ 'Jon', 'Ned', 'Ary' ],
+      'LastNames': [ 'Stark', 'Sand', 'Snow' ]
+    }
+  });
+});
+```
+
+## Next
+
+----------------------------------------------------------------------------------------------------------------
+
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing" >
+  <img src="https://img.shields.io/badge/NEXT-Component%20Testing-blue" alt="Component Testing" align="right" style="display: inline;" />
+</a>

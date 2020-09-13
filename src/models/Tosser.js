@@ -121,13 +121,13 @@ class Tosser {
     const outputs = [];
     for (let i = 0; i < this.returns.length; i++) {
       const _handler = this.returns[i];
+      const ctx = { req: this.request, res: this.response };
       if (typeof _handler === 'function') {
-        outputs.push(_handler(this.request, this.response));
+        outputs.push(_handler(ctx));
       }
       if (typeof _handler === 'string') {
         const _customHandlerFun = handler.getReturnHandler(_handler);
         if (_customHandlerFun) {
-          const ctx = { req: this.request, res: this.response };
           outputs.push(_customHandlerFun(ctx));
         } else {
           outputs.push(jqy(_handler, { data: this.response.json }).value);
