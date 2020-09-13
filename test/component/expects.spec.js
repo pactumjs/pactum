@@ -4,8 +4,8 @@ const expect = require('chai').expect;
 describe('Expects', () => {
 
   before(() => {
-    const isUser = function ({ res }) {
-      const user = res.json;
+    const isUser = function (ctx) {
+      const user = ctx.res.json;
       expect(user).deep.equals({ id: 1 });
     }
     pactum.handler.addExpectHandler('isUser', isUser);

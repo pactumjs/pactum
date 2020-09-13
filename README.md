@@ -39,7 +39,7 @@ npm install --save-dev mocha
 
 ## API Testing
 
-Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations. Learn more about these methods at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing).
+Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations. Learn more about these methods at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#request-making).
 
 ### Simple Test Cases
 
@@ -73,7 +73,7 @@ mocha /path/to/test
 
 ### Complex HTTP Assertions
 
-It allows verification of returned status codes, headers, body, json objects, json schemas & response times. Learn more about available assertions at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+It allows verification of returned status codes, headers, body, json objects, json schemas & response times. Learn more about available assertions at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#resonse-validation)
 
 Running complex component test expectations.
 
@@ -83,24 +83,6 @@ it('should have a user with id', () => {
     .get('https://jsonplaceholder.typicode.com/users/1')
     .expectStatus(201)
     .expectHeaderContains('content-type', 'application/json')
-    // performs deep equal
-    .expectJson([
-      {
-        "id": 1,
-        "name": "Bolt",
-        "createdAt": "2020-08-19T14:26:44.169Z",
-        "address": [
-          {
-            "city": "Boston",
-            "zip": "523004"
-          },
-          {
-            "city": "NewYork",
-            "zip": "690323"
-          }
-        ]
-      }
-    ])
     // performs partial deep equal
     .expectJsonLike([
       {
@@ -132,7 +114,7 @@ it('should have a user with id', () => {
 It also allows us to break assertions into multiple steps that makes our expectations much more clearer.
 
 ```javascript
-const pactum = require('../../src/index');
+const pactum = require('pactum');
 const expect = pactum.expect;
 
 describe('Chai Like Assertions', () => {
@@ -175,7 +157,7 @@ await pactum
 
 ### Nested Dependent HTTP Calls
 
-API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to next tests using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions. Learn more about it at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to next tests using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions. Learn more about it at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#nested-dependent-http-calls)
 
 ```javascript
 const pactum = require('pactum');
@@ -211,7 +193,7 @@ await pactum
 
 ### Data Management
 
-Data management is made easy with this library by using the concept of *Data Templates* & *Data Maps*. Learn more about data management with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+Data management is made easy with this library by using the concept of *Data Templates* & *Data Maps*. Learn more about data management with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#data-management)
 
 ```javascript
 const stash = pactum.stash;
@@ -406,6 +388,6 @@ Inspired from [frisby](https://docs.frisbyjs.com/) testing style & [pact](https:
 
 ----------------------------------------------------------------------------------------------------------------
 
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing" >
-  <img src="https://img.shields.io/badge/NEXT-Component%20Testing-blue" alt="Component Testing" align="right" style="display: inline;" />
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/API-Testing" >
+  <img src="https://img.shields.io/badge/NEXT-API%20Testing-blue" alt="API Testing" align="right" style="display: inline;" />
 </a>
