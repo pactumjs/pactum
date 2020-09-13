@@ -39,7 +39,7 @@ npm install --save-dev mocha
 
 ## API Testing
 
-Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations. Learn more about these methods at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing).
+Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations. Learn more about these methods at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#request-making).
 
 ### Simple Test Cases
 
@@ -83,24 +83,6 @@ it('should have a user with id', () => {
     .get('https://jsonplaceholder.typicode.com/users/1')
     .expectStatus(201)
     .expectHeaderContains('content-type', 'application/json')
-    // performs deep equal
-    .expectJson([
-      {
-        "id": 1,
-        "name": "Bolt",
-        "createdAt": "2020-08-19T14:26:44.169Z",
-        "address": [
-          {
-            "city": "Boston",
-            "zip": "523004"
-          },
-          {
-            "city": "NewYork",
-            "zip": "690323"
-          }
-        ]
-      }
-    ])
     // performs partial deep equal
     .expectJsonLike([
       {
@@ -132,7 +114,7 @@ it('should have a user with id', () => {
 It also allows us to break assertions into multiple steps that makes our expectations much more clearer.
 
 ```javascript
-const pactum = require('../../src/index');
+const pactum = require('pactum');
 const expect = pactum.expect;
 
 describe('Chai Like Assertions', () => {
