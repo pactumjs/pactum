@@ -7,7 +7,7 @@ const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
 const mock = require('../exports/mock');
-const chaiExpect = require('../exports/expect');
+const responseExpect = require('../exports/expect');
 
 class Spec {
 
@@ -318,7 +318,7 @@ class Spec {
     if (!this._response) {
       throw new PactumRequestError(`'response()' should be called after resolving 'toss()'`);
     }
-    return chaiExpect(this._response);
+    return responseExpect(this._response, this._request);
   }
 
 }

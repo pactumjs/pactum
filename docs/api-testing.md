@@ -417,6 +417,9 @@ it('get post with id 1', async () => {
       "title": "some title",
       "body": "some body"
     });
+  
+  // Chai Style Assertions
+  // pactum.expect(response).should.have.json({});
 });
 ```
 
@@ -438,6 +441,9 @@ it('posts should have a item with title -"some title"', async () => {
         "title": "some title"
       }
     ]);
+  
+  // Chai Style Assertions
+  // pactum.expect(response).should.have.jsonLike({});
 });
 ```
 
@@ -552,7 +558,7 @@ const _expect = pactum.expect;
 const handler = pactum.handler;
 
 before(() => {
-  handler.addExpectHandler('to have user details', (ctx) => {
+  handler.addExpectHandler('user details', (ctx) => {
     const res = ctx.res;
     const user = res.json;
     expect(user).deep.equals({ id: 1 });
@@ -565,7 +571,10 @@ before(() => {
 it('should have a post with id 5', async () => {
   const response = await pactum
     .get('https://jsonplaceholder.typicode.com/posts/5')
-    .expect('to have user details');
+    .expect('user details');
+  
+  // Chai Style Assertions
+  // pactum.expect(response).should.have._('user details');
 });
 
 it('should have a post with id 5', async () => {

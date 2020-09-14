@@ -2,9 +2,10 @@ const ExpectModel = require('../models/expect');
 
 class Have {
 
-  constructor(response) {
+  constructor(response, request) {
     this.expect = new ExpectModel();
     this.response = response;
+    this.request = request;
   }
 
   status(code) {
@@ -62,6 +63,11 @@ class Have {
     this._validate();
   }
 
+  _(handler, data) {
+    this.expect.customExpectHandlers.push({ handler, data });
+    this._validate();
+  }
+
   _validate() {
     this.expect.validate({}, this.response);
   }
@@ -70,22 +76,23 @@ class Have {
 
 class To {
 
-  constructor(response) {
-    this.have = new Have(response);
+  constructor(response, request) {
+    this.have = new Have(response, request);
   }
 
 }
 
 class Expect {
 
-  constructor(response) {
-    this.to = new To(response);
+  constructor(response, request) {
+    this.to = new To(response, request);
+    this.should = new To(response, request);
   }
 
 }
 
-function expect(response) {
-  return new Expect(response);
+function expect(response, request) {
+  return new Expect(response, request);
 }
 
 module.exports = expect;
