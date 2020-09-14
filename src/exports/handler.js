@@ -48,12 +48,12 @@ const handler = {
 
 }
 
-function isValidHandler(name, func, type) {
+function isValidHandler(name, func) {
   if (typeof name !== 'string' || name === '') {
-    throw new PactumHandlerError(`Invalid custom ${type} handler name`);
+    throw new PactumHandlerError('`name` is required');
   }
   if (typeof func !== 'function') {
-    throw new PactumHandlerError(`Custom ${type} handler should be a function`);
+    throw new PactumHandlerError('`func` is required');
   }
 }
 

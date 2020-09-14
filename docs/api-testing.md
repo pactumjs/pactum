@@ -191,6 +191,7 @@ To pass additional parameters to the request, we can chain or use the following 
 | `withMultiPartFormData`   | object to send as multi part form data    |
 | `withRequestTimeout`      | sets request timeout                      |
 | `__setLogLevel`           | sets log level for troubleshooting        |
+| `toss`                    | runs the spec & returns a promise         |
 
 #### Query Params
 
@@ -198,7 +199,7 @@ Use `withQueryParam` or `withQueryParams` methods to pass query parameters to th
 
 ```javascript
 it('get random male user from India', async () => {
-  await pactum
+  await pactum.spec()
     .get('https://randomuser.me/api')
     .withQueryParam('gender', 'male')
     .withQueryParams({
@@ -231,7 +232,7 @@ Use `withBody` or `withJson` methods to pass the body to the request.
 
 ```javascript
 it('post body', async () => {
-  await pactum
+  await pactum.spec()
     .post('https://jsonplaceholder.typicode.com/posts')
     .withBody('{ "title": "foo", "content": "bar"}')
     .expectStatus(201);
@@ -247,8 +248,7 @@ it('post json object', async () => {
       body: 'bar',
       userId: 1
     })
-    .expectStatus(201)
-    .toss();
+    .expectStatus(201);
 });
 ```
 
@@ -263,15 +263,14 @@ Use `withForm` or `withMultiPartFormData` to pass form data to the request.
 
 ```javascript 
 it('post with form', async () => {
-  await pactum
+  await pactum.spec()
     .post('https://httpbin.org/forms/posts')
     .withForm({
       title: 'foo',
       body: 'bar',
       userId: 1
     })
-    .expectStatus(201)
-    .toss();
+    .expectStatus(201);
 });
 ```
 
@@ -285,8 +284,7 @@ it('post with multipart form data', async () => {
   await pactum.spec()
     .post('https://httpbin.org/forms/posts')
     .withMultiPartFormData('file', fs.readFileSync('a.txt'), { contentType: 'application/js', filename: 'a.txt' })
-    .expectStatus(201)
-    .toss();
+    .expectStatus(201);
 });
 ```
 
@@ -299,8 +297,7 @@ it('post with multipart form data', async () => {
   await pactum.spec()
     .post('https://httpbin.org/forms/posts')
     .withMultiPartFormData(form)
-    .expectStatus(201)
-    .toss();
+    .expectStatus(201);
 });
 ```
 
@@ -310,7 +307,7 @@ Use `withGraphQLQuery` or `withGraphQLVariables` to pass GraphQL data to the req
 
 ```javascript
 it('post graphql query & variables', async () => {
-  await pactum
+  await pactum.spec()
     .post('https://jsonplaceholder.typicode.com/posts')
     .withGraphQLQuery(
       `
@@ -327,8 +324,7 @@ it('post graphql query & variables', async () => {
     .withGraphQLVariables({
       "episode": "JEDI"
     })
-    .expectStatus(201)
-    .toss();
+    .expectStatus(201);
 });
 ```
 
@@ -348,8 +344,7 @@ it('some action that will take more time to complete', async () => {
       userId: 1
     })
     .withRequestTimeout(5000)
-    .expectStatus(201)
-    .toss();
+    .expectStatus(201);
 });
 ```
 
@@ -535,7 +530,7 @@ const pactum = require('pactum');
 const _expect = pactum.expect;
 
 it('post should have a item with title -"some title"', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://jsonplaceholder.typicode.com/posts/5')
     .expect((ctx) => {
       const res = ctx.res;

@@ -10,7 +10,7 @@ describe('Expect Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom expect handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('empty handler name', () => {
@@ -20,7 +20,7 @@ describe('Expect Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom expect handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('invalid handler function', () => {
@@ -30,7 +30,7 @@ describe('Expect Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom expect handler should be a function');
+    expect(err.message).equals('`func` is required');
   });
 
 });
@@ -44,7 +44,7 @@ describe('Retry Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom retry handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('empty handler name', () => {
@@ -54,7 +54,7 @@ describe('Retry Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom retry handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('invalid handler function', () => {
@@ -64,7 +64,7 @@ describe('Retry Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom retry handler should be a function');
+    expect(err.message).equals('`func` is required');
   });
 
 });
@@ -78,7 +78,7 @@ describe('Return Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom return handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('empty handler name', () => {
@@ -88,7 +88,7 @@ describe('Return Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom return handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('invalid handler function', () => {
@@ -98,7 +98,7 @@ describe('Return Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom return handler should be a function');
+    expect(err.message).equals('`func` is required');
   });
 
 });
@@ -112,7 +112,7 @@ describe('State Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom state handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('empty handler name', () => {
@@ -122,7 +122,7 @@ describe('State Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom state handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('invalid handler function', () => {
@@ -132,7 +132,7 @@ describe('State Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom state handler should be a function');
+    expect(err.message).equals('`func` is required');
   });
 
 });
