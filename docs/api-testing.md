@@ -2,9 +2,9 @@
 
 API Testing in general can greatly improve the efficiency of our testing strategy helping us to deliver software faster than ever. It has many aspects but generally consists of making a request & validating the response. 
 
-* It can be performed at different levels of software development life cycle.
+* It can be performed at different levels of a software development life cycle.
 * It can be performed independent of the language used to develop the application. (*java based applications API can be tested in other programming languages*)
-* In market there are numerous tools available that allows us to test our APIs for different test types.
+* In the market there are numerous tools available that allow us to test our APIs for different test types.
 
 Instead of using different tools for each test type, **pactum** comes with all the popular features in a single bundle.
 
@@ -194,7 +194,7 @@ To pass additional parameters to the request, we can chain or use the following 
 
 #### Query Params
 
-Use `withQueryParam` or `withQueryParams` methods to pass query parameters to the request. We are allowed to call the `query-param` methods multiple times fo the same request.
+Use `withQueryParam` or `withQueryParams` methods to pass query parameters to the request. We are allowed to call the `query-param` methods multiple times to the same request.
 
 ```javascript
 it('get random male user from India', async () => {
@@ -210,7 +210,7 @@ it('get random male user from India', async () => {
 
 #### Headers
 
-Use `withHeader` or `withHeaders` methods to pass headers to the request. We are allowed to call the `header` methods multiple times fo the same request.
+Use `withHeader` or `withHeaders` methods to pass headers to the request. We are allowed to call the `header` methods multiple times to the same request.
 
 ```javascript
 it('get all comments', async () => {
@@ -227,7 +227,7 @@ it('get all comments', async () => {
 
 #### Body (JSON)
 
-Use `withBody` or `withJson` methods to pass body to the request.
+Use `withBody` or `withJson` methods to pass the body to the request.
 
 ```javascript
 it('post body', async () => {
@@ -306,7 +306,7 @@ it('post with multipart form data', async () => {
 
 #### GraphQL
 
-Use `withGraphQLQuery` or `withGraphQLVariables` to pass form graphql data to the request. *Works for only POST requests.*
+Use `withGraphQLQuery` or `withGraphQLVariables` to pass GraphQL data to the request. *Works for only POST requests.*
 
 ```javascript
 it('post graphql query & variables', async () => {
@@ -334,7 +334,7 @@ it('post graphql query & variables', async () => {
 
 #### RequestTimeout
 
-By default pactum request will timeout after 3000 ms. To increase the timeout for the current request use `withRequestTimeout` method. **Make Sure To Increase The Test Runners Timeout As Well**
+By default, pactum's request will timeout after 3000 ms. To increase the timeout for the current request use the `withRequestTimeout` method. **Make Sure To Increase The Test Runners Timeout As Well**
 
 
 ```javascript
@@ -446,7 +446,7 @@ it('posts should have a item with title -"some title"', async () => {
 Allows validation of specific part in a JSON. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
 
 * Performs deep equal or strict equal.
-* Order of items in an array matters.
+* Order of items in an array does matter.
 
 ```javascript
 it('get people', async () => {
@@ -491,7 +491,7 @@ it('get people', async () => {
 
 ##### expectJsonSchema
 
-Allows validation of schema of a JSON. See [json-schema](https://json-schema.org/learn/) for more usage details.
+Allows validation of the schema of a JSON. See [json-schema](https://json-schema.org/learn/) for more usage details.
 
 ```javascript
 it('get people', async () => {
@@ -519,7 +519,7 @@ You can also add custom expect handlers to this library for making much more com
 
 ##### AdHoc
 
-You can simply pass a function as a parameter to `expect` method & then write your own logic that performs assertions. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects.
+You can simply pass a function as a parameter to `expect` & then write your logic that performs assertions. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects.
 
 ```javascript
 const chai = require('chai');
@@ -541,7 +541,7 @@ it('post should have a item with title -"some title"', async () => {
 
 ##### Common
 
-There might be a use case you wanted to perform same set of assertions. For such scenarios, you can add custom expect handlers that you can use at different places. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects & *data* (custom data).
+There might be a use case where you wanted to perform the same set of assertions. For such scenarios, you can add custom expect handlers that can be used at different places. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects & *data* (custom data).
 
 ```javascript
 const chai = require('chai');
@@ -645,7 +645,7 @@ pactum.request.setDefaultHeader('content-type', 'application/json');
 
 ### Nested Dependent HTTP Calls
 
-API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to next tests using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions.
+API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to the next tests using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions.
 
 Use `returns` method to return custom response from the received JSON.
 
@@ -665,7 +665,7 @@ it('should return all posts and first post should have comments', async () => {
 });
 ```
 
-Use multiple `returns` methods to return array of custom response from the received JSON.
+Use multiple `returns` to return an array of custom responses from the received JSON.
 
 ```javascript
 const pactum = require('pactum');
@@ -729,13 +729,13 @@ it('should return all posts and first post should have comments', async () => {
 });
 ```
 
-**Note**: *While evaluating the string passed to the returns function, the library sees if there is handler function with the name. If not found it will execute the json-query.*
+**Note**: *While evaluating the string passed to the returns function, the library sees if there is a handler function with the name. If not found it will execute the json-query.*
 
 ### Retry Mechanism
 
 Not all APIs perform simple CRUD operations. Some operations take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response. (*Make sure to update test runners default timeout*) 
 
-Use `retry` method to specify your retry strategy. It accepts options object as an argument. If the strategy function returns true, it will perform the request again.
+Use `retry` to specify your retry strategy. It accepts options object as an argument. If the strategy function returns true, it will perform the request again.
 
 ##### retryOptions
 
@@ -795,7 +795,7 @@ it('should get posts', async () => {
 
 As the functionality of the application grows, the scope of the testing grows with it. At one point test data management becomes complex.
 
-Lets say you have a numerous test cases around adding a new user to your system. To add a new user you post the following JSON to `/api/users` endpoint.
+Assume you have numerous test cases around adding a new user to your system. To add a new user you post the following JSON to `/api/users` endpoint.
 
 ```json
 {
@@ -806,7 +806,7 @@ Lets say you have a numerous test cases around adding a new user to your system.
 }
 ```
 
-Now lets assume, your application no longer accepts the above JSON. It needs a new field `Gender` in the JSON. It will be tedious to update all you existing test cases to add the new field.
+Now let's assume, your application no longer accepts the above JSON. It needs a new field `Gender` in the JSON. It will be tedious to update all your existing test cases to add the new field.
 
 ```json
 {
@@ -819,13 +819,13 @@ Now lets assume, your application no longer accepts the above JSON. It needs a n
 ```
 
 
-To solve this kind of problems, **pactum** comes with a concept of *Data Templates* & *Data Maps* to manage your test data. It helps us to re-use data across tests.
+To solve these kind of problems, **pactum** comes with a concept of *Data Templates* & *Data Maps* to manage your test data. It helps us to re-use data across tests.
 
 #### Data Template
 
-A Data Template is a standard format for a particular resource. Once a template is defined, we can be use it across all the tests to perform a request.
+A Data Template is a standard format for a particular resource. Once a template is defined, it can be used across all the tests to perform a request.
 
-Use `stash.loadDataTemplates` to add a data template. To use the template in the tests, use `@DATA:TEMPLATE@` as key & name of the template as value.
+Use `stash.loadDataTemplates` to add a data template. To use the template in the tests, use `@DATA:TEMPLATE@` as key & the name of the template as value.
 
 ```javascript
 const pactum = require('pactum');
@@ -863,7 +863,7 @@ it('adds a new user', async () => {
 });
 ```
 
-The exact resource is not going to be used across every test. Every test might need specific values. This library supports overriding of specific values & extending the data template. This allows tests to be customized as much as you'd like when using templates.
+The exact resource is not going to be used across every test. Every test might need specific values. This library supports the overriding of specific values & extending the data template. This allows tests to be customized as much as you'd like when using templates.
 
 ```javascript
 it('should not add a user with negative age', async () => {
@@ -966,10 +966,10 @@ it('should add a user with address', async () => {
 
 #### Data Map
 
-A Data Map is a collection of data that can be referenced in data templates or in your tests. Major difference between a data template & a data map is
+A Data Map is a collection of data that can be referenced in data templates or tests. The major differences between a data template & a data map are
 
-* When a data template is used, current object will be replaced.
-* When a data map is used, current objects value will be replaced.
+* When a data template is used, the current object will be replaced.
+* When a data map is used, the current object's property value will be replaced.
 
 Use `stash.loadDataMaps` to add a data map. To use the map in the tests or in the template, use `@DATA:MAP::<json-query>@` as the value.
 
