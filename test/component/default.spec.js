@@ -54,7 +54,7 @@ describe('Pact - Default Mock Interaction', () => {
   it('GET - one interaction', async () => {
     expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(0, 'interaction should be called once');
     expect(mock.isInteractionExercised('GET_FIRST_PROJECT')).equals(false, 'interaction should not be exercised');
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
@@ -63,7 +63,7 @@ describe('Pact - Default Mock Interaction', () => {
       });
     expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(1, 'interaction should be called once');
     expect(mock.isInteractionExercised('GET_FIRST_PROJECT')).equals(true, 'interaction should be exercised');
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
     expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(2, 'interaction should be called twice');
@@ -72,7 +72,7 @@ describe('Pact - Default Mock Interaction', () => {
   });
 
   it('GET - one interaction - with multiple queries', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/2')
       .withQueryParam('id', 2)
       .withQueryParam('name', 'fake')
@@ -85,7 +85,7 @@ describe('Pact - Default Mock Interaction', () => {
   });
 
   it('POST - one interaction - with ignore body', async () => {
-    await pactum
+    await pactum.spec()
       .post('http://localhost:9393/api/projects')
       .withJson({
         id: 1,
@@ -99,7 +99,7 @@ describe('Pact - Default Mock Interaction', () => {
   });
 
   it('GET - one interaction - overwrite default', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -126,7 +126,7 @@ describe('Pact - Default Mock Interaction', () => {
   });
 
   it('GET - one interaction - get default interaction', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
@@ -191,7 +191,7 @@ describe('Pact - Default Pact Interaction', () => {
   });
 
   it('GET - one interaction', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
@@ -204,7 +204,7 @@ describe('Pact - Default Pact Interaction', () => {
   });
 
   it('GET - one interaction - with multiple queries', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .withQueryParam('id', 1)
       .withQueryParam('name', 'fake')
@@ -272,7 +272,7 @@ describe('Pact - Default Mock Interactions', () => {
   });
 
   it('GET - one interaction', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
@@ -283,7 +283,7 @@ describe('Pact - Default Mock Interactions', () => {
   });
 
   it('GET - one interaction - with multiple queries', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .withQueryParam('id', 1)
       .withQueryParam('name', 'fake')
@@ -296,7 +296,7 @@ describe('Pact - Default Mock Interactions', () => {
   });
 
   it('POST - one interaction - with ignore body', async () => {
-    await pactum
+    await pactum.spec()
       .post('http://localhost:9393/api/projects')
       .withJson({
         id: 1,
@@ -367,7 +367,7 @@ describe('Pact - Default Pact Interactions', () => {
   });
 
   it('GET - one interaction', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .expectJsonLike({
@@ -378,7 +378,7 @@ describe('Pact - Default Pact Interactions', () => {
   });
 
   it('GET - one interaction - with multiple queries', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .withQueryParam('id', 1)
       .withQueryParam('name', 'fake')
@@ -400,28 +400,28 @@ describe('Pact - Defaults', () => {
 
   it('request - setBaseUrl', async () => {
     pactum.request.setBaseUrl('http://localhost:9393');
-    await pactum
+    await pactum.spec()
       .get('/api')
       .expectStatus(404);
   });
 
   it('request - setDefaultTimeout', async () => {
     pactum.request.setDefaultTimeout(2000);
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api')
       .expectStatus(404);
   });
 
   it('request - setDefaultHeader', async () => {
     pactum.request.setDefaultHeader('content-type', 'application/json');
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api')
       .expectStatus(404);
   });
 
   it('settings - setLogLevel', async () => {
     pactum.settings.setLogLevel('INFO');
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api')
       .expectStatus(404);
   });
@@ -463,42 +463,42 @@ describe('OnCall - Mock Interactions', () => {
   });
 
   it('GET - Call - 0', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
       .toss();
   });
 
   it('GET - Call - 1', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(201)
       .toss();
   });
 
   it('GET - Call - 2', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(202)
       .toss();
   });
 
   it('GET - Call - 3', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(204)
       .toss();
   });
 
   it('GET - Call - 4', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(204)
       .toss();
   });
 
   it('GET - Call - 5', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(500)
       .toss();

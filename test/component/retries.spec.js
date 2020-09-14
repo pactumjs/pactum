@@ -4,7 +4,7 @@ const expect = require('chai').expect;
 describe('Retries', () => {
 
   it('retry strategy', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -32,7 +32,7 @@ describe('Retries', () => {
   });
 
   it('should not retry with default retry options', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -56,7 +56,7 @@ describe('Retries', () => {
 
   it('custom retry strategy', async () => {
     pactum.handler.addRetryHandler('RetryTill200', ({res}) => res.statusCode !== 200);
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -86,7 +86,7 @@ describe('Retries', () => {
   it('unknown retry strategy', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .useMockInteraction({
           withRequest: {
             method: 'GET',

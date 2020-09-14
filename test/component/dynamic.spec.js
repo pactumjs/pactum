@@ -3,7 +3,7 @@ const pactum = require('../../src/index');
 describe('Dynamic', () => {
 
   it('GET - without query', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -28,7 +28,7 @@ describe('Dynamic', () => {
   });
 
   it('GET - with query', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -57,7 +57,7 @@ describe('Dynamic', () => {
   });
 
   it('GET - ignore query - first record', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -95,7 +95,7 @@ describe('Dynamic', () => {
   });
 
   it('GET - ignore query - second record', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',

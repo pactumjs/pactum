@@ -61,7 +61,7 @@ Copy the below code
 const pactum = require('pactum');
 
 it('should be a teapot', async () => {
-  await pactum
+  await pactum.spec()
     .get('http://httpbin.org/status/418')
     .expectStatus(418);
 });
@@ -89,7 +89,7 @@ We can build the request & expectations by chaining the descriptive methods offe
 
 ```javascript
 it('should have a user with name bolt', () => {
-  return pactum
+  return pactum.spec()
     .get('http://localhost:9393/api/users')
     .withQueryParam('name', 'bolt')
     .expectStatus(200)
@@ -167,12 +167,12 @@ describe('should have a user with name bolt', () => {
 The request method indicates the method to be performed on the resource identified by the given Request-URI.
 
 ```javascript
-await pactum.get('http://httpbin.org/status/200');
-await pactum.post('http://httpbin.org/status/200');
-await pactum.put('http://httpbin.org/status/200');
-await pactum.patch('http://httpbin.org/status/200');
-await pactum.del('http://httpbin.org/status/200');
-await pactum.head('http://httpbin.org/status/200');
+await pactum.spec().get('http://httpbin.org/status/200');
+await pactum.spec().post('http://httpbin.org/status/200');
+await pactum.spec().put('http://httpbin.org/status/200');
+await pactum.spec().patch('http://httpbin.org/status/200');
+await pactum.spec().del('http://httpbin.org/status/200');
+await pactum.spec().head('http://httpbin.org/status/200');
 ```
 
 To pass additional parameters to the request, we can chain or use the following methods individually to build our request.
@@ -214,7 +214,7 @@ Use `withHeader` or `withHeaders` methods to pass headers to the request. We are
 
 ```javascript
 it('get all comments', async () => {
-  await pactum
+  await pactum.spec()
     .get('https://jsonplaceholder.typicode.com/comments')
     .withHeader('Authorization', 'Basic abc')
     .withHeader('Accept', '*')
@@ -240,7 +240,7 @@ it('post body', async () => {
 
 ```javascript
 it('post json object', async () => {
-  await pactum
+  await pactum.spec()
     .post('https://jsonplaceholder.typicode.com/posts')
     .withJson({
       title: 'foo',
@@ -282,7 +282,7 @@ it('post with form', async () => {
 
 ```javascript
 it('post with multipart form data', async () => {
-  await pactum
+  await pactum.spec()
     .post('https://httpbin.org/forms/posts')
     .withMultiPartFormData('file', fs.readFileSync('a.txt'), { contentType: 'application/js', filename: 'a.txt' })
     .expectStatus(201)
@@ -296,7 +296,7 @@ We can also directly use the form-data object.
 const form = new pactum.request.FormData();
 form.append(/* form data */);
 it('post with multipart form data', async () => {
-  await pactum
+  await pactum.spec()
     .post('https://httpbin.org/forms/posts')
     .withMultiPartFormData(form)
     .expectStatus(201)
@@ -340,7 +340,7 @@ By default, pactum's request will timeout after 3000 ms. To increase the timeout
 ```javascript
 it('some action that will take more time to complete', async () => {
   // increase mocha timeout here
-  await pactum
+  await pactum.spec()
     .post('https://jsonplaceholder.typicode.com/posts')
     .withJson({
       title: 'foo',
@@ -382,7 +382,7 @@ Expecting Status Code & Headers from the response.
 const expect = pactum.expect;
 
 it('get post with id 1', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://jsonplaceholder.typicode.com/posts/1')
     .expectStatus(200)
     .expectHeader('content-type', 'application/json; charset=utf-8')
@@ -408,7 +408,7 @@ Performs deep equal.
 
 ```javascript
 it('get post with id 1', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://jsonplaceholder.typicode.com/posts/1')
     .expectStatus(200)
     .expectJson({
@@ -432,7 +432,7 @@ Performs partial deep equal.
 
 ```javascript
 it('posts should have a item with title -"some title"', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://jsonplaceholder.typicode.com/posts')
     .expectStatus(200)
     .expectJsonLike([
@@ -456,7 +456,7 @@ Allows validation of specific part in a JSON. See [json-query](https://www.npmjs
 
 ```javascript
 it('get people', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://some-api/people')
     .expectStatus(200)
     .expectJson({
@@ -480,7 +480,7 @@ Allows validation of specific part in a JSON. See [json-query](https://www.npmjs
 
 ```javascript
 it('get people', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://some-api/people')
     .expectStatus(200)
     .expectJson({
@@ -501,7 +501,7 @@ Allows validation of the schema of a JSON. See [json-schema](https://json-schema
 
 ```javascript
 it('get people', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://some-api/people')
     .expectStatus(200)
     .expectJson({
@@ -569,7 +569,7 @@ before(() => {
 });
 
 it('should have a post with id 5', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://jsonplaceholder.typicode.com/posts/5')
     .expect('user details');
   
@@ -578,7 +578,7 @@ it('should have a post with id 5', async () => {
 });
 
 it('should have a post with id 5', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://jsonplaceholder.typicode.com/posts/6')
     .expect('to have user details');
 });
@@ -599,13 +599,13 @@ before(() => {
 });
 
 it('should have a post with id 5', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://jsonplaceholder.typicode.com/posts/5')
     .expect('to have user details', 5); // data = 5
 });
 
 it('should have a post with id 5', async () => {
-  const response = await pactum
+  const response = await pactum.spec()
     .get('https://jsonplaceholder.typicode.com/posts/6')
     .expect('to have user details', { id: 6 }); // data = { id: 6 }
 });
@@ -629,7 +629,7 @@ before(() => {
 
 it('should have a post with id 5', async () => {
   // request will be sent to http://localhost:3000/api/projects
-  await pactum
+  await pactum.spec()
     .get('/api/projects');
 });
 ```
@@ -664,11 +664,11 @@ Use `returns` method to return custom response from the received JSON.
 const pactum = require('pactum');
 
 it('should return all posts and first post should have comments', async () => {
-  const postID = await pactum
+  const postID = await pactum.spec()
     .get('http://jsonplaceholder.typicode.com/posts')
     .expectStatus(200)
     .returns('[0].id');
-  await pactum
+  await pactum.spec()
     .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
     .expectStatus(200);
 });
@@ -680,15 +680,15 @@ Use multiple `returns` to return an array of custom responses from the received 
 const pactum = require('pactum');
 
 it('first & second posts should have comments', async () => {
-  const ids = await pactum
+  const ids = await pactum.spec()
     .get('http://jsonplaceholder.typicode.com/posts')
     .expectStatus(200)
     .returns('[0].id')
     .returns('[1].id');
-  await pactum
+  await pactum.spec()
     .get(`http://jsonplaceholder.typicode.com/posts/${ids[0]}/comments`)
     .expectStatus(200);
-  await pactum
+  await pactum.spec()
     .get(`http://jsonplaceholder.typicode.com/posts/${ids[1]}/comments`)
     .expectStatus(200);
 });
@@ -702,11 +702,11 @@ We can also use a custom handler function to return data. A *context* object is 
 const pactum = require('pactum');
 
 it('should return all posts and first post should have comments', async () => {
-  const postID = await pactum
+  const postID = await pactum.spec()
     .get('http://jsonplaceholder.typicode.com/posts')
     .expectStatus(200)
     .returns((ctx) => { return ctx.res.json[0].id });
-  await pactum
+  await pactum.spec()
     .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
     .expectStatus(200);
 });
@@ -728,11 +728,11 @@ before(() => {
 });
 
 it('should return all posts and first post should have comments', async () => {
-  const postID = await pactum
+  const postID = await pactum.spec()
     .get('http://jsonplaceholder.typicode.com/posts')
     .expectStatus(200)
     .returns('user id');
-  await pactum
+  await pactum.spec()
     .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
     .expectStatus(200);
 });
@@ -761,7 +761,7 @@ We can use a custom handler function to return a boolean. A *context* object is 
 
 
 ```javascript
-await pactum
+await pactum.spec()
   .get('https://jsonplaceholder.typicode.com/posts/12')
   .retry({
     count: 2,
@@ -791,7 +791,7 @@ before(() => {
 });
 
 it('should get posts', async () => {
-  await pactum
+  await pactum.spec()
     .get('http://jsonplaceholder.typicode.com/posts')
     .retry({
       strategy: 'on 404'
@@ -853,7 +853,7 @@ before(() => {
 });
 
 it('adds a new user', async () => {
-  await pactum
+  await pactum.spec()
     .post('/api/users')
     .withJson({
       '@DATA:TEMPLATE@': 'User:New'
@@ -876,7 +876,7 @@ The exact resource is not going to be used across every test. Every test might n
 
 ```javascript
 it('should not add a user with negative age', async () => {
-  await pactum
+  await pactum.spec()
     .post('/api/users')
     .withJson({
       '@DATA:TEMPLATE@': 'User:New',
@@ -938,7 +938,7 @@ before(() => {
 });
 
 it('should add a user with address', async () => {
-  await pactum
+  await pactum.spec()
     .post('/api/users')
     .withJson({
       '@DATA:TEMPLATE@': 'User:WithAddress',

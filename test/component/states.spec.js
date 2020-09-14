@@ -23,19 +23,19 @@ describe('State', () => {
   });
 
   it('using a single sate in multiple specs', async () => {
-    await pactum
+    await pactum.spec()
       .setState('there is a project with id', 99)
       .get('http://localhost:9393/api/projects/99')
       .expectJson({
         id: 99
       });
-    await pactum
+    await pactum.spec()
       .setState('there is a project with id', 98)
       .get('http://localhost:9393/api/projects/98')
       .expectJson({
         id: 98
       });
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/99')
       .expectStatus(404);
   });
@@ -43,7 +43,7 @@ describe('State', () => {
   it('state not found', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
       .setState('invalid state')
       .get('http://localhost:9393/api/projects/98')
       .expectJson({
@@ -57,7 +57,7 @@ describe('State', () => {
 
   it('set state from state object', async () => {
     await state.set('there is a user with id', 10);
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/users/10')
       .expectStatus(200);
   });

@@ -6,14 +6,14 @@ const { eachLike } = require('../../src/exports/matcher');
 describe('Basic Interactions', () => {
 
   it('GET - string', async () => {
-    await pactum
+    await pactum.spec()
       .useInteraction('/api/projects/1')
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200);
   });
 
   it('GET - override status', async () => {
-    await pactum
+    await pactum.spec()
       .useInteraction({
         get: '/api/projects/1',
         status: 202
@@ -23,7 +23,7 @@ describe('Basic Interactions', () => {
   });
 
   it('POST - override return', async () => {
-    await pactum
+    await pactum.spec()
       .useInteraction({
         post: '/api/projects',
         return: { id: 1 }
@@ -37,7 +37,7 @@ describe('Basic Interactions', () => {
   });
 
   it('PUT - with query', async () => {
-    await pactum
+    await pactum.spec()
       .useInteraction({
         put: '/api/projects/1'
       })
@@ -47,7 +47,7 @@ describe('Basic Interactions', () => {
   });
 
   it('PATCH', async () => {
-    await pactum
+    await pactum.spec()
       .useInteraction({
         patch: '/api/projects/1'
       })
@@ -56,7 +56,7 @@ describe('Basic Interactions', () => {
   });
 
   it('DELETE', async () => {
-    await pactum
+    await pactum.spec()
       .useInteraction({
         delete: '/api/projects/1'
       })
@@ -69,7 +69,7 @@ describe('Basic Interactions', () => {
 describe('Mock', () => {
 
   it('GET - one interaction', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -109,7 +109,7 @@ describe('Mock', () => {
   });
 
   it('GET - one interaction - without body', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -129,7 +129,7 @@ describe('Mock', () => {
   });
 
   it('GET - one interaction - bad response', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -155,7 +155,7 @@ describe('Mock', () => {
   });
 
   it('GET - one interaction - with one query', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -186,7 +186,7 @@ describe('Mock', () => {
   });
 
   it('GET - one interaction - with multiple queries', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -221,7 +221,7 @@ describe('Mock', () => {
   });
 
   it('GET - one interaction - with query params', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -256,7 +256,7 @@ describe('Mock', () => {
   });
 
   it('GET - one interaction - with headers', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -293,7 +293,7 @@ describe('Mock', () => {
   });
 
   it('GET - one interaction - with fixed delay', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -333,7 +333,7 @@ describe('Mock', () => {
   });
 
   it('GET - one interaction - with random delay', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -376,7 +376,7 @@ describe('Mock', () => {
   });
 
   it('POST - one interaction', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -401,7 +401,7 @@ describe('Mock', () => {
   });
 
   it('POST - one interaction - with body', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -434,7 +434,7 @@ describe('Mock', () => {
   });
 
   it('POST - one interaction - with ignore body', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -464,7 +464,7 @@ describe('Mock', () => {
   });
 
   it('POST - one interaction - with form data', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -496,7 +496,7 @@ describe('Mock', () => {
   it('POST - one interaction - with multi part form data', async () => {
     const fs = require('fs');
     const path = require('path');
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -527,7 +527,7 @@ describe('Mock', () => {
     const path = require('path');
     const form = new pactum.request.FormData();
     form.append('file', fs.readFileSync(path.resolve('./test/component/base.spec.js')), { contentType: 'application/js', filename: 'interactions.spec.js' });
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -554,7 +554,7 @@ describe('Mock', () => {
   });
 
   it('GET - invalid interaction', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .withQueryParams({ id: '1' })
       .expectStatus(404)
@@ -565,7 +565,7 @@ describe('Mock', () => {
   });
 
   it('POST - invalid interaction', async () => {
-    await pactum
+    await pactum.spec()
       .post('http://localhost:9393/api/projects')
       .__setLogLevel('DEBUG')
       .withRequestTimeout(1000)
@@ -582,7 +582,7 @@ describe('Mock', () => {
   });
 
   it('PUT - invalid interaction', () => {
-    return pactum
+    return pactum.spec()
       .put('http://localhost:9393/api/projects/1')
       .withBody("Hello")
       .expectStatus(404)
@@ -593,7 +593,7 @@ describe('Mock', () => {
   });
 
   it('PATCH - invalid interaction', async () => {
-    await pactum
+    await pactum.spec()
       .patch('http://localhost:9393/api/projects/1')
       .expectStatus(404)
       .expectBody('Interaction Not Found')
@@ -602,7 +602,7 @@ describe('Mock', () => {
   });
 
   it('HEAD - invalid interaction', async () => {
-    await pactum
+    await pactum.spec()
       .head('http://localhost:9393/api/projects/1')
       .expectStatus(404)
       .expectResponseTime(100)
@@ -610,7 +610,7 @@ describe('Mock', () => {
   });
 
   it('GET - empty on call', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -627,7 +627,7 @@ describe('Mock', () => {
   });
 
   it('GET - 0th on call', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -651,7 +651,7 @@ describe('Mock', () => {
 describe('Pact - matchers', () => {
 
   it('GET - one interaction', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -694,7 +694,7 @@ describe('Pact - matchers', () => {
   });
 
   it('GET - one interaction - array body', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -733,7 +733,7 @@ describe('Pact - matchers', () => {
 describe('Pact - VALID', () => {
 
   it('GET - one interaction', async () => {
-    await pactum
+    await pactum.spec()
       .usePactInteraction({
         provider: 'test-provider',
         state: 'when there is a project with id 1',
@@ -763,7 +763,7 @@ describe('Pact - VALID', () => {
   });
 
   it('GET - one interaction', async () => {
-    await pactum
+    await pactum.spec()
       .usePactInteraction({
         provider: 'test-provider',
         state: 'when there is a project with id 1',
@@ -809,7 +809,7 @@ describe('Pact - VALID', () => {
   });
 
   it('GET - one interaction - array body', async () => {
-    await pactum
+    await pactum.spec()
       .usePactInteraction({
         provider: 'test-provider-2',
         state: 'when there is a project with id 1',

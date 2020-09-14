@@ -28,7 +28,7 @@ describe('Templates & Maps', () => {
   });
 
   it('new user with pure template', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -52,7 +52,7 @@ describe('Templates & Maps', () => {
   });
 
   it('new user with pure - override existing property', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -79,7 +79,7 @@ describe('Templates & Maps', () => {
   });
 
   it('new user with pure - override existing property with template & map', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -115,7 +115,7 @@ describe('Templates & Maps', () => {
   });
 
   it('new user with pure - nested override', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
