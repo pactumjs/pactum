@@ -4,11 +4,12 @@ const expectHandlers = {};
 const retryHandlers = {};
 const returnHandlers = {};
 const stateHandlers =  {};
+const dataHandlers = {};
 
 const handler = {
 
   addExpectHandler(name, func) {
-    isValidHandler(name, func, 'expect');
+    isValidHandler(name, func);
     expectHandlers[name] = func;
   },
 
@@ -18,7 +19,7 @@ const handler = {
   },
 
   addRetryHandler(name, func) {
-    isValidHandler(name, func, 'retry');
+    isValidHandler(name, func);
     retryHandlers[name] = func;
   },
 
@@ -28,7 +29,7 @@ const handler = {
   },
 
   addReturnHandler(name, func) {
-    isValidHandler(name, func, 'return');
+    isValidHandler(name, func);
     returnHandlers[name] = func;
   },
 
@@ -37,14 +38,24 @@ const handler = {
   },
 
   addStateHandler(name, func) {
-    isValidHandler(name, func, 'state');
+    isValidHandler(name, func);
     stateHandlers[name] = func;
   },
 
   getStateHandler(name) {
     if (stateHandlers[name]) return stateHandlers[name];
     throw new PactumHandlerError(`Custom State Handler Not Found - ${name}`);
-  }
+  },
+
+  addDataHandler(name, func) {
+    isValidHandler(name, func);
+    dataHandlers[name] = func;
+  },
+
+  getDataHandler(name) {
+    if (dataHandlers[name]) return dataHandlers[name];
+    throw new PactumHandlerError(`Custom Data Handler Not Found - ${name}`);
+  },
 
 }
 

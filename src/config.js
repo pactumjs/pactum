@@ -15,7 +15,7 @@ const config = {
     headers: {}
   },
   data: {
-    map: {
+    ref: {
       enabled: false,
       processed: false
     },

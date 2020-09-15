@@ -26,10 +26,15 @@ interface ExpectHandlerContext extends RequestResponseContext {
   data?: any;
 }
 
+interface DataHandlerContext {
+  data?: any;
+}
+
 export type ExpectHandlerFunction = (ctx: ExpectHandlerContext) => void;
 export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
 export type ReturnHandlerFunction = (ctx: RequestResponseContext) => any;
 export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
+export type DataHandlerFunction = (ctx: DataHandlerContext) => any;
 
 /**
  * adds a custom expect handler
@@ -50,3 +55,8 @@ export function addReturnHandler(name: string, func: ReturnHandlerFunction): voi
  * adds a custom state handler
  */
 export function addStateHandler(name: string, func: StateHandlerFunction): void;
+
+/**
+ * adds a custom data handler
+ */
+export function addDataHandler(name: string, func: DataHandlerFunction): void;

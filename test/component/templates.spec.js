@@ -24,7 +24,8 @@ describe('Templates & Maps', () => {
       Castle: {
         Wall: 'Castle Black'
       }
-    })
+    });
+    pactum.handler.addDataHandler('GetZero', () => 0);
   });
 
   it('new user with pure template', async () => {
@@ -88,6 +89,7 @@ describe('Templates & Maps', () => {
             FirstName: 'Jon',
             LastName: 'Snow',
             Country: 'North',
+            Age: 0,
             Addresses: [
               {
                 Castle: 'WinterFell',
@@ -104,6 +106,7 @@ describe('Templates & Maps', () => {
       .withJson({
         '@DATA:TEMPLATE@': 'User.NewUser',
         '@OVERRIDES@': {
+          Age: '@DATA:FUN::GetZero@',
           Addresses: [
             {
               '@DATA:TEMPLATE@': 'User.Address'

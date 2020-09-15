@@ -7,7 +7,7 @@ const stash = {
 
   loadDataMaps(maps) {
     Object.assign(dataMap, maps);
-    config.data.map.processed = false;
+    config.data.ref.processed = false;
   },
 
   getDataMap() {
@@ -16,8 +16,8 @@ const stash = {
 
   clearDataMaps() {
     dataMap = {};
-    config.data.map.processed = false;
-    config.data.map.enabled = false;
+    config.data.ref.processed = false;
+    config.data.ref.enabled = false;
   },
 
   loadDataTemplates(templates) {

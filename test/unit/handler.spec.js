@@ -136,3 +136,48 @@ describe('State Handler', () => {
   });
 
 });
+
+
+describe('Data Handler', () => {
+
+  it('invalid handler name', () => {
+    let err;
+    try {
+      handler.addDataHandler();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('empty handler name', () => {
+    let err;
+    try {
+      handler.addDataHandler('');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('invalid handler function', () => {
+    let err;
+    try {
+      handler.addDataHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`func` is required');
+  });
+
+  it('get invalid handler function', () => {
+    let err;
+    try {
+      handler.getDataHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Custom Data Handler Not Found - hello');
+  });
+
+});

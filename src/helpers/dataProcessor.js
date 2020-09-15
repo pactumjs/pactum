@@ -2,12 +2,13 @@ const override = require('deep-override');
 const jq = require('json-query');
 
 const stash = require('../exports/stash');
+const handler = require('../exports/handler');
 const logger = require('./logger');
 const config = require('../config');
 
-const DATA_MAP_PATTERN = /(@DATA:\w+::[^@]+@)/g;
-const DATA_MAP_TYPE_PATTERN = /(@DATA:\w+::)/g;
-const DATA_MAP_VALUE_PATTERN = /(::.*[^@])/g;
+const DATA_REF_PATTERN = /(@DATA:\w+::[^@]+@)/g;
+const DATA_REF_TYPE_PATTERN = /(@DATA:\w+::)/g;
+const DATA_REF_VALUE_PATTERN = /(::.*[^@])/g;
 
 const dataProcessor = {
 
@@ -15,13 +16,13 @@ const dataProcessor = {
   template: {},
 
   processMaps() {
-    if (!config.data.map.processed) {
+    if (!config.data.ref.processed) {
       const orgMap = stash.getDataMap();
       this.map = JSON.parse(JSON.stringify(orgMap));
-      this.map = this.processDataMaps(this.map);
-      config.data.map.processed = true;
+      this.map = this.processDataRefs(this.map);
+      config.data.ref.processed = true;
       if (Object.keys(this.map).length > 0) {
-        config.data.map.enabled = true;
+        config.data.ref.enabled = true;
       }
     }
   },
@@ -42,8 +43,8 @@ const dataProcessor = {
     if (config.data.template.enabled) {
       data = this.processDataTemplates(data);
     }
-    if (config.data.map.enabled) {
-      data = this.processDataMaps(data);
+    if (config.data.ref.enabled) {
+      data = this.processDataRefs(data);
     }
     return data;
   },
@@ -73,27 +74,31 @@ const dataProcessor = {
     return data;
   },
 
-  processDataMaps(data) {
+  processDataRefs(data) {
     if (typeof data === 'string') {
-      return this.getDataMapValue(data);
+      return this.getDataRefValue(data);
     }
     if (typeof data === 'object') {
       for (prop in data) {
-        data[prop] = this.processDataMaps(data[prop]);
+        data[prop] = this.processDataRefs(data[prop]);
       }
     }
     return data;
   },
 
-  getDataMapValue(raw) {
-    const dataMapMatches = raw.match(DATA_MAP_PATTERN);
-    if (dataMapMatches) {
-      for (let i = 0; i < dataMapMatches.length; i++) {
-        const dataMapMatch = dataMapMatches[i];
-        const mapType = dataMapMatch.match(DATA_MAP_TYPE_PATTERN)[0];
-        const mapValue = dataMapMatch.match(DATA_MAP_VALUE_PATTERN)[0];
-        if (mapType === '@DATA:MAP::') {
-          return jq(mapValue.replace('::', ''), { data: this.map }).value;
+  getDataRefValue(raw) {
+    const dataRefMatches = raw.match(DATA_REF_PATTERN);
+    if (dataRefMatches) {
+      for (let i = 0; i < dataRefMatches.length; i++) {
+        const dataRefMatch = dataRefMatches[i];
+        const refType = dataRefMatch.match(DATA_REF_TYPE_PATTERN)[0].replace('::', '');
+        const refValue = dataRefMatch.match(DATA_REF_VALUE_PATTERN)[0].replace('::', '');
+        if (refType === '@DATA:MAP') {
+          return jq(refValue, { data: this.map }).value;
+        }
+        if (refType === '@DATA:FUN') {
+          const handlerFun = handler.getDataHandler(refValue);
+          return handlerFun();
         }
       }
     }
