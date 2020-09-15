@@ -12,9 +12,9 @@ Instead of using different tools for each test type, **pactum** comes with all t
 
 * Extremely lightweight.
 * Quick & easy to send requests & validate responses.
-* Easy to chain multiple requests.
-* Fully customizable Retry Mechanism.
 * Out of the box Data Management.
+* Easy to chain multiple requests.
+* Fully customizable Retry Mechanisms, Assertions.
 * Works with any of the test runners like **mocha**, **cucumber**, **jest**.
 * Ideal for *component testing*, *contract testing* & *e2e testing*.
 * Ability to control the behavior of external services with a powerful mock server. (*learn more at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)*)
@@ -823,7 +823,7 @@ Now let's assume, your application no longer accepts the above JSON. It needs a 
 ```
 
 
-To solve these kind of problems, **pactum** comes with a concept of *Data Templates* & *Data Maps* to manage your test data. It helps us to re-use data across tests.
+To solve these kind of problems, **pactum** comes with a concept of *Data Templates* & *Data References* to manage your test data. It helps us to re-use data across tests.
 
 #### Data Template
 
@@ -968,7 +968,7 @@ it('should add a user with address', async () => {
 });
 ```
 
-#### Data Map
+#### Data Map (Data References)
 
 A Data Map is a collection of data that can be referenced in data templates or tests. The major differences between a data template & a data map are
 
@@ -1030,6 +1030,32 @@ before(() => {
       'LastNames': [ 'Stark', 'Sand', 'Snow' ]
     }
   });
+});
+```
+
+#### Data Functions (Data References)
+
+A Data Function is a custom data handler that returns some sort of data that can be referenced in data templates or tests. 
+
+Use `handler.addDataHandler` to add a custom data handler function. To use the function in the tests or in the template, use `@DATA:FUN::<handler-name>@` as the value.
+
+```javascript
+const pactum = require('pactum');
+const handler = pactum.handler;
+
+before(() => {
+  handler.addDataHandler('GetTimeStamp', () => {
+    return Date.now();
+  });
+});
+
+it('order an item', async () => {
+  await pactum.spec()
+    .post('/api/order')
+    .withJson({
+      'Item': 'Sword',
+      'CreatedAt': '@DATA:FUN::GetTimeStamp@'
+    });
 });
 ```
 

@@ -16,8 +16,13 @@ const config = {
   },
   data: {
     ref: {
-      enabled: false,
-      processed: false
+      map: {
+        enabled: false,
+        processed: false
+      },
+      fun: {
+        enabled: false
+      }
     },
     template: {
       enabled: false,

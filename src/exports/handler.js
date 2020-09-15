@@ -1,4 +1,5 @@
 const { PactumHandlerError } = require('../helpers/errors');
+const config = require('../config');
 
 const expectHandlers = {};
 const retryHandlers = {};
@@ -50,6 +51,7 @@ const handler = {
   addDataHandler(name, func) {
     isValidHandler(name, func);
     dataHandlers[name] = func;
+    config.data.ref.fun.enabled = true;
   },
 
   getDataHandler(name) {

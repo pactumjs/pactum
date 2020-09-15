@@ -16,13 +16,13 @@ const dataProcessor = {
   template: {},
 
   processMaps() {
-    if (!config.data.ref.processed) {
+    if (!config.data.ref.map.processed) {
       const orgMap = stash.getDataMap();
       this.map = JSON.parse(JSON.stringify(orgMap));
       this.map = this.processDataRefs(this.map);
-      config.data.ref.processed = true;
+      config.data.ref.map.processed = true;
       if (Object.keys(this.map).length > 0) {
-        config.data.ref.enabled = true;
+        config.data.ref.map.enabled = true;
       }
     }
   },
@@ -43,7 +43,8 @@ const dataProcessor = {
     if (config.data.template.enabled) {
       data = this.processDataTemplates(data);
     }
-    if (config.data.ref.enabled) {
+    const ref = config.data.ref;
+    if (ref.map.enabled || ref.fun.enabled) {
       data = this.processDataRefs(data);
     }
     return data;
