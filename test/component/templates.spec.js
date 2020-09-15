@@ -26,6 +26,7 @@ describe('Templates & Maps', () => {
       }
     });
     pactum.handler.addDataHandler('GetZero', () => 0);
+    pactum.handler.addDataHandler('GetAuthToken', () => 'Basic xyz');
   });
 
   it('new user with pure template', async () => {
@@ -153,6 +154,29 @@ describe('Templates & Maps', () => {
           ]
         }
       })
+      .expectStatus(200);
+  });
+
+  it('data ref in query & headers', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users',
+          query: {
+            age: 0
+          },
+          headers: {
+            'Authorization': 'Basic xyz'
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .withQueryParam('age', '@DATA:FUN::GetZero@')
+      .withHeader('Authorization', '@DATA:FUN::GetAuthToken@')
       .expectStatus(200);
   });
 

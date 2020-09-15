@@ -35,16 +35,17 @@ class Tosser {
   }
 
   updateRequest() {
-    const query = helper.getPlainQuery(this.request.qs);
+    processor.processMaps();
+    processor.processTemplates();
+    const query = helper.getPlainQuery(processor.processData(this.request.qs));
     if (query) {
       this.request.url = this.request.url + '?' + query;
     }
     setBaseUrl(this.request);
     this.request.timeout = this.request.timeout || config.request.timeout;
     setHeaders(this.request);
+    this.request.headers = processor.processData(this.request.headers);
     setMultiPartFormData(this.request);
-    processor.processMaps();
-    processor.processTemplates();
     this.request.data = processor.processData(this.request.data);
   }
 
