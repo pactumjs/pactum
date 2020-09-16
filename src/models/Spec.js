@@ -106,28 +106,24 @@ class Spec {
     return this;
   }
 
-  withQueryParam(key, value) {
-    if (!helper.isValidString(key)) {
-      throw new PactumRequestError(`Invalid key in query parameter for request - ${key}`);
-    }
-    if (value === undefined || value === null) {
-      throw new PactumRequestError(`Invalid value in query parameter for request - ${value}`);
-    }
-    if (this._request.qs === undefined) {
-      this._request.qs = {};
-    }
-    this._request.qs[key] = value;
-    return this;
-  }
-
-  withQueryParams(params) {
-    if (!helper.isValidObject(params) || Object.keys(params).length === 0) {
-      throw new PactumRequestError(`Invalid query parameters object - ${params ? JSON.stringify(params) : params}`);
-    }
+  withQueryParams(key, value) {
     if (!this._request.qs) {
       this._request.qs = {};
     }
-    Object.assign(this._request.qs, params);
+    if (typeof key === 'string') {
+      if (!helper.isValidString(key)) {
+        throw new PactumRequestError('`key` is required');
+      }
+      if (value === undefined || value === null) {
+        throw new PactumRequestError('`value` is required');
+      }
+      this._request.qs[key] = value;
+    } else {
+      if (!helper.isValidObject(key) || Object.keys(key).length === 0) {
+        throw new PactumRequestError('`params` are required');
+      }
+      Object.assign(this._request.qs, key);
+    }
     return this;
   }
 
@@ -161,22 +157,18 @@ class Spec {
     return this;
   }
 
-  withHeader(key, value) {
+  withHeaders(key, value) {
     if (!this._request.headers) {
       this._request.headers = {};
     }
-    this._request.headers[key] = value;
-    return this;
-  }
-
-  withHeaders(headers) {
-    if (!helper.isValidObject(headers)) {
-      throw new PactumRequestError(`Invalid headers in request - ${headers}`);
+    if (typeof key === 'string') {
+      this._request.headers[key] = value;
+    } else {
+      if (!helper.isValidObject(key)) {
+        throw new PactumRequestError('`headers` are required');
+      }
+      Object.assign(this._request.headers, key);
     }
-    if (!this._request.headers) {
-      this._request.headers = {};
-    }
-    Object.assign(this._request.headers, headers);
     return this;
   }
 

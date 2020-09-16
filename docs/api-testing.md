@@ -91,7 +91,7 @@ We can build the request & expectations by chaining the descriptive methods offe
 it('should have a user with name bolt', () => {
   return pactum.spec()
     .get('http://localhost:9393/api/users')
-    .withQueryParam('name', 'bolt')
+    .withQueryParams('name', 'bolt')
     .expectStatus(200)
     .expectJson({
       "id": 1,
@@ -136,7 +136,7 @@ describe('should have a user with name bolt', () => {
   });
 
   it('with name bolt', () => {
-    spec.withQueryParam('name', 'bolt');
+    spec.withQueryParams('name', 'bolt');
   });
 
   it('should return a response', async () => {
@@ -179,10 +179,8 @@ To pass additional parameters to the request, we can chain or use the following 
 
 | Method                    | Description                               |
 | ------------------------- | ----------------------------------------- |
-| `withQueryParam`          | single query parameter                    |
-| `withQueryParams`         | multiple query parameters                 |
-| `withHeader`              | single request headers                    |
-| `withHeaders`             | multiple request headers                  |
+| `withQueryParams`         | request query parameters                  |
+| `withHeaders`             | request headers                           |
 | `withBody`                | request body                              |
 | `withJson`                | request json object                       |
 | `withGraphQLQuery`        | graphQL query                             |
@@ -195,13 +193,13 @@ To pass additional parameters to the request, we can chain or use the following 
 
 #### Query Params
 
-Use `withQueryParam` or `withQueryParams` methods to pass query parameters to the request. We are allowed to call the `query-param` methods multiple times to the same request.
+Use `withQueryParams` to pass query parameters to the request.
 
 ```javascript
 it('get random male user from India', async () => {
   await pactum.spec()
     .get('https://randomuser.me/api')
-    .withQueryParam('gender', 'male')
+    .withQueryParams('gender', 'male')
     .withQueryParams({
       'country': 'IND'
     })
@@ -211,14 +209,13 @@ it('get random male user from India', async () => {
 
 #### Headers
 
-Use `withHeader` or `withHeaders` methods to pass headers to the request. We are allowed to call the `header` methods multiple times to the same request.
+Use `withHeaders` to pass headers to the request.
 
 ```javascript
 it('get all comments', async () => {
   await pactum.spec()
     .get('https://jsonplaceholder.typicode.com/comments')
-    .withHeader('Authorization', 'Basic abc')
-    .withHeader('Accept', '*')
+    .withHeaders('Authorization', 'Basic abc')
     .withHeaders({
       'Content-Type': 'application/json'
     })
@@ -1055,7 +1052,7 @@ before(() => {
 it('order an item', async () => {
   await pactum.spec()
     .post('/api/order')
-    .withHeader('Authorization', '@DATA:FUN::GetAuthToken@')
+    .withHeaders('Authorization', '@DATA:FUN::GetAuthToken@')
     .withJson({
       'Item': 'Sword',
       'CreatedAt': '@DATA:FUN::GetTimeStamp@'

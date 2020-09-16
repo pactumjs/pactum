@@ -14,7 +14,7 @@ This library can be integrated with test runners like **cucumber**, **mocha**, *
 
 This readme offers an introduction to the library. For more information visit the following links.
 
-* [API Testing](https://github.com/ASaiAnudeep/pactum/wiki)
+* [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 * [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
   * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
@@ -57,7 +57,7 @@ it('should be a teapot', async () => {
 it('should save a new user', async () => {
   await pactum.spec()
     .post('https://jsonplaceholder.typicode.com/users')
-    .withHeader('Authorization', 'Basic xxxx')
+    .withHeaders('Authorization', 'Basic xxxx')
     .withJson({
       name: 'bolt',
       email: 'bolt@swift.run'

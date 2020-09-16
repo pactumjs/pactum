@@ -62,7 +62,7 @@ describe('Request', () => {
         }
       })
       .get('http://localhost:9393/users')
-      .withHeader('x', '')
+      .withHeaders('x', '')
       .expectStatus(200);
   });
 
@@ -83,7 +83,7 @@ describe('Request', () => {
         }
       })
       .get('http://localhost:9393/users')
-      .withHeader('x', 'b')
+      .withHeaders('x', 'b')
       .expectStatus(200);
   });
 

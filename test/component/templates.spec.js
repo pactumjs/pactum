@@ -175,8 +175,8 @@ describe('Templates & Maps', () => {
         }
       })
       .get('http://localhost:9393/api/users')
-      .withQueryParam('age', '@DATA:FUN::GetZero@')
-      .withHeader('Authorization', '@DATA:FUN::GetAuthToken@')
+      .withQueryParams('age', '@DATA:FUN::GetZero@')
+      .withHeaders('Authorization', '@DATA:FUN::GetAuthToken@')
       .expectStatus(200);
   });
 

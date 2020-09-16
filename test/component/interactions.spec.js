@@ -35,7 +35,7 @@ describe('Basic Interactions', () => {
         put: '/api/projects/1'
       })
       .put('http://localhost:9393/api/projects/1')
-      .withQueryParam('skip', true)
+      .withQueryParams('skip', true)
       .expectStatus(200);
   });
 
@@ -200,7 +200,7 @@ describe('Mock', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('name', 'fake')
+      .withQueryParams('name', 'fake')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -233,8 +233,8 @@ describe('Mock', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('id', 1)
-      .withQueryParam('name', 'fake')
+      .withQueryParams('id', 1)
+      .withQueryParams('name', 'fake')
       .withQueryParams({ 'age': 27 })
       .expectStatus(200)
       .expectJsonLike({
@@ -370,11 +370,11 @@ describe('Mock', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withHeader('x-served-by', 'polka')
+      .withHeaders('x-served-by', 'polka')
       .withHeaders({
         'content-type': 'application/json'
       })
-      .withHeader('x-powered-by', 'phin')
+      .withHeaders('x-powered-by', 'phin')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,

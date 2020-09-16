@@ -46,7 +46,7 @@ describe('Dynamic', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('id', '1')
+      .withQueryParams('id', '1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -84,7 +84,7 @@ describe('Dynamic', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('id', '1')
+      .withQueryParams('id', '1')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -122,7 +122,7 @@ describe('Dynamic', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('id', '2')
+      .withQueryParams('id', '2')
       .expectStatus(200)
       .expectJsonLike({
         id: 2,
