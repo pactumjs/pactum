@@ -6,6 +6,9 @@ const retryHandlers = {};
 const returnHandlers = {};
 const stateHandlers =  {};
 const dataHandlers = {};
+const interactionHandlers = {};
+const mockInteractionHandlers = {};
+const pactInteractionHandlers = {};
 
 const handler = {
 
@@ -58,6 +61,36 @@ const handler = {
     if (dataHandlers[name]) return dataHandlers[name];
     throw new PactumHandlerError(`Custom Data Handler Not Found - ${name}`);
   },
+  
+  addInteractionHandler(name, func) {
+    isValidHandler(name, func);
+    interactionHandlers[name] = func;
+  },
+
+  getInteractionHandler(name) {
+    if (interactionHandlers[name]) return interactionHandlers[name];
+    throw new PactumHandlerError(`Custom Interaction Handler Not Found - ${name}`);
+  },
+
+  addMockInteractionHandler(name, func) {
+    isValidHandler(name, func);
+    mockInteractionHandlers[name] = func;
+  },
+
+  getMockInteractionHandler(name) {
+    if (mockInteractionHandlers[name]) return mockInteractionHandlers[name];
+    throw new PactumHandlerError(`Custom Mock Interaction Handler Not Found - ${name}`);
+  },
+
+  addPactInteractionHandler(name, func) {
+    isValidHandler(name, func);
+    pactInteractionHandlers[name] = func;
+  },
+
+  getPactInteractionHandler(name) {
+    if (pactInteractionHandlers[name]) return pactInteractionHandlers[name];
+    throw new PactumHandlerError(`Custom Pact Interaction Handler Not Found - ${name}`);
+  }
 
 }
 

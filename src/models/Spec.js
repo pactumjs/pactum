@@ -8,6 +8,7 @@ const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
 const mock = require('../exports/mock');
 const responseExpect = require('../exports/expect');
+const handler = require('../exports/handler');
 
 class Spec {
 
@@ -29,7 +30,10 @@ class Spec {
     return this;
   }
 
-  useInteraction(basicInteraction) {
+  useInteraction(basicInteraction, data) {
+    if (typeof basicInteraction === 'string') {
+      basicInteraction = handler.getInteractionHandler(basicInteraction)({ data });
+    }
     const rawInteraction = {
       withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
       willRespondWith: {
@@ -40,14 +44,20 @@ class Spec {
     return this.useMockInteraction(rawInteraction);
   }
 
-  useMockInteraction(rawInteraction) {
+  useMockInteraction(rawInteraction, data) {
+    if (typeof rawInteraction === 'string') {
+      rawInteraction = handler.getMockInteractionHandler(rawInteraction)({ data });
+    }
     const interaction = new Interaction(rawInteraction, true);
     log.debug('Mock Interaction added to Mock Server -', interaction.id);
     this.mockInteractions.set(interaction.id, interaction);
     return this;
   }
 
-  usePactInteraction(rawInteraction) {
+  usePactInteraction(rawInteraction, data) {
+    if (typeof rawInteraction === 'string') {
+      rawInteraction = handler.getPactInteractionHandler(rawInteraction)({ data });
+    }
     const interaction = new Interaction(rawInteraction, false);
     log.debug('Pact Interaction added to Mock Server -', interaction.id);
     this.pactInteractions.set(interaction.id, interaction);

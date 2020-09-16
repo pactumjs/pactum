@@ -41,6 +41,7 @@ declare class Spec {
    *  .expectStatus(200);
    */
   useInteraction(interaction: BasicInteraction): Spec;
+  useInteraction(handler: string, data?: any): Spec;
   
   /**
    * adds a mock interaction to the server & auto removed after execution
@@ -63,6 +64,7 @@ declare class Spec {
    *  .expectStatus(200);
    */
   useMockInteraction(interaction: MockInteraction): Spec;
+  useMockInteraction(handler: string, data?: any): Spec;
   
   /** 
    * adds a pact interaction to the server & auto removed after execution
@@ -88,7 +90,8 @@ declare class Spec {
    *  .expectStatus(200);
    */
   usePactInteraction(interaction: PactInteraction): Spec;
-  
+  usePactInteraction(handler: string, data?: any): Spec;
+
   /**
    * The GET method requests a representation of the specified resource.
    * @example

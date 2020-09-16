@@ -1047,11 +1047,15 @@ before(() => {
   handler.addDataHandler('GetTimeStamp', () => {
     return Date.now();
   });
+  handler.addDataHandler('GetAuthToken', () => {
+    return 'Basic some-token';
+  });
 });
 
 it('order an item', async () => {
   await pactum.spec()
     .post('/api/order')
+    .withHeader('Authorization', '@DATA:FUN::GetAuthToken@')
     .withJson({
       'Item': 'Sword',
       'CreatedAt': '@DATA:FUN::GetTimeStamp@'
@@ -1059,7 +1063,7 @@ it('order an item', async () => {
 });
 ```
 
-## Next
+### Next
 
 ----------------------------------------------------------------------------------------------------------------
 
