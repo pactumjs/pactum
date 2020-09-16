@@ -279,6 +279,73 @@ describe('Mock', () => {
       .toss();
   });
 
+  it('GET - one interaction - ignore query', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1',
+          ignoreQuery: true
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .withQueryParams({
+        'id': 1,
+        'name': 'fake'
+      })
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss();
+  });
+
+  it('GET - one interaction - ignore query - partial query match', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1',
+          query: {
+            id: 1
+          },
+          ignoreQuery: true
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: {
+            id: 1,
+            name: 'fake'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .withQueryParams({
+        'id': 1,
+        'name': 'fake'
+      })
+      .expectStatus(200)
+      .expectJsonLike({
+        id: 1,
+        name: 'fake'
+      })
+      .toss();
+  });
+
   it('GET - one interaction - with headers', async () => {
     await pactum.spec()
       .useMockInteraction({
