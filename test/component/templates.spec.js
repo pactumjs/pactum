@@ -180,6 +180,54 @@ describe('Templates & Maps', () => {
       .expectStatus(200);
   });
 
+  it('basic mock using template in return', async () => {
+    await pactum.spec()
+      .useInteraction({
+        get: '/api/users/1',
+        return: {
+          '@DATA:TEMPLATE@': 'User.NewUser'
+        }
+      })
+      .get('http://localhost:9393/api/users/1')
+      .expectJson({
+        FirstName: 'Jon',
+        LastName: 'Snow',
+        Country: 'North',
+        Addresses: []
+      });
+  });
+
+  it('mock using data reference in query & headers', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users',
+          query: {
+            name: '@DATA:MAP::User.FirstName@'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Authorization': '@DATA:FUN::GetAuthToken@'
+          },
+          body: {
+            '@DATA:TEMPLATE@': 'User.NewUser'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .withQueryParams({ name: 'Jon' })
+      .expectHeader('authorization', 'Basic xyz')
+      .expectJson({
+        FirstName: 'Jon',
+        LastName: 'Snow',
+        Country: 'North',
+        Addresses: []
+      });
+  });
+
   after(() => {
     pactum.stash.clearDataTemplates();
     pactum.stash.clearDataMaps();
