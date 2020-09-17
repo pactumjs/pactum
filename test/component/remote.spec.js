@@ -677,3 +677,14 @@ describe('Remote - Publish Pacts', () => {
   });
 
 });
+
+describe('Remote - Health', () => {
+
+  it('publish interactions - not exercised', async () => {
+    await pactum.spec()
+      .get('http://localhost:9393/api/pactum/health')
+      .expectStatus(200)
+      .expectBody('OK');
+  });
+
+});

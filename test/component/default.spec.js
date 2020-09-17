@@ -3,7 +3,7 @@ const pactum = require('../../src/index');
 const mock = require('../../src/exports/mock');
 const config = require('../../src/config');
 
-describe('Pact - Default Mock Interaction', () => {
+describe('Mock - Default Mock Interaction', () => {
 
   before(() => {
     mock.addMockInteraction({
@@ -142,7 +142,7 @@ describe('Pact - Default Mock Interaction', () => {
 
 });
 
-describe('Pact - Default Pact Interaction', () => {
+describe('Mock - Default Pact Interaction', () => {
 
   before(() => {
     mock.addPactInteraction({
@@ -222,10 +222,10 @@ describe('Pact - Default Pact Interaction', () => {
 
 });
 
-describe('Pact - Default Mock Interactions', () => {
+describe('Mock - Default Mock Interactions', () => {
 
   before(() => {
-    mock.addMockInteractions([
+    mock.addMockInteraction([
       {
         withRequest: {
           method: 'GET',
@@ -243,7 +243,7 @@ describe('Pact - Default Mock Interactions', () => {
         }
       }
     ]);
-    mock.addMockInteractions([{
+    mock.addMockInteraction([{
       withRequest: {
         method: 'GET',
         path: '/api/projects/1',
@@ -263,12 +263,12 @@ describe('Pact - Default Mock Interactions', () => {
         }
       }
     }]);
-    mock.addInteractions([{
+    mock.addInteraction([{
       post: '/api/projects',
       return: {
         message: 'ok'
       }
-    }])
+    }]);
   });
 
   it('GET - one interaction', async () => {
@@ -315,10 +315,10 @@ describe('Pact - Default Mock Interactions', () => {
 
 });
 
-describe('Pact - Default Pact Interactions', () => {
+describe('Mock - Default Pact Interactions', () => {
 
   before(() => {
-    mock.addPactInteractions([
+    mock.addPactInteraction([
       {
         provider: 'p',
         state: 'when there is a project with id 1',
@@ -339,7 +339,7 @@ describe('Pact - Default Pact Interactions', () => {
         }
       }
     ]);
-    mock.addPactInteractions([
+    mock.addPactInteraction([
       {
         provider: 'p',
         state: 'when there is a project with id 1',
@@ -396,7 +396,7 @@ describe('Pact - Default Pact Interactions', () => {
 
 });
 
-describe('Pact - Defaults', () => {
+describe('Mock - Defaults', () => {
 
   it('request - setBaseUrl', async () => {
     pactum.request.setBaseUrl('http://localhost:9393');

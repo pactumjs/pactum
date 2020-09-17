@@ -1,7 +1,8 @@
 # Mock Server
 
-Pactum can also act as a standalone mock server.
-Mock interactions & pact interactions can be used to train the mock server to react in a particular way when a particular request is received.
+Mock Server allows you to mock any server or service via HTTP or HTTPS, such as a REST endpoint. Simply it is a simulator for HTTP-based APIs.
+
+At one end **pactum** is a REST API testing tool. On the other end it can also act as a standalone mock server. It packs with a powerful request & response matching. With pactum, you can spin up a mock server in a matter of seconds.
 
 ## Table of contents
 
@@ -16,12 +17,22 @@ Mock interactions & pact interactions can be used to train the mock server to re
 
 #### Setup
 
-The below code will run the pactum server on port 3000
+The below code will run the pactum mock server on port 3000
 
 ```javascript
-const pactum = require('pactum');
-pactum.mock.setDefaultPort(3000);
-pactum.mock.start();
+// server.js
+const mock = require('pactum').mock;
+mock.start(3000);
+```
+
+```shell
+# Running Mock Server
+node server.js
+```
+
+```shell
+# Returns OK
+curl http://localhost:3000/api/pactum/health
 ```
 
 ## API

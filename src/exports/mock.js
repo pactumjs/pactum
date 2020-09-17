@@ -29,74 +29,67 @@ const mock = {
     config.mock.port = port;
   },
 
-  addInteraction(basicInteraction) {
-    const rawInteraction = {
-      withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
-      willRespondWith: {
-        status: basicInteraction.status || 200,
-        body: basicInteraction.return || ''
+  addInteraction(interaction) {
+    if (Array.isArray(interaction)) {
+      const rawInteractions = [];
+      for (let i = 0; i < interaction.length; i++) {
+        const basicInteraction = interaction[i];
+        const rawInteraction = {
+          withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
+          willRespondWith: {
+            status: basicInteraction.status || 200,
+            body: basicInteraction.return || ''
+          }
+        };
+        rawInteractions.push(rawInteraction);
       }
-    };
-    return this.addMockInteraction(rawInteraction);
-  },
-
-  addInteractions(basicInteractions) {
-    const rawInteractions = [];
-    for (let i = 0; i < basicInteractions.length; i++) {
-      const basicInteraction = basicInteractions[i];
+      return this.addMockInteraction(rawInteractions);
+    } else {
       const rawInteraction = {
-        withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
+        withRequest: helper.getRequestFromBasicInteraction(interaction),
         willRespondWith: {
-          status: basicInteraction.status || 200,
-          body: basicInteraction.return || ''
+          status: interaction.status || 200,
+          body: interaction.return || ''
         }
       };
-      rawInteractions.push(rawInteraction);
+      return this.addMockInteraction(rawInteraction);
     }
-    return this.addMockInteractions(rawInteractions);
   },
 
   addMockInteraction(interaction) {
-    const interactionObj = new Interaction(interaction, true);
-    this._server.addMockInteraction(interactionObj.id, interactionObj);
-    log.debug('Added default mock interaction with id', interactionObj.id);
-    return interactionObj.id;
-  },
-
-  addMockInteractions(interactions) {
-    if (!Array.isArray(interactions)) {
-      throw new PactumInteractionError(`Invalid mock interactions array passed - ${interactions}`);
-    }
-    const ids = [];
-    for (let i = 0; i < interactions.length; i++) {
-      const interactionObj = new Interaction(interactions[i], true);
+    if (Array.isArray(interaction)) {
+      const ids = [];
+      for (let i = 0; i < interaction.length; i++) {
+        const interactionObj = new Interaction(interaction[i], true);
+        this._server.addMockInteraction(interactionObj.id, interactionObj);
+        ids.push(interactionObj.id);
+      }
+      log.debug('Added default mock interactions with ids', ids);
+      return ids;
+    } else {
+      const interactionObj = new Interaction(interaction, true);
       this._server.addMockInteraction(interactionObj.id, interactionObj);
-      ids.push(interactionObj.id);
-      // this._interactionIds.add(interactionObj.id);
+      log.debug('Added default mock interaction with id', interactionObj.id);
+      return interactionObj.id;
     }
-    log.debug('Added default mock interactions with ids', ids);
-    return ids;
   },
 
   addPactInteraction(interaction) {
-    const interactionObj = new Interaction(interaction);
-    this._server.addPactInteraction(interactionObj.id, interactionObj);
-    log.debug('Added default pact interactions with id', interactionObj.id);
-    return interactionObj.id;
-  },
-
-  addPactInteractions(interactions) {
-    if (!Array.isArray(interactions)) {
-      throw new PactumInteractionError(`Invalid pact interactions array passed - ${interactions}`);
-    }
-    const ids = [];
-    for (let i = 0; i < interactions.length; i++) {
-      const interactionObj = new Interaction(interactions[i], false);
+    if (Array.isArray(interaction)) {
+      const ids = [];
+      for (let i = 0; i < interaction.length; i++) {
+        const interactionObj = new Interaction(interaction[i], false);
+        this._server.addPactInteraction(interactionObj.id, interactionObj);
+        ids.push(interactionObj.id);
+      }
+      log.debug('Added default pact interactions with ids', ids);
+      return ids;
+    } else {
+      const interactionObj = new Interaction(interaction);
       this._server.addPactInteraction(interactionObj.id, interactionObj);
-      ids.push(interactionObj.id);
+      log.debug('Added default pact interactions with id', interactionObj.id);
+      return interactionObj.id;
     }
-    log.debug('Added default pact interactions with ids', ids);
-    return ids;
   },
 
   removeInteraction(interactionId) {
