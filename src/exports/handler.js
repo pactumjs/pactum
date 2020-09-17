@@ -1,14 +1,19 @@
 const { PactumHandlerError } = require('../helpers/errors');
+const config = require('../config');
 
 const expectHandlers = {};
 const retryHandlers = {};
 const returnHandlers = {};
 const stateHandlers =  {};
+const dataHandlers = {};
+const interactionHandlers = {};
+const mockInteractionHandlers = {};
+const pactInteractionHandlers = {};
 
 const handler = {
 
   addExpectHandler(name, func) {
-    isValidHandler(name, func, 'expect');
+    isValidHandler(name, func);
     expectHandlers[name] = func;
   },
 
@@ -18,7 +23,7 @@ const handler = {
   },
 
   addRetryHandler(name, func) {
-    isValidHandler(name, func, 'retry');
+    isValidHandler(name, func);
     retryHandlers[name] = func;
   },
 
@@ -28,7 +33,7 @@ const handler = {
   },
 
   addReturnHandler(name, func) {
-    isValidHandler(name, func, 'return');
+    isValidHandler(name, func);
     returnHandlers[name] = func;
   },
 
@@ -37,23 +42,64 @@ const handler = {
   },
 
   addStateHandler(name, func) {
-    isValidHandler(name, func, 'state');
+    isValidHandler(name, func);
     stateHandlers[name] = func;
   },
 
   getStateHandler(name) {
     if (stateHandlers[name]) return stateHandlers[name];
     throw new PactumHandlerError(`Custom State Handler Not Found - ${name}`);
+  },
+
+  addDataHandler(name, func) {
+    isValidHandler(name, func);
+    dataHandlers[name] = func;
+    config.data.ref.fun.enabled = true;
+  },
+
+  getDataHandler(name) {
+    if (dataHandlers[name]) return dataHandlers[name];
+    throw new PactumHandlerError(`Custom Data Handler Not Found - ${name}`);
+  },
+  
+  addInteractionHandler(name, func) {
+    isValidHandler(name, func);
+    interactionHandlers[name] = func;
+  },
+
+  getInteractionHandler(name) {
+    if (interactionHandlers[name]) return interactionHandlers[name];
+    throw new PactumHandlerError(`Custom Interaction Handler Not Found - ${name}`);
+  },
+
+  addMockInteractionHandler(name, func) {
+    isValidHandler(name, func);
+    mockInteractionHandlers[name] = func;
+  },
+
+  getMockInteractionHandler(name) {
+    if (mockInteractionHandlers[name]) return mockInteractionHandlers[name];
+    throw new PactumHandlerError(`Custom Mock Interaction Handler Not Found - ${name}`);
+  },
+
+  addPactInteractionHandler(name, func) {
+    isValidHandler(name, func);
+    pactInteractionHandlers[name] = func;
+  },
+
+  getPactInteractionHandler(name) {
+    if (pactInteractionHandlers[name]) return pactInteractionHandlers[name];
+    throw new PactumHandlerError(`Custom Pact Interaction Handler Not Found - ${name}`);
   }
 
 }
 
-function isValidHandler(name, func, type) {
+function isValidHandler(name, func) {
   if (typeof name !== 'string' || name === '') {
-    throw new PactumHandlerError(`Invalid custom ${type} handler name`);
+    throw new PactumHandlerError('`name` is required');
   }
   if (typeof func !== 'function') {
-    throw new PactumHandlerError(`Custom ${type} handler should be a function`);
+    throw new PactumHandlerError('`func` is required');
   }
 }
 

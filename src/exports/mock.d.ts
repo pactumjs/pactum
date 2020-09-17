@@ -57,6 +57,7 @@ export interface MockInteractionResponse extends MockInteractionResponseWithDela
   onCall?: OnCall
 }
 
+// TODO - accept function - (req, res)
 export interface MockInteraction {
   id?: string;
   provider?: string;
@@ -103,12 +104,7 @@ export function stop(): Promise<void>;
  * });
  */
 export function addInteraction(interaction: BasicInteraction): string;
-
-/**
- * adds basic mock interactions
- * @returns interaction ids
- */
-export function addInteractions(interactions: BasicInteraction[]): string[];
+export function addInteraction(interactions: BasicInteraction[]): string[];
 
 /**
  * adds a mock interaction
@@ -126,14 +122,7 @@ export function addInteractions(interactions: BasicInteraction[]): string[];
  * });
  */
 export function addMockInteraction(interaction: MockInteraction): string;
-
-// TODO - accept function - (req, res)
-
-/**
- * adds mock interactions
- * @returns interaction ids
- */
-export function addMockInteractions(interaction: MockInteraction[]): string[];
+export function addMockInteraction(interaction: MockInteraction[]): string[];
 
 /**
  * adds pact interaction used for contract testing
@@ -154,12 +143,7 @@ export function addMockInteractions(interaction: MockInteraction[]): string[];
  * });
  */
 export function addPactInteraction(interaction: PactInteraction): string;
-
-/**
- * adds pact interactions used for contract testing
- * @returns interaction ids
- */
-export function addPactInteractions(interactions: PactInteraction[]): string[];
+export function addPactInteraction(interactions: PactInteraction[]): string[];
 
 /**
  * removes specified interaction from the mock server

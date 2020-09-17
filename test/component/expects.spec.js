@@ -19,7 +19,7 @@ describe('Expects', () => {
 
   it('custom expect handler', async () => {
 
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -38,7 +38,7 @@ describe('Expects', () => {
   });
 
   it('ad hoc expect handler', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -61,7 +61,7 @@ describe('Expects', () => {
   it('unknown custom expect handler', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expect('isAddress');
     } catch (error) {
@@ -73,7 +73,7 @@ describe('Expects', () => {
   it('failed custom expect handler with data', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .useMockInteraction({
           withRequest: {
             method: 'GET',
@@ -97,7 +97,7 @@ describe('Expects', () => {
   it('failed ad hoc expect handler', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .useMockInteraction({
           withRequest: {
             method: 'GET',
@@ -122,7 +122,7 @@ describe('Expects', () => {
   it('failed status code', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expectStatus(200);
     } catch (error) {
@@ -134,7 +134,7 @@ describe('Expects', () => {
   it('header key not found', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expectHeader('x-header', 'value');
     } catch (error) {
@@ -146,7 +146,7 @@ describe('Expects', () => {
   it('header value not found', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expectHeader('connection', 'value');
     } catch (error) {
@@ -158,7 +158,7 @@ describe('Expects', () => {
   it('header value not found - RegEx', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expectHeader('connection', /value/);
     } catch (error) {
@@ -170,7 +170,7 @@ describe('Expects', () => {
   it('header contains key not found', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expectHeaderContains('x-header', 'value');
     } catch (error) {
@@ -182,7 +182,7 @@ describe('Expects', () => {
   it('header contains value not found', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expectHeaderContains('connection', 'value');
     } catch (error) {
@@ -194,7 +194,7 @@ describe('Expects', () => {
   it('header contains value not found - RegEx', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expectHeaderContains('connection', /value/);
     } catch (error) {
@@ -206,7 +206,7 @@ describe('Expects', () => {
   it('failed body', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expectBody('Hello World')
     } catch (error) {
@@ -218,7 +218,7 @@ describe('Expects', () => {
   it('failed body contains', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expectBodyContains('Hello World')
     } catch (error) {
@@ -230,7 +230,7 @@ describe('Expects', () => {
   it('failed body contains - RegEx', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9393/api/users/1')
         .expectBodyContains(/Hello World/)
     } catch (error) {
@@ -242,7 +242,7 @@ describe('Expects', () => {
   it('failed json schema', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .useMockInteraction({
           withRequest: {
             method: 'GET',
@@ -268,7 +268,7 @@ describe('Expects', () => {
   it('network error', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .get('http://localhost:9394/api/users/1')
         .expectJsonSchema({
           "required": ["userId", "id"]
@@ -282,7 +282,7 @@ describe('Expects', () => {
   it('interaction not exercised error', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .useMockInteraction({
           withRequest: {
             method: 'GET',
@@ -301,7 +301,7 @@ describe('Expects', () => {
   });
 
   it('json query - on root object', () => {
-    return pactum
+    return pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -325,7 +325,7 @@ describe('Expects', () => {
   });
 
   it('json query - on root array', () => {
-    return pactum
+    return pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -350,7 +350,7 @@ describe('Expects', () => {
   it('json query - on root object - fails', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
         .useMockInteraction({
           withRequest: {
             method: 'GET',
@@ -378,7 +378,7 @@ describe('Expects', () => {
   });
 
   it('json query like - on root object', () => {
-    return pactum
+    return pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -403,7 +403,7 @@ describe('Expects', () => {
   it('json query like - fails', async () => {
     let err;
     try {
-      await pactum
+      await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',

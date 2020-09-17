@@ -1,10 +1,18 @@
 const pactum = require('../../src/index');
+const handler = pactum.handler;
 const expect = pactum.expect;
 
 describe('Chai Like Assertions', () => {
 
   let spec = pactum.spec();
   let response;
+
+  before(() => {
+    handler.addExpectHandler('a user', (ctx) => {
+      const res = ctx.res;
+      expect(res).should.have.status(200);
+    });
+  });
 
   it('Given a user with name snow', () => {
     spec.useInteraction({
@@ -34,7 +42,7 @@ describe('Chai Like Assertions', () => {
 
   it('should return a valid user', async () => {
     expect(response).to.have.json({ name: 'snow'});
-    expect(response).to.have.jsonLike({ name: 'snow'});
+    expect(response).should.have.jsonLike({ name: 'snow'});
     expect(response).to.have.jsonQuery('name', 'snow');
     expect(response).to.have.jsonQueryLike('name', 'snow');
     expect(response).to.have.body(`{"name":"snow"}`);
@@ -47,6 +55,10 @@ describe('Chai Like Assertions', () => {
 
   it('should return a response within 500 ms', async () => {
     expect(response).to.have.responseTimeLessThan(500);
+  });
+
+  it('should run a custom expect handler', async () => {
+    expect(response).to.have._('a user');
   });
 
 });

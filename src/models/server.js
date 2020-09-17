@@ -219,6 +219,11 @@ function registerPactumRemoteRoutes(server) {
   const app = server.app;
   app.all('/api/pactum/*', (req, res) => {
     switch (req.path) {
+      case '/api/pactum/health':
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.write("OK");
+        res.end();
+        break;
       case '/api/pactum/mockInteraction':
         handleRemoteInteractions(req, res, server, 'MOCK');
         break;

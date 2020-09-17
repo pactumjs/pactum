@@ -99,11 +99,11 @@ describe('Consumer Expectations - Pact Broker', () => {
 describe('Consumer Expectations - Pact', () => {
 
   it('setPactFilesDirectory - undefined', () => {
-    expect(() => consumer.setPactFilesDirectory()).throws('Invalid directory provided for saving pact files - undefined');
+    expect(() => consumer.setPactFilesDirectory()).throws('`dir` is required');
   });
 
   it('setConsumerName - undefined', () => {
-    expect(() => consumer.setConsumerName()).throws('Invalid consumer name - undefined');
+    expect(() => consumer.setConsumerName()).throws('`name` is required');
   });
 
   after(() => {

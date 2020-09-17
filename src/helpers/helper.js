@@ -201,24 +201,20 @@ const helper = {
       ignoreQuery: true,
       ignoreBody: true
     };
-    if (typeof interaction === 'string') {
-      request.path = interaction;
-    } else {
-      if (interaction.get) {
-        request.path = interaction.get;
-      } else if (interaction.post) {
-        request.method = 'POST';
-        request.path = interaction.post;
-      } else if (interaction.put) {
-        request.method = 'PUT';
-        request.path = interaction.put;
-      } else if (interaction.patch) {
-        request.method = 'PATCH';
-        request.path = interaction.patch;
-      } else if (interaction.delete) {
-        request.method = 'DELETE';
-        request.path = interaction.delete;
-      }
+    if (interaction.get) {
+      request.path = interaction.get;
+    } else if (interaction.post) {
+      request.method = 'POST';
+      request.path = interaction.post;
+    } else if (interaction.put) {
+      request.method = 'PUT';
+      request.path = interaction.put;
+    } else if (interaction.patch) {
+      request.method = 'PATCH';
+      request.path = interaction.patch;
+    } else if (interaction.delete) {
+      request.method = 'DELETE';
+      request.path = interaction.delete;
     }
     return request;
   }

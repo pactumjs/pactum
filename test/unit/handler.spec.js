@@ -10,7 +10,7 @@ describe('Expect Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom expect handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('empty handler name', () => {
@@ -20,7 +20,7 @@ describe('Expect Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom expect handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('invalid handler function', () => {
@@ -30,7 +30,7 @@ describe('Expect Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom expect handler should be a function');
+    expect(err.message).equals('`func` is required');
   });
 
 });
@@ -44,7 +44,7 @@ describe('Retry Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom retry handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('empty handler name', () => {
@@ -54,7 +54,7 @@ describe('Retry Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom retry handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('invalid handler function', () => {
@@ -64,7 +64,7 @@ describe('Retry Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom retry handler should be a function');
+    expect(err.message).equals('`func` is required');
   });
 
 });
@@ -78,7 +78,7 @@ describe('Return Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom return handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('empty handler name', () => {
@@ -88,7 +88,7 @@ describe('Return Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom return handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('invalid handler function', () => {
@@ -98,7 +98,7 @@ describe('Return Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom return handler should be a function');
+    expect(err.message).equals('`func` is required');
   });
 
 });
@@ -112,7 +112,7 @@ describe('State Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom state handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('empty handler name', () => {
@@ -122,7 +122,7 @@ describe('State Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Invalid custom state handler name');
+    expect(err.message).equals('`name` is required');
   });
 
   it('invalid handler function', () => {
@@ -132,7 +132,183 @@ describe('State Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom state handler should be a function');
+    expect(err.message).equals('`func` is required');
+  });
+
+});
+
+describe('Data Handler', () => {
+
+  it('invalid handler name', () => {
+    let err;
+    try {
+      handler.addDataHandler();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('empty handler name', () => {
+    let err;
+    try {
+      handler.addDataHandler('');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('invalid handler function', () => {
+    let err;
+    try {
+      handler.addDataHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`func` is required');
+  });
+
+  it('get invalid handler function', () => {
+    let err;
+    try {
+      handler.getDataHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Custom Data Handler Not Found - hello');
+  });
+
+});
+
+describe('Basic Interaction Handler', () => {
+
+  it('invalid handler name', () => {
+    let err;
+    try {
+      handler.addInteractionHandler();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('empty handler name', () => {
+    let err;
+    try {
+      handler.addInteractionHandler('');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('invalid handler function', () => {
+    let err;
+    try {
+      handler.addInteractionHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`func` is required');
+  });
+
+  it('get invalid handler function', () => {
+    let err;
+    try {
+      handler.getInteractionHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Custom Interaction Handler Not Found - hello');
+  });
+
+});
+
+describe('Mock Interaction Handler', () => {
+
+  it('invalid handler name', () => {
+    let err;
+    try {
+      handler.addMockInteractionHandler();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('empty handler name', () => {
+    let err;
+    try {
+      handler.addMockInteractionHandler('');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('invalid handler function', () => {
+    let err;
+    try {
+      handler.addMockInteractionHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`func` is required');
+  });
+
+  it('get invalid handler function', () => {
+    let err;
+    try {
+      handler.getMockInteractionHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Custom Mock Interaction Handler Not Found - hello');
+  });
+
+});
+
+describe('Pact Interaction Handler', () => {
+
+  it('invalid handler name', () => {
+    let err;
+    try {
+      handler.addPactInteractionHandler();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('empty handler name', () => {
+    let err;
+    try {
+      handler.addPactInteractionHandler('');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('invalid handler function', () => {
+    let err;
+    try {
+      handler.addPactInteractionHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`func` is required');
+  });
+
+  it('get invalid handler function', () => {
+    let err;
+    try {
+      handler.getPactInteractionHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('Custom Pact Interaction Handler Not Found - hello');
   });
 
 });

@@ -41,6 +41,7 @@ declare class Spec {
    *  .expectStatus(200);
    */
   useInteraction(interaction: BasicInteraction): Spec;
+  useInteraction(handler: string, data?: any): Spec;
   
   /**
    * adds a mock interaction to the server & auto removed after execution
@@ -63,6 +64,7 @@ declare class Spec {
    *  .expectStatus(200);
    */
   useMockInteraction(interaction: MockInteraction): Spec;
+  useMockInteraction(handler: string, data?: any): Spec;
   
   /** 
    * adds a pact interaction to the server & auto removed after execution
@@ -88,7 +90,8 @@ declare class Spec {
    *  .expectStatus(200);
    */
   usePactInteraction(interaction: PactInteraction): Spec;
-  
+  usePactInteraction(handler: string, data?: any): Spec;
+
   /**
    * The GET method requests a representation of the specified resource.
    * @example
@@ -159,24 +162,15 @@ declare class Spec {
   del(url: string): Spec;
 
   /**
-   * appends query param to the request url - /comments?postId=1&user=snow
+   * adds query params to the request url - /comments?id=1&user=snow&sort=asc
    * @example
    * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/comments')
-   *  .withQueryParam('postId', '1')
-   *  .withQueryParam('user', 'snow')
+   *  .get('/api/users')
+   *  .withQueryParams('sort', 'asc')
+   *  .withQueryParams({ 'id': '1', 'user': 'snow' })
    *  .expectStatus(200);
    */
-  withQueryParam(key: string, value: string): Spec;
-
-  /**
-   * adds query params to the request url - /comments?postId=1&user=snow
-   * @example
-   * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/comments')
-   *  .withQueryParams({ 'postId': '1', 'user': 'snow' })
-   *  .expectStatus(200);
-   */
+  withQueryParams(key: string, value: any): Spec;
   withQueryParams(params: object): Spec;
 
   /**
@@ -221,28 +215,17 @@ declare class Spec {
   withJson(json: object): Spec;
 
   /**
-   * appends header to the request
-   * @example
-   * await pactum
-   *  .post('https://google.com/login')
-   *  .withHeader('Authorization', 'Basic xxx')
-   *  .withHeader('Accept', 'json')
-   *  .expectStatus(200)
-   */
-  withHeader(key: string, value: string): Spec;
-  withHeader(key: string, value: number): Spec;
-  withHeader(key: string, value: boolean): Spec;
-
-  /**
    * attaches headers to the request
    * @example
    * await pactum
-   *  .get('https://jsonplaceholder.typicode.com/posts')
+   *  .get('/api/posts')
+   *  .withHeaders('Authorization', 'Basic xxx')
    *  .withHeaders({
    *    'content-type': 'application/json'
    *  })
    *  .expectStatus(201);
    */
+  withHeaders(key: string, value: any): Spec;
   withHeaders(headers: object): Spec;
 
   /**

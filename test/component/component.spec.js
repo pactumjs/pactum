@@ -4,7 +4,7 @@ const pactum = require('../../src/index');
 xdescribe('JSON Placeholder', () => {
 
   it('GET', async () => {
-    await pactum
+    await pactum.spec()
       .get('https://jsonplaceholder.typicode.com/posts/1')
       .expectStatus(200)
       .expectHeader('content-type', 'application/json; charset=utf-8')
@@ -25,9 +25,9 @@ xdescribe('JSON Placeholder', () => {
   });
 
   it('GET - with query', async () => {
-    await pactum
+    await pactum.spec()
       .get('https://jsonplaceholder.typicode.com/comments')
-      .withQueryParam('postId', 1)
+      .withQueryParams('postId', 1)
       .expectStatus(200)
       .expectHeaderContains('content-type', 'application/json')
       .expectJsonLike([
@@ -41,7 +41,7 @@ xdescribe('JSON Placeholder', () => {
   });
 
   it('GET - invalid post', async () => {
-    await pactum
+    await pactum.spec()
       .get('https://jsonplaceholder.typicode.com/posts/-1')
       .expectStatus(404)
       .expectJson({})
@@ -49,7 +49,7 @@ xdescribe('JSON Placeholder', () => {
   });
 
   it('POST', async () => {
-    await pactum
+    await pactum.spec()
       .post('https://jsonplaceholder.typicode.com/posts')
       .withJson({
         title: 'foo',
@@ -61,7 +61,7 @@ xdescribe('JSON Placeholder', () => {
   });
 
   it('POST - with headers', async () => {
-    await pactum
+    await pactum.spec()
       .post('https://jsonplaceholder.typicode.com/posts')
       .withJson({
         title: 'foo',
@@ -76,7 +76,7 @@ xdescribe('JSON Placeholder', () => {
   });
 
   it('POST - with body', async () => {
-    await pactum
+    await pactum.spec()
       .post('https://jsonplaceholder.typicode.com/posts')
       .withHeaders({
         "content-type": "application/json"
@@ -91,7 +91,7 @@ xdescribe('JSON Placeholder', () => {
   });
 
   it('PUT', async () => {
-    await pactum
+    await pactum.spec()
       .put('https://jsonplaceholder.typicode.com/posts/1')
       .withJson({
         id: 1,
@@ -104,7 +104,7 @@ xdescribe('JSON Placeholder', () => {
   });
 
   it('PATCH', async () => {
-    await pactum
+    await pactum.spec()
       .patch('https://jsonplaceholder.typicode.com/posts/1')
       .withJson({
         title: 'foo'
@@ -114,7 +114,7 @@ xdescribe('JSON Placeholder', () => {
   });
 
   it('DELETE', async () => {
-    await pactum
+    await pactum.spec()
       .del('https://jsonplaceholder.typicode.com/posts/1')
       .expectStatus(200)
       .toss();
@@ -126,77 +126,77 @@ xdescribe('JSON Placeholder', () => {
 xdescribe('HTTP Bin - Status', () => {
 
   it('should be ok', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/200')
       .expectStatus(200)
       .toss();
   });
 
   it('should be created', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/201')
       .expectStatus(201)
       .toss();
   });
 
   it('should be no content', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/204')
       .expectStatus(204)
       .toss();
   });
 
   it('should be not modified', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/304')
       .expectStatus(304)
       .toss();
   });
 
   it('should be a bad request', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/400')
       .expectStatus(400)
       .toss();
   });
 
   it('should be unauthorized', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/401')
       .expectStatus(401)
       .toss();
   });
 
   it('should be forbidden', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/403')
       .expectStatus(403)
       .toss();
   });
 
   it('should be not found', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/404')
       .expectStatus(404)
       .toss();
   });
 
   it('should be conflict', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/409')
       .expectStatus(409)
       .toss();
   });
 
   it('should be a teapot', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/418')
       .expectStatus(418)
       .toss();
   });
 
   it('should be internal system error', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/status/500')
       .expectStatus(500)
       .toss();
@@ -208,7 +208,7 @@ xdescribe('HTTP Bin - Status', () => {
 xdescribe('HTTP Bin - Responses', () => {
 
   it('should be deny', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/deny')
       .expectStatus(200)
       .expectBodyContains(`YOU SHOULDN'T BE HERE`)
@@ -216,7 +216,7 @@ xdescribe('HTTP Bin - Responses', () => {
   });
 
   it('should be deny', async () => {
-    await pactum
+    await pactum.spec()
       .get('http://httpbin.org/robots.txt')
       .expectStatus(200)
       .expectBody(`User-agent: *\nDisallow: /deny\n`)

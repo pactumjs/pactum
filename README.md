@@ -14,7 +14,7 @@ This library can be integrated with test runners like **cucumber**, **mocha**, *
 
 This readme offers an introduction to the library. For more information visit the following links.
 
-* [API Testing](https://github.com/ASaiAnudeep/pactum/wiki)
+* [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 * [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
   * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
@@ -49,15 +49,15 @@ Running simple api test expectations.
 const pactum = require('pactum');
 
 it('should be a teapot', async () => {
-  await pactum
+  await pactum.spec()
     .get('http://httpbin.org/status/418')
     .expectStatus(418);
 });
 
 it('should save a new user', async () => {
-  await pactum
+  await pactum.spec()
     .post('https://jsonplaceholder.typicode.com/users')
-    .withHeader('Authorization', 'Basic xxxx')
+    .withHeaders('Authorization', 'Basic xxxx')
     .withJson({
       name: 'bolt',
       email: 'bolt@swift.run'
@@ -79,7 +79,7 @@ Running complex component test expectations.
 
 ```javascript
 it('should have a user with id', () => {
-  return pactum
+  return pactum.spec()
     .get('https://jsonplaceholder.typicode.com/users/1')
     .expectStatus(201)
     .expectHeaderContains('content-type', 'application/json')
@@ -144,7 +144,7 @@ describe('Chai Like Assertions', () => {
 We can also add custom expect handlers that are ideal to make much more complicated assertions by taking advantage of popular assertion libraries like [chai](https://www.npmjs.com/package/chai)
 
 ```javascript
-await pactum
+await pactum.spec()
   .post('https://jsonplaceholder.typicode.com/posts')
   .withJson({
     title: 'foo',
@@ -164,11 +164,11 @@ const pactum = require('pactum');
 const expect = require('chai').expect;
 
 it('should return all posts and first post should have comments', async () => {
-  const postID = await pactum
+  const postID = await pactum.spec()
     .get('http://jsonplaceholder.typicode.com/posts')
     .expectStatus(200)
     .returns('[0].id');
-  const response = await pactum
+  const response = await pactum.spec()
     .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
     .expectStatus(200);
   const comments = response.json;
@@ -181,7 +181,7 @@ it('should return all posts and first post should have comments', async () => {
 Some API operations will take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response. (*Make sure to update test runners default timeout*) 
 
 ```javascript
-await pactum
+await pactum.spec()
   .get('https://jsonplaceholder.typicode.com/posts/12')
   .retry({
     count: 2,
@@ -205,7 +205,7 @@ stash.loadDataTemplates({
   }      
 });
 
-await pactum
+await pactum.spec()
   .post('/api/users')
   // json will be replaced with above template & overrides last name
   .withJson({
@@ -235,7 +235,7 @@ before(() => {
 });
 
 it('should get jon snow details', () => {
-  return pactum
+  return pactum.spec()
     // adds interaction to mock server & removes it after the spec
     .useInteraction({
       get: '/api/address/4',
@@ -294,7 +294,7 @@ before(async () => {
 });
 
 it('GET - one interaction', async () => {
-  await pactum
+  await pactum.spec()
     .usePactInteraction({
       provider: 'projects-service',
       state: 'when there is a project with id 1',

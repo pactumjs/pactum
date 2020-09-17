@@ -6,14 +6,14 @@ const consumer = {
 
   setPactFilesDirectory(dir) {
     if (typeof dir !== 'string') {
-      throw new PactumConfigurationError(`Invalid directory provided for saving pact files - ${dir}`);
+      throw new PactumConfigurationError('`dir` is required');
     }
     config.pact.dir = dir;
   },
 
   setConsumerName(name) {
     if (typeof name !== 'string' || !name) {
-      throw new PactumConfigurationError(`Invalid consumer name - ${name}`);
+      throw new PactumConfigurationError('`name` is required');
     }
     config.pact.consumer = name;
   },

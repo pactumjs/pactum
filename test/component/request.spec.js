@@ -7,7 +7,7 @@ describe('Request', () => {
 
   it('with baseurl', async () => {
     request.setBaseUrl('http://localhost:9393');
-    await pactum
+    await pactum.spec()
       .useInteraction({
         get: '/users'
       })
@@ -17,7 +17,7 @@ describe('Request', () => {
 
   it('with baseurl override', async () => {
     request.setBaseUrl('http://localhost:9392');
-    await pactum
+    await pactum.spec()
       .useInteraction({
         get: '/users'
       })
@@ -28,7 +28,7 @@ describe('Request', () => {
   it('with default header', async () => {
     request.setBaseUrl('http://localhost:9393');
     request.setDefaultHeader('x', 'a');
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -48,7 +48,7 @@ describe('Request', () => {
   it('with override default header to empty value', async () => {
     request.setBaseUrl('http://localhost:9393');
     request.setDefaultHeader('x', 'a');
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -62,14 +62,14 @@ describe('Request', () => {
         }
       })
       .get('http://localhost:9393/users')
-      .withHeader('x', '')
+      .withHeaders('x', '')
       .expectStatus(200);
   });
 
   it('with override default header', async () => {
     request.setBaseUrl('http://localhost:9393');
     request.setDefaultHeader('x', 'a');
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -83,7 +83,7 @@ describe('Request', () => {
         }
       })
       .get('http://localhost:9393/users')
-      .withHeader('x', 'b')
+      .withHeaders('x', 'b')
       .expectStatus(200);
   });
 

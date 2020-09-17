@@ -31,6 +31,10 @@ const utils = {
         if (Object.keys(req.query).length > 0 || interaction.withRequest.query) {
           isValidQuery = validateQuery(req.query, interaction.withRequest.query, interaction.withRequest.matchingRules);
         }
+      } else {
+        if (interaction.withRequest.query) {
+          isValidQuery = validateQuery(req.query, interaction.withRequest.query, interaction.withRequest.matchingRules, true);
+        }
       }
       if (!isValidQuery) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Query Params`);
@@ -74,13 +78,13 @@ function validatePath(actual, expected, matchingRules) {
   return response.equal;
 }
 
-function validateQuery(actual, expected, matchingRules) {
+function validateQuery(actual, expected, matchingRules, partialMatch) {
   if (typeof actual !== 'object' || typeof expected !== 'object') {
     return false;
   }
   const compare = new Compare();
   const response = compare.jsonMatch(actual, expected, matchingRules, '$.query');
-  if (response.equal) {
+  if (response.equal && !partialMatch) {
     for (const prop in actual) {
       if (!Object.prototype.hasOwnProperty.call(expected, prop)) {
         log.debug(`Query param not found - ${prop}`);

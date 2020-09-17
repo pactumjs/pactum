@@ -15,59 +15,76 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: Invalid custom state handler name provided');
   });
 
-  it('withQueryParam - invalid', () => {
+  it('withQueryParams - empty key', () => {
     let err;
     try {
       const spec = new Spec();
-      spec.withQueryParam();
+      spec.withQueryParams('');
     } catch (error) {
       err = error;
     }
-    expect(err.toString()).equals('Error: Invalid key in query parameter for request - undefined');
+    expect(err.toString()).equals('Error: `key` is required');
   });
 
-  it('withQueryParam - empty key', () => {
+  it('withQueryParams - no value', () => {
     let err;
     try {
       const spec = new Spec();
-      spec.withQueryParam('');
+      spec.withQueryParams('some');
     } catch (error) {
       err = error;
     }
-    expect(err.toString()).equals('Error: Invalid key in query parameter for request - ');
+    expect(err.toString()).equals('Error: `value` is required');
   });
 
-  it('withQueryParam - null key', () => {
+  it('withQueryParams - no value', () => {
     let err;
     try {
       const spec = new Spec();
-      spec.withQueryParam(null);
+      spec.withQueryParams('some', null);
     } catch (error) {
       err = error;
     }
-    expect(err.toString()).equals('Error: Invalid key in query parameter for request - null');
+    expect(err.toString()).equals('Error: `value` is required');
   });
 
-  it('withQueryParam - no value', () => {
+  it('withQueryParams - null', async () => {
     let err;
     try {
       const spec = new Spec();
-      spec.withQueryParam('some');
+      await spec
+        .post('/')
+        .withQueryParams(null);
     } catch (error) {
       err = error;
     }
-    expect(err.toString()).equals('Error: Invalid value in query parameter for request - undefined');
+    expect(err.toString()).equals('Error: `params` are required');
   });
 
-  it('withQueryParam - no value', () => {
+  it('withQueryParams - undefined', async () => {
     let err;
     try {
       const spec = new Spec();
-      spec.withQueryParam('some', null);
+      await spec
+        .post('/')
+        .withQueryParams(undefined);
     } catch (error) {
       err = error;
     }
-    expect(err.toString()).equals('Error: Invalid value in query parameter for request - null');
+    expect(err.toString()).equals('Error: `params` are required');
+  });
+
+  it('empty query params object in request', async () => {
+    let err;
+    try {
+      const spec = new Spec();
+      await spec
+        .post('/')
+        .withQueryParams({});
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: `params` are required');
   });
 
   it('withGraphQLQuery - invalid', () => {
@@ -133,7 +150,7 @@ describe('Spec', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.toString()).equals('Error: Invalid headers in request - undefined');
+    expect(err.toString()).equals('Error: `headers` are required');
   });
 
   it('withHeaders - null', () => {
@@ -144,7 +161,7 @@ describe('Spec', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.toString()).equals('Error: Invalid headers in request - null');
+    expect(err.toString()).equals('Error: `headers` are required');
   });
 
   it('withBody - duplicate', () => {
@@ -239,58 +256,6 @@ describe('Spec', () => {
       err = error;
     }
     expect(err.toString()).equals('Error: Duplicate form in request');
-  });
-
-  it('null query params in request', async () => {
-    let err;
-    try {
-      const spec = new Spec();
-      await spec
-        .post('/')
-        .withQueryParams(null);
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: Invalid query parameters object - null');
-  });
-
-  it('undefined query params in request', async () => {
-    let err;
-    try {
-      const spec = new Spec();
-      await spec
-        .post('/')
-        .withQueryParams(undefined);
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: Invalid query parameters object - undefined');
-  });
-
-  it('string in query params in request', async () => {
-    let err;
-    try {
-      const spec = new Spec();
-      await spec
-        .post('/')
-        .withQueryParams('key');
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: Invalid query parameters object - "key"');
-  });
-
-  it('empty query params object in request', async () => {
-    let err;
-    try {
-      const spec = new Spec();
-      await spec
-        .post('/')
-        .withQueryParams({});
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: Invalid query parameters object - {}');
   });
 
   it('invalid request timeout', async () => {

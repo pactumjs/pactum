@@ -4,7 +4,7 @@ const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers
 describe('Request Matchers', () => {
 
   it('GET - one interaction - like', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -25,7 +25,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('date', '12/00/9632')
+      .withQueryParams('date', '12/00/9632')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -35,7 +35,7 @@ describe('Request Matchers', () => {
   });
 
   it('GET - one interaction - somethingLike', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -56,7 +56,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('date', '12/00/9632')
+      .withQueryParams('date', '12/00/9632')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -66,7 +66,7 @@ describe('Request Matchers', () => {
   });
 
   it('GET - one interaction - regex instance', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -87,7 +87,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('date', '12/00/9632')
+      .withQueryParams('date', '12/00/9632')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -97,7 +97,7 @@ describe('Request Matchers', () => {
   });
 
   it('GET - one interaction - regex string', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -118,7 +118,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('date', '12/00/9632')
+      .withQueryParams('date', '12/00/9632')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -128,7 +128,7 @@ describe('Request Matchers', () => {
   });
 
   it('GET - one interaction - query regex date', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -149,7 +149,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('date', '2020-06-24')
+      .withQueryParams('date', '2020-06-24')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,
@@ -159,7 +159,7 @@ describe('Request Matchers', () => {
   });
 
   it('POST - one interaction - term instance', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -183,7 +183,7 @@ describe('Request Matchers', () => {
   });
 
   it('POST - one interaction - term string', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -214,7 +214,7 @@ describe('Request Matchers', () => {
   });
 
   it('POST - one interaction - each like', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -238,7 +238,7 @@ describe('Request Matchers', () => {
   });
 
   it('GET - one interaction - contains', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -262,7 +262,7 @@ describe('Request Matchers', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('date', '12/00/2020')
+      .withQueryParams('date', '12/00/2020')
       .withHeaders({
         'x-request-id': 'DynamoDB.2018.PutItem'
       })
@@ -275,7 +275,7 @@ describe('Request Matchers', () => {
   });
 
   it('GET - one interaction - headers like', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -306,7 +306,7 @@ describe('Request Matchers', () => {
   });
 
   it('GET - one interaction - multiple headers like', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -338,7 +338,7 @@ describe('Request Matchers', () => {
   });
 
   it('GET - one interaction - path regex object', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -365,7 +365,7 @@ describe('Request Matchers', () => {
   });
 
   it('GET - one interaction - path regex matcher instance', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -392,7 +392,7 @@ describe('Request Matchers', () => {
   });
 
   it('GET - one interaction - path regex matcher string', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',

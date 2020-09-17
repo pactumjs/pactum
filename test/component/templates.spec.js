@@ -24,11 +24,13 @@ describe('Templates & Maps', () => {
       Castle: {
         Wall: 'Castle Black'
       }
-    })
+    });
+    pactum.handler.addDataHandler('GetZero', () => 0);
+    pactum.handler.addDataHandler('GetAuthToken', () => 'Basic xyz');
   });
 
   it('new user with pure template', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -52,7 +54,7 @@ describe('Templates & Maps', () => {
   });
 
   it('new user with pure - override existing property', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -79,7 +81,7 @@ describe('Templates & Maps', () => {
   });
 
   it('new user with pure - override existing property with template & map', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -88,6 +90,7 @@ describe('Templates & Maps', () => {
             FirstName: 'Jon',
             LastName: 'Snow',
             Country: 'North',
+            Age: 0,
             Addresses: [
               {
                 Castle: 'WinterFell',
@@ -104,6 +107,7 @@ describe('Templates & Maps', () => {
       .withJson({
         '@DATA:TEMPLATE@': 'User.NewUser',
         '@OVERRIDES@': {
+          Age: '@DATA:FUN::GetZero@',
           Addresses: [
             {
               '@DATA:TEMPLATE@': 'User.Address'
@@ -115,7 +119,7 @@ describe('Templates & Maps', () => {
   });
 
   it('new user with pure - nested override', async () => {
-    await pactum
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
@@ -151,6 +155,77 @@ describe('Templates & Maps', () => {
         }
       })
       .expectStatus(200);
+  });
+
+  it('data ref in query & headers', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users',
+          query: {
+            age: 0
+          },
+          headers: {
+            'Authorization': 'Basic xyz'
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .withQueryParams('age', '@DATA:FUN::GetZero@')
+      .withHeaders('Authorization', '@DATA:FUN::GetAuthToken@')
+      .expectStatus(200);
+  });
+
+  it('basic mock using template in return', async () => {
+    await pactum.spec()
+      .useInteraction({
+        get: '/api/users/1',
+        return: {
+          '@DATA:TEMPLATE@': 'User.NewUser'
+        }
+      })
+      .get('http://localhost:9393/api/users/1')
+      .expectJson({
+        FirstName: 'Jon',
+        LastName: 'Snow',
+        Country: 'North',
+        Addresses: []
+      });
+  });
+
+  it('mock using data reference in query & headers', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users',
+          query: {
+            name: '@DATA:MAP::User.FirstName@'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Authorization': '@DATA:FUN::GetAuthToken@'
+          },
+          body: {
+            '@DATA:TEMPLATE@': 'User.NewUser'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .withQueryParams({ name: 'Jon' })
+      .expectHeader('authorization', 'Basic xyz')
+      .expectJson({
+        FirstName: 'Jon',
+        LastName: 'Snow',
+        Country: 'North',
+        Addresses: []
+      });
   });
 
   after(() => {

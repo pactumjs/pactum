@@ -10,6 +10,7 @@ export interface Have {
   jsonQueryLike(path: string, value: any): void;
   jsonSchema(schema: object): void;
   responseTimeLessThan(ms: number): void;
+  _(handler: string, data: any): void
 }
 
 export interface To {
@@ -18,6 +19,7 @@ export interface To {
 
 export interface Expect {
   to: To;
+  should: To;
 }
 
 declare function expect(response: any): Expect;

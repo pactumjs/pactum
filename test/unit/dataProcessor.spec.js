@@ -173,8 +173,8 @@ describe('Data Processing - Maps', () => {
   it('processMaps - empty map', () => {
     dp.processMaps();
     expect(dp.map).deep.equals({});
-    expect(config.data.map.enabled).equals(false);
-    expect(config.data.map.processed).equals(true);
+    expect(config.data.ref.map.enabled).equals(false);
+    expect(config.data.ref.map.processed).equals(true);
   });
 
   it('processMaps - already processed', () => {
@@ -186,11 +186,11 @@ describe('Data Processing - Maps', () => {
         }
       ]
     });
-    config.data.map.processed = true;
+    config.data.ref.map.processed = true;
     dp.processMaps();
     expect(dp.map).deep.equals({});
-    expect(config.data.map.enabled).equals(false);
-    expect(config.data.map.processed).equals(true);
+    expect(config.data.ref.map.enabled).equals(false);
+    expect(config.data.ref.map.processed).equals(true);
   });
 
   it('processMaps - with basic data map', () => {
@@ -227,8 +227,8 @@ describe('Data Processing - Maps', () => {
         }
       ]
     });
-    expect(config.data.map.enabled).equals(true);
-    expect(config.data.map.processed).equals(true);
+    expect(config.data.ref.map.enabled).equals(true);
+    expect(config.data.ref.map.processed).equals(true);
   });
 
   it('processMaps - complex array of objects', () => {
@@ -289,8 +289,8 @@ describe('Data Processing - Maps', () => {
   });
 
   afterEach(() => {
-    config.data.map.enabled = false;
-    config.data.map.processed = false;
+    config.data.ref.map.enabled = false;
+    config.data.ref.map.processed = false;
     stash.clearDataMaps();
   });
 

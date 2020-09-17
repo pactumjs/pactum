@@ -7,7 +7,8 @@ const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
 const mock = require('../exports/mock');
-const chaiExpect = require('../exports/expect');
+const responseExpect = require('../exports/expect');
+const handler = require('../exports/handler');
 
 class Spec {
 
@@ -29,7 +30,10 @@ class Spec {
     return this;
   }
 
-  useInteraction(basicInteraction) {
+  useInteraction(basicInteraction, data) {
+    if (typeof basicInteraction === 'string') {
+      basicInteraction = handler.getInteractionHandler(basicInteraction)({ data });
+    }
     const rawInteraction = {
       withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
       willRespondWith: {
@@ -40,14 +44,20 @@ class Spec {
     return this.useMockInteraction(rawInteraction);
   }
 
-  useMockInteraction(rawInteraction) {
+  useMockInteraction(rawInteraction, data) {
+    if (typeof rawInteraction === 'string') {
+      rawInteraction = handler.getMockInteractionHandler(rawInteraction)({ data });
+    }
     const interaction = new Interaction(rawInteraction, true);
     log.debug('Mock Interaction added to Mock Server -', interaction.id);
     this.mockInteractions.set(interaction.id, interaction);
     return this;
   }
 
-  usePactInteraction(rawInteraction) {
+  usePactInteraction(rawInteraction, data) {
+    if (typeof rawInteraction === 'string') {
+      rawInteraction = handler.getPactInteractionHandler(rawInteraction)({ data });
+    }
     const interaction = new Interaction(rawInteraction, false);
     log.debug('Pact Interaction added to Mock Server -', interaction.id);
     this.pactInteractions.set(interaction.id, interaction);
@@ -96,28 +106,24 @@ class Spec {
     return this;
   }
 
-  withQueryParam(key, value) {
-    if (!helper.isValidString(key)) {
-      throw new PactumRequestError(`Invalid key in query parameter for request - ${key}`);
-    }
-    if (value === undefined || value === null) {
-      throw new PactumRequestError(`Invalid value in query parameter for request - ${value}`);
-    }
-    if (this._request.qs === undefined) {
-      this._request.qs = {};
-    }
-    this._request.qs[key] = value;
-    return this;
-  }
-
-  withQueryParams(params) {
-    if (!helper.isValidObject(params) || Object.keys(params).length === 0) {
-      throw new PactumRequestError(`Invalid query parameters object - ${params ? JSON.stringify(params) : params}`);
-    }
+  withQueryParams(key, value) {
     if (!this._request.qs) {
       this._request.qs = {};
     }
-    Object.assign(this._request.qs, params);
+    if (typeof key === 'string') {
+      if (!helper.isValidString(key)) {
+        throw new PactumRequestError('`key` is required');
+      }
+      if (value === undefined || value === null) {
+        throw new PactumRequestError('`value` is required');
+      }
+      this._request.qs[key] = value;
+    } else {
+      if (!helper.isValidObject(key) || Object.keys(key).length === 0) {
+        throw new PactumRequestError('`params` are required');
+      }
+      Object.assign(this._request.qs, key);
+    }
     return this;
   }
 
@@ -151,22 +157,18 @@ class Spec {
     return this;
   }
 
-  withHeader(key, value) {
+  withHeaders(key, value) {
     if (!this._request.headers) {
       this._request.headers = {};
     }
-    this._request.headers[key] = value;
-    return this;
-  }
-
-  withHeaders(headers) {
-    if (!helper.isValidObject(headers)) {
-      throw new PactumRequestError(`Invalid headers in request - ${headers}`);
+    if (typeof key === 'string') {
+      this._request.headers[key] = value;
+    } else {
+      if (!helper.isValidObject(key)) {
+        throw new PactumRequestError('`headers` are required');
+      }
+      Object.assign(this._request.headers, key);
     }
-    if (!this._request.headers) {
-      this._request.headers = {};
-    }
-    Object.assign(this._request.headers, headers);
     return this;
   }
 
@@ -318,7 +320,7 @@ class Spec {
     if (!this._response) {
       throw new PactumRequestError(`'response()' should be called after resolving 'toss()'`);
     }
-    return chaiExpect(this._response);
+    return responseExpect(this._response, this._request);
   }
 
 }
