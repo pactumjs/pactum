@@ -35,12 +35,8 @@ class InteractionRequest {
     }
     this.body = processor.processData(helper.setValueFromMatcher(request.body));
     this.ignoreBody = false;
-    this.ignoreQuery = false;
     if (typeof request.ignoreBody === 'boolean') {
       this.ignoreBody = request.ignoreBody;
-    }
-    if (typeof request.ignoreQuery === 'boolean') {
-      this.ignoreQuery = request.ignoreQuery;
     }
     if (request.graphQL) {
       this.graphQL = new InteractionRequestGraphQL(request.graphQL);
@@ -185,12 +181,14 @@ class Interaction {
     if (withRequest.path === undefined || withRequest.path === null) {
       throw new PactumInteractionError(`Invalid interaction request path provided - ${withRequest.path}`);
     }
+    if (typeof withRequest.query !== 'undefined') {
+      if (!withRequest.query || typeof withRequest.query !== 'object' || Array.isArray(withRequest.query)) {
+        throw new PactumInteractionError('`withRequest.query` should be object');
+      }
+    }
   }
 
   validateInvalidFieldsPact(withRequest, willRespondWith) {
-    if (withRequest.ignoreQuery) {
-      throw new PactumInteractionError(`Pact interaction won't support ignore query`);
-    }
     if (withRequest.ignoreBody) {
       throw new PactumInteractionError(`Pact interaction won't support ignore body`);
     }

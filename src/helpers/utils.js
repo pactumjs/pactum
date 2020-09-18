@@ -26,16 +26,7 @@ const utils = {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Path`);
         continue;
       }
-      let isValidQuery = true;
-      if (!interaction.withRequest.ignoreQuery) {
-        if (Object.keys(req.query).length > 0 || interaction.withRequest.query) {
-          isValidQuery = validateQuery(req.query, interaction.withRequest.query, interaction.withRequest.matchingRules);
-        }
-      } else {
-        if (interaction.withRequest.query) {
-          isValidQuery = validateQuery(req.query, interaction.withRequest.query, interaction.withRequest.matchingRules, true);
-        }
-      }
+      let isValidQuery = xValidateQuery(req, interaction);
       if (!isValidQuery) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Query Params`);
         continue;
@@ -78,13 +69,22 @@ function validatePath(actual, expected, matchingRules) {
   return response.equal;
 }
 
-function validateQuery(actual, expected, matchingRules, partialMatch) {
-  if (typeof actual !== 'object' || typeof expected !== 'object') {
-    return false;
+function xValidateQuery(req, interaction) {
+  const { mock, withRequest } = interaction;
+  if (mock) {
+    if (withRequest.query) {
+      return validateQuery(req.query, withRequest.query, withRequest.matchingRules, mock);
+    }
+  } else if (Object.keys(req.query).length > 0 || withRequest.query) {
+    return validateQuery(req.query, withRequest.query, withRequest.matchingRules, mock);
   }
+  return true;
+}
+
+function validateQuery(actual, expected, matchingRules, mock) {
   const compare = new Compare();
   const response = compare.jsonMatch(actual, expected, matchingRules, '$.query');
-  if (response.equal && !partialMatch) {
+  if (response.equal && !mock) {
     for (const prop in actual) {
       if (!Object.prototype.hasOwnProperty.call(expected, prop)) {
         log.debug(`Query param not found - ${prop}`);

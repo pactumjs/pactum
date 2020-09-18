@@ -61,8 +61,7 @@ describe('Dynamic', () => {
       .useMockInteraction({
         withRequest: {
           method: 'GET',
-          path: '/api/projects/1',
-          ignoreQuery: true
+          path: '/api/projects'
         },
         willRespondWith: function (req, res) {
           const response = [
@@ -83,7 +82,7 @@ describe('Dynamic', () => {
           }
         }
       })
-      .get('http://localhost:9393/api/projects/1')
+      .get('http://localhost:9393/api/projects')
       .withQueryParams('id', '1')
       .expectStatus(200)
       .expectJsonLike({
@@ -99,8 +98,7 @@ describe('Dynamic', () => {
       .useMockInteraction({
         withRequest: {
           method: 'GET',
-          path: '/api/projects/1',
-          ignoreQuery: true
+          path: '/api/projects/1'
         },
         willRespondWith: function (req, res) {
           const response = [

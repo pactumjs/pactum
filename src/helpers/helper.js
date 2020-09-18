@@ -198,7 +198,6 @@ const helper = {
   getRequestFromBasicInteraction(interaction) {
     const request = {
       method: 'GET',
-      ignoreQuery: true,
       ignoreBody: true
     };
     if (interaction.get) {

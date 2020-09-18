@@ -160,7 +160,7 @@ describe('getMatchingInteraction', () => {
     expect(matchingInteraction).not.to.be.null;
   });
 
-  it('single - not matching by extra property in actual query', () => {
+  it('single - matching by extra property in actual query', () => {
     const rawInteraction = {
       withRequest: {
         method: 'GET',
@@ -193,7 +193,7 @@ describe('getMatchingInteraction', () => {
       }
     };
     const matchingInteraction = utils.getMatchingInteraction(request, this.interactionsMap);
-    expect(matchingInteraction).to.be.null;
+    expect(matchingInteraction).not.to.be.null;
   });
 
   it('single - not matching by extra property in expected query', () => {

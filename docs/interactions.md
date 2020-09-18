@@ -46,7 +46,6 @@ Mock Interaction will have the following properties.
 | withRequest.headers             | object      | request headers                 |
 | withRequest.query               | object      | query parameters                |
 | withRequest.body                | any         | request body                    |
-| withRequest.ignoreQuery         | boolean     | ignore request query            |
 | withRequest.ignoreBody          | boolean     | ignore request body             |
 | withRequest.graphQL             | object      | graphQL details                 |
 | withRequest.graphQL.query       | **string**  | graphQL query                   |

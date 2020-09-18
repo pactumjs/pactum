@@ -145,9 +145,19 @@ mock.start(3000);
 * Invoking POST `/api/users` with empty body will return `'OK'`.
 * Invoking POST `/api/users` with some body will still return `'OK'`.
 
-As you see above, by default basic interactions will ignore both query params & body. 
+By default basic interactions will ignore query params, headers & body while performing a match with the received request. 
 
-Learn more about basic interactions at [Basic Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions#basic-inteactions)
+##### Basic Interaction API
+
+| Property  | Description             |
+| --------  | ----------------------  |
+| get       | GET request path        |
+| post      | POST request path       |
+| put       | PUT request path        |
+| patch     | PATCH request path      |
+| delete    | DELETE request path     |
+| status    | response status code    |
+| return    | response body           |
 
 #### Mock Interactions
 

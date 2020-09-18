@@ -7,7 +7,7 @@ export interface BasicInteraction {
   /** status code to return */
   status?: number;
   /** body to return */
-  return?: string | number | object;
+  return?: any;
 }
 
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD';
@@ -27,8 +27,6 @@ export interface PactInteractionRequest {
 }
 
 export interface MockInteractionRequest extends PactInteractionRequest {
-  /** ignores query while matching this interaction */
-  ignoreQuery: boolean;
   /** ignores body while matching this interaction */
   ignoreBody: boolean;
 }
