@@ -31,10 +31,7 @@ const utils = {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Query Params`);
         continue;
       }
-      let isValidHeaders = true;
-      if (interaction.withRequest.headers) {
-        isValidHeaders = validateHeaders(req.headers, interaction.withRequest.headers, interaction.withRequest.matchingRules);
-      }
+      let isValidHeaders = xValidateHeaders(req, interaction);
       if (!isValidHeaders) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Headers`);
         continue;
@@ -84,6 +81,14 @@ function validateQuery(actual, expected, matchingRules, mock) {
   }
 }
 
+function xValidateHeaders(req, interaction) {
+  const { withRequest } = interaction;
+  if (withRequest.headers) {
+    return validateHeaders(req.headers, withRequest.headers, withRequest.matchingRules);
+  }
+  return true;
+}
+
 function validateHeaders(actual, expected, matchingRules) {
   // covert props of header to lower case : Content-Type -> content-type
   const lowerCaseActual = {};
@@ -106,23 +111,23 @@ function xValidateBody(req, interaction) {
       return graphQL.compare(req.body, withRequest.body);
     }
     if (withRequest.body) {
-      return validateBody(req.body, withRequest.body, withRequest.matchingRules);
+      return validateBody(req.body, withRequest.body, withRequest.matchingRules, mock);
     }
   } else {
     if (withRequest.graphQL) {
       return graphQL.compare(req.body, withRequest.body);
     }
     if (req.body || withRequest.body) {
-      return validateBody(req.body, withRequest.body, withRequest.matchingRules);
+      return validateBody(req.body, withRequest.body, withRequest.matchingRules, mock);
     }
   }
   return true;
 }
 
-function validateBody(actual, expected, matchingRules) {
+function validateBody(actual, expected, matchingRules, mock) {
   const compare = new Compare();
   const response = compare.jsonMatch(actual, expected, matchingRules, '$.body');
-  if (response.equal) {
+  if (response.equal && !mock) {
     return compare.jsonMatch(expected, actual, matchingRules, '$.body').equal;
   } else {
     return response.equal;

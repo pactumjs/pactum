@@ -165,3 +165,167 @@ describe('Mock Interactions - Headers', () => {
   });
 
 });
+
+describe('Mock Interactions - Body', () => {
+
+  it('ignoring body', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/mock/body'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/mock/body')
+      .withJson({
+        id: 1,
+        name: 'Jon',
+        married: true
+      })
+      .expectStatus(200);
+  });
+
+  it('ignoring few properties in body', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/mock/body',
+          body: {
+            id: 1
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/mock/body')
+      .withJson({
+        id: 1,
+        name: 'Jon',
+        married: true
+      })
+      .expectStatus(200);
+  });
+
+  it('ignoring few properties in body - with like', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/mock/body',
+          body: like({
+            id: 3,
+            married: false
+          })
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/mock/body')
+      .withJson({
+        id: 1,
+        name: 'Jon',
+        married: true
+      })
+      .expectStatus(200);
+  });
+
+  it('ignoring few properties in body - with each like', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/mock/body',
+          body: eachLike({
+            id: 3,
+            married: false
+          })
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/mock/body')
+      .withJson([
+        {
+          id: 1,
+          name: 'Jon',
+          married: true
+        },
+        {
+          id: 2,
+          name: 'Snow',
+          married: false
+        }
+      ])
+      .expectStatus(200);
+  });
+
+  it('expecting extra properties in body', async () => {
+    let err;
+    try {
+      await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/mock/body',
+          body: {
+            id: 3,
+            married: false,
+            country: 'True North'
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/mock/body')
+      .withJson({
+        id: 1,
+        name: 'Jon',
+        married: true
+      })
+      .expectStatus(200);  
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.to.be.undefined;
+  });
+
+  it('expecting extra properties in body - with like', async () => {
+    let err;
+    try {
+      await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/mock/body',
+          body: like({
+            id: 3,
+            married: false,
+            country: 'True North'
+          })
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/mock/body')
+      .withJson({
+        id: 1,
+        name: 'Jon',
+        married: true
+      })
+      .expectStatus(200);  
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.to.be.undefined;
+  });
+
+});
