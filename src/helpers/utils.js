@@ -39,20 +39,7 @@ const utils = {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Headers`);
         continue;
       }
-      let isValidBody = true;
-      if (!interaction.withRequest.ignoreBody) {
-        if (interaction.withRequest.graphQL) {
-          isValidBody = graphQL.compare(req.body, interaction.withRequest.body);
-        } else {
-          if (typeof req.body === 'object') {
-            if (Object.keys(req.body).length > 0) {
-              isValidBody = validateBody(req.body, interaction.withRequest.body, interaction.withRequest.matchingRules);
-            }
-          } else if (req.body) {
-            isValidBody = validateBody(req.body, interaction.withRequest.body, interaction.withRequest.matchingRules);
-          }
-        }
-      }
+      let isValidBody = xValidateBody(req, interaction);
       if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
         return interaction;
       }
@@ -110,6 +97,26 @@ function validateHeaders(actual, expected, matchingRules) {
   const compare = new Compare();
   const response = compare.jsonMatch(lowerCaseActual, lowerCaseExpected, matchingRules, '$.headers');
   return response.equal;
+}
+
+function xValidateBody(req, interaction) {
+  const { mock, withRequest } = interaction;
+  if (mock) {
+    if (withRequest.graphQL) {
+      return graphQL.compare(req.body, withRequest.body);
+    }
+    if (withRequest.body) {
+      return validateBody(req.body, withRequest.body, withRequest.matchingRules);
+    }
+  } else {
+    if (withRequest.graphQL) {
+      return graphQL.compare(req.body, withRequest.body);
+    }
+    if (req.body || withRequest.body) {
+      return validateBody(req.body, withRequest.body, withRequest.matchingRules);
+    }
+  }
+  return true;
 }
 
 function validateBody(actual, expected, matchingRules) {

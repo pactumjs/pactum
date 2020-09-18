@@ -527,8 +527,7 @@ describe('Mock', () => {
       .useMockInteraction({
         withRequest: {
           method: 'POST',
-          path: '/api/projects',
-          ignoreBody: true
+          path: '/api/projects'
         },
         willRespondWith: {
           status: 200,
@@ -560,8 +559,7 @@ describe('Mock', () => {
           path: '/api/projects',
           headers: {
             'content-type': 'application/x-www-form-urlencoded'
-          },
-          ignoreBody: true
+          }
         },
         willRespondWith: {
           status: 200,
@@ -589,8 +587,7 @@ describe('Mock', () => {
       .useMockInteraction({
         withRequest: {
           method: 'POST',
-          path: '/api/projects',
-          ignoreBody: true
+          path: '/api/projects'
         },
         willRespondWith: {
           status: 200,
@@ -620,8 +617,7 @@ describe('Mock', () => {
       .useMockInteraction({
         withRequest: {
           method: 'POST',
-          path: '/api/projects',
-          ignoreBody: true
+          path: '/api/projects'
         },
         willRespondWith: {
           status: 200,

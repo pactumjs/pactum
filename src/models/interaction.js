@@ -34,10 +34,6 @@ class InteractionRequest {
       helper.setMatchingRules(this.matchingRules, this.rawBody, '$.body');
     }
     this.body = processor.processData(helper.setValueFromMatcher(request.body));
-    this.ignoreBody = false;
-    if (typeof request.ignoreBody === 'boolean') {
-      this.ignoreBody = request.ignoreBody;
-    }
     if (request.graphQL) {
       this.graphQL = new InteractionRequestGraphQL(request.graphQL);
       this.body = {
@@ -189,9 +185,6 @@ class Interaction {
   }
 
   validateInvalidFieldsPact(withRequest, willRespondWith) {
-    if (withRequest.ignoreBody) {
-      throw new PactumInteractionError(`Pact interaction won't support ignore body`);
-    }
     if (typeof willRespondWith === 'function') {
       throw new PactumInteractionError(`Pact interaction won't support function response`);
     }

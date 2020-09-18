@@ -197,8 +197,7 @@ const helper = {
 
   getRequestFromBasicInteraction(interaction) {
     const request = {
-      method: 'GET',
-      ignoreBody: true
+      method: 'GET'
     };
     if (interaction.get) {
       request.path = interaction.get;
