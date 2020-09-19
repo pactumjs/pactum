@@ -2,7 +2,7 @@
 
 Mock Server allows you to mock any server or service via HTTP or HTTPS, such as a REST endpoint. Simply it is a simulator for HTTP-based APIs.
 
-At one end **pactum** is a REST API testing tool, on the other it can also act as a standalone mock server. It packs with a powerful request & response matching & you can spin it up in a matter of seconds.
+At one end **pactum** is a REST API testing tool and on the other, it can act as a standalone mock server. It packs with a powerful request & response matching & you can spin it up in a matter of seconds.
 
 ## Table of contents
 
@@ -37,7 +37,7 @@ curl http://localhost:3000/api/pactum/health
 
 ### Start Mock Server
 
-Use `start` to start the mock server on default port 9393 or pass port number as a parameter. It returns a promise. *Waiting for the server to start will be useful while running mock server along with your unit or component tests.*
+Use `start` to start the mock server on default port 9393 or send a port number as a parameter. It returns a promise. *Waiting for the server to start will be useful while running the mock server along with your unit or component tests.*
 
 ```javascript
 // starts mock server on port 9393
@@ -51,7 +51,7 @@ await mock.start(3000);
 
 ### Stop Mock Server
 
-Use `stop` to stop the mock server. It returns a promise. *Waiting for the server to stop will be useful while running mock server along with your unit or component tests.*
+Use `stop` to stop the mock server. It returns a promise. *Waiting for the server to stop will be useful while running the mock server along with your unit or component tests.*
 
 ```javascript
 await mock.stop();
@@ -59,7 +59,7 @@ await mock.stop();
 
 ## Adding Behavior
 
-By now, you know how to start & stop a mock server. To add behavior, we need to add [interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions) into it. An interaction contains a message with request & response details. When a request is received, the mock server will look if there is a matching interaction. If found it will return the specified response or 404 will be returned.
+By now, you know how to start & stop a mock server. To add behavior, we need to add [interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions) to it. An interaction contains a message with request & response details. When a request is received, the mock server will look if there is a matching interaction. If found it will return the specified response or 404 will be returned.
 
 We have three kinds of interactions. They are
 
@@ -69,7 +69,7 @@ We have three kinds of interactions. They are
 
 ### Basic Interactions
 
-Use `addInteraction` to add a basic interaction to the server. It returns a string containing id of the interaction. (*This id will be useful when you want add assertions based on call count or to check whether the interaction is exercised or not.*)
+Use `addInteraction` to add a basic interaction to the server. It returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
 
 ```javascript
 const mock = require('pactum').mock;
@@ -89,7 +89,7 @@ curl http://localhost:3000/api/users
 # Returns "Hello From Users"
 ```
 
-Lets add more interactions to the server to learn more about them.
+Let's add more interactions to the server.
 
 ```javascript
 const mock = require('pactum').mock;
@@ -117,9 +117,9 @@ Now we have added 2 basic interactions to the server.
 * Invoking GET `/api/users/2` will return a status code 401.
 * Invoking GET `/other` will return a status code 404.
 
-Not on how the mock server will perform an exact match on HTTP method & path to send a response back.
+Note on how the mock server will perform an exact match on the HTTP method & path to send a response back.
 
-Now you have the basic understanding of how mock server works. Lets add more basic interactions, to learn more about them
+Now you have a basic understanding of how the mock server works. Let's add more basic interactions.
 
 ```javascript
 const mock = require('pactum').mock;
@@ -137,13 +137,13 @@ mock.addInteraction({
 mock.start(3000);
 ```
 
-* Invoking GET `/api/users` will return empty array.
-* Invoking GET `/api/users?id=1` will still return empty array.
+* Invoking GET `/api/users` will return an empty array.
+* Invoking GET `/api/users?id=1` will still return an empty array.
 * Invoking GET `/api/users/1` will return a status code 404.
-* Invoking POST `/api/users` with empty body will return `'OK'`.
+* Invoking POST `/api/users` with an empty body will return `'OK'`.
 * Invoking POST `/api/users` with some body will still return `'OK'`.
 
-By default basic interactions will ignore query params, headers & body while performing a match with the received request. 
+By default, basic interactions will ignore query params, headers & body while performing a match with the received request. 
 
 #### Basic Interaction Options
 
@@ -159,11 +159,11 @@ By default basic interactions will ignore query params, headers & body while per
 
 ### Mock Interactions
 
-Simplest way to add behavior to server is through basic interactions where query params, headers & body will be totally ignored while performing a match with the received request.
+The simplest way to add behavior to the mock server is through basic interactions where query params, headers & body will be ignored while performing a match with the received request.
 
-Mock interactions adds more capabilities to the basic interactions. Here the interaction is more descriptive & allows to **loosely match** a received request based on query params, headers & JSON body.
+Mock interactions are more descriptive & allows to **loosely match** a received request based on query params, headers & JSON body.
 
-Use `addMockInteraction` to add a mock interaction to the server. It returns a string containing id of the interaction. (*This id will be useful when you want add assertions based on call count or to check whether the interaction is exercised or not.*)
+Use `addMockInteraction` to add a mock interaction to the server. It returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
 
 ```javascript
 mock.addMockInteraction({
@@ -193,7 +193,7 @@ mock.addMockInteraction({
 * Invoking GET `/api/projects` will return a JSON array.
 * Invoking GET `/api/projects?id=1` will still return a JSON array.
 
-To further distinguish the responses, lets add two mock interactions with query params
+To further distinguish the responses, let's add two mock interactions with query params
 
 ```javascript
 mock.addMockInteraction({
@@ -241,7 +241,7 @@ mock.addMockInteraction({
 
 When query params are mentioned in the interaction, the received request is matched when it has the specified query param. Same applies for headers & body.
 
-Lets look at an example
+Let's look at an example
 
 ```javascript
 mock.addMockInteraction({
@@ -260,7 +260,7 @@ mock.addMockInteraction({
 })
 ```
 
-Posting the below JSON to `/api/users` will get 200 response.
+Posting the below JSON to `/api/users` will return a 200 response.
 
 ```json
 {
@@ -272,7 +272,7 @@ Posting the below JSON to `/api/users` will get 200 response.
 }
 ```
 
-Posting the below JSON to `/api/users` will get 404 response. The *id* & *country* fields won't match with the above interaction.
+Posting the below JSON to `/api/users` will return a 404 response. The *id* & *country* fields won't match with the above interaction.
 
 ```json
 {
@@ -337,7 +337,7 @@ mock.addMockInteraction({
 * Invoking GET `/api/health` again will return a status code 200.
 * Invoking GET `/api/health` again will return a status code 404.
 
-Note how the behavior of interaction falls back to the default behavior (*404*) on third call.
+Note how the behavior of interaction falls back to the default behavior (*404*) on the third call.
 
 We can also define the default behavior by providing normal response details along with `onCall` details.
 
@@ -374,15 +374,15 @@ mock.addMockInteraction({
 
 ### Pact Interactions
 
-The final way of adding behavior to mock server is through pact interactions. It is similar to a mock interaction & supports most of the options from it.
+The final way of adding behavior to the mock server is through pact interactions. It is similar to a mock interaction & supports most of the options from it.
 
 Major differences between mock & pact interactions are
 
 * Pact Interactions generate a contract file which is later used for [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
-* Performs a **strong match** on a received requests query params & JSON body.
-* Performs a **loose match** on a received requests headers.
+* Performs a **strong match** on tje received request's query params & JSON body.
+* Performs a **loose match** on the received request's headers.
 
-Use `addPactInteraction` to add a pact interaction to the server. It returns a string containing id of the interaction. (*This id will be useful when you want add assertions based on call count or to check whether the interaction is exercised or not.*)
+Use `addPactInteraction` to add a pact interaction to the server. It returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
 
 ```javascript
 mock.addPactInteraction({
@@ -431,6 +431,53 @@ mock.addPactInteraction({
 | willRespondWith.headers          | response headers                |
 | willRespondWith.body             | response body                   |
 
+## Data Management
+
+**pactum** comes with a concept of *Data Templates* & *Data References* to manage your test data. It helps us to re-use data across tests during [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing).
+
+Data Management can also be applied to the mock server to re-use mock data across interactions. Learn more about data management with **pactum** at [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#data-management)
+
+```javascript
+const pactum = require('pactum');
+const stash = pactum.stash;
+const mock = pactum.mock;
+
+stash.loadDataTemplates({
+  'User:New': {
+    "FirstName": "Jon",
+    "LastName": "Snow",
+    "Age": 26,
+    "Gender": "male",
+    "House": "Castle Black"
+  }
+});
+
+mock.addMockInteraction({
+  withRequest: {
+    method: 'GET',
+    path: '/api/users'
+  },
+  willRespondWith: {
+    status: 200,
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: [
+      {
+        '@DATA:TEMPLATE@': 'User:New'
+      },
+      {
+        '@DATA:TEMPLATE@': 'User:New',
+        'OVERRIDES': {
+          'House': 'WinterFell'
+        }
+      }
+    ]
+  }
+});
+
+mock.start(3000);
+```
 
 ## Matching
 
@@ -815,3 +862,11 @@ curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteracti
 # Removes all pact interactions
 curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteraction'
 ```
+
+## Next
+
+----------------------------------------------------------------------------------------------------------------
+
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing" >
+  <img src="https://img.shields.io/badge/NEXT-Component%20Testing-blue" alt="Component Testing" align="right" style="display: inline;" />
+</a>

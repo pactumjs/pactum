@@ -1060,10 +1060,10 @@ it('order an item', async () => {
 });
 ```
 
-### Next
+## Next
 
 ----------------------------------------------------------------------------------------------------------------
 
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing" >
-  <img src="https://img.shields.io/badge/NEXT-Component%20Testing-blue" alt="Component Testing" align="right" style="display: inline;" />
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server" >
+  <img src="https://img.shields.io/badge/NEXT-Mock%20Server-blue" alt="Mock Server" align="right" style="display: inline;" />
 </a>

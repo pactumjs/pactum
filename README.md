@@ -381,7 +381,7 @@ Learn more about **pactum** as a provider verifier at [Provider Verification](ht
 
 Mock Server allows you to mock any server or service via HTTP or HTTPS, such as a REST endpoint. Simply it is a simulator for HTTP-based APIs.
 
-**pactum** can act as a standalone *mock server* or as a *service virtualization* tool. It comes with a **powerful request & response matching**.
+**pactum** can act as a standalone *mock server* or as a *service virtualization* tool. It comes with a **powerful request & response matching** and out of the box **Data Management**.
 
 Running **pactum** as a standalone *mock server*.
 
