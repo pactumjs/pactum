@@ -15,12 +15,11 @@ This library can be integrated with test runners like **cucumber**, **mocha**, *
 This readme offers an introduction to the library. For more information visit the following links.
 
 * [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+* [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 * [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
   * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
   * [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
-* [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions)
-* [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 
 ## Installation
 
@@ -42,6 +41,8 @@ npm install --save-dev mocha
 Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations. Learn more about these methods at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#request-making).
 
 ### Simple Test Cases
+
+#### Using Mocha
 
 Running simple api test expectations.
 
@@ -69,6 +70,37 @@ it('should save a new user', async () => {
 ```shell
 # mocha is a test framework to execute test cases
 mocha /path/to/test
+```
+
+#### Using Cucumber
+
+```javascript
+// steps.js
+const pactum = require('pactum');
+const { Given, When, Then, Before } = require('cucumber');
+
+let spec = pactum.spec();
+
+Before(() => { spec = pactum.spec(); });
+
+Given('I make a GET request to {string}', function (url) {
+  spec.get(url);
+});
+
+When('I receive a response', async function () {
+  await spec.toss();
+});
+
+Then('response should have a status {int}', async function (code) {
+  spec.response().should.have.status(code);
+});
+```
+
+```gherkin
+Scenario: Check TeaPot
+  Given I make a GET request to "http://httpbin.org/status/418"
+  When I receive a response
+  Then response should have a status 200
 ```
 
 ### Complex HTTP Assertions

@@ -7,15 +7,15 @@ At one end **pactum** is a REST API testing tool, on the other it can also act a
 ## Table of contents
 
 * [Getting Started](#getting-started)
-* [API](#api)
-* [Examples](#examples)
-* [Remote API](#remote-api)
+* [Adding Behavior](#adding-behavior)
+  * [Basic Interactions](#basic-interactions)
   * [Mock Interactions](#mock-interactions)
   * [Pact Interactions](#pact-interactions)
+* [Matching](#matching)
 
 ## Getting Started
 
-#### Setup
+#### Basic Setup
 
 The below code will run the pactum mock server on port 3000
 
@@ -34,8 +34,6 @@ node server.js
 # Returns OK
 curl http://localhost:3000/api/pactum/health
 ```
-
-## API
 
 ### Start Mock Server
 
@@ -59,7 +57,7 @@ Use `stop` to stop the mock server. It returns a promise. *Waiting for the serve
 await mock.stop();
 ```
 
-### Adding Behavior
+## Adding Behavior
 
 By now, you know how to start & stop a mock server. To add behavior, we need to add [interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions) into it. An interaction contains a message with request & response details. When a request is received, the mock server will look if there is a matching interaction. If found it will return the specified response or 404 will be returned.
 
@@ -69,9 +67,9 @@ We have three kinds of interactions. They are
 * Mock Interactions
 * Pact Interactions
 
-#### Basic Interactions
+### Basic Interactions
 
-Use `addInteraction` to add a basic interaction to the server. It returns a string containing id of the interaction.
+Use `addInteraction` to add a basic interaction to the server. It returns a string containing id of the interaction. (*This id will be useful when you want add assertions based on call count or to check whether the interaction is exercised or not.*)
 
 ```javascript
 const mock = require('pactum').mock;
@@ -114,12 +112,12 @@ mock.start(3000);
 
 Now we have added 2 basic interactions to the server.
 
-* Invoking GET `/api/users/1` will return a JSON with user 1 details.
+* Invoking GET `/api/users/1` will return a JSON with user-1 details.
 * Invoking POST `/api/users/1` will return a status code 404.
 * Invoking GET `/api/users/2` will return a status code 401.
 * Invoking GET `/other` will return a status code 404.
 
-As you see, the mock server will perform an exact match on HTTP method & path to send a response back.
+Not on how the mock server will perform an exact match on HTTP method & path to send a response back.
 
 Now you have the basic understanding of how mock server works. Lets add more basic interactions, to learn more about them
 
@@ -147,7 +145,7 @@ mock.start(3000);
 
 By default basic interactions will ignore query params, headers & body while performing a match with the received request. 
 
-##### Basic Interaction API
+#### Basic Interaction Options
 
 | Property  | Description             |
 | --------  | ----------------------  |
@@ -159,96 +157,244 @@ By default basic interactions will ignore query params, headers & body while per
 | status    | response status code    |
 | return    | response body           |
 
-#### Mock Interactions
+### Mock Interactions
 
+Simplest way to add behavior to server is through basic interactions where query params, headers & body will be totally ignored while performing a match with the received request.
 
-#### addMockInteraction
-Type: `Function`<br>
-Returns: `string` - interaction id
+Mock interactions adds more capabilities to the basic interactions. Here the interaction is more descriptive & allows to **loosely match** a received request based on query params, headers & JSON body.
 
-Adds a mock interaction to the server.
+Use `addMockInteraction` to add a mock interaction to the server. It returns a string containing id of the interaction. (*This id will be useful when you want add assertions based on call count or to check whether the interaction is exercised or not.*)
 
 ```javascript
-pactum.mock.addMockInteraction({
+mock.addMockInteraction({
   withRequest: {
     method: 'GET',
-    path: '/api/projects/1'
+    path: '/api/projects'
   },
   willRespondWith: {
     status: 200,
     headers: {
       'content-type': 'application/json'
     },
+    body: [
+      {
+        id: 1,
+        name: 'Jon'
+      },
+      {
+        id: 2,
+        name: 'Snow'
+      }
+    ]
+  }
+});
+```
+
+* Invoking GET `/api/projects` will return a JSON array.
+* Invoking GET `/api/projects?id=1` will still return a JSON array.
+
+To further distinguish the responses, lets add two mock interactions with query params
+
+```javascript
+mock.addMockInteraction({
+  withRequest: {
+    method: 'GET',
+    path: '/api/projects',
+    query: {
+      id: 1
+    }
+  },
+  willRespondWith: {
+    status: 200,
     body: {
       id: 1,
-      name: 'fake'
+      name: 'Jon'
+    }
+  }
+});
+
+mock.addMockInteraction({
+  withRequest: {
+    method: 'GET',
+    path: '/api/projects',
+    query: {
+      id: 2
+    }
+  },
+  willRespondWith: {
+    status: 200,
+    body: {
+      id: 2,
+      name: 'Snow'
     }
   }
 });
 ```
 
-#### addMockInteractions
-Type: `Function`<br>
-Returns: `string[]` - interaction id's
+* Invoking GET `/api/projects` will return a status code 404.
+* Invoking GET `/api/projects?id=1` will return project-1 details.
+* Invoking GET `/api/projects?id=1&name=snow` will still return project-1 details.
+* Invoking GET `/api/projects?id=1&foo=boo` will still return project-1 details.
+* Invoking GET `/api/projects?id=2` will return project-2 details.
+* Invoking GET `/api/projects?id=3` will return a status code 404.
+* Invoking GET `/api/projects?name=Jon` will return a status code 404.
 
-Adds multiple mock interactions to the server.
+When query params are mentioned in the interaction, the received request is matched when it has the specified query param. Same applies for headers & body.
+
+Lets look at an example
 
 ```javascript
-pactum.mock.addMockInteractions([
-  {
-    withRequest: {
-      method: 'GET',
-      path: '/api/projects/1'
-    },
-    willRespondWith: {
-      status: 200,
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: {
-        id: 1,
-        name: 'fake'
-      }
+mock.addMockInteraction({
+  withRequest: {
+    method: 'POST',
+    path: '/api/users',
+    body: {
+      id: 3,
+      married: false,
+      country: 'True North'
     }
   },
-  {
-    withRequest: {
-      method: 'GET',
-      path: '/api/orders'
-    },
-    willRespondWith: {
-      status: 200,
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: [
-        {
-          item: 'box'
-        },
-        {
-          item: 'door'
-        }
-      ]
-    }
+  willRespondWith: {
+    status: 200
   }
-]);
+})
 ```
 
+Posting the below JSON to `/api/users` will get 200 response.
 
-#### addDefaultPactInteraction
-Type: `Function`<br>
-Returns: `string` - interaction id
+```json
+{
+  "id": 3,
+  "name": "Jon",
+  "married": false,
+  "house": "Stark",
+  "country": "True North"
+}
+```
 
-Adds a pact interaction to the server.
+Posting the below JSON to `/api/users` will get 404 response. The *id* & *country* fields won't match with the above interaction.
+
+```json
+{
+  "id": 4,
+  "name": "Jon",
+  "married": false,
+  "house": "Stark"
+}
+```
+
+#### Mock Interaction Options
+
+| Property                         | Description                     |
+| ------------------------------   | --------------------------      |
+| id                               | id of the interaction           |
+| provider                         | name of the provider            |
+| withRequest                      | request details                 |
+| withRequest.method               | HTTP method                     |
+| withRequest.path                 | api path                        |
+| withRequest.headers              | request headers                 |
+| withRequest.query                | query parameters                |
+| withRequest.body                 | request body                    |
+| withRequest.graphQL              | graphQL details                 |
+| withRequest.graphQL.query        | graphQL query                   |
+| withRequest.graphQL.variables    | graphQL variables               |
+| willRespondWith                  | response details                |
+| willRespondWith.status           | response status code            |
+| willRespondWith.headers          | response headers                |
+| willRespondWith.body             | response body                   |
+| willRespondWith.fixedDelay       | delays the response by ms       |
+| willRespondWith.randomDelay      | random delay details            |
+| willRespondWith.randomDelay.min  | delay the response by min ms    |
+| willRespondWith.randomDelay.max  | delay the response by max ms    |
+| willRespondWith.onCall           | response on consecutive calls   |
+| willRespondWith(req, res)        | response with custom function   |
+
+#### Behavior on consecutive calls
+
+`onCall` defines the behavior of the interaction on the *nth* call. Useful for testing sequential interactions.
 
 ```javascript
-pactum.mock.addDefaultPactInteraction({
+mock.addMockInteraction({
+  withRequest: {
+    method: 'GET',
+    path: '/api/health'
+  },
+  willRespondWith: {
+    onCall: {
+      0: {
+        status: 500
+      },
+      1: {
+        status: 200,
+        body: 'OK'
+      }
+    }
+  }
+})
+```
+
+* Invoking GET `/api/health` will return a status code 500.
+* Invoking GET `/api/health` again will return a status code 200.
+* Invoking GET `/api/health` again will return a status code 404.
+
+Note how the behavior of interaction falls back to the default behavior (*404*) on third call.
+
+We can also define the default behavior by providing normal response details along with `onCall` details.
+
+```javascript
+willRespondWith : {
+  status: 200,
+  onCall: {
+    0: {
+      status: 500
+    }
+  }
+}
+```
+
+#### Delays
+
+`fixedDelay` & `randomDelay` adds delay to the response. The following interaction will send a response after *1000 ms*.
+
+```javascript
+mock.addMockInteraction({
+  withRequest: {
+    method: 'POST',
+    path: '/api/users',
+    body: {
+      id: 3
+    }
+  },
+  willRespondWith: {
+    status: 200,
+    fixedDelay: 1000
+  }
+})
+```
+
+### Pact Interactions
+
+The final way of adding behavior to mock server is through pact interactions. It is similar to a mock interaction & supports most of the options from it.
+
+Major differences between mock & pact interactions are
+
+* Pact Interactions generate a contract file which is later used for [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+* Performs a **strong match** on a received requests query params & JSON body.
+* Performs a **loose match** on a received requests headers.
+
+Use `addPactInteraction` to add a pact interaction to the server. It returns a string containing id of the interaction. (*This id will be useful when you want add assertions based on call count or to check whether the interaction is exercised or not.*)
+
+```javascript
+mock.addPactInteraction({
   provider: 'project-service',
   state: 'there is a project with id 1',
   uponReceiving: 'a request for project 1',
   withRequest: {
     method: 'GET',
-    path: '/api/projects/1'
+    path: '/api/projects',
+    query: {
+      id: 1
+    }
   },
   willRespondWith: {
     status: 200,
@@ -263,122 +409,222 @@ pactum.mock.addDefaultPactInteraction({
 });
 ```
 
-#### addDefaultPactInteractions
-Type: `Function`<br>
-Returns: `string[]` - interaction id's
+#### Pact Interaction Options
 
-Adds multiple pact interactions to the server.
+| Property                         | Description                     |
+| ------------------------------   | -----------------------------   |
+| id                               | id of the interaction           |
+| provider                         | name of the provider            |
+| state                            | state of the provider           |
+| uponReceiving                    | description of the request      |
+| withRequest                      | request details                 |
+| withRequest.method               | HTTP method                     |
+| withRequest.path                 | api path                        |
+| withRequest.headers              | request headers                 |
+| withRequest.query                | query parameters                |
+| withRequest.body                 | request body                    |
+| withRequest.graphQL              | graphQL details                 |
+| withRequest.graphQL.query        | graphQL query                   |
+| withRequest.graphQL.variables    | graphQL variables               |
+| willRespondWith                  | response details                |
+| willRespondWith.status           | response status code            |
+| willRespondWith.headers          | response headers                |
+| willRespondWith.body             | response body                   |
+
+
+## Matching
+
+In real world applications, sometimes it is hard to match an expected request/response with actual request/response. To overcome such issues, **pactum** provides a mechanism for request & response matching.
+
+It supports following matchers
+
+* `like` or `somethingLike` - matches with the type
+* `regex` or `term` - matches with the regular expression
+* `eachLike` - matches all the elements in the array with the specified type
+* `contains` - checks if actual value contains a specified value in it
+
+Matchers can be applied to
+
+* Path (*supports only regex*)
+* Query Params
+* Headers
+* Body (*JSON*)
+
+### Type Matching
+
+Often, you will not care what the exact value is at a particular path is, you just care that a value is present and that it is of the expected type.
+
+* `like` or `somethingLike`
+* `eachLike`
+
+#### like
+
+Type matching for primitive data types - *string*/*number*/*boolean*
 
 ```javascript
-pactum.mock.addDefaultPactInteractions([
-  {
-    provider: 'project-service',
-    state: 'there is a project with id 1',
-    uponReceiving: 'a request for project 1',
-    withRequest: {
-      method: 'GET',
-      path: '/api/projects/1'
-    },
-    willRespondWith: {
-      status: 200,
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: {
-        id: 1,
-        name: 'fake'
+const { like } = pactum.matchers;
+const interaction = {
+  withRequest: {
+    method: 'GET',
+    path: '/api/orders',
+    query: {
+      // matches if it has id & of type string
+      id: like('abc')
+    }
+  },
+  willRespondWith: {
+    status: 200,
+    body: {
+      // Note: Response Matching is used in Contract Testing
+      // matches if it has quantity & active properties with number & bool types
+      quantity: like(2),
+      active: like(true)
+    }
+  }
+}
+```
+
+Type matching for objects in **pactum** deviates from in **pact.io** when matching nested objects.
+
+```javascript
+const { like } = pactum.matchers;
+const interaction = {
+  withRequest: {
+    method: 'POST',
+    path: '/api/orders',
+    // matches if the body is JSON 
+    // & it has quantity & active properties 
+    // & with number & boolean types respectively
+    body: like({
+      quantity: 2,
+      active: true
+    })
+  },
+  willRespondWith: {
+    status: 200
+  }
+}
+```
+
+```javascript
+// matching doesn't expand to nested objects
+const { like } = pactum.matchers;
+const interaction = {
+  withRequest: {
+    method: 'GET',
+    path: '/api/orders'
+  },
+  willRespondWith: {
+    status: 200,
+    // Note: Response Matching is used in Contract Testing
+    // matches if body is JSON object
+    // & it has quantity, active & item properties 
+    // & with number, bool & object types respectively
+    // & item has name & brand properties with 'car' & 'v40' values respectively
+    body: like({
+      quantity: 2,
+      active: true,
+      item: {
+        name: 'car',
+        brand: 'v40'
       }
-    }
-  },
-  {
-    provider: 'order-service',
-    state: 'there are orders',
-    uponReceiving: 'a request for orders',
-    withRequest: {
-      method: 'GET',
-      path: '/api/orders'
-    },
-    willRespondWith: {
-      status: 200,
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: [
-        {
-          item: 'box'
-        },
-        {
-          item: 'door'
-        }
-      ]
-    }
+    })
   }
-]);
+}
 ```
 
-#### removeDefaultInteraction
-Type: `Function`<br>
-
-Removes an interaction from the mock server.
-
 ```javascript
-pactum.mock.removeDefaultInteraction('interactionId');
+// to match nested objects with type, we need apply 'like()' explicitly to nested objects
+const { like } = pactum.matchers;
+const interaction = {
+  withRequest: {
+    method: 'POST',
+    path: '/api/orders',
+    // matches if body is JSON object
+    // & it has quantity, active, item & delivery properties 
+    // & with number, bool & object types respectively
+    // & item has name & brand properties with string types
+    // & delivery has pin property with type number 
+    // & delivery has state property with 'AP' as value
+    body: like({
+      quantity: 2,
+      active: true,
+      item: like({
+        name: 'car',
+        brand: 'v40'
+      }),
+      delivery: {
+        pin: like(500081),
+        state: 'AP'
+      }
+    })
+  },
+  willRespondWith: {
+    status: 200
+  }
+}
 ```
 
-#### clearDefaultInteractions
-Type: `Function`<br>
+#### eachLike
 
-Clears all default interactions
-
-```javascript
-pactum.mock.clearDefaultInteractions();
-```
-
-## Examples
+*eachLike* is similar to *like* but applies to arrays.
 
 ```javascript
-const pactum = require('pactum');
-
-pactum.mock.setDefaultPort(3000);
-
-pactum.mock.addMockInteraction({
+const { eachLike } = pactum.matchers;
+const interaction = {
   withRequest: {
     method: 'GET',
-    path: '/api/projects/1'
+    path: '/api/orders'
   },
   willRespondWith: {
     status: 200,
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: {
-      id: 1,
-      name: 'fake'
-    }
+    // Note: Response Matching is used in Contract Testing
+    // matches if body is an array 
+    // & each item in the array is an object
+    // & each object should have quantity, active, product properties
+    // & quantity, active, product should be of types number, boolean & object
+    // & product has a name property with string type
+    // & product has a colors property with array of strings
+    body: eachLike({
+      quantity: 2,
+      active: true,
+      product: like({
+        name: 'car',
+        colors: eachLike('blue')
+      }
+    })
   }
-});
+}
+```
 
-pactum.mock.addDefaultPactInteraction({
-  provider: 'order-service',
-  state: 'there is a order with id 1',
-  uponReceiving: 'a request for order 1',
+### Regex Matching
+
+Sometimes you will have keys in a request or response with values that are hard to know beforehand - timestamps and generated IDs are two examples.
+
+What you need is a way to say "I expect something matching this regular expression, but I don't care what the actual value is".
+
+#### regex
+
+`regex` has two flavors. One accepts a string & the other accepts an object as param. For *mock interactions* use the regex method which accepts string & for *pact interactions* use the regex method which accepts object.
+
+```javascript
+const { regex } = pactum.matchers;
+const interaction = {
   withRequest: {
-    method: 'GET',
-    path: '/api/orders/1'
+    method: 'POST',
+    path: regex('/api/projects/\\d+'),
+    body: {
+      name: 'Jon'
+      birthDate: regex({
+        generate: '03/05/2020',
+        matcher: /\d{2}\/\d{2}\/\d{4}/
+      })
+    }
   },
   willRespondWith: {
-    status: 200,
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: {
-      id: 1,
-      name: 'fake'
-    }
+    status: 200
   }
-});
-
-pactum.mock.start();
+}
 ```
 
 ## Remote API
