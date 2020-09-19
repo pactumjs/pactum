@@ -160,7 +160,7 @@ describe('getMatchingInteraction', () => {
     expect(matchingInteraction).not.to.be.null;
   });
 
-  it('single - not matching by extra property in actual query', () => {
+  it('single - matching by extra property in actual query', () => {
     const rawInteraction = {
       withRequest: {
         method: 'GET',
@@ -193,7 +193,7 @@ describe('getMatchingInteraction', () => {
       }
     };
     const matchingInteraction = utils.getMatchingInteraction(request, this.interactionsMap);
-    expect(matchingInteraction).to.be.null;
+    expect(matchingInteraction).not.to.be.null;
   });
 
   it('single - not matching by extra property in expected query', () => {
@@ -419,7 +419,7 @@ describe('getMatchingInteraction', () => {
     expect(matchingInteraction).not.to.be.null;
   });
 
-  it('single - not matching by extra property in actual body', () => {
+  it('single - matching by extra property in actual body - mock', () => {
     const rawInteraction = {
       withRequest: {
         method: 'GET',
@@ -455,7 +455,7 @@ describe('getMatchingInteraction', () => {
       }
     };
     const matchingInteraction = utils.getMatchingInteraction(request, this.interactionsMap);
-    expect(matchingInteraction).to.be.null;
+    expect(matchingInteraction).not.to.be.null;
   });
 
   it('single - not matching by extra property in expected body', () => {
@@ -670,6 +670,52 @@ describe('getMatchingInteraction', () => {
         body: {
           id: matcher.like('1'),
           married: 'true'
+        }
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    this.interactionsMap.set(interaction.id, interaction);
+    const request = {
+      method: 'GET',
+      path: '/api/projects/1',
+      query: {
+        id: '2',
+        name: 'Bake',
+        married: 'true'
+      },
+      body: {
+        id: '2',
+        name: 'Bake',
+        married: 'true'
+      }
+    };
+    const matchingInteraction = utils.getMatchingInteraction(request, this.interactionsMap);
+    expect(matchingInteraction).not.to.be.null;
+  });
+
+  it('single - not matching - with body, query & matching rules', () => {
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1',
+        query: {
+          id: matcher.like('1'),
+          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          married: 'true'
+        },
+        body: {
+          id: matcher.like('1'),
+          married: 'false'
         }
       },
       willRespondWith: {

@@ -60,8 +60,6 @@ describe('Interaction - Mock', () => {
       "withRequest": {
         "body": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": undefined,
@@ -138,8 +136,6 @@ describe('Interaction - Mock', () => {
       "withRequest": {
         "body": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": {
@@ -227,8 +223,6 @@ describe('Interaction - Mock', () => {
       "withRequest": {
         "body": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": {
@@ -339,8 +333,6 @@ describe('Interaction - Mock', () => {
       "withRequest": {
         "query": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "body": {
@@ -428,8 +420,6 @@ describe('Interaction - Mock', () => {
       "withRequest": {
         "query": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "body": {
@@ -501,8 +491,6 @@ describe('Interaction - Mock', () => {
     expect(interaction.withRequest).deep.equals({
       "body": undefined,
       "headers": undefined,
-      "ignoreBody": false,
-      "ignoreQuery": false,
       "method": "GET",
       "path": "/api/projects/1",
       "query": undefined,
@@ -559,8 +547,6 @@ describe('Interaction - Mock', () => {
       "withRequest": {
         "body": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": undefined,
@@ -640,8 +626,6 @@ describe('Interaction - Mock', () => {
       "withRequest": {
         "body": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": undefined,
@@ -733,8 +717,6 @@ describe('Interaction - Mock', () => {
       "withRequest": {
         "body": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": undefined,
@@ -824,8 +806,6 @@ describe('Interaction - Mock', () => {
       "withRequest": {
         "body": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": undefined,
@@ -908,6 +888,90 @@ describe('Interaction - Mock', () => {
       }
     };
     expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction request path provided - undefined');
+  });
+
+  it('invalid mock interaction - query as null', () => {
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/query',
+        query: null
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.query` should be object');
+  });
+
+  it('invalid mock interaction - query as string', () => {
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/query',
+        query: 'some query'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.query` should be object');
+  });
+
+  it('invalid mock interaction - query as empty string', () => {
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/query',
+        query: ''
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.query` should be object');
+  });
+
+  it('invalid mock interaction - query as array', () => {
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/query',
+        query: []
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.query` should be object');
   });
 
   it('invalid mock interaction - no response status', () => {
@@ -1154,8 +1218,6 @@ describe('Interaction - Mock', () => {
     expect(function () { new Interaction(rawInteraction, true); }).throws('Invalid interaction response onCall provided');
   });
 
-  
-
   after(() => {
     sandbox.restore();
   });
@@ -1223,8 +1285,6 @@ describe('Interaction - Pact', () => {
       "withRequest": {
         "body": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": undefined,
@@ -1304,8 +1364,6 @@ describe('Interaction - Pact', () => {
       "withRequest": {
         "body": undefined,
         "headers": undefined,
-        "ignoreBody": false,
-        "ignoreQuery": false,
         "method": "GET",
         "path": "/api/projects/1",
         "query": undefined,
@@ -1398,54 +1456,6 @@ describe('Interaction - Pact', () => {
       }
     };
     expect(function () { new Interaction(rawInteraction, false); }).to.throws('Invalid upon receiving description provided - undefined');
-  });
-
-  it('invalid pact interaction - with ignore query', () => {
-    const rawInteraction = {
-      provider: 'pro',
-      state: 'a state',
-      uponReceiving: 'description',
-      withRequest: {
-        method: 'GET',
-        path: '/api/projects/1',
-        ignoreQuery: true
-      },
-      willRespondWith: {
-        status: 200,
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: {
-          id: 1,
-          name: 'fake'
-        }
-      }
-    };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support ignore query`);
-  });
-
-  it('invalid pact interaction - with ignore body', () => {
-    const rawInteraction = {
-      provider: 'pro',
-      state: 'a state',
-      uponReceiving: 'description',
-      withRequest: {
-        method: 'GET',
-        path: '/api/projects/1',
-        ignoreBody: true
-      },
-      willRespondWith: {
-        status: 200,
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: {
-          id: 1,
-          name: 'fake'
-        }
-      }
-    };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support ignore body`);
   });
 
   it('invalid pact interaction - fixed delay', () => {

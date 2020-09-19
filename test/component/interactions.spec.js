@@ -284,8 +284,7 @@ describe('Mock', () => {
       .useMockInteraction({
         withRequest: {
           method: 'GET',
-          path: '/api/projects/1',
-          ignoreQuery: true
+          path: '/api/projects/1'
         },
         willRespondWith: {
           status: 200,
@@ -319,8 +318,7 @@ describe('Mock', () => {
           path: '/api/projects/1',
           query: {
             id: 1
-          },
-          ignoreQuery: true
+          }
         },
         willRespondWith: {
           status: 200,
@@ -529,8 +527,7 @@ describe('Mock', () => {
       .useMockInteraction({
         withRequest: {
           method: 'POST',
-          path: '/api/projects',
-          ignoreBody: true
+          path: '/api/projects'
         },
         willRespondWith: {
           status: 200,
@@ -562,8 +559,7 @@ describe('Mock', () => {
           path: '/api/projects',
           headers: {
             'content-type': 'application/x-www-form-urlencoded'
-          },
-          ignoreBody: true
+          }
         },
         willRespondWith: {
           status: 200,
@@ -591,8 +587,7 @@ describe('Mock', () => {
       .useMockInteraction({
         withRequest: {
           method: 'POST',
-          path: '/api/projects',
-          ignoreBody: true
+          path: '/api/projects'
         },
         willRespondWith: {
           status: 200,
@@ -622,8 +617,7 @@ describe('Mock', () => {
       .useMockInteraction({
         withRequest: {
           method: 'POST',
-          path: '/api/projects',
-          ignoreBody: true
+          path: '/api/projects'
         },
         willRespondWith: {
           status: 200,
@@ -646,7 +640,7 @@ describe('Mock', () => {
 
   it('GET - invalid interaction', async () => {
     await pactum.spec()
-      .get('http://localhost:9393/api/projects/1')
+      .get('http://localhost:9393/api/invalid/1')
       .withQueryParams({ id: '1' })
       .expectStatus(404)
       .expectBody('Interaction Not Found')

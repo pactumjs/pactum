@@ -3,7 +3,7 @@ const pactum = require('../../src/index');
 describe('Templates & Maps', () => {
 
   before(() => {
-    pactum.stash.loadDataTemplates({
+    pactum.stash.addDataTemplate({
       'User.NewUser': {
         FirstName: 'Jon',
         LastName: 'Snow',
@@ -15,7 +15,7 @@ describe('Templates & Maps', () => {
         Realm: 'The North'
       }
     });
-    pactum.stash.loadDataMaps({
+    pactum.stash.addDataMap({
       User: {
         FirstName: 'Jon',
         LastName: 'Snow',

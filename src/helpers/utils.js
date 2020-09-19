@@ -26,42 +26,17 @@ const utils = {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Path`);
         continue;
       }
-      let isValidQuery = true;
-      if (!interaction.withRequest.ignoreQuery) {
-        if (Object.keys(req.query).length > 0 || interaction.withRequest.query) {
-          isValidQuery = validateQuery(req.query, interaction.withRequest.query, interaction.withRequest.matchingRules);
-        }
-      } else {
-        if (interaction.withRequest.query) {
-          isValidQuery = validateQuery(req.query, interaction.withRequest.query, interaction.withRequest.matchingRules, true);
-        }
-      }
+      let isValidQuery = xValidateQuery(req, interaction);
       if (!isValidQuery) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Query Params`);
         continue;
       }
-      let isValidHeaders = true;
-      if (interaction.withRequest.headers) {
-        isValidHeaders = validateHeaders(req.headers, interaction.withRequest.headers, interaction.withRequest.matchingRules);
-      }
+      let isValidHeaders = xValidateHeaders(req, interaction);
       if (!isValidHeaders) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Headers`);
         continue;
       }
-      let isValidBody = true;
-      if (!interaction.withRequest.ignoreBody) {
-        if (interaction.withRequest.graphQL) {
-          isValidBody = graphQL.compare(req.body, interaction.withRequest.body);
-        } else {
-          if (typeof req.body === 'object') {
-            if (Object.keys(req.body).length > 0) {
-              isValidBody = validateBody(req.body, interaction.withRequest.body, interaction.withRequest.matchingRules);
-            }
-          } else if (req.body) {
-            isValidBody = validateBody(req.body, interaction.withRequest.body, interaction.withRequest.matchingRules);
-          }
-        }
-      }
+      let isValidBody = xValidateBody(req, interaction);
       if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
         return interaction;
       }
@@ -78,13 +53,22 @@ function validatePath(actual, expected, matchingRules) {
   return response.equal;
 }
 
-function validateQuery(actual, expected, matchingRules, partialMatch) {
-  if (typeof actual !== 'object' || typeof expected !== 'object') {
-    return false;
+function xValidateQuery(req, interaction) {
+  const { mock, withRequest } = interaction;
+  if (mock) {
+    if (withRequest.query) {
+      return validateQuery(req.query, withRequest.query, withRequest.matchingRules, mock);
+    }
+  } else if (Object.keys(req.query).length > 0 || withRequest.query) {
+    return validateQuery(req.query, withRequest.query, withRequest.matchingRules, mock);
   }
+  return true;
+}
+
+function validateQuery(actual, expected, matchingRules, mock) {
   const compare = new Compare();
   const response = compare.jsonMatch(actual, expected, matchingRules, '$.query');
-  if (response.equal && !partialMatch) {
+  if (response.equal && !mock) {
     for (const prop in actual) {
       if (!Object.prototype.hasOwnProperty.call(expected, prop)) {
         log.debug(`Query param not found - ${prop}`);
@@ -95,6 +79,14 @@ function validateQuery(actual, expected, matchingRules, partialMatch) {
   } else {
     return response.equal;
   }
+}
+
+function xValidateHeaders(req, interaction) {
+  const { withRequest } = interaction;
+  if (withRequest.headers) {
+    return validateHeaders(req.headers, withRequest.headers, withRequest.matchingRules);
+  }
+  return true;
 }
 
 function validateHeaders(actual, expected, matchingRules) {
@@ -112,10 +104,30 @@ function validateHeaders(actual, expected, matchingRules) {
   return response.equal;
 }
 
-function validateBody(actual, expected, matchingRules) {
+function xValidateBody(req, interaction) {
+  const { mock, withRequest } = interaction;
+  if (mock) {
+    if (withRequest.graphQL) {
+      return graphQL.compare(req.body, withRequest.body);
+    }
+    if (withRequest.body) {
+      return validateBody(req.body, withRequest.body, withRequest.matchingRules, mock);
+    }
+  } else {
+    if (withRequest.graphQL) {
+      return graphQL.compare(req.body, withRequest.body);
+    }
+    if (req.body || withRequest.body) {
+      return validateBody(req.body, withRequest.body, withRequest.matchingRules, mock);
+    }
+  }
+  return true;
+}
+
+function validateBody(actual, expected, matchingRules, mock) {
   const compare = new Compare();
   const response = compare.jsonMatch(actual, expected, matchingRules, '$.body');
-  if (response.equal) {
+  if (response.equal && !mock) {
     return compare.jsonMatch(expected, actual, matchingRules, '$.body').equal;
   } else {
     return response.equal;

@@ -1,19 +1,19 @@
 /**
  * loads data maps
  * @example
- * stash.loadDataMaps({
+ * stash.addDataMap({
  *  'User': {
  *    'Name': 'Snow',
  *    'Age': 26
  *  }
  * });
  */
-export function loadDataMaps(maps: object): void;
+export function addDataMap(maps: object): void;
 
 /**
  * loads data templates
  * @example
- * stash.loadDataTemplates({
+ * stash.addDataTemplate({
  *  'User.NewUser': {
  *    'Name': 'Snow',
  *    'Age': 26,
@@ -21,4 +21,4 @@ export function loadDataMaps(maps: object): void;
  *  }
  * });
  */
-export function loadDataTemplates(template: object): void;
+export function addDataTemplate(template: object): void;

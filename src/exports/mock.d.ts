@@ -7,7 +7,7 @@ export interface BasicInteraction {
   /** status code to return */
   status?: number;
   /** body to return */
-  return?: string | number | object;
+  return?: any;
 }
 
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD';
@@ -17,7 +17,7 @@ export interface GraphQLRequest {
   variables?: string;
 }
 
-export interface PactInteractionRequest {
+export interface InteractionRequest {
   method: RequestMethod;
   path: string;
   headers?: object;
@@ -26,14 +26,7 @@ export interface PactInteractionRequest {
   body?: any;
 }
 
-export interface MockInteractionRequest extends PactInteractionRequest {
-  /** ignores query while matching this interaction */
-  ignoreQuery: boolean;
-  /** ignores body while matching this interaction */
-  ignoreBody: boolean;
-}
-
-export interface PactInteractionResponse {
+export interface InteractionResponse {
   status: number;
   headers?: object;
   body?: object;
@@ -44,16 +37,16 @@ export interface RandomDelay {
   max: number;
 }
 
-export interface MockInteractionResponseWithDelay extends PactInteractionResponse {
+export interface InteractionResponseWithDelay extends InteractionResponse {
   fixedDelay?: number;
   randomDelay?: RandomDelay;
 }
 
 export interface OnCall {
-  [key: number]: MockInteractionResponseWithDelay
+  [key: number]: InteractionResponseWithDelay
 }
 
-export interface MockInteractionResponse extends MockInteractionResponseWithDelay {
+export interface MockInteractionResponse extends InteractionResponseWithDelay {
   onCall?: OnCall
 }
 
@@ -61,7 +54,7 @@ export interface MockInteractionResponse extends MockInteractionResponseWithDela
 export interface MockInteraction {
   id?: string;
   provider?: string;
-  withRequest: MockInteractionRequest;
+  withRequest: InteractionRequest;
   willRespondWith: MockInteractionResponse;
 }
 
@@ -73,8 +66,8 @@ export interface PactInteraction {
   state: string;
   /** description of the request */
   uponReceiving: string;
-  withRequest: PactInteractionRequest;
-  willRespondWith: PactInteractionResponse;
+  withRequest: InteractionRequest;
+  willRespondWith: InteractionResponse;
 }
 
 /**

@@ -5,7 +5,7 @@ let dataTemplate = {};
 
 const stash = {
 
-  loadDataMaps(maps) {
+  addDataMap(maps) {
     Object.assign(dataMap, maps);
     config.data.ref.map.processed = false;
   },
@@ -20,7 +20,7 @@ const stash = {
     config.data.ref.map.enabled = false;
   },
 
-  loadDataTemplates(templates) {
+  addDataTemplate(templates) {
     Object.assign(dataTemplate, templates);
     config.data.template.processed = false;
   },
