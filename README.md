@@ -230,7 +230,7 @@ Data management is made easy with this library by using the concept of *Data Tem
 ```javascript
 const stash = pactum.stash;
 
-stash.loadDataTemplates({
+stash.addDataTemplate({
   'User.New': {
     FirstName: 'Jon',
     LastName: 'Snow'

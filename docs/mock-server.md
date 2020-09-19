@@ -442,7 +442,7 @@ const pactum = require('pactum');
 const stash = pactum.stash;
 const mock = pactum.mock;
 
-stash.loadDataTemplates({
+stash.addDataTemplate({
   'User:New': {
     "FirstName": "Jon",
     "LastName": "Snow",

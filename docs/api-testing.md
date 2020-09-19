@@ -826,14 +826,14 @@ To solve these kind of problems, **pactum** comes with a concept of *Data Templa
 
 A Data Template is a standard format for a particular resource. Once a template is defined, it can be used across all the tests to perform a request.
 
-Use `stash.loadDataTemplates` to add a data template. To use the template in the tests, use `@DATA:TEMPLATE@` as key & the name of the template as value.
+Use `stash.addDataTemplate` to add a data template. To use the template in the tests, use `@DATA:TEMPLATE@` as key & the name of the template as value.
 
 ```javascript
 const pactum = require('pactum');
 const stash = pactum.stash;
 
 before(() => {
-  stash.loadDataTemplates({
+  stash.addDataTemplate({
     'User:New': {
       "FirstName": "Jon",
       "LastName": "Snow",
@@ -898,7 +898,7 @@ const pactum = require('pactum');
 const stash = pactum.stash;
 
 before(() => {
-  stash.loadDataTemplates({
+  stash.addDataTemplate({
     'User:New': {
       "FirstName": "Jon",
       "LastName": "Snow",
@@ -972,21 +972,21 @@ A Data Map is a collection of data that can be referenced in data templates or t
 * When a data template is used, the current object will be replaced.
 * When a data map is used, the current object's property value will be replaced.
 
-Use `stash.loadDataMaps` to add a data map. To use the map in the tests or in the template, use `@DATA:MAP::<json-query>@` as the value.
+Use `stash.addDataMap` to add a data map. To use the map in the tests or in the template, use `@DATA:MAP::<json-query>@` as the value.
 
 ```javascript
 const pactum = require('pactum');
 const stash = pactum.stash;
 
 before(() => {
-  stash.loadDataMaps({
+  stash.addDataMap({
     'User': {
       'FirstName': 'Jon',
       'LastName': 'Snow',
       'Country': 'North'
     }
   });
-  stash.loadDataTemplates({
+  stash.addDataTemplate({
     'User:New': {
       "FirstName": "@DATA:MAP::User.FirstName@",
       "LastName": "@DATA:MAP::User.LastName@",
@@ -1016,7 +1016,7 @@ const pactum = require('pactum');
 const stash = pactum.stash;
 
 before(() => {
-  stash.loadDataMaps({
+  stash.addDataMap({
     'User': {
       'Default': {
         'FirstName': '@DATA:MAP::User.FirstNames[0]@',
