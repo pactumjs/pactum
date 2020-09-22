@@ -731,6 +731,24 @@ describe('Mock', () => {
       .toss();
   });
 
+  it('GET - with core options', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/core'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393')
+      .withCore({
+        path: '/api/core'
+      })
+      .expectStatus(200);
+  });
+
 });
 
 describe('Mock Interactions - Handler', () => {

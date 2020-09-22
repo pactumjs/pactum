@@ -50,14 +50,12 @@ npm install --save-dev pactum
 # install a test runner to run pactum tests
 # mocha / jest / cucumber
 npm install mocha -g
-
-# Create a js file
-touch http.test.js
 ```
 
-Copy the below code
+Create a JS file & copy the below code
 
 ```javascript
+// test.js
 const pactum = require('pactum');
 
 it('should be a teapot', async () => {
@@ -71,7 +69,7 @@ Running the test
 
 ```shell
 # mocha is a test framework to execute test cases
-mocha http.test.js
+mocha test.js
 ```
 
 ## API
@@ -188,6 +186,7 @@ To pass additional parameters to the request, we can chain or use the following 
 | `withForm`                | object to send as form data               |
 | `withMultiPartFormData`   | object to send as multi part form data    |
 | `withRequestTimeout`      | sets request timeout                      |
+| `withCore`                | http request options                      |
 | `__setLogLevel`           | sets log level for troubleshooting        |
 | `toss`                    | runs the spec & returns a promise         |
 

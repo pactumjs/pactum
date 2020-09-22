@@ -1,3 +1,4 @@
+import { RequestOptions } from 'http';
 import FormData from 'form-data';
 import { BasicInteraction, MockInteraction, PactInteraction } from '../exports/mock';
 import { ExpectHandlerFunction, RetryHandlerFunction, ReturnHandlerFunction } from '../exports/handler';
@@ -276,6 +277,20 @@ declare class Spec {
    *   .expectStatus(200);
    */
   withMultiPartFormData(key: string, value: string|Buffer|Array|ArrayBuffer, options?: FormData.AppendOptions): Spec;
+
+  /**
+   * with http core options
+   * @see https://nodejs.org/api/http.html#http_http_request_url_options_callback
+   * 
+   * @example
+   * await pactum.spec()
+   *  .get('some-url')
+   *  .withCore({
+   *    agent: myAgent
+   *  })
+   *  .expectStatus(200);
+   */
+  withCore(options: RequestOptions): Spec;
 
   /**
    * retry request on specific conditions before making assertions

@@ -203,6 +203,11 @@ class Spec {
     return this;
   }
 
+  withCore(options) {
+    this._request.core = options;
+    return this;
+  }
+
   retry(options) {
     if (!options) {
       throw new PactumRequestError('Invalid retry options');
