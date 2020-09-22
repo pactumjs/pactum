@@ -115,7 +115,7 @@ xdescribe('JSON Placeholder', () => {
 
   it('DELETE', async () => {
     await pactum.spec()
-      .del('https://jsonplaceholder.typicode.com/posts/1')
+      .delete('https://jsonplaceholder.typicode.com/posts/1')
       .expectStatus(200)
       .toss();
   });

@@ -90,7 +90,7 @@ describe('Remote- post single mock interaction', () => {
 
   after(async () => {
     await pactum.spec()
-      .del(`http://localhost:9393/api/pactum/mockInteraction?id=${id}`)
+      .delete(`http://localhost:9393/api/pactum/mockInteraction?id=${id}`)
       .expectStatus(200)
       .toss();
   });
@@ -216,7 +216,7 @@ describe('Remote- post single pact interaction', () => {
 
   after(async () => {
     await pactum.spec()
-      .del(`http://localhost:9393/api/pactum/pactInteraction?id=${id}`)
+      .delete(`http://localhost:9393/api/pactum/pactInteraction?id=${id}`)
       .expectStatus(200)
       .toss();
   });

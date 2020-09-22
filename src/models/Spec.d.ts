@@ -156,10 +156,10 @@ declare class Spec {
    * The DELETE method deletes the specified resource.
    * @example
    * await pactum
-   *  .del('https://jsonplaceholder.typicode.com/posts/1')
+   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectStatus(200);
    */
-  del(url: string): Spec;
+  delete(url: string): Spec;
 
   /**
    * adds query params to the request url - /comments?id=1&user=snow&sort=asc
@@ -327,7 +327,7 @@ declare class Spec {
    * expects a status code on the response
    * @example
    * await pactum
-   *  .del('https://jsonplaceholder.typicode.com/posts/1')
+   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectStatus(200);
    */
   expectStatus(code: number): Spec;

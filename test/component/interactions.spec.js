@@ -53,7 +53,7 @@ describe('Basic Interactions', () => {
       .useInteraction({
         delete: '/api/projects/1'
       })
-      .del('http://localhost:9393/api/projects/1')
+      .delete('http://localhost:9393/api/projects/1')
       .expectStatus(200);
   });
 

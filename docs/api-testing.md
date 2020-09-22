@@ -171,7 +171,7 @@ await pactum.spec().get('http://httpbin.org/status/200');
 await pactum.spec().post('http://httpbin.org/status/200');
 await pactum.spec().put('http://httpbin.org/status/200');
 await pactum.spec().patch('http://httpbin.org/status/200');
-await pactum.spec().del('http://httpbin.org/status/200');
+await pactum.spec().delete('http://httpbin.org/status/200');
 await pactum.spec().head('http://httpbin.org/status/200');
 ```
 
