@@ -439,6 +439,11 @@ declare class Spec {
   expectResponseTime(value: number): Spec;
 
   /**
+   * stores spec response data 
+   */
+  stores(key: string, value: string): Spec;
+
+  /**
    * returns custom response from json response using custom handler
    * @example
    * const id = await pactum

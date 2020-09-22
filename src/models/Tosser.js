@@ -4,7 +4,9 @@ const helper = require('../helpers/helper');
 const config = require('../config');
 const log = require('../helpers/logger');
 const handler = require('../exports/handler');
+const stash = require('../exports/stash');
 const processor = require('../helpers/dataProcessor');
+const dataProcessor = require('../helpers/dataProcessor');
 
 class Tosser {
 
@@ -14,6 +16,7 @@ class Tosser {
     this.server = spec.server;
     this.state = spec._state;
     this.expect = spec._expect;
+    this.stores = spec._stores;
     this.returns = spec._returns;
     this.mockInteractions = spec.mockInteractions;
     this.pactInteractions = spec.pactInteractions;
@@ -31,6 +34,7 @@ class Tosser {
     this.validateError();
     this.validateInteractions();
     this.validateResponse();
+    this.storeSpecData();
     return this.getOutput();
   }
 
@@ -116,6 +120,16 @@ class Tosser {
 
   validateResponse() {
     this.expect.validate(this.request, this.response);
+  }
+
+  storeSpecData() {
+    for (let i = 0; i < this.stores.length; i++) {
+      const store = this.stores[i];
+      const value = jqy(store.value, { data: this.response.json }).value;
+      const specData = {};
+      specData[store.key] = value;
+      stash.addDataSpec(specData);
+    }
   }
 
   getOutput() {

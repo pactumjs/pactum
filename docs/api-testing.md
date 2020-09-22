@@ -647,9 +647,11 @@ pactum.request.setDefaultHeader('content-type', 'application/json');
 
 API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to the next tests using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions.
 
+#### returns 
+
 Use `returns` method to return custom response from the received JSON.
 
-#### json-query
+##### json-query
 
 ```javascript
 const pactum = require('pactum');
@@ -685,7 +687,7 @@ it('first & second posts should have comments', async () => {
 });
 ```
 
-#### AdHoc Handler
+##### AdHoc Handler
 
 We can also use a custom handler function to return data. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects. 
 
@@ -703,7 +705,7 @@ it('should return all posts and first post should have comments', async () => {
 });
 ```
 
-#### Common Handler
+##### Common Handler
 
 We can also use a custom common handler function to return data & use it at different places.
 
@@ -730,6 +732,55 @@ it('should return all posts and first post should have comments', async () => {
 ```
 
 **Note**: *While evaluating the string passed to the returns function, the library sees if there is a handler function with the name. If not found it will execute the json-query.*
+
+#### stores
+
+Use `stores` method to save custom response from the received JSON. This method accepts two arguments `key` & `value`.
+
+* `key` is the string that can be referenced in other specs.
+* `value` is the json-query to fetch the response data & save it against the key.
+
+```javascript
+await pactum.spec()
+  .get('http://jsonplaceholder.typicode.com/posts')
+  .stores('FirstPost', '[0]')
+  .stores('SecondPost', '[1]');
+
+/*
+
+Lets say the response is
+  [
+    {
+      id: 1,
+      user: 'jon'
+    },
+    {
+      id: 2,
+      user: 'snow'
+    }
+  ]
+
+  @DATA:SPEC::FirstPost@ will contain the first item in the response JSON
+    {
+      id: 1,
+      user: 'jon'
+    }
+
+  @DATA:SPEC::SecondPost@ will contain the second item in the response JSON
+    {
+      id: 2,
+      user: 'snow'
+    }
+*/
+
+await pactum.spec()
+  .patch('http://jsonplaceholder.typicode.com/posts')
+  .withJson({
+    id: '@DATA:SPEC::FirstPost.id@'
+    title: 'new title'
+  });
+});
+```
 
 ### Retry Mechanism
 

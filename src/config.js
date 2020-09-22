@@ -22,6 +22,9 @@ const config = {
       },
       fun: {
         enabled: false
+      },
+      spec: {
+        enabled: false
       }
     },
     template: {

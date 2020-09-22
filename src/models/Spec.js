@@ -17,6 +17,7 @@ class Spec {
     this._request = {};
     this._response = null;
     this._returns = [];
+    this._stores = [];
     this._expect = new Expect();
     this._state = new State();
     this.previousLogLevel = null;
@@ -307,6 +308,11 @@ class Spec {
 
   returns(handler) {
     this._returns.push(handler);
+    return this;
+  }
+
+  stores(key, value) {
+    this._stores.push({ key, value });
     return this;
   }
 
