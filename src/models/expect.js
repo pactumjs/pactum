@@ -39,7 +39,9 @@ class Expect {
 
   validateInteractions(interactions) {
     for (const [id, interaction] of interactions) {
-      assert.ok(interaction.exercised, `Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+      if (!interaction.exercised) {
+        this.fail(`Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+      }
     }
   }
 
@@ -54,13 +56,19 @@ class Expect {
       const expectedHeaderObject = this.headers[i];
       const expectedHeader = expectedHeaderObject.key;
       const expectedHeaderValue = expectedHeaderObject.value;
-      assert.ok(response.headers[expectedHeader], `Header '${expectedHeader}' not present in HTTP response`);
+      if (!response.headers[expectedHeader]) {
+        this.fail(`Header '${expectedHeader}' not present in HTTP response`);
+      }
       if (expectedHeaderValue !== undefined) {
         const actualHeaderValue = response.headers[expectedHeader];
         if (expectedHeaderValue instanceof RegExp) {
-          assert.ok(expectedHeaderValue.test(actualHeaderValue), `Header regex (${expectedHeaderValue}) did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
+          if (!expectedHeaderValue.test(actualHeaderValue)) {
+            this.fail(`Header regex (${expectedHeaderValue}) did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
+          }
         } else {
-          assert.ok(expectedHeaderValue.toLowerCase() === actualHeaderValue.toLowerCase(), `Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
+          if (expectedHeaderValue.toLowerCase() !== actualHeaderValue.toLowerCase()) {
+            this.fail(`Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
+          }
         }
       }
     }
@@ -71,13 +79,19 @@ class Expect {
       const expectedHeaderObject = this.headerContains[i];
       const expectedHeader = expectedHeaderObject.key;
       const expectedHeaderValue = expectedHeaderObject.value;
-      assert.ok(response.headers[expectedHeader], `Header '${expectedHeader}' not present in HTTP response`);
+      if (!response.headers[expectedHeader]) {
+        this.fail(`Header '${expectedHeader}' not present in HTTP response`);
+      }
       if (expectedHeaderValue !== undefined) {
         const actualHeaderValue = response.headers[expectedHeader];
         if (expectedHeaderValue instanceof RegExp) {
-          assert.ok(expectedHeaderValue.test(actualHeaderValue), `Header regex (${expectedHeaderValue}) did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
+          if (!expectedHeaderValue.test(actualHeaderValue)) {
+            this.fail(`Header regex (${expectedHeaderValue}) did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
+          }
         } else {
-          assert.ok(actualHeaderValue.toLowerCase().includes(expectedHeaderValue.toLowerCase()), `Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
+          if (!actualHeaderValue.toLowerCase().includes(expectedHeaderValue.toLowerCase())) {
+            this.fail(`Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
+          }
         }
       }
     }
@@ -100,16 +114,24 @@ class Expect {
       if (expectedBodyValue instanceof RegExp) {
         if (response.body instanceof Buffer) {
           const text = response.body.toString();
-          assert.ok(expectedBodyValue.test(text), `Value '${expectedBodyValue}' not found in response body`);
+          if (!expectedBodyValue.test(text)) {
+            this.fail(`Value '${expectedBodyValue}' not found in response body`);
+          }
         } else {
-          assert.ok(expectedBodyValue.test(response.body), `Value '${expectedBodyValue}' not found in response body`);
+          if (!expectedBodyValue.test(response.body)) {
+            this.fail(`Value '${expectedBodyValue}' not found in response body`);
+          }
         }
       } else {
         if (response.body instanceof Buffer) {
           const text = response.body.toString();
-          assert.ok(text.indexOf(expectedBodyValue) !== -1, `Value '${expectedBodyValue}' not found in response body`);
+          if (text.indexOf(expectedBodyValue) === -1) {
+            this.fail(`Value '${expectedBodyValue}' not found in response body`);
+          }
         } else {
-          assert.ok(response.body.indexOf(expectedBodyValue) !== -1, `Value '${expectedBodyValue}' not found in response body`);
+          if (response.body.indexOf(expectedBodyValue) === -1) {
+            this.fail(`Value '${expectedBodyValue}' not found in response body`);
+          }
         }
       }
     }
@@ -127,7 +149,9 @@ class Expect {
       const expectedJSON = this.jsonLike[i];
       const compare = new Compare();
       const res = compare.jsonLike(response.json, expectedJSON);
-      assert.ok(res.equal, res.message);
+      if (!res.equal) {
+        this.fail(res.message);
+      }
     }
   }
 
@@ -162,14 +186,16 @@ class Expect {
       jsv.addSchema('test', { common: jS });
       const validation = jsv.validate('test#/common', response.json);
       if (validation) {
-        assert.fail(`Response doesn't match with JSON schema - ${JSON.stringify(validation, null, 2)}`);
+        this.fail(`Response doesn't match with JSON schema - ${JSON.stringify(validation, null, 2)}`);
       }
     }
   }
 
   _validateResponseTime(response) {
     if (this.responseTime !== null) {
-      assert.ok(response.responseTime <= this.responseTime, `Request took longer than ${this.responseTime}ms: (${response.responseTime}ms).`);
+      if (response.responseTime > this.responseTime) {
+        this.fail(`Request took longer than ${this.responseTime}ms: (${response.responseTime}ms).`);
+      }
     }
   }
 

@@ -217,7 +217,7 @@ await pactum.spec()
 API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. With **Pactum**, passing response data to the next tests is very easy. 
 
 * `returns` allows us to return custom data from the response using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions.
-* `stores` allows us to save response data which can be referenced later using [json-query](https://www.npmjs.com/package/json-query).
+* `stores` allows us to save response data under *data management* which can be referenced later using [json-query](https://www.npmjs.com/package/json-query).
 
 Learn more about it at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#nested-dependent-http-calls)
 
@@ -241,7 +241,7 @@ it('should return all posts and update first posts title', async () => {
   const postID = await pactum.spec()
     .get('http://jsonplaceholder.typicode.com/posts')
     .expectStatus(200)
-    .returns('FirstPostId', '[0].id');
+    .stores('FirstPostId', '[0].id');
   const response = await pactum.spec()
     .patch(`http://jsonplaceholder.typicode.com/posts`)
     .withJson({

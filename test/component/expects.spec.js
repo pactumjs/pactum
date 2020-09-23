@@ -239,6 +239,18 @@ describe('Expects', () => {
     expect(err.message).equals(`Value '/Hello World/' not found in response body`);
   });
 
+  it('failed json like', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .get('http://localhost:9393/api/users/1')
+        .expectJsonLike({ id: 1})
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals(`Json doesn't have type 'object' at '$' but found 'string'`);
+  });
+
   it('failed json schema', async () => {
     let err;
     try {
@@ -427,6 +439,18 @@ describe('Expects', () => {
       err = error;   
     }
     expect(err).not.undefined; 
+  });
+
+  it('failed response time', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .get('http://localhost:9393/api/users/1')
+        .expectResponseTime(1)
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).contains(`Request took longer than 1ms`);
   });
 
 });

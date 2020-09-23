@@ -735,16 +735,17 @@ it('should return all posts and first post should have comments', async () => {
 
 #### stores
 
-Use `stores` method to save custom response from the received JSON. This method accepts two arguments `key` & `value`.
+Use `stores` method to save response data under *data management* which can be referenced later in specs. This method accepts two arguments `key` & `value`.
 
-* `key` is the string that can be referenced in other specs.
-* `value` is the json-query to fetch the response data & save it against the key.
+* `key` is a string that can be referenced in other parts to fetch corresponding value.
+* `value` is a *json-query* that will fetch custom response data & save it against the key.
 
 ```javascript
 await pactum.spec()
   .get('http://jsonplaceholder.typicode.com/posts')
   .stores('FirstPost', '[0]')
-  .stores('SecondPost', '[1]');
+  .stores('SecondPost', '[1]')
+  .stores('AllPosts', '.');
 
 /*
 
@@ -771,6 +772,8 @@ Lets say the response is
       id: 2,
       user: 'snow'
     }
+  
+  @DATA:SPEC::AllPosts@ will have the entire JSON response.
 */
 
 await pactum.spec()
