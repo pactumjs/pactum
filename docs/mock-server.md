@@ -4,6 +4,8 @@ Mock Server allows you to mock any server or service via HTTP or HTTPS, such as 
 
 At one end **pactum** is a REST API testing tool and on the other, it can act as a standalone mock server. It packs with a powerful request & response matching & you can spin it up in a matter of seconds.
 
+Mock server comes in handy while using this library for component & contract testing.
+
 ## Table of contents
 
 * [Getting Started](#getting-started)
@@ -59,7 +61,7 @@ await mock.stop();
 
 ## Adding Behavior
 
-By now, you know how to start & stop a mock server. To add behavior, we need to add [interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions) to it. An interaction contains a message with request & response details. When a request is received, the mock server will look if there is a matching interaction. If found it will return the specified response or 404 will be returned.
+By now, you know how to start & stop a mock server. To add behavior, we need to add [interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions) to it. An interaction contains request & response details. When a real request is sent to mock server, it will try to match the received request with interactions request. If a match is found it will return the specified response or 404 will be returned.
 
 We have three kinds of interactions. They are
 
@@ -107,23 +109,6 @@ mock.addInteraction({
   status: 401
 });
 
-mock.start(3000);
-```
-
-Now we have added 2 basic interactions to the server.
-
-* Invoking GET `/api/users/1` will return a JSON with user-1 details.
-* Invoking POST `/api/users/1` will return a status code 404.
-* Invoking GET `/api/users/2` will return a status code 401.
-* Invoking GET `/other` will return a status code 404.
-
-Note on how the mock server will perform an exact match on the HTTP method & path to send a response back.
-
-Now you have a basic understanding of how the mock server works. Let's add more basic interactions.
-
-```javascript
-const mock = require('pactum').mock;
-
 mock.addInteraction({
   get: '/api/users',
   return: []
@@ -137,11 +122,18 @@ mock.addInteraction({
 mock.start(3000);
 ```
 
+Now we have added 2 basic interactions to the server.
+
+* Invoking GET `/api/users/1` will return a JSON with user-1 details.
+* Invoking POST `/api/users/1` will return a status code 404.
+* Invoking GET `/api/users/2` will return a status code 401.
+* Invoking GET `/other` will return a status code 404.
 * Invoking GET `/api/users` will return an empty array.
 * Invoking GET `/api/users?id=1` will still return an empty array.
-* Invoking GET `/api/users/1` will return a status code 404.
 * Invoking POST `/api/users` with an empty body will return `'OK'`.
 * Invoking POST `/api/users` with some body will still return `'OK'`.
+
+Note on how the mock server will perform an exact match on the HTTP method & path to send a response back.
 
 By default, basic interactions will ignore query params, headers & body while performing a match with the received request. 
 
@@ -163,7 +155,7 @@ The simplest way to add behavior to the mock server is through basic interaction
 
 Mock interactions are more descriptive & allows to **loosely match** a received request based on query params, headers & JSON body.
 
-Use `addMockInteraction` to add a mock interaction to the server. It returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
+Use `addMockInteraction` to add a mock interaction to the server. It has `withRequest` & `willRespondWith` objects to handle a request. It returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
 
 ```javascript
 mock.addMockInteraction({

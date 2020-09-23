@@ -110,7 +110,8 @@ it('should have a user with name bolt', () => {
 
 #### Breaking
 
-When you want to make your tests much more clearer, you can break your spec into multiple steps. This will come into handy when integrating **pactum** with **cucumber**.
+When you want to make your tests much more clearer, you can break your spec into multiple steps. This will come into handy when integrating **pactum** with **cucumber**. See [pactum-cucumber-boilerplate](https://github.com/ASaiAnudeep/pactum-cucumber-boilerplate) for more details on pactum & cucumber integration.
+
 
 Use `pactum.spec()` to get an instance of the spec. With **spec** you can build your request & expectations in multiple steps.
 
@@ -118,7 +119,7 @@ Once the request is built, perform the request by calling `.toss()` method and w
 
 **Assertions should be made after the request is performed & resolved**.
 
-Assertions can be made either by using `pactum.expect` or `spec.response()`.
+Assertions should be made by either using `pactum.expect` or `spec.response()`.
 
 ```javascript
 const pactum = require('pactum');

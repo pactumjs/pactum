@@ -6,7 +6,7 @@
 ![Size](https://img.shields.io/bundlephobia/minzip/pactum)
 ![Platform](https://img.shields.io/node/v/pactum)
 
-**pactum** is a REST API Testing Tool used to write e2e, integration, contract & component or service level tests. It comes with a powerful *mock server* which can control the state of external dependencies & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
+**pactum** is a REST API Testing Tool used to write e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
 This library can be integrated with test runners like **cucumber**, **mocha**, **jest** or any other runners. It is *simple*, *fast*, *easy* and *fun* to use.
 
@@ -73,6 +73,8 @@ mocha /path/to/test
 ```
 
 #### Using Cucumber
+
+See [pactum-cucumber-boilerplate](https://github.com/ASaiAnudeep/pactum-cucumber-boilerplate) for more details on pactum & cucumber integration.
 
 ```javascript
 // steps.js
