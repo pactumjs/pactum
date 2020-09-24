@@ -102,22 +102,22 @@ const validator = {
 
   validateRandomDelay(randomDelay) {
     if (!helper.isValidObject(randomDelay)) {
-      throw new PactumInteractionError(`Invalid Random Delay provided- ${randomDelay}`);
+      throw new PactumInteractionError('`willRespondWith.randomDelay` should be object');
     }
     if (typeof randomDelay.min !== 'number') {
-      throw new PactumInteractionError(`Invalid min value provided in Random Delay - ${randomDelay.min}`);
+      throw new PactumInteractionError('`willRespondWith.randomDelay.min` should be number');
     }
     if (typeof randomDelay.max !== 'number') {
-      throw new PactumInteractionError(`Invalid max value provided in Random Delay - ${randomDelay.max}`);
+      throw new PactumInteractionError('`willRespondWith.randomDelay.max` should be number');
     }
     if (randomDelay.min < 0) {
-      throw new PactumInteractionError(`Min value in Random Delay should be greater than 0`);
+      throw new PactumInteractionError('`willRespondWith.randomDelay.min` should be greater than 0');
     }
     if (randomDelay.max < 0) {
-      throw new PactumInteractionError(`Max value in Random Delay should be greater than 0`);
+      throw new PactumInteractionError('`willRespondWith.randomDelay.max` should be greater than 0');
     }
     if (randomDelay.min > randomDelay.max) {
-      throw new PactumInteractionError(`Min value in Random Delay should be less than Max Value`);
+      throw new PactumInteractionError('`willRespondWith.randomDelay.min` should be less than `willRespondWith.randomDelay.max`');
     }
   },
 

@@ -6,7 +6,6 @@ const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
-const mock = require('../exports/mock');
 const responseExpect = require('../exports/expect');
 const handler = require('../exports/handler');
 
@@ -21,7 +20,6 @@ class Spec {
     this._expect = new Expect();
     this._state = new State();
     this.previousLogLevel = null;
-    this.server = mock._server;
     this.mockInteractions = new Map();
     this.pactInteractions = new Map();
   }

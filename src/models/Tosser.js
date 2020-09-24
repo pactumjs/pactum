@@ -3,6 +3,7 @@ const jqy = require('json-query');
 const helper = require('../helpers/helper');
 const config = require('../config');
 const log = require('../helpers/logger');
+const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const stash = require('../exports/stash');
 const processor = require('../helpers/dataProcessor');
@@ -13,7 +14,6 @@ class Tosser {
   constructor(spec) {
     this.spec = spec;
     this.request = spec._request;
-    this.server = spec.server;
     this.state = spec._state;
     this.expect = spec._expect;
     this.stores = spec._stores;
@@ -22,6 +22,7 @@ class Tosser {
     this.pactInteractions = spec.pactInteractions;
     this.previousLogLevel = spec.previousLogLevel;
     this.response = {};
+    this.server = mock._server;
   }
 
   async toss() {

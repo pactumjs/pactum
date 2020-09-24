@@ -1056,7 +1056,7 @@ describe('Interaction - Mock', () => {
         randomDelay: "ten"
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid Random Delay provided- ten');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay` should be object');
   });
 
   it('invalid mock interaction - random delay min is string', () => {
@@ -1080,7 +1080,7 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid min value provided in Random Delay -');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.min` should be number');
   });
 
   it('invalid mock interaction - random delay max is string', () => {
@@ -1104,7 +1104,7 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid max value provided in Random Delay - undefined');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.max` should be number');
   });
 
   it('invalid mock interaction - random delay min is less than 0', () => {
@@ -1129,7 +1129,7 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Min value in Random Delay should be greater than 0');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.min` should be greater than 0');
   });
 
   it('invalid mock interaction - random delay max is less than 0', () => {
@@ -1154,10 +1154,10 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Max value in Random Delay should be greater than 0');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.max` should be greater than 0');
   });
 
-  it('invalid mock interaction - random delay max is less than 0', () => {
+  it('invalid mock interaction - random delay max is less than min', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {
       withRequest: {
@@ -1179,7 +1179,7 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Min value in Random Delay should be less than Max Value');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.min` should be less than `willRespondWith.randomDelay.max`');
   });
 
   it('invalid mock interaction - null response', () => {
