@@ -53,11 +53,13 @@ class Server {
 
   addMockInteraction(id, interaction) {
     this.mockInteractions.set(id, interaction);
+    log.debug('Mock Interaction added to Server -', id);
   }
 
   addPactInteraction(id, interaction) {
     store.addInteraction(interaction);
     this.pactInteractions.set(id, interaction);
+    log.debug('Pact Interaction added to Server -', id);
   }
 
   removeInteraction(id) {

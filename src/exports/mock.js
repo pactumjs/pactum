@@ -64,12 +64,10 @@ const mock = {
         this._server.addMockInteraction(interactionObj.id, interactionObj);
         ids.push(interactionObj.id);
       }
-      log.debug('Added default mock interactions with ids', ids);
       return ids;
     } else {
       const interactionObj = new Interaction(interaction, true);
       this._server.addMockInteraction(interactionObj.id, interactionObj);
-      log.debug('Added default mock interaction with id', interactionObj.id);
       return interactionObj.id;
     }
   },
@@ -82,12 +80,10 @@ const mock = {
         this._server.addPactInteraction(interactionObj.id, interactionObj);
         ids.push(interactionObj.id);
       }
-      log.debug('Added default pact interactions with ids', ids);
       return ids;
     } else {
       const interactionObj = new Interaction(interaction);
       this._server.addPactInteraction(interactionObj.id, interactionObj);
-      log.debug('Added default pact interactions with id', interactionObj.id);
       return interactionObj.id;
     }
   },
@@ -109,6 +105,10 @@ const mock = {
 
   getInteractionCallCount(id) {
     return this._server.getInteractionDetails(id).callCount;
+  },
+
+  useRemoteServer(url) {
+    config.mock.remote = url;
   }
 
 }

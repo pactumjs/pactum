@@ -67,7 +67,7 @@ describe('Mock', () => {
   it('addMockInteraction - invalid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {};
-    expect(() => { mock.addMockInteraction(rawInteraction); }).throws('Invalid interaction request provided - undefined');
+    expect(() => { mock.addMockInteraction(rawInteraction); }).throws('`withRequest` is required');
   });
 
   it('addPactInteraction - valid', () => {
@@ -99,7 +99,7 @@ describe('Mock', () => {
   it('addPactInteraction - invalid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {};
-    expect(() => { mock.addPactInteraction(rawInteraction); }).throws('Invalid provider name provided - undefined');
+    expect(() => { mock.addPactInteraction(rawInteraction); }).throws('`provider` is required');
   });
 
   it('removeInteraction - invalid interaction id - null', () => {

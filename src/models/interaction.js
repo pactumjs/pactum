@@ -1,9 +1,7 @@
 const helper = require('../helpers/helper');
 const processor = require('../helpers/dataProcessor');
+const validator = require('../helpers/interactionValidator');
 const config = require('../config');
-const { PactumInteractionError } = require('../helpers/errors');
-
-const ALLOWED_REQUEST_METHODS = new Set(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD']);
 
 class InteractionRequest {
 
@@ -99,7 +97,7 @@ class Interaction {
     processor.processMaps();
     processor.processTemplates();
     this.setDefaults(rawInteraction, mock);
-    this.validateInteraction(rawInteraction, mock);
+    validator.validateInteraction(rawInteraction, mock);
     const { id, consumer, provider, state, uponReceiving, withRequest, willRespondWith } = rawInteraction;
     this.id = id || helper.getRandomId();
     this.count = 0;
@@ -129,134 +127,6 @@ class Interaction {
       if (mock && helper.isValidObject(willRespondWith) && willRespondWith.onCall) {
         willRespondWith.status = willRespondWith.status ? willRespondWith.status : 404;
         willRespondWith.body = willRespondWith.body ? willRespondWith.body : 'Response Not Found';
-      }
-    }
-  }
-
-  validateInteraction(rawInteraction, mock) {
-    if (!helper.isValidObject(rawInteraction)) {
-      throw new PactumInteractionError(`Invalid interaction provided - ${rawInteraction}`);
-    }
-    const { withRequest, willRespondWith } = rawInteraction;
-    if (!mock) {
-      this.validateRequiredFieldsPact(rawInteraction);
-    }
-    this.validateWithRequest(withRequest);
-    if (!mock) {
-      this.validateInvalidFieldsPact(withRequest, willRespondWith);
-    }
-    this.validateWillRespondWith(willRespondWith, mock);
-  }
-
-  validateRequiredFieldsPact(rawInteraction) {
-    const { provider, state, uponReceiving, consumer } = rawInteraction;
-    if (typeof provider !== 'string' || !provider) {
-      throw new PactumInteractionError(`Invalid provider name provided - ${provider}`);
-    }
-    if (typeof state !== 'string' || !state) {
-      throw new PactumInteractionError(`Invalid state provided - ${state}`);
-    }
-    if (typeof uponReceiving !== 'string' || !uponReceiving) {
-      throw new PactumInteractionError(`Invalid upon receiving description provided - ${uponReceiving}`);
-    }
-    if (!consumer && !config.pact.consumer) {
-      throw new PactumInteractionError(`Consumer Name should be set before adding a pact interaction -> pactum.pact.setConsumerName()`);
-    }
-  }
-
-  validateWithRequest(withRequest) {
-    if (typeof withRequest !== 'object') {
-      throw new PactumInteractionError(`Invalid interaction request provided - ${withRequest}`);
-    }
-    if (typeof withRequest.method !== 'string' || !withRequest.method) {
-      throw new PactumInteractionError(`Invalid interaction request method provided - ${withRequest.method}`);
-    }
-    if (!ALLOWED_REQUEST_METHODS.has(withRequest.method)) {
-      throw new PactumInteractionError(`Invalid interaction request method provided - ${withRequest.method}`);
-    }
-    if (withRequest.path === undefined || withRequest.path === null) {
-      throw new PactumInteractionError(`Invalid interaction request path provided - ${withRequest.path}`);
-    }
-    if (typeof withRequest.query !== 'undefined') {
-      if (!withRequest.query || typeof withRequest.query !== 'object' || Array.isArray(withRequest.query)) {
-        throw new PactumInteractionError('`withRequest.query` should be object');
-      }
-    }
-  }
-
-  validateInvalidFieldsPact(withRequest, willRespondWith) {
-    if (typeof willRespondWith === 'function') {
-      throw new PactumInteractionError(`Pact interaction won't support function response`);
-    }
-    if (willRespondWith.fixedDelay) {
-      throw new PactumInteractionError(`Pact interaction won't support delays`);
-    }
-    if (willRespondWith.randomDelay) {
-      throw new PactumInteractionError(`Pact interaction won't support delays`);
-    }
-    if (willRespondWith.onCall) {
-      throw new PactumInteractionError(`Pact interaction won't support consecutive call responses`);
-    }
-  }
-
-  validateWillRespondWith(willRespondWith) {
-    if (helper.isValidObject(willRespondWith)) {
-      if (typeof willRespondWith.status !== 'number') {
-        throw new PactumInteractionError(`Invalid interaction response status provided - ${willRespondWith.status}`);
-      }
-      if (willRespondWith.fixedDelay) {
-        this.validateFixedDelay(willRespondWith.fixedDelay);
-      }
-      if (willRespondWith.randomDelay) {
-        this.validateRandomDelay(willRespondWith.randomDelay);
-      }
-      this.validateOnCall(willRespondWith.onCall);
-    } else {
-      if (typeof willRespondWith !== 'function') {
-        throw new PactumInteractionError(`Invalid interaction response provided - ${willRespondWith}`);
-      }
-    }
-  }
-
-  validateFixedDelay(fixedDelay) {
-    if (typeof fixedDelay !== 'number') {
-      throw new PactumInteractionError(`Invalid interaction response Fixed Delay provided - ${fixedDelay}`);
-    }
-    if (fixedDelay < 0) {
-      throw new PactumInteractionError(`Interaction response Fixed Delay should be greater than 0`);
-    }
-  }
-
-  validateRandomDelay(randomDelay) {
-    if (!helper.isValidObject(randomDelay)) {
-      throw new PactumInteractionError(`Invalid Random Delay provided- ${randomDelay}`);
-    }
-    if (typeof randomDelay.min !== 'number') {
-      throw new PactumInteractionError(`Invalid min value provided in Random Delay - ${randomDelay.min}`);
-    }
-    if (typeof randomDelay.max !== 'number') {
-      throw new PactumInteractionError(`Invalid max value provided in Random Delay - ${randomDelay.max}`);
-    }
-    if (randomDelay.min < 0) {
-      throw new PactumInteractionError(`Min value in Random Delay should be greater than 0`);
-    }
-    if (randomDelay.max < 0) {
-      throw new PactumInteractionError(`Max value in Random Delay should be greater than 0`);
-    }
-    if (randomDelay.min > randomDelay.max) {
-      throw new PactumInteractionError(`Min value in Random Delay should be less than Max Value`);
-    }
-  }
-
-  validateOnCall(onCall) {
-    if (helper.isValidObject(onCall)) {
-      for (const prop in onCall) {
-        try {
-          parseInt(prop);
-          this.validateWillRespondWith(onCall[prop]);
-        } catch(error) {
-          throw new PactumInteractionError(`Invalid interaction response onCall provided`);
-        }
       }
     }
   }

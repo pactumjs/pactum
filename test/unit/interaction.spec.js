@@ -848,7 +848,7 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction request method provided - undefined');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.method` is required');
   });
 
   it('invalid mock interaction - no request method', () => {
@@ -868,7 +868,7 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction request method provided - get');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.method` is invalid');
   });
 
   it('invalid mock interaction - no request path', () => {
@@ -887,7 +887,7 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction request path provided - undefined');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.path` is required');
   });
 
   it('invalid mock interaction - query as null', () => {
@@ -990,7 +990,7 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction response status provided - undefined');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.status` is required');
   });
 
   it('invalid mock interaction - fixed delay is string', () => {
@@ -1012,7 +1012,7 @@ describe('Interaction - Mock', () => {
         fixedDelay: "ten"
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction response Fixed Delay provided - ten');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.fixedDelay` should be number');
   });
 
   it('invalid mock interaction - fixed delay is less than 0', () => {
@@ -1034,7 +1034,7 @@ describe('Interaction - Mock', () => {
         fixedDelay: -22
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Interaction response Fixed Delay should be greater than 0');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.fixedDelay` should be greater than 0');
   });
 
   it('invalid mock interaction - random delay is string', () => {
@@ -1191,15 +1191,15 @@ describe('Interaction - Mock', () => {
       },
       willRespondWith: null
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('Invalid interaction response provided - null');
+    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith` is required');
   });
 
   it('invalid mock interaction - null', () => {
-    expect(function () { new Interaction(null, true); }).to.throws('Invalid interaction provided - null');
+    expect(function () { new Interaction(null, true); }).to.throws('`interaction` is required');
   });
 
   it('invalid mock interaction - undefined', () => {
-    expect(function () { new Interaction(undefined, true); }).to.throws('Invalid interaction provided - undefined');
+    expect(function () { new Interaction(undefined, true); }).to.throws('`interaction` is required');
   });
 
   it('invalid mock interaction - onCall - string keys', () => {
@@ -1411,7 +1411,7 @@ describe('Interaction - Pact', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws('Invalid provider name provided - undefined');
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws('`provider` is required');
   });
 
   it('invalid pact interaction - no state name', () => {
@@ -1433,7 +1433,7 @@ describe('Interaction - Pact', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws('Invalid state provided - undefined');
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws('`state` is required');
   });
 
   it('invalid pact interaction - no upon receiving description', () => {
@@ -1455,7 +1455,7 @@ describe('Interaction - Pact', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws('Invalid upon receiving description provided - undefined');
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws('`uponReceiving` is required');
   });
 
   it('invalid pact interaction - fixed delay', () => {
@@ -1544,7 +1544,7 @@ describe('Interaction - Pact', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws('Consumer Name should be set before adding a pact interaction -> pactum.pact.setConsumerName()');
+    expect(function () { new Interaction(rawInteraction, false); }).to.throws('`consumer` is required => Add consumer through `pactum.consumer.setConsumerName()`');
   });
 
   after(() => {

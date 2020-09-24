@@ -50,7 +50,6 @@ class Spec {
       rawInteraction = handler.getMockInteractionHandler(rawInteraction)({ data });
     }
     const interaction = new Interaction(rawInteraction, true);
-    log.debug('Mock Interaction added to Mock Server -', interaction.id);
     this.mockInteractions.set(interaction.id, interaction);
     return this;
   }
@@ -60,7 +59,6 @@ class Spec {
       rawInteraction = handler.getPactInteractionHandler(rawInteraction)({ data });
     }
     const interaction = new Interaction(rawInteraction, false);
-    log.debug('Pact Interaction added to Mock Server -', interaction.id);
     this.pactInteractions.set(interaction.id, interaction);
     return this;
   }
