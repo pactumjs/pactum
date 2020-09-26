@@ -33,7 +33,7 @@ describe('Interaction - Mock', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -109,7 +109,7 @@ describe('Interaction - Mock', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -196,7 +196,7 @@ describe('Interaction - Mock', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -306,7 +306,7 @@ describe('Interaction - Mock', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -393,7 +393,7 @@ describe('Interaction - Mock', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -520,7 +520,7 @@ describe('Interaction - Mock', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -597,7 +597,7 @@ describe('Interaction - Mock', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -680,7 +680,7 @@ describe('Interaction - Mock', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -767,7 +767,7 @@ describe('Interaction - Mock', () => {
     const interaction = new Interaction(rawInteraction, true);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -1258,7 +1258,7 @@ describe('Interaction - Pact', () => {
     const interaction = new Interaction(rawInteraction, false);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": 'unit-test-consumer',
       "mock": false,
       "provider": 'pro',
@@ -1337,7 +1337,7 @@ describe('Interaction - Pact', () => {
     const interaction = new Interaction(rawInteraction, false);
     expect(interaction).to.deep.equals({
       "id": "random",
-      "count": 0,
+      "callCount": 0,
       "consumer": 'custom-consumer',
       "mock": false,
       "provider": 'pro',

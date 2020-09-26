@@ -20,8 +20,9 @@ class Spec {
     this._expect = new Expect();
     this._state = new State();
     this.previousLogLevel = null;
-    this.mockInteractions = new Map();
-    this.pactInteractions = new Map();
+    this.basicInteractions = [];
+    this.mockInteractions = [];
+    this.pactInteractions = [];
   }
 
   setState(name, data) {
@@ -29,35 +30,18 @@ class Spec {
     return this;
   }
 
-  useInteraction(basicInteraction, data) {
-    if (typeof basicInteraction === 'string') {
-      basicInteraction = handler.getInteractionHandler(basicInteraction)({ data });
-    }
-    const rawInteraction = {
-      withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
-      willRespondWith: {
-        status: basicInteraction.status || 200,
-        body: basicInteraction.return || ''
-      }
-    };
-    return this.useMockInteraction(rawInteraction);
-  }
-
-  useMockInteraction(rawInteraction, data) {
-    if (typeof rawInteraction === 'string') {
-      rawInteraction = handler.getMockInteractionHandler(rawInteraction)({ data });
-    }
-    const interaction = new Interaction(rawInteraction, true);
-    this.mockInteractions.set(interaction.id, interaction);
+  useInteraction(interaction, data) {
+    this.basicInteractions.push({ interaction, data });
     return this;
   }
 
-  usePactInteraction(rawInteraction, data) {
-    if (typeof rawInteraction === 'string') {
-      rawInteraction = handler.getPactInteractionHandler(rawInteraction)({ data });
-    }
-    const interaction = new Interaction(rawInteraction, false);
-    this.pactInteractions.set(interaction.id, interaction);
+  useMockInteraction(interaction, data) {
+    this.mockInteractions.push({ interaction, data });
+    return this;
+  }
+
+  usePactInteraction(interaction, data) {
+    this.pactInteractions.push({ interaction, data });
     return this;
   }
 

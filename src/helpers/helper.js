@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const log = require('./logger');
+const { PactumInteractionError } = require('./errors');
 
 const helper = {
 
@@ -199,6 +200,9 @@ const helper = {
     const request = {
       method: 'GET'
     };
+    if(!interaction) {
+      throw new PactumInteractionError('`interaction` is required');
+    }
     if (interaction.get) {
       request.path = interaction.get;
     } else if (interaction.post) {

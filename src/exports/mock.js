@@ -1,8 +1,10 @@
 const Interaction = require('../models/interaction');
 const Server = require('../models/server');
-const { PactumConfigurationError, PactumInteractionError } = require('../helpers/errors');
+const { PactumConfigurationError } = require('../helpers/errors');
 const log = require('../helpers/logger');
 const helper = require('../helpers/helper');
+const remote = require('../helpers/remoteServer');
+const handler = require('../exports/handler');
 
 const config = require('../config');
 
@@ -29,11 +31,14 @@ const mock = {
     config.mock.port = port;
   },
 
-  addInteraction(interaction) {
+  addInteraction(interaction, data) {
     if (Array.isArray(interaction)) {
       const rawInteractions = [];
       for (let i = 0; i < interaction.length; i++) {
-        const basicInteraction = interaction[i];
+        let basicInteraction = interaction[i];
+        if (typeof basicInteraction === 'string') {
+          basicInteraction = handler.getInteractionHandler(basicInteraction)({ data });
+        }
         const rawInteraction = {
           withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
           willRespondWith: {
@@ -45,6 +50,9 @@ const mock = {
       }
       return this.addMockInteraction(rawInteractions);
     } else {
+      if (typeof interaction === 'string') {
+        interaction = handler.getInteractionHandler(interaction)({ data });
+      }
       const rawInteraction = {
         withRequest: helper.getRequestFromBasicInteraction(interaction),
         willRespondWith: {
@@ -56,55 +64,82 @@ const mock = {
     }
   },
 
-  addMockInteraction(interaction) {
-    if (Array.isArray(interaction)) {
-      const ids = [];
-      for (let i = 0; i < interaction.length; i++) {
-        const interactionObj = new Interaction(interaction[i], true);
-        this._server.addMockInteraction(interactionObj.id, interactionObj);
-        ids.push(interactionObj.id);
-      }
-      return ids;
-    } else {
-      const interactionObj = new Interaction(interaction, true);
-      this._server.addMockInteraction(interactionObj.id, interactionObj);
-      return interactionObj.id;
+  addMockInteraction(interactions, data) {
+    let alone = false;
+    if (!Array.isArray(interactions)) {
+      alone = true;
+      interactions = [interactions];
     }
+    if (config.mock.remote) {
+      return remote.addMockInteraction(interactions, data);
+    }
+    const ids = [];
+    for (let i = 0; i < interactions.length; i++) {
+      let raw = interactions[i];
+      if (typeof raw === 'string') {
+        raw = handler.getMockInteractionHandler(raw)({ data });
+      }
+      const interaction = new Interaction(raw, true);
+      this._server.addMockInteraction(interaction.id, interaction);
+      ids.push(interaction.id);
+    }
+    return alone ? ids[0] : ids;
   },
 
-  addPactInteraction(interaction) {
-    if (Array.isArray(interaction)) {
-      const ids = [];
-      for (let i = 0; i < interaction.length; i++) {
-        const interactionObj = new Interaction(interaction[i], false);
-        this._server.addPactInteraction(interactionObj.id, interactionObj);
-        ids.push(interactionObj.id);
-      }
-      return ids;
-    } else {
-      const interactionObj = new Interaction(interaction);
-      this._server.addPactInteraction(interactionObj.id, interactionObj);
-      return interactionObj.id;
+  addPactInteraction(interactions, data) {
+    let alone = false;
+    if (!Array.isArray(interactions)) {
+      alone = true;
+      interactions = [interactions];
     }
+    if (config.mock.remote) {
+      return remote.addPactInteraction(interactions, data);
+    }
+    const ids = [];
+    for (let i = 0; i < interactions.length; i++) {
+      let raw = interactions[i];
+      if (typeof raw === 'string') {
+        raw = handler.getPactInteractionHandler(raw)({ data });
+      }
+      const interaction = new Interaction(raw, false);
+      this._server.addPactInteraction(interaction.id, interaction);
+      ids.push(interaction.id);
+    }
+    return alone ? ids[0] : ids;
   },
 
-  removeInteraction(interactionId) {
-    if (typeof interactionId !== 'string' || !interactionId) {
-      throw new PactumInteractionError(`Invalid interaction id - ${interactionId}`);
+  getInteraction(ids) {
+    let alone = false;
+    if (!Array.isArray(ids)) {
+      ids = [ids];
+      alone = true;
     }
-    this._server.removeInteraction(interactionId);
+    if (config.mock.remote) {
+      return remote.getInteraction(ids);
+    }
+    const interactions = [];
+    ids.forEach(id => interactions.push(this._server.getInteraction(id)));
+    interactions.forEach(interaction => { 
+      interaction.exercised = interaction.callCount > 0;
+    });
+    return alone ? interactions[0] : interactions;
+  },
+
+  removeInteraction(ids) {
+    if (!Array.isArray(ids)) {
+      ids = [ids];
+    }
+    if (config.mock.remote) {
+      return remote.removeInteraction(ids);
+    }
+    ids.forEach(id => this._server.removeInteraction(id));
   },
 
   clearInteractions() {
+    if (config.mock.remote) {
+      return remote.clearInteractions();
+    }
     this._server.clearAllInteractions();
-  },
-
-  isInteractionExercised(id) {
-    return this._server.getInteractionDetails(id).exercised;
-  },
-
-  getInteractionCallCount(id) {
-    return this._server.getInteractionDetails(id).callCount;
   },
 
   useRemoteServer(url) {

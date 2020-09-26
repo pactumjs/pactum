@@ -673,7 +673,7 @@ Once the server is started, interact with the following API to control the mock 
 
 ### Mock Interactions
 
-#### /api/pactum/mockInteraction
+#### /api/pactum/mockInteractions
 
 ##### GET
 
@@ -681,10 +681,10 @@ Returns a single or all mock interactions.
 
 ```Shell
 # Fetches a mock interaction with id "m1uh9"
-curl --location --request GET 'http://localhost:9393/api/pactum/mockInteraction?id=m1uh9'
+curl --location --request GET 'http://localhost:9393/api/pactum/mockInteractions?id=m1uh9'
 
 # Fetches all mock interactions
-curl --location --request GET 'http://localhost:9393/api/pactum/mockInteraction'
+curl --location --request GET 'http://localhost:9393/api/pactum/mockInteractions'
 ```
 
 Response - returns all the mock interactions
@@ -718,7 +718,7 @@ Response - returns all the mock interactions
 Adds multiple mock interactions to the server.
 
 ```Shell
-curl --location --request POST 'http://localhost:9393/api/pactum/mockInteraction' \
+curl --location --request POST 'http://localhost:9393/api/pactum/mockInteractions' \
 --header 'Content-Type: application/json' \
 --data-raw '[{
     "withRequest": {
@@ -753,15 +753,15 @@ Removes a mock interaction or all mock interactions from the mock server.
 
 ```Shell
 # Removes a single mock interaction with id m1uh9
-curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteraction?id=m1uh9'
+curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteractions?id=m1uh9'
 
 # Removes all mock interactions
-curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteraction'
+curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteractions'
 ```
 
 ### Pact Interactions
 
-#### /api/pactum/pactInteraction
+#### /api/pactum/pactInteractions
 
 ##### GET
 
@@ -769,10 +769,10 @@ Returns a single or all pact interactions.
 
 ```Shell
 # Fetches a pact interaction with id "m1uh9"
-curl --location --request GET 'http://localhost:9393/api/pactum/pactInteraction?id=m1uh9'
+curl --location --request GET 'http://localhost:9393/api/pactum/pactInteractions?id=m1uh9'
 
 # Fetches all pact interactions
-curl --location --request GET 'http://localhost:9393/api/pactum/pactInteraction'
+curl --location --request GET 'http://localhost:9393/api/pactum/pactInteractions'
 ```
 
 Response - returns all the pact interactions
@@ -810,7 +810,7 @@ Response - returns all the pact interactions
 Adds multiple pact interactions to the server.
 
 ```Shell
-curl --location --request POST 'http://localhost:9393/api/pactum/pactInteraction' \
+curl --location --request POST 'http://localhost:9393/api/pactum/pactInteractions' \
 --header 'Content-Type: application/json' \
 --data-raw '[{
     "consumer": "consumer-name",
@@ -849,10 +849,10 @@ Removes a pact interaction or all pact interactions from the mock server.
 
 ```Shell
 # Removes a single pact interaction with id m1uh9
-curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteraction?id=m1uh9'
+curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteractions?id=m1uh9'
 
 # Removes all pact interactions
-curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteraction'
+curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteractions'
 ```
 
 ## Next

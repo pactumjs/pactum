@@ -102,18 +102,6 @@ describe('Mock', () => {
     expect(() => { mock.addPactInteraction(rawInteraction); }).throws('`provider` is required');
   });
 
-  it('removeInteraction - invalid interaction id - null', () => {
-    expect(() => { mock.removeInteraction(null); }).throws('Invalid interaction id - null');
-  });
-
-  it('removeInteraction - invalid interaction id', () => {
-    expect(() => { mock.removeInteraction(''); }).throws('Invalid interaction id - ');
-  });
-
-  it('removeInteraction - invalid interaction id - undefined', () => {
-    expect(() => { mock.removeInteraction(); }).throws('Invalid interaction id - undefined');
-  });
-
   it('removeInteraction', () => {
     mock.removeInteraction('id');
     expect(this.serverRemoveInteractionStub.callCount).equals(1, 'should remove default mock interaction');
@@ -255,11 +243,6 @@ describe('Mock', () => {
     const id = mock.addPactInteraction(rawInteractions);
     expect(id).to.deep.equals(['random', 'random']);
     expect(this.serverAddPactInteractionStub.callCount).equals(2, 'should add two default pact interactions');
-  });
-
-  it('getInteractionCallCount - not exist', () => {
-    const count = mock.getInteractionCallCount('NOT_EXIST');
-    expect(count).equals(0);
   });
 
   afterEach(() => {

@@ -70,6 +70,12 @@ export interface PactInteraction {
   willRespondWith: InteractionResponse;
 }
 
+export interface InteractionDetails {
+  id: string;
+  exercised: boolean;
+  callCount: number;
+}
+
 /**
  * starts the mock server on port 9393
  */
@@ -98,6 +104,9 @@ export function stop(): Promise<void>;
  */
 export function addInteraction(interaction: BasicInteraction): string;
 export function addInteraction(interactions: BasicInteraction[]): string[];
+export function addInteraction(interaction: BasicInteraction): Promise<string>;
+export function addInteraction(interactions: BasicInteraction[]): Promise<string[]>;
+
 
 /**
  * adds a mock interaction
@@ -116,6 +125,8 @@ export function addInteraction(interactions: BasicInteraction[]): string[];
  */
 export function addMockInteraction(interaction: MockInteraction): string;
 export function addMockInteraction(interaction: MockInteraction[]): string[];
+export function addMockInteraction(interaction: MockInteraction): Promise<string>;
+export function addMockInteraction(interaction: MockInteraction[]): Promise<string[]>;
 
 /**
  * adds pact interaction used for contract testing
@@ -137,12 +148,25 @@ export function addMockInteraction(interaction: MockInteraction[]): string[];
  */
 export function addPactInteraction(interaction: PactInteraction): string;
 export function addPactInteraction(interactions: PactInteraction[]): string[];
+export function addPactInteraction(interaction: PactInteraction): Promise<string>;
+export function addPactInteraction(interactions: PactInteraction[]): Promise<string[]>;
+
+/**
+ * returns interaction details
+ */
+export function getInteraction(id: string): InteractionDetails;
+export function getInteraction(ids: string[]): InteractionDetails[];
+export function getInteraction(id: string): Promise<InteractionDetails>;
+export function getInteraction(ids: string[]): Promise<InteractionDetails[]>;
 
 /**
  * removes specified interaction from the mock server
  * @param id interaction id
  */
 export function removeInteraction(id: string): void;
+export function removeInteraction(ids: string[]): void;
+export function removeInteraction(id: string): Promise<void>;
+export function removeInteraction(ids: string[]): Promise<void>;
 
 /**
  * clears all interactions from the server
@@ -150,13 +174,7 @@ export function removeInteraction(id: string): void;
 export function clearInteractions(): void;
 
 /**
- * returns true if specified interaction is exercised
- * @param id interaction id
+ * use remote pactum server
+ * all methods in mock will return promises
  */
-export function isInteractionExercised(id: string): boolean;
-
-/**
- * returns the number of time the interaction is used
- * @param id interaction id
- */
-export function getInteractionCallCount(id: string): number;
+export function useRemoteServer(url: string): void;

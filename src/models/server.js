@@ -97,6 +97,17 @@ class Server {
     this.clearPactInteractions();
   }
 
+  getInteraction(id) {
+    if (this.mockInteractions.has(id)) {
+      return this.mockInteractions.get(id);  
+    } else if (this.pactInteractions.has(id)) {
+      return this.pactInteractions.get(id);
+    } else {
+      log.warn(`Interaction Not Found - ${id}`);
+      return null;
+    }
+  }
+
   getInteractionDetails(id) {
     let interaction = {};
     if (this.mockInteractions.has(id)) {
@@ -108,7 +119,7 @@ class Server {
     }
     return {
       exercised: interaction.exercised || false,
-      callCount: interaction.count || 0
+      callCount: interaction.callCount || 0
     }
   }
 
@@ -150,8 +161,8 @@ function sendInteractionFoundResponse(req, res, interaction) {
     willRespondWith(req, res);
   } else {
     let response = {};
-    if (willRespondWith[interaction.count]) {
-      response = willRespondWith[interaction.count];
+    if (willRespondWith[interaction.callCount]) {
+      response = willRespondWith[interaction.callCount];
     } else {
       response = willRespondWith;
     }
@@ -164,7 +175,7 @@ function sendInteractionFoundResponse(req, res, interaction) {
       setTimeout(() => sendResponseBody(res, response.body), delay);
     }
   }
-  interaction.count += 1;
+  interaction.callCount += 1;
 }
 
 /**
@@ -226,10 +237,10 @@ function registerPactumRemoteRoutes(server) {
         res.write("OK");
         res.end();
         break;
-      case '/api/pactum/mockInteraction':
+      case '/api/pactum/mockInteractions':
         handleRemoteInteractions(req, res, server, 'MOCK');
         break;
-      case '/api/pactum/pactInteraction':
+      case '/api/pactum/pactInteractions':
         handleRemoteInteractions(req, res, server, 'PACT');
         break;
       case '/api/pactum/pacts/save':
@@ -269,20 +280,35 @@ function handleRemoteInteractions(req, response, server, interactionType) {
         res.send(ids);
         break;
       case 'GET':
-        if (req.query.id) {
-          rawInteractions.push(interactions.get(req.query.id).rawInteraction);
+        if (req.query.ids) {
+          const ids = req.query.ids.split(',');
+          ids.forEach(id => {
+            const intObj = interactions.get(id);
+            if (intObj) {
+              const raw = JSON.parse(JSON.stringify(intObj.rawInteraction));
+              raw.id = intObj.id;
+              raw.exercised = intObj.exercised || false;
+              raw.callCount = intObj.callCount;
+              rawInteractions.push(raw)
+            }
+          });
         } else {
           for (const [id, interaction] of interactions) {
             log.trace('Fetching remote interaction', id);
-            rawInteractions.push(interaction.rawInteraction);
+            const raw = JSON.parse(JSON.stringify(interaction.rawInteraction));
+            raw.id = interaction.id;
+            raw.exercised = interaction.exercised || false;
+            raw.callCount = interaction.callCount;
+            rawInteractions.push(raw);
           }
         }
         res.status(200);
         res.send(rawInteractions);
         break;
       case 'DELETE':
-        if (req.query.id) {
-          interactions.delete(req.query.id);
+        if (req.query.ids) {
+          const ids = req.query.ids.split(',');
+          ids.forEach(id => interactions.delete(id));
         } else {
           interactions.clear();
         }

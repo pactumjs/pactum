@@ -38,7 +38,8 @@ class Expect {
   }
 
   validateInteractions(interactions) {
-    for (const [id, interaction] of interactions) {
+    for (let i = 0; i < interactions.length; i++) {
+      const interaction = interactions[i];
       if (!interaction.exercised) {
         this.fail(`Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
       }

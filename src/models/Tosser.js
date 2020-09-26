@@ -7,7 +7,6 @@ const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const stash = require('../exports/stash');
 const processor = require('../helpers/dataProcessor');
-const dataProcessor = require('../helpers/dataProcessor');
 
 class Tosser {
 
@@ -18,20 +17,23 @@ class Tosser {
     this.expect = spec._expect;
     this.stores = spec._stores;
     this.returns = spec._returns;
+    this.basicInteractions = spec.basicInteractions;
     this.mockInteractions = spec.mockInteractions;
     this.pactInteractions = spec.pactInteractions;
     this.previousLogLevel = spec.previousLogLevel;
     this.response = {};
     this.server = mock._server;
+    this.mockIds = [];
+    this.pactIds = [];
   }
 
   async toss() {
     this.updateRequest();
     await this.setState()
-    this.addInteractionsToServer();
+    await this.addInteractionsToServer();
     await this.setResponse();
     this.setPreviousLogLevel();
-    this.removeInteractionsFromServer();
+    await this.removeInteractionsFromServer();
     this.validateError();
     this.validateInteractions();
     this.validateResponse();
@@ -58,12 +60,18 @@ class Tosser {
     return this.state.set(this.spec);
   }
 
-  addInteractionsToServer() {
-    for (const [id, interaction] of this.mockInteractions) {
-      this.server.addMockInteraction(id, interaction);
+  async addInteractionsToServer() {
+    for (let i = 0; i < this.basicInteractions.length; i++) {
+      const raw = this.basicInteractions[i];
+      this.mockIds.push(await mock.addInteraction(raw.interaction, raw.data));
     }
-    for (const [id, interaction] of this.pactInteractions) {
-      this.server.addPactInteraction(id, interaction);
+    for (let i = 0; i < this.mockInteractions.length; i++) {
+      const raw = this.mockInteractions[i];
+      this.mockIds.push(await mock.addMockInteraction(raw.interaction, raw.data));
+    }
+    for (let i = 0; i < this.pactInteractions.length; i++) {
+      const raw = this.pactInteractions[i];
+      this.pactIds.push(await mock.addPactInteraction(raw.interaction, raw.data));
     }
   }
 
@@ -99,13 +107,13 @@ class Tosser {
     }
   }
 
-  removeInteractionsFromServer() {
-    for (const [id, interaction] of this.mockInteractions) {
-      this.server.removeInteraction(id);
-    }
-    for (const [id, interaction] of this.pactInteractions) {
-      this.server.removeInteraction(id);
-    }
+  async removeInteractionsFromServer() {
+    this.mockInteractions.length = 0;
+    this.mockInteractions = this.mockInteractions.concat(await mock.getInteraction(this.mockIds));
+    await mock.removeInteraction(this.mockIds);
+    this.pactInteractions.length = 0;
+    this.pactInteractions = this.pactInteractions.concat(await mock.getInteraction(this.pactIds));
+    await mock.removeInteraction(this.pactIds);
   }
 
   validateError() {
