@@ -446,11 +446,11 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectResponseTime(1)
+        .expectResponseTime(-1)
     } catch (error) {
       err = error;
     }
-    expect(err.message).contains(`Request took longer than 1ms`);
+    expect(err.message).contains(`Request took longer than -1ms`);
   });
 
 });

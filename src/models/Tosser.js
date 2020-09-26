@@ -22,7 +22,6 @@ class Tosser {
     this.pactInteractions = spec.pactInteractions;
     this.previousLogLevel = spec.previousLogLevel;
     this.response = {};
-    this.server = mock._server;
     this.mockIds = [];
     this.pactIds = [];
   }
