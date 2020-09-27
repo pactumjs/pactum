@@ -29,7 +29,7 @@ Lets get started with API Testing.
   * [Response Validation](#response-validation)
   * [Nested Dependent HTTP Calls](#nested-dependent-http-calls)
   * [Retry Mechanism](#retry-mechanism)
-  * [Data Management](#data-management)
+* [Data Management](#data-management)
 
 
 ## Getting Started
@@ -846,7 +846,7 @@ it('should get posts', async () => {
 });
 ```
 
-### Data Management
+## Data Management
 
 As the functionality of the application grows, the scope of the testing grows with it. At one point test data management becomes complex.
 
@@ -876,7 +876,25 @@ Now let's assume, your application no longer accepts the above JSON. It needs a 
 
 To solve these kind of problems, **pactum** comes with a concept of *Data Templates* & *Data References* to manage your test data. It helps us to re-use data across tests.
 
-#### Data Template
+You can load *Data Templates* & *Data Maps* directly from file system using `loadData` function. You can either group your templates & maps inside *templates* & *maps* folders or place them in the root dir by adding suffix *.template* or *.map* to the json files.
+
+```
+- data/
+  - maps/
+    - User.json
+  - templates/
+    - Address.json
+  - Bank.template.json
+  - Army.map.json
+```
+
+```javascript
+stash.loadData(); // By default it looks for directory `./data`
+// or
+stash.loadData('/path/to/data/folder');
+```
+
+### Data Template
 
 A Data Template is a standard format for a particular resource. Once a template is defined, it can be used across all the tests to perform a request.
 
@@ -1019,7 +1037,7 @@ it('should add a user with address', async () => {
 });
 ```
 
-#### Data Map (Data References)
+### Data Map (Data References)
 
 A Data Map is a collection of data that can be referenced in data templates or tests. The major differences between a data template & a data map are
 
@@ -1084,7 +1102,7 @@ before(() => {
 });
 ```
 
-#### Data Functions (Data References)
+### Data Function (Data References)
 
 A Data Function is a custom data handler that returns some sort of data that can be referenced in data templates or tests. 
 
@@ -1113,6 +1131,12 @@ it('order an item', async () => {
     });
 });
 ```
+
+### Data Spec (Data References)
+
+A data spec is a reference for custom response data that is received while running API tests. This comes in handy while running integration or e2e API testing to pass data to next tests.
+
+See [Nested Dependent HTTP Calls](#nested-dependent-http-calls) for more information.
 
 ## Next
 

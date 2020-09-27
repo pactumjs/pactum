@@ -1,6 +1,6 @@
 import { RequestOptions } from 'http';
 import FormData from 'form-data';
-import { BasicInteraction, MockInteraction, PactInteraction } from '../exports/mock';
+import { MockInteraction, PactInteraction } from '../exports/mock';
 import { ExpectHandlerFunction, RetryHandlerFunction, ReturnHandlerFunction } from '../exports/handler';
 import { LogLevel } from '../exports/settings';
 import { Expect } from '../exports/expect';
