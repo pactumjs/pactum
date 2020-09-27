@@ -31,37 +31,27 @@ const mock = {
     config.mock.port = port;
   },
 
-  addInteraction(interaction, data) {
-    if (Array.isArray(interaction)) {
-      const rawInteractions = [];
-      for (let i = 0; i < interaction.length; i++) {
-        let basicInteraction = interaction[i];
-        if (typeof basicInteraction === 'string') {
-          basicInteraction = handler.getInteractionHandler(basicInteraction)({ data });
-        }
-        const rawInteraction = {
-          withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
-          willRespondWith: {
-            status: basicInteraction.status || 200,
-            body: basicInteraction.return || ''
-          }
-        };
-        rawInteractions.push(rawInteraction);
-      }
-      return this.addMockInteraction(rawInteractions);
-    } else {
-      if (typeof interaction === 'string') {
-        interaction = handler.getInteractionHandler(interaction)({ data });
-      }
-      const rawInteraction = {
-        withRequest: helper.getRequestFromBasicInteraction(interaction),
-        willRespondWith: {
-          status: interaction.status || 200,
-          body: interaction.return || ''
-        }
-      };
-      return this.addMockInteraction(rawInteraction);
+  addInteraction(interactions, data) {
+    let alone = false;
+    if (!Array.isArray(interactions)) {
+      alone = true;
+      interactions = [interactions];
     }
+    const raws = []
+    for (let i = 0; i < interactions.length; i++) {
+      let raw = interactions[i];
+      if (typeof raw === 'string') {
+        raw = handler.getInteractionHandler(raw)({ data });
+      }
+      raws.push({
+        withRequest: helper.getRequestFromBasicInteraction(raw),
+        willRespondWith: {
+          status: raw.status || 200,
+          body: raw.return || ''
+        }
+      });
+    }
+    return alone ? this.addMockInteraction(raws[0]) : this.addMockInteraction(raws);
   },
 
   addMockInteraction(interactions, data) {
@@ -119,7 +109,7 @@ const mock = {
     }
     const interactions = [];
     ids.forEach(id => interactions.push(this._server.getInteraction(id)));
-    interactions.forEach(interaction => { 
+    interactions.forEach(interaction => {
       interaction.exercised = interaction.callCount > 0;
     });
     return alone ? interactions[0] : interactions;

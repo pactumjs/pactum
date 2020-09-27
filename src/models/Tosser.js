@@ -60,18 +60,22 @@ class Tosser {
   }
 
   async addInteractionsToServer() {
+    const mockIdPromises = [];
+    const pactIdPromises = [];
     for (let i = 0; i < this.basicInteractions.length; i++) {
       const raw = this.basicInteractions[i];
-      this.mockIds.push(await mock.addInteraction(raw.interaction, raw.data));
+      mockIdPromises.push(mock.addInteraction(raw.interaction, raw.data));
     }
     for (let i = 0; i < this.mockInteractions.length; i++) {
       const raw = this.mockInteractions[i];
-      this.mockIds.push(await mock.addMockInteraction(raw.interaction, raw.data));
+      mockIdPromises.push(mock.addMockInteraction(raw.interaction, raw.data));
     }
     for (let i = 0; i < this.pactInteractions.length; i++) {
       const raw = this.pactInteractions[i];
-      this.pactIds.push(await mock.addPactInteraction(raw.interaction, raw.data));
+      pactIdPromises.push(mock.addPactInteraction(raw.interaction, raw.data));
     }
+    this.mockIds = this.mockIds.concat(await Promise.all(mockIdPromises));
+    this.pactIds = this.pactIds.concat(await Promise.all(pactIdPromises));
   }
 
   async setResponse() {
@@ -107,12 +111,16 @@ class Tosser {
   }
 
   async removeInteractionsFromServer() {
-    this.mockInteractions.length = 0;
-    this.mockInteractions = this.mockInteractions.concat(await mock.getInteraction(this.mockIds));
-    await mock.removeInteraction(this.mockIds);
-    this.pactInteractions.length = 0;
-    this.pactInteractions = this.pactInteractions.concat(await mock.getInteraction(this.pactIds));
-    await mock.removeInteraction(this.pactIds);
+    if (this.mockIds.length > 0) {
+      this.mockInteractions.length = 0;
+      this.mockInteractions = this.mockInteractions.concat(await mock.getInteraction(this.mockIds));
+      await mock.removeInteraction(this.mockIds);  
+    }
+    if (this.pactIds.length > 0) {
+      this.pactInteractions.length = 0;
+      this.pactInteractions = this.pactInteractions.concat(await mock.getInteraction(this.pactIds));
+      await mock.removeInteraction(this.pactIds);
+    }
   }
 
   validateError() {

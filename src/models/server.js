@@ -2,6 +2,7 @@ const polka = require('polka');
 
 const Interaction = require('./interaction');
 
+const handler = require('../exports/handler');
 const helper = require('../helpers/helper');
 const utils = require('../helpers/utils');
 const store = require('../helpers/store');
@@ -99,7 +100,7 @@ class Server {
 
   getInteraction(id) {
     if (this.mockInteractions.has(id)) {
-      return this.mockInteractions.get(id);  
+      return this.mockInteractions.get(id);
     } else if (this.pactInteractions.has(id)) {
       return this.pactInteractions.get(id);
     } else {
@@ -111,7 +112,7 @@ class Server {
   getInteractionDetails(id) {
     let interaction = {};
     if (this.mockInteractions.has(id)) {
-      interaction = this.mockInteractions.get(id);  
+      interaction = this.mockInteractions.get(id);
     } else if (this.pactInteractions.has(id)) {
       interaction = this.pactInteractions.get(id);
     } else {
@@ -237,6 +238,9 @@ function registerPactumRemoteRoutes(server) {
         res.write("OK");
         res.end();
         break;
+      case '/api/pactum/handlers':
+        handleRemoteHandler(req, res, server);
+        break;
       case '/api/pactum/mockInteractions':
         handleRemoteInteractions(req, res, server, 'MOCK');
         break;
@@ -256,6 +260,39 @@ function registerPactumRemoteRoutes(server) {
         break;
     }
   });
+}
+
+function handleRemoteHandler(req, res, server) {
+  try {
+    const ids = [];
+    for (let i = 0; i < req.body.length; i++) {
+      const raw = req.body[i];
+      const handlers = raw.handlers;
+      const data = raw.data;
+      for (let j = 0; j < handlers.length; j++) {
+        const { name, type } = handlers[j];
+        if (type === 'MOCK') {
+          const rawMock = handler.getMockInteractionHandler(name)({ data });
+          const interaction = new Interaction(rawMock, true);
+          server.mockInteractions.set(interaction.id, interaction);
+          ids.push(interaction.id);
+        } else {
+          const rawPact = handler.getPactInteractionHandler(name)({ data });
+          const interaction = new Interaction(rawPact, false);
+          server.pactInteractions.set(interaction.id, interaction);
+          ids.push(interaction.id);
+        }
+      }
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.write(JSON.stringify(ids));
+    res.end();
+  } catch (error) {
+    log.error(`Error running handlers - ${error}`);
+    res.writeHead(400, { "Content-Type": "application/json" });
+    res.write(JSON.stringify({ error: error.message }));
+    res.end();
+  }
 }
 
 function handleRemoteInteractions(req, response, server, interactionType) {
