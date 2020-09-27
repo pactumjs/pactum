@@ -882,7 +882,7 @@ You can load *Data Templates* & *Data Maps* directly from file system using `loa
 - data/
   - maps/
     - User.json
-  - templates
+  - templates/
     - Address.json
   - Bank.template.json
   - Army.map.json
