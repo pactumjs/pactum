@@ -1,3 +1,4 @@
+import { RequestOptions } from 'http';
 import FormData from 'form-data';
 import { BasicInteraction, MockInteraction, PactInteraction } from '../exports/mock';
 import { ExpectHandlerFunction, RetryHandlerFunction, ReturnHandlerFunction } from '../exports/handler';
@@ -26,22 +27,6 @@ declare class Spec {
    *  .expectStatus(200);
    */
   setState(name: string, data?: any): Spec;
-
-  /**
-   * adds a basic mock interaction to the server & auto removed after execution
-   * @example
-   * await pactum
-   *  .useInteraction({
-   *    get: '/api/address/4'
-   *    return: {
-   *      city: 'WinterFell'
-   *    }
-   *  })
-   *  .get('/api/users/4')
-   *  .expectStatus(200);
-   */
-  useInteraction(interaction: BasicInteraction): Spec;
-  useInteraction(handler: string, data?: any): Spec;
   
   /**
    * adds a mock interaction to the server & auto removed after execution
@@ -156,10 +141,10 @@ declare class Spec {
    * The DELETE method deletes the specified resource.
    * @example
    * await pactum
-   *  .del('https://jsonplaceholder.typicode.com/posts/1')
+   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectStatus(200);
    */
-  del(url: string): Spec;
+  delete(url: string): Spec;
 
   /**
    * adds query params to the request url - /comments?id=1&user=snow&sort=asc
@@ -278,6 +263,20 @@ declare class Spec {
   withMultiPartFormData(key: string, value: string|Buffer|Array|ArrayBuffer, options?: FormData.AppendOptions): Spec;
 
   /**
+   * with http core options
+   * @see https://nodejs.org/api/http.html#http_http_request_url_options_callback
+   * 
+   * @example
+   * await pactum.spec()
+   *  .get('some-url')
+   *  .withCore({
+   *    agent: myAgent
+   *  })
+   *  .expectStatus(200);
+   */
+  withCore(options: RequestOptions): Spec;
+
+  /**
    * retry request on specific conditions before making assertions
    * @example
    * await pactum
@@ -327,7 +326,7 @@ declare class Spec {
    * expects a status code on the response
    * @example
    * await pactum
-   *  .del('https://jsonplaceholder.typicode.com/posts/1')
+   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectStatus(200);
    */
   expectStatus(code: number): Spec;
@@ -422,6 +421,11 @@ declare class Spec {
    * expects request completes within a specified duration (ms)
    */
   expectResponseTime(value: number): Spec;
+
+  /**
+   * stores spec response data 
+   */
+  stores(key: string, value: string): Spec;
 
   /**
    * returns custom response from json response using custom handler

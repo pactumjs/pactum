@@ -6,7 +6,6 @@ const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
-const mock = require('../exports/mock');
 const responseExpect = require('../exports/expect');
 const handler = require('../exports/handler');
 
@@ -17,12 +16,12 @@ class Spec {
     this._request = {};
     this._response = null;
     this._returns = [];
+    this._stores = [];
     this._expect = new Expect();
     this._state = new State();
     this.previousLogLevel = null;
-    this.server = mock._server;
-    this.mockInteractions = new Map();
-    this.pactInteractions = new Map();
+    this.mockInteractions = [];
+    this.pactInteractions = [];
   }
 
   setState(name, data) {
@@ -30,37 +29,13 @@ class Spec {
     return this;
   }
 
-  useInteraction(basicInteraction, data) {
-    if (typeof basicInteraction === 'string') {
-      basicInteraction = handler.getInteractionHandler(basicInteraction)({ data });
-    }
-    const rawInteraction = {
-      withRequest: helper.getRequestFromBasicInteraction(basicInteraction),
-      willRespondWith: {
-        status: basicInteraction.status || 200,
-        body: basicInteraction.return || ''
-      }
-    };
-    return this.useMockInteraction(rawInteraction);
-  }
-
-  useMockInteraction(rawInteraction, data) {
-    if (typeof rawInteraction === 'string') {
-      rawInteraction = handler.getMockInteractionHandler(rawInteraction)({ data });
-    }
-    const interaction = new Interaction(rawInteraction, true);
-    log.debug('Mock Interaction added to Mock Server -', interaction.id);
-    this.mockInteractions.set(interaction.id, interaction);
+  useMockInteraction(interaction, data) {
+    this.mockInteractions.push({ interaction, data });
     return this;
   }
 
-  usePactInteraction(rawInteraction, data) {
-    if (typeof rawInteraction === 'string') {
-      rawInteraction = handler.getPactInteractionHandler(rawInteraction)({ data });
-    }
-    const interaction = new Interaction(rawInteraction, false);
-    log.debug('Pact Interaction added to Mock Server -', interaction.id);
-    this.pactInteractions.set(interaction.id, interaction);
+  usePactInteraction(interaction, data) {
+    this.pactInteractions.push({ interaction, data });
     return this;
   }
 
@@ -99,7 +74,7 @@ class Spec {
     return this;
   }
 
-  del(url) {
+  delete(url) {
     validateRequestUrl(this._request, url);
     this._request.url = url;
     this._request.method = 'DELETE';
@@ -203,6 +178,11 @@ class Spec {
     return this;
   }
 
+  withCore(options) {
+    this._request.core = options;
+    return this;
+  }
+
   retry(options) {
     if (!options) {
       throw new PactumRequestError('Invalid retry options');
@@ -302,6 +282,11 @@ class Spec {
 
   returns(handler) {
     this._returns.push(handler);
+    return this;
+  }
+
+  stores(key, value) {
+    this._stores.push({ key, value });
     return this;
   }
 

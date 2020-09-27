@@ -10,14 +10,26 @@ describe('State', () => {
     handler.addStateHandler('there is a project with id', (ctx) => {
       const spec = ctx.spec;
       const id = ctx.data;
-      spec.useInteraction({
-        get: `/api/projects/${id}`,
-        return: { id }
+      spec.useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: `/api/projects/${id}`
+        },
+        willRespondWith: {
+          status: 200,
+          body: { id }
+        }
       });
     });
     handler.addStateHandler('there is a user with id', (ctx) => {
-      mock.addInteraction({
-        get: `/api/users/${ctx.data}`
+      mock.addMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: `/api/users/${ctx.data}`
+        },
+        willRespondWith: {
+          status: 200
+        }
       })
     })
   });

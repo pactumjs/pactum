@@ -4,11 +4,12 @@ Mock Server allows you to mock any server or service via HTTP or HTTPS, such as 
 
 At one end **pactum** is a REST API testing tool and on the other, it can act as a standalone mock server. It packs with a powerful request & response matching & you can spin it up in a matter of seconds.
 
+Mock server comes in handy while using this library for component & contract testing.
+
 ## Table of contents
 
 * [Getting Started](#getting-started)
 * [Adding Behavior](#adding-behavior)
-  * [Basic Interactions](#basic-interactions)
   * [Mock Interactions](#mock-interactions)
   * [Pact Interactions](#pact-interactions)
 * [Matching](#matching)
@@ -59,139 +60,50 @@ await mock.stop();
 
 ## Adding Behavior
 
-By now, you know how to start & stop a mock server. To add behavior, we need to add [interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions) to it. An interaction contains a message with request & response details. When a request is received, the mock server will look if there is a matching interaction. If found it will return the specified response or 404 will be returned.
+By now, you know how to start & stop a mock server. To add behavior, we need to add [interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions) to it. An interaction contains request & response details. When a real request is sent to mock server, it will try to match the received request with interactions request. If a match is found it will return the specified response or 404 will be returned.
 
-We have three kinds of interactions. They are
+We have two kinds of interactions. They are
 
-* Basic Interactions
 * Mock Interactions
 * Pact Interactions
 
-### Basic Interactions
-
-Use `addInteraction` to add a basic interaction to the server. It returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
-
-```javascript
-const mock = require('pactum').mock;
-
-mock.addInteraction({
-  get: '/api/users',
-  return: 'Hello From Users'
-});
-
-mock.start(3000);
-```
-
-Run the mock server & open `http://localhost:3000/api/users` in a browser or using cURL. It will return `Hello From Users`. 
-
-```shell
-curl http://localhost:3000/api/users
-# Returns "Hello From Users"
-```
-
-Let's add more interactions to the server.
-
-```javascript
-const mock = require('pactum').mock;
-
-mock.addInteraction({
-  get: '/api/users/1',
-  return: {
-    id: 1,
-    /* user 1 details */
-  }
-});
-
-mock.addInteraction({
-  get: '/api/users/2',
-  status: 401
-});
-
-mock.start(3000);
-```
-
-Now we have added 2 basic interactions to the server.
-
-* Invoking GET `/api/users/1` will return a JSON with user-1 details.
-* Invoking POST `/api/users/1` will return a status code 404.
-* Invoking GET `/api/users/2` will return a status code 401.
-* Invoking GET `/other` will return a status code 404.
-
-Note on how the mock server will perform an exact match on the HTTP method & path to send a response back.
-
-Now you have a basic understanding of how the mock server works. Let's add more basic interactions.
-
-```javascript
-const mock = require('pactum').mock;
-
-mock.addInteraction({
-  get: '/api/users',
-  return: []
-});
-
-mock.addInteraction({
-  post: '/api/users',
-  return: 'OK'
-});
-
-mock.start(3000);
-```
-
-* Invoking GET `/api/users` will return an empty array.
-* Invoking GET `/api/users?id=1` will still return an empty array.
-* Invoking GET `/api/users/1` will return a status code 404.
-* Invoking POST `/api/users` with an empty body will return `'OK'`.
-* Invoking POST `/api/users` with some body will still return `'OK'`.
-
-By default, basic interactions will ignore query params, headers & body while performing a match with the received request. 
-
-#### Basic Interaction Options
-
-| Property  | Description             |
-| --------  | ----------------------  |
-| get       | GET request path        |
-| post      | POST request path       |
-| put       | PUT request path        |
-| patch     | PATCH request path      |
-| delete    | DELETE request path     |
-| status    | response status code    |
-| return    | response body           |
-
 ### Mock Interactions
 
-The simplest way to add behavior to the mock server is through basic interactions where query params, headers & body will be ignored while performing a match with the received request.
+The simplest way to add behavior to the mock server is through mock interactions. Use `addMockInteraction` to add a mock interaction to the server. It has `withRequest` & `willRespondWith` objects to handle a request. When the mock server receives a request, it will match the request with interactions `withRequest` properties. If the request matches, the mock server will respond with details in `willRespondWith` object.
 
-Mock interactions are more descriptive & allows to **loosely match** a received request based on query params, headers & JSON body.
+Matching:
 
-Use `addMockInteraction` to add a mock interaction to the server. It returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
+* Performs *exact match* on received HTTP Method & Path.
+* Performs *loose match* on received query params, headers & JSON body.
+
+`addMockInteraction` returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
 
 ```javascript
+const mock = require('pactum').mock;
+
 mock.addMockInteraction({
   withRequest: {
     method: 'GET',
-    path: '/api/projects'
+    path: '/api/users/1'
   },
   willRespondWith: {
     status: 200,
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: [
-      {
-        id: 1,
-        name: 'Jon'
-      },
-      {
-        id: 2,
-        name: 'Snow'
-      }
-    ]
+    body: {
+      id: 1,
+      name: 'Jon'
+    }
   }
 });
+
+mock.start(3000);
 ```
 
-* Invoking GET `/api/projects` will return a JSON array.
-* Invoking GET `/api/projects?id=1` will still return a JSON array.
+* Invoking GET `/api/users/1` will return a JSON with 200 status code.
+* Invoking GET `/api/users` will return a status code 404.
+* Invoking GET `/api/users/2` will return a status code 404.
+* Invoking POST `/api/users` will return a status code 404.
+
+Note on how the mock server performs an exact match on HTTP method & path. If a match is not found it will return a status code 404.
 
 To further distinguish the responses, let's add two mock interactions with query params
 
@@ -199,7 +111,7 @@ To further distinguish the responses, let's add two mock interactions with query
 mock.addMockInteraction({
   withRequest: {
     method: 'GET',
-    path: '/api/projects',
+    path: '/api/users',
     query: {
       id: 1
     }
@@ -216,7 +128,7 @@ mock.addMockInteraction({
 mock.addMockInteraction({
   withRequest: {
     method: 'GET',
-    path: '/api/projects',
+    path: '/api/users',
     query: {
       id: 2
     }
@@ -231,15 +143,15 @@ mock.addMockInteraction({
 });
 ```
 
-* Invoking GET `/api/projects` will return a status code 404.
-* Invoking GET `/api/projects?id=1` will return project-1 details.
-* Invoking GET `/api/projects?id=1&name=snow` will still return project-1 details.
-* Invoking GET `/api/projects?id=1&foo=boo` will still return project-1 details.
-* Invoking GET `/api/projects?id=2` will return project-2 details.
-* Invoking GET `/api/projects?id=3` will return a status code 404.
-* Invoking GET `/api/projects?name=Jon` will return a status code 404.
+* Invoking GET `/api/users?id=1` will return project-1 details.
+* Invoking GET `/api/users?id=1&name=snow` will still return project-1 details.
+* Invoking GET `/api/users?id=1&foo=boo` will still return project-1 details.
+* Invoking GET `/api/users?id=2` will return project-2 details.
+* Invoking GET `/api/users` will return a status code 404.
+* Invoking GET `/api/users?id=3` will return a status code 404.
+* Invoking GET `/api/users?name=Jon` will return a status code 404.
 
-When query params are mentioned in the interaction, the received request is matched when it has the specified query param. Same applies for headers & body.
+When query params are mentioned in the interaction, the received request is matched when it has the specified query params. Same applies for headers & body.
 
 Let's look at an example
 
@@ -681,7 +593,7 @@ Once the server is started, interact with the following API to control the mock 
 
 ### Mock Interactions
 
-#### /api/pactum/mockInteraction
+#### /api/pactum/mockInteractions
 
 ##### GET
 
@@ -689,10 +601,10 @@ Returns a single or all mock interactions.
 
 ```Shell
 # Fetches a mock interaction with id "m1uh9"
-curl --location --request GET 'http://localhost:9393/api/pactum/mockInteraction?id=m1uh9'
+curl --location --request GET 'http://localhost:9393/api/pactum/mockInteractions?id=m1uh9'
 
 # Fetches all mock interactions
-curl --location --request GET 'http://localhost:9393/api/pactum/mockInteraction'
+curl --location --request GET 'http://localhost:9393/api/pactum/mockInteractions'
 ```
 
 Response - returns all the mock interactions
@@ -726,7 +638,7 @@ Response - returns all the mock interactions
 Adds multiple mock interactions to the server.
 
 ```Shell
-curl --location --request POST 'http://localhost:9393/api/pactum/mockInteraction' \
+curl --location --request POST 'http://localhost:9393/api/pactum/mockInteractions' \
 --header 'Content-Type: application/json' \
 --data-raw '[{
     "withRequest": {
@@ -761,15 +673,15 @@ Removes a mock interaction or all mock interactions from the mock server.
 
 ```Shell
 # Removes a single mock interaction with id m1uh9
-curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteraction?id=m1uh9'
+curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteractions?id=m1uh9'
 
 # Removes all mock interactions
-curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteraction'
+curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteractions'
 ```
 
 ### Pact Interactions
 
-#### /api/pactum/pactInteraction
+#### /api/pactum/pactInteractions
 
 ##### GET
 
@@ -777,10 +689,10 @@ Returns a single or all pact interactions.
 
 ```Shell
 # Fetches a pact interaction with id "m1uh9"
-curl --location --request GET 'http://localhost:9393/api/pactum/pactInteraction?id=m1uh9'
+curl --location --request GET 'http://localhost:9393/api/pactum/pactInteractions?id=m1uh9'
 
 # Fetches all pact interactions
-curl --location --request GET 'http://localhost:9393/api/pactum/pactInteraction'
+curl --location --request GET 'http://localhost:9393/api/pactum/pactInteractions'
 ```
 
 Response - returns all the pact interactions
@@ -818,7 +730,7 @@ Response - returns all the pact interactions
 Adds multiple pact interactions to the server.
 
 ```Shell
-curl --location --request POST 'http://localhost:9393/api/pactum/pactInteraction' \
+curl --location --request POST 'http://localhost:9393/api/pactum/pactInteractions' \
 --header 'Content-Type: application/json' \
 --data-raw '[{
     "consumer": "consumer-name",
@@ -857,10 +769,10 @@ Removes a pact interaction or all pact interactions from the mock server.
 
 ```Shell
 # Removes a single pact interaction with id m1uh9
-curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteraction?id=m1uh9'
+curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteractions?id=m1uh9'
 
 # Removes all pact interactions
-curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteraction'
+curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteractions'
 ```
 
 ## Next

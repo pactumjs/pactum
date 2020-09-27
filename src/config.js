@@ -1,6 +1,7 @@
 const config = {
   mock: {
-    port: process.env.PACTUM_MOCK_PORT || 9393
+    port: process.env.PACTUM_MOCK_PORT || 9393,
+    remote: ''
   },
   pact: {
     consumer: process.env.PACT_CONSUMER_NAME || '',
@@ -21,6 +22,9 @@ const config = {
         processed: false
       },
       fun: {
+        enabled: false
+      },
+      spec: {
         enabled: false
       }
     },

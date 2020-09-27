@@ -43,17 +43,26 @@ describe('Mock - Default Mock Interaction', () => {
         }
       }
     });
-    mock.addInteraction({
-      post: '/api/projects',
-      return: {
-        message: 'ok'
+    mock.addMockInteraction({
+      withRequest: {
+        method: 'POST',
+        path: '/api/projects'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          message: 'ok'
+        }
       }
     });
   });
 
   it('GET - one interaction', async () => {
-    expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(0, 'interaction should be called once');
-    expect(mock.isInteractionExercised('GET_FIRST_PROJECT')).equals(false, 'interaction should not be exercised');
+    expect(mock.getInteraction('GET_FIRST_PROJECT').callCount).equals(0, 'interaction should not be called');
+    expect(mock.getInteraction('GET_FIRST_PROJECT').exercised).equals(false, 'interaction should not be exercised');
     await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
@@ -61,13 +70,13 @@ describe('Mock - Default Mock Interaction', () => {
         id: 1,
         name: 'fake'
       });
-    expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(1, 'interaction should be called once');
-    expect(mock.isInteractionExercised('GET_FIRST_PROJECT')).equals(true, 'interaction should be exercised');
+    expect(mock.getInteraction('GET_FIRST_PROJECT').callCount).equals(1, 'interaction should be called once');
+    expect(mock.getInteraction('GET_FIRST_PROJECT').exercised).equals(true, 'interaction should be exercised');
     await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200)
-    expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(2, 'interaction should be called twice');
-    expect(mock.isInteractionExercised('GET_FIRST_PROJECT')).equals(true, 'interaction should be exercised');
+    expect(mock.getInteraction('GET_FIRST_PROJECT').callCount).equals(2, 'interaction should be called twice');
+    expect(mock.getInteraction('GET_FIRST_PROJECT').exercised).equals(true, 'interaction should be exercised');
 
   });
 
@@ -199,8 +208,8 @@ describe('Mock - Default Pact Interaction', () => {
         name: 'fake'
       })
       .toss();
-    expect(mock.getInteractionCallCount('GET_FIRST_PROJECT')).equals(1, 'interaction should be called once');
-    expect(mock.isInteractionExercised('GET_FIRST_PROJECT')).equals(true, 'interaction should be exercised');
+    expect(mock.getInteraction('GET_FIRST_PROJECT').callCount).equals(1, 'interaction should be called once');
+    expect(mock.getInteraction('GET_FIRST_PROJECT').exercised).equals(true, 'interaction should be exercised');
   });
 
   it('GET - one interaction - with multiple queries', async () => {
@@ -263,10 +272,19 @@ describe('Mock - Default Mock Interactions', () => {
         }
       }
     }]);
-    mock.addInteraction([{
-      post: '/api/projects',
-      return: {
-        message: 'ok'
+    mock.addMockInteraction([{
+      withRequest: {
+        method: 'POST',
+        path: '/api/projects'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          message: 'ok'
+        }
       }
     }]);
   });

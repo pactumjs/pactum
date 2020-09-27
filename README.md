@@ -6,7 +6,7 @@
 ![Size](https://img.shields.io/bundlephobia/minzip/pactum)
 ![Platform](https://img.shields.io/node/v/pactum)
 
-**pactum** is a REST API Testing Tool used to write e2e, integration, contract & component or service level tests. It comes with a powerful *mock server* which can control the state of external dependencies & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
+**pactum** is a REST API Testing Tool used to write e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
 This library can be integrated with test runners like **cucumber**, **mocha**, **jest** or any other runners. It is *simple*, *fast*, *easy* and *fun* to use.
 
@@ -73,6 +73,8 @@ mocha /path/to/test
 ```
 
 #### Using Cucumber
+
+See [pactum-cucumber-boilerplate](https://github.com/ASaiAnudeep/pactum-cucumber-boilerplate) for more details on pactum & cucumber integration.
 
 ```javascript
 // steps.js
@@ -187,45 +189,9 @@ await pactum.spec()
   .expect(({res}) => { /* Custom Assertion Code */ });
 ```
 
-### Nested Dependent HTTP Calls
-
-API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to next tests using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions. Learn more about it at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#nested-dependent-http-calls)
-
-```javascript
-const pactum = require('pactum');
-const expect = require('chai').expect;
-
-it('should return all posts and first post should have comments', async () => {
-  const postID = await pactum.spec()
-    .get('http://jsonplaceholder.typicode.com/posts')
-    .expectStatus(200)
-    .returns('[0].id');
-  const response = await pactum.spec()
-    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
-    .expectStatus(200);
-  const comments = response.json;
-  expect(comments).deep.equals([]);
-});
-```
-
-### Retry Mechanism
-
-Some API operations will take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response. (*Make sure to update test runners default timeout*) 
-
-```javascript
-await pactum.spec()
-  .get('https://jsonplaceholder.typicode.com/posts/12')
-  .retry({
-    count: 2,
-    delay: 2000,
-    strategy: ({res}) => { return res.statusCode === 202 }
-  })
-  .expectStatus(200);
-```
-
 ### Data Management
 
-Data management is made easy with this library by using the concept of *Data Templates* & *Data Maps*. Learn more about data management with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#data-management)
+Data management is made easy with this library by using the concept of *Data Templates* & *Data References*. You can reuse data across tests. Learn more about data management with **pactum** at [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#data-management)
 
 ```javascript
 const stash = pactum.stash;
@@ -246,6 +212,61 @@ await pactum.spec()
       'LastName': 'Dragon'
     }
   });
+```
+
+### Nested Dependent HTTP Calls
+
+API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. With **Pactum**, passing response data to the next tests is very easy. 
+
+* `returns` allows us to return custom data from the response using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions.
+* `stores` allows us to save response data under *data management* which can be referenced later using [json-query](https://www.npmjs.com/package/json-query).
+
+Learn more about it at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#nested-dependent-http-calls)
+
+```javascript
+const pactum = require('pactum');
+const expect = require('chai').expect;
+
+it('should return all posts and first post should have comments', async () => {
+  const postID = await pactum.spec()
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .returns('[0].id');
+  const response = await pactum.spec()
+    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
+    .expectStatus(200);
+  const comments = response.json;
+  expect(comments).deep.equals([]);
+});
+
+it('should return all posts and update first posts title', async () => {
+  const postID = await pactum.spec()
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .stores('FirstPostId', '[0].id');
+  const response = await pactum.spec()
+    .patch(`http://jsonplaceholder.typicode.com/posts`)
+    .withJson({
+      id: '@DATA:SPEC::FirstPostId@',
+      title: 'new title'
+    })
+    .expectStatus(200);
+});
+```
+
+### Retry Mechanism
+
+Some API operations will take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response. (*Make sure to update test runners default timeout*) 
+
+```javascript
+await pactum.spec()
+  .get('https://jsonplaceholder.typicode.com/posts/12')
+  .retry({
+    count: 2,
+    delay: 2000,
+    strategy: ({res}) => { return res.statusCode === 202 }
+  })
+  .expectStatus(200);
 ```
 
 Learn more about api testing with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
@@ -269,12 +290,18 @@ before(() => {
 it('should get jon snow details', () => {
   return pactum.spec()
     // adds interaction to mock server & removes it after the spec
-    .useInteraction({
-      get: '/api/address/4',
-      return: {
-        city: 'WinterFell',
-        country: 'The North'
-      }
+    .useMockInteraction({
+      withRequest: {
+        method: 'GET',
+        path: '/api/address/4'
+      },
+      willRespondWith: {
+        status: 200,
+        body: {
+          city: 'WinterFell',
+          country: 'The North'
+        }
+      } 
     })
     .get('http://localhost:3333/users/4')
     .expectStatus(200)

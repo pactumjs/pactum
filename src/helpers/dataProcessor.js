@@ -44,7 +44,7 @@ const dataProcessor = {
       data = this.processDataTemplates(data);
     }
     const ref = config.data.ref;
-    if (ref.map.enabled || ref.fun.enabled) {
+    if (ref.map.enabled || ref.fun.enabled || ref.spec.enabled) {
       data = this.processDataRefs(data);
     }
     return data;
@@ -100,6 +100,9 @@ const dataProcessor = {
         if (refType === '@DATA:FUN') {
           const handlerFun = handler.getDataHandler(refValue);
           return handlerFun();
+        }
+        if (refType === '@DATA:SPEC') {
+          return jq(refValue, { data: stash.getDataSpecs() }).value;
         }
       }
     }

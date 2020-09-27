@@ -3,7 +3,9 @@ const jqy = require('json-query');
 const helper = require('../helpers/helper');
 const config = require('../config');
 const log = require('../helpers/logger');
+const mock = require('../exports/mock');
 const handler = require('../exports/handler');
+const stash = require('../exports/stash');
 const processor = require('../helpers/dataProcessor');
 
 class Tosser {
@@ -11,26 +13,29 @@ class Tosser {
   constructor(spec) {
     this.spec = spec;
     this.request = spec._request;
-    this.server = spec.server;
     this.state = spec._state;
     this.expect = spec._expect;
+    this.stores = spec._stores;
     this.returns = spec._returns;
     this.mockInteractions = spec.mockInteractions;
     this.pactInteractions = spec.pactInteractions;
     this.previousLogLevel = spec.previousLogLevel;
     this.response = {};
+    this.mockIds = [];
+    this.pactIds = [];
   }
 
   async toss() {
     this.updateRequest();
     await this.setState()
-    this.addInteractionsToServer();
+    await this.addInteractionsToServer();
     await this.setResponse();
     this.setPreviousLogLevel();
-    this.removeInteractionsFromServer();
+    await this.removeInteractionsFromServer();
     this.validateError();
     this.validateInteractions();
     this.validateResponse();
+    this.storeSpecData();
     return this.getOutput();
   }
 
@@ -53,13 +58,19 @@ class Tosser {
     return this.state.set(this.spec);
   }
 
-  addInteractionsToServer() {
-    for (const [id, interaction] of this.mockInteractions) {
-      this.server.addMockInteraction(id, interaction);
+  async addInteractionsToServer() {
+    const mockIdPromises = [];
+    const pactIdPromises = [];
+    for (let i = 0; i < this.mockInteractions.length; i++) {
+      const raw = this.mockInteractions[i];
+      mockIdPromises.push(mock.addMockInteraction(raw.interaction, raw.data));
     }
-    for (const [id, interaction] of this.pactInteractions) {
-      this.server.addPactInteraction(id, interaction);
+    for (let i = 0; i < this.pactInteractions.length; i++) {
+      const raw = this.pactInteractions[i];
+      pactIdPromises.push(mock.addPactInteraction(raw.interaction, raw.data));
     }
+    this.mockIds = this.mockIds.concat(await Promise.all(mockIdPromises));
+    this.pactIds = this.pactIds.concat(await Promise.all(pactIdPromises));
   }
 
   async setResponse() {
@@ -94,12 +105,16 @@ class Tosser {
     }
   }
 
-  removeInteractionsFromServer() {
-    for (const [id, interaction] of this.mockInteractions) {
-      this.server.removeInteraction(id);
+  async removeInteractionsFromServer() {
+    if (this.mockIds.length > 0) {
+      this.mockInteractions.length = 0;
+      this.mockInteractions = this.mockInteractions.concat(await mock.getInteraction(this.mockIds));
+      await mock.removeInteraction(this.mockIds);  
     }
-    for (const [id, interaction] of this.pactInteractions) {
-      this.server.removeInteraction(id);
+    if (this.pactIds.length > 0) {
+      this.pactInteractions.length = 0;
+      this.pactInteractions = this.pactInteractions.concat(await mock.getInteraction(this.pactIds));
+      await mock.removeInteraction(this.pactIds);
     }
   }
 
@@ -116,6 +131,16 @@ class Tosser {
 
   validateResponse() {
     this.expect.validate(this.request, this.response);
+  }
+
+  storeSpecData() {
+    for (let i = 0; i < this.stores.length; i++) {
+      const store = this.stores[i];
+      const value = jqy(store.value, { data: this.response.json }).value;
+      const specData = {};
+      specData[store.key] = value;
+      stash.addDataSpec(specData);
+    }
   }
 
   getOutput() {

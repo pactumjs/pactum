@@ -9,7 +9,7 @@ describe('Remote- post single mock interaction', () => {
   before(async () => {
     mock.clearInteractions();
     id = await pactum.spec()
-      .post('http://localhost:9393/api/pactum/mockInteraction')
+      .post('http://localhost:9393/api/pactum/mockInteractions')
       .withJson([{
         withRequest: {
           method: 'GET',
@@ -33,9 +33,12 @@ describe('Remote- post single mock interaction', () => {
 
   it('get all mock interactions', async () => {
     await pactum.spec()
-      .get('http://localhost:9393/api/pactum/mockInteraction')
+      .get('http://localhost:9393/api/pactum/mockInteractions')
       .expectStatus(200)
       .expectJson([{
+        id,
+        exercised: false,
+        callCount: 0,
         willRespondWith: {
           body: {
             id: 1,
@@ -56,9 +59,12 @@ describe('Remote- post single mock interaction', () => {
 
   it('get single mock interaction', async () => {
     await pactum.spec()
-      .get(`http://localhost:9393/api/pactum/mockInteraction?id=${id}`)
+      .get(`http://localhost:9393/api/pactum/mockInteractions?ids=${id}`)
       .expectStatus(200)
       .expectJson([{
+        id,
+        exercised: false,
+        callCount: 0,
         willRespondWith: {
           body: {
             id: 1,
@@ -88,9 +94,36 @@ describe('Remote- post single mock interaction', () => {
       .toss();
   });
 
+  it('get single mock interaction after exercise', async () => {
+    await pactum.spec()
+      .get(`http://localhost:9393/api/pactum/mockInteractions?ids=${id}`)
+      .expectStatus(200)
+      .expectJson([{
+        id,
+        exercised: true,
+        callCount: 1,
+        willRespondWith: {
+          body: {
+            id: 1,
+            name: 'fake'
+          },
+          headers: {
+            'content-type': 'application/json'
+          },
+          status: 200
+        },
+        withRequest: {
+          method: 'GET',
+          path: '/api/projects/1'
+        }
+      }])
+      .toss();
+  });
+
+
   after(async () => {
     await pactum.spec()
-      .del(`http://localhost:9393/api/pactum/mockInteraction?id=${id}`)
+      .delete(`http://localhost:9393/api/pactum/mockInteractions?ids=${id}`)
       .expectStatus(200)
       .toss();
   });
@@ -103,7 +136,7 @@ describe('Remote- post single pact interaction', () => {
 
   before(async () => {
     id = await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'big',
         state: 'liquid',
@@ -130,9 +163,12 @@ describe('Remote- post single pact interaction', () => {
 
   it('get all pact interactions', async () => {
     await pactum.spec()
-      .get('http://localhost:9393/api/pactum/pactInteraction')
+      .get('http://localhost:9393/api/pactum/pactInteractions')
       .expectStatus(200)
-      .expectJson([{
+      .expectJsonLike([{
+        id: /\w+/,
+        exercised: false,
+        callCount: 0,
         provider: 'big',
         state: 'liquid',
         uponReceiving: 'vapour',
@@ -156,9 +192,12 @@ describe('Remote- post single pact interaction', () => {
 
   it('get single pact interaction', async () => {
     await pactum.spec()
-      .get(`http://localhost:9393/api/pactum/pactInteraction?id=${id}`)
+      .get(`http://localhost:9393/api/pactum/pactInteractions?ids=${id}`)
       .expectStatus(200)
-      .expectJson([{
+      .expectJsonLike([{
+        id: /\w+/,
+        exercised: false,
+        callCount: 0,
         provider: 'big',
         state: 'liquid',
         uponReceiving: 'vapour',
@@ -216,7 +255,7 @@ describe('Remote- post single pact interaction', () => {
 
   after(async () => {
     await pactum.spec()
-      .del(`http://localhost:9393/api/pactum/pactInteraction?id=${id}`)
+      .delete(`http://localhost:9393/api/pactum/pactInteractions?ids=${id}`)
       .expectStatus(200)
       .toss();
   });
@@ -235,7 +274,7 @@ describe('Remote- invalid requests', () => {
 
   it('invalid method', async () => {
     await pactum.spec()
-      .patch('http://localhost:9393/api/pactum/mockInteraction')
+      .patch('http://localhost:9393/api/pactum/mockInteractions')
       .expectStatus(405)
       .toss();
   });
@@ -246,7 +285,7 @@ describe('Remote - Save Pacts', () => {
 
   it('save interactions - not exercised', async () => {
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote',
         state: 'liquid',
@@ -268,7 +307,7 @@ describe('Remote - Save Pacts', () => {
 
   it('save interactions - after one interaction exercised', async () => {
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote',
         state: 'liquid',
@@ -283,7 +322,7 @@ describe('Remote - Save Pacts', () => {
       }])
       .expectStatus(200);
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote',
         state: 'solid',
@@ -308,7 +347,7 @@ describe('Remote - Save Pacts', () => {
 
   it('save interactions - all interactions exercised from single provider', async () => {
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote',
         state: 'liquid',
@@ -323,7 +362,7 @@ describe('Remote - Save Pacts', () => {
       }])
       .expectStatus(200);
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote',
         state: 'solid',
@@ -351,7 +390,7 @@ describe('Remote - Save Pacts', () => {
 
   it('save interactions - all interactions exercised from multiple providers', async () => {
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote-1',
         state: 'liquid',
@@ -366,7 +405,7 @@ describe('Remote - Save Pacts', () => {
       }])
       .expectStatus(200);
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote-2',
         state: 'solid',
@@ -404,7 +443,7 @@ describe('Remote - Publish Pacts', () => {
 
   it('publish interactions - not exercised', async () => {
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote',
         state: 'liquid',
@@ -431,7 +470,7 @@ describe('Remote - Publish Pacts', () => {
 
   it('publish interactions - all interactions exercised from multiple providers', async () => {
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote-1',
         state: 'liquid',
@@ -446,7 +485,7 @@ describe('Remote - Publish Pacts', () => {
       }])
       .expectStatus(200);
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote-2',
         state: 'solid',
@@ -561,7 +600,7 @@ describe('Remote - Publish Pacts', () => {
 
   it('publish interactions - one interaction exercised with tags', async () => {
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote-1',
         state: 'liquid',
@@ -576,7 +615,7 @@ describe('Remote - Publish Pacts', () => {
       }])
       .expectStatus(200);
     await pactum.spec()
-      .post('http://localhost:9393/api/pactum/pactInteraction')
+      .post('http://localhost:9393/api/pactum/pactInteractions')
       .withJson([{
         provider: 'remote-2',
         state: 'solid',

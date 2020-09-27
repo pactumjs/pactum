@@ -8,8 +8,14 @@ describe('Request', () => {
   it('with baseurl', async () => {
     request.setBaseUrl('http://localhost:9393');
     await pactum.spec()
-      .useInteraction({
-        get: '/users'
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/users'
+        },
+        willRespondWith: {
+          status: 200
+        }
       })
       .get('/users')
       .expectStatus(200);
@@ -18,8 +24,14 @@ describe('Request', () => {
   it('with baseurl override', async () => {
     request.setBaseUrl('http://localhost:9392');
     await pactum.spec()
-      .useInteraction({
-        get: '/users'
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/users'
+        },
+        willRespondWith: {
+          status: 200
+        }
       })
       .get('http://localhost:9393/users')
       .expectStatus(200);

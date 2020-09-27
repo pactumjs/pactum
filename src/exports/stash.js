@@ -2,6 +2,7 @@ const config = require('../config');
 
 let dataMap = {};
 let dataTemplate = {};
+let dataSpec = {};
 
 const stash = {
 
@@ -33,6 +34,20 @@ const stash = {
     dataTemplate = {};
     config.data.template.processed = false;
     config.data.template.enabled = false;
+  },
+
+  addDataSpec(spec) {
+    Object.assign(dataSpec, spec);
+    config.data.ref.spec.enabled = true;
+  },
+
+  getDataSpecs() {
+    return dataSpec;
+  },
+
+  clearDataSpecs() {
+    dataSpec = {};
+    config.data.ref.spec.enabled = false;
   }
 
 };

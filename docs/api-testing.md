@@ -50,14 +50,12 @@ npm install --save-dev pactum
 # install a test runner to run pactum tests
 # mocha / jest / cucumber
 npm install mocha -g
-
-# Create a js file
-touch http.test.js
 ```
 
-Copy the below code
+Create a JS file & copy the below code
 
 ```javascript
+// test.js
 const pactum = require('pactum');
 
 it('should be a teapot', async () => {
@@ -71,7 +69,7 @@ Running the test
 
 ```shell
 # mocha is a test framework to execute test cases
-mocha http.test.js
+mocha test.js
 ```
 
 ## API
@@ -112,7 +110,8 @@ it('should have a user with name bolt', () => {
 
 #### Breaking
 
-When you want to make your tests much more clearer, you can break your spec into multiple steps. This will come into handy when integrating **pactum** with **cucumber**.
+When you want to make your tests much more clearer, you can break your spec into multiple steps. This will come into handy when integrating **pactum** with **cucumber**. See [pactum-cucumber-boilerplate](https://github.com/ASaiAnudeep/pactum-cucumber-boilerplate) for more details on pactum & cucumber integration.
+
 
 Use `pactum.spec()` to get an instance of the spec. With **spec** you can build your request & expectations in multiple steps.
 
@@ -120,7 +119,7 @@ Once the request is built, perform the request by calling `.toss()` method and w
 
 **Assertions should be made after the request is performed & resolved**.
 
-Assertions can be made either by using `pactum.expect` or `spec.response()`.
+Assertions should be made by either using `pactum.expect` or `spec.response()`.
 
 ```javascript
 const pactum = require('pactum');
@@ -171,7 +170,7 @@ await pactum.spec().get('http://httpbin.org/status/200');
 await pactum.spec().post('http://httpbin.org/status/200');
 await pactum.spec().put('http://httpbin.org/status/200');
 await pactum.spec().patch('http://httpbin.org/status/200');
-await pactum.spec().del('http://httpbin.org/status/200');
+await pactum.spec().delete('http://httpbin.org/status/200');
 await pactum.spec().head('http://httpbin.org/status/200');
 ```
 
@@ -188,6 +187,7 @@ To pass additional parameters to the request, we can chain or use the following 
 | `withForm`                | object to send as form data               |
 | `withMultiPartFormData`   | object to send as multi part form data    |
 | `withRequestTimeout`      | sets request timeout                      |
+| `withCore`                | http request options                      |
 | `__setLogLevel`           | sets log level for troubleshooting        |
 | `toss`                    | runs the spec & returns a promise         |
 
@@ -648,9 +648,11 @@ pactum.request.setDefaultHeader('content-type', 'application/json');
 
 API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to the next tests using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions.
 
+#### returns 
+
 Use `returns` method to return custom response from the received JSON.
 
-#### json-query
+##### json-query
 
 ```javascript
 const pactum = require('pactum');
@@ -686,7 +688,7 @@ it('first & second posts should have comments', async () => {
 });
 ```
 
-#### AdHoc Handler
+##### AdHoc Handler
 
 We can also use a custom handler function to return data. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects. 
 
@@ -704,7 +706,7 @@ it('should return all posts and first post should have comments', async () => {
 });
 ```
 
-#### Common Handler
+##### Common Handler
 
 We can also use a custom common handler function to return data & use it at different places.
 
@@ -731,6 +733,58 @@ it('should return all posts and first post should have comments', async () => {
 ```
 
 **Note**: *While evaluating the string passed to the returns function, the library sees if there is a handler function with the name. If not found it will execute the json-query.*
+
+#### stores
+
+Use `stores` method to save response data under *data management* which can be referenced later in specs. This method accepts two arguments `key` & `value`.
+
+* `key` is a string that can be referenced in other parts to fetch corresponding value.
+* `value` is a *json-query* that will fetch custom response data & save it against the key.
+
+```javascript
+await pactum.spec()
+  .get('http://jsonplaceholder.typicode.com/posts')
+  .stores('FirstPost', '[0]')
+  .stores('SecondPost', '[1]')
+  .stores('AllPosts', '.');
+
+/*
+
+Lets say the response is
+  [
+    {
+      id: 1,
+      user: 'jon'
+    },
+    {
+      id: 2,
+      user: 'snow'
+    }
+  ]
+
+  @DATA:SPEC::FirstPost@ will contain the first item in the response JSON
+    {
+      id: 1,
+      user: 'jon'
+    }
+
+  @DATA:SPEC::SecondPost@ will contain the second item in the response JSON
+    {
+      id: 2,
+      user: 'snow'
+    }
+  
+  @DATA:SPEC::AllPosts@ will have the entire JSON response.
+*/
+
+await pactum.spec()
+  .patch('http://jsonplaceholder.typicode.com/posts')
+  .withJson({
+    id: '@DATA:SPEC::FirstPost.id@'
+    title: 'new title'
+  });
+});
+```
 
 ### Retry Mechanism
 

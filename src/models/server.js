@@ -2,6 +2,7 @@ const polka = require('polka');
 
 const Interaction = require('./interaction');
 
+const handler = require('../exports/handler');
 const helper = require('../helpers/helper');
 const utils = require('../helpers/utils');
 const store = require('../helpers/store');
@@ -53,11 +54,13 @@ class Server {
 
   addMockInteraction(id, interaction) {
     this.mockInteractions.set(id, interaction);
+    log.debug('Mock Interaction added to Server -', id);
   }
 
   addPactInteraction(id, interaction) {
     store.addInteraction(interaction);
     this.pactInteractions.set(id, interaction);
+    log.debug('Pact Interaction added to Server -', id);
   }
 
   removeInteraction(id) {
@@ -95,10 +98,21 @@ class Server {
     this.clearPactInteractions();
   }
 
+  getInteraction(id) {
+    if (this.mockInteractions.has(id)) {
+      return this.mockInteractions.get(id);
+    } else if (this.pactInteractions.has(id)) {
+      return this.pactInteractions.get(id);
+    } else {
+      log.warn(`Interaction Not Found - ${id}`);
+      return null;
+    }
+  }
+
   getInteractionDetails(id) {
     let interaction = {};
     if (this.mockInteractions.has(id)) {
-      interaction = this.mockInteractions.get(id);  
+      interaction = this.mockInteractions.get(id);
     } else if (this.pactInteractions.has(id)) {
       interaction = this.pactInteractions.get(id);
     } else {
@@ -106,7 +120,7 @@ class Server {
     }
     return {
       exercised: interaction.exercised || false,
-      callCount: interaction.count || 0
+      callCount: interaction.callCount || 0
     }
   }
 
@@ -148,8 +162,8 @@ function sendInteractionFoundResponse(req, res, interaction) {
     willRespondWith(req, res);
   } else {
     let response = {};
-    if (willRespondWith[interaction.count]) {
-      response = willRespondWith[interaction.count];
+    if (willRespondWith[interaction.callCount]) {
+      response = willRespondWith[interaction.callCount];
     } else {
       response = willRespondWith;
     }
@@ -162,7 +176,7 @@ function sendInteractionFoundResponse(req, res, interaction) {
       setTimeout(() => sendResponseBody(res, response.body), delay);
     }
   }
-  interaction.count += 1;
+  interaction.callCount += 1;
 }
 
 /**
@@ -224,10 +238,13 @@ function registerPactumRemoteRoutes(server) {
         res.write("OK");
         res.end();
         break;
-      case '/api/pactum/mockInteraction':
+      case '/api/pactum/handlers':
+        handleRemoteHandler(req, res, server);
+        break;
+      case '/api/pactum/mockInteractions':
         handleRemoteInteractions(req, res, server, 'MOCK');
         break;
-      case '/api/pactum/pactInteraction':
+      case '/api/pactum/pactInteractions':
         handleRemoteInteractions(req, res, server, 'PACT');
         break;
       case '/api/pactum/pacts/save':
@@ -243,6 +260,39 @@ function registerPactumRemoteRoutes(server) {
         break;
     }
   });
+}
+
+function handleRemoteHandler(req, res, server) {
+  try {
+    const ids = [];
+    for (let i = 0; i < req.body.length; i++) {
+      const raw = req.body[i];
+      const handlers = raw.handlers;
+      const data = raw.data;
+      for (let j = 0; j < handlers.length; j++) {
+        const { name, type } = handlers[j];
+        if (type === 'MOCK') {
+          const rawMock = handler.getMockInteractionHandler(name)({ data });
+          const interaction = new Interaction(rawMock, true);
+          server.mockInteractions.set(interaction.id, interaction);
+          ids.push(interaction.id);
+        } else {
+          const rawPact = handler.getPactInteractionHandler(name)({ data });
+          const interaction = new Interaction(rawPact, false);
+          server.pactInteractions.set(interaction.id, interaction);
+          ids.push(interaction.id);
+        }
+      }
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.write(JSON.stringify(ids));
+    res.end();
+  } catch (error) {
+    log.error(`Error running handlers - ${error}`);
+    res.writeHead(400, { "Content-Type": "application/json" });
+    res.write(JSON.stringify({ error: error.message }));
+    res.end();
+  }
 }
 
 function handleRemoteInteractions(req, response, server, interactionType) {
@@ -267,20 +317,35 @@ function handleRemoteInteractions(req, response, server, interactionType) {
         res.send(ids);
         break;
       case 'GET':
-        if (req.query.id) {
-          rawInteractions.push(interactions.get(req.query.id).rawInteraction);
+        if (req.query.ids) {
+          const ids = req.query.ids.split(',');
+          ids.forEach(id => {
+            const intObj = interactions.get(id);
+            if (intObj) {
+              const raw = JSON.parse(JSON.stringify(intObj.rawInteraction));
+              raw.id = intObj.id;
+              raw.exercised = intObj.exercised || false;
+              raw.callCount = intObj.callCount;
+              rawInteractions.push(raw)
+            }
+          });
         } else {
           for (const [id, interaction] of interactions) {
             log.trace('Fetching remote interaction', id);
-            rawInteractions.push(interaction.rawInteraction);
+            const raw = JSON.parse(JSON.stringify(interaction.rawInteraction));
+            raw.id = interaction.id;
+            raw.exercised = interaction.exercised || false;
+            raw.callCount = interaction.callCount;
+            rawInteractions.push(raw);
           }
         }
         res.status(200);
         res.send(rawInteractions);
         break;
       case 'DELETE':
-        if (req.query.id) {
-          interactions.delete(req.query.id);
+        if (req.query.ids) {
+          const ids = req.query.ids.split(',');
+          ids.forEach(id => interactions.delete(id));
         } else {
           interactions.clear();
         }

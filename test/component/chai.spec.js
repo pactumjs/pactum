@@ -15,11 +15,21 @@ describe('Chai Like Assertions', () => {
   });
 
   it('Given a user with name snow', () => {
-    spec.useInteraction({
-      get: '/api/users',
-      return: {
-        name: 'snow'
+    spec.useMockInteraction({
+      withRequest: {
+        method: 'GET',
+        path: '/api/users'
+      },
+      willRespondWith: {
+        status: 200,
+        body: {
+          name: 'snow'
+        }
       }
+      // get: '/api/users',
+      // return: {
+      //   name: 'snow'
+      // }
     });
   });
 
