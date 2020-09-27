@@ -9,6 +9,7 @@
  * });
  */
 export function addDataMap(maps: object): void;
+export function addDataMap(maps: object[]): void;
 
 /**
  * loads data templates
@@ -21,4 +22,5 @@ export function addDataMap(maps: object): void;
  *  }
  * });
  */
-export function addDataTemplate(template: object): void;
+export function addDataTemplate(templates: object): void;
+export function addDataTemplate(templates: object[]): void;

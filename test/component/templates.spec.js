@@ -25,6 +25,8 @@ describe('Templates & Maps', () => {
         Wall: 'Castle Black'
       }
     });
+    pactum.stash.addDataMap([]);
+    pactum.stash.addDataTemplate([]);
     pactum.handler.addDataHandler('GetZero', () => 0);
     pactum.handler.addDataHandler('GetAuthToken', () => 'Basic xyz');
   });

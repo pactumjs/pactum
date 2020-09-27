@@ -7,7 +7,10 @@ let dataSpec = {};
 const stash = {
 
   addDataMap(maps) {
-    Object.assign(dataMap, maps);
+    if (!Array.isArray(maps)) {
+      maps = [maps]
+    }
+    maps.forEach(map => Object.assign(dataMap, map));
     config.data.ref.map.processed = false;
   },
 
@@ -22,7 +25,10 @@ const stash = {
   },
 
   addDataTemplate(templates) {
-    Object.assign(dataTemplate, templates);
+    if (!Array.isArray(templates)) {
+      templates = [templates]
+    }
+    templates.forEach(template => Object.assign(dataTemplate, template));
     config.data.template.processed = false;
   },
 
