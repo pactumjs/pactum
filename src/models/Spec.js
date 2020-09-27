@@ -20,18 +20,12 @@ class Spec {
     this._expect = new Expect();
     this._state = new State();
     this.previousLogLevel = null;
-    this.basicInteractions = [];
     this.mockInteractions = [];
     this.pactInteractions = [];
   }
 
   setState(name, data) {
     this._state.add(name, data);
-    return this;
-  }
-
-  useInteraction(interaction, data) {
-    this.basicInteractions.push({ interaction, data });
     return this;
   }
 

@@ -180,23 +180,6 @@ describe('Templates & Maps', () => {
       .expectStatus(200);
   });
 
-  it('basic mock using template in return', async () => {
-    await pactum.spec()
-      .useInteraction({
-        get: '/api/users/1',
-        return: {
-          '@DATA:TEMPLATE@': 'User.NewUser'
-        }
-      })
-      .get('http://localhost:9393/api/users/1')
-      .expectJson({
-        FirstName: 'Jon',
-        LastName: 'Snow',
-        Country: 'North',
-        Addresses: []
-      });
-  });
-
   it('mock using data reference in query & headers', async () => {
     await pactum.spec()
       .useMockInteraction({

@@ -6,7 +6,6 @@ const retryHandlers = {};
 const returnHandlers = {};
 const stateHandlers =  {};
 const dataHandlers = {};
-const interactionHandlers = {};
 const mockInteractionHandlers = {};
 const pactInteractionHandlers = {};
 
@@ -60,16 +59,6 @@ const handler = {
   getDataHandler(name) {
     if (dataHandlers[name]) return dataHandlers[name];
     throw new PactumHandlerError(`Custom Data Handler Not Found - ${name}`);
-  },
-  
-  addInteractionHandler(name, func) {
-    isValidHandler(name, func);
-    interactionHandlers[name] = func;
-  },
-
-  getInteractionHandler(name) {
-    if (interactionHandlers[name]) return interactionHandlers[name];
-    throw new PactumHandlerError(`Custom Interaction Handler Not Found - ${name}`);
   },
 
   addMockInteractionHandler(name, func) {

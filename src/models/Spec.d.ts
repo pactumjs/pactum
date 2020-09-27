@@ -27,22 +27,6 @@ declare class Spec {
    *  .expectStatus(200);
    */
   setState(name: string, data?: any): Spec;
-
-  /**
-   * adds a basic mock interaction to the server & auto removed after execution
-   * @example
-   * await pactum
-   *  .useInteraction({
-   *    get: '/api/address/4'
-   *    return: {
-   *      city: 'WinterFell'
-   *    }
-   *  })
-   *  .get('/api/users/4')
-   *  .expectStatus(200);
-   */
-  useInteraction(interaction: BasicInteraction): Spec;
-  useInteraction(handler: string, data?: any): Spec;
   
   /**
    * adds a mock interaction to the server & auto removed after execution

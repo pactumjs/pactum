@@ -290,12 +290,18 @@ before(() => {
 it('should get jon snow details', () => {
   return pactum.spec()
     // adds interaction to mock server & removes it after the spec
-    .useInteraction({
-      get: '/api/address/4',
-      return: {
-        city: 'WinterFell',
-        country: 'The North'
-      }
+    .useMockInteraction({
+      withRequest: {
+        method: 'GET',
+        path: '/api/address/4'
+      },
+      willRespondWith: {
+        status: 200,
+        body: {
+          city: 'WinterFell',
+          country: 'The North'
+        }
+      } 
     })
     .get('http://localhost:3333/users/4')
     .expectStatus(200)

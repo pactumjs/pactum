@@ -31,29 +31,6 @@ const mock = {
     config.mock.port = port;
   },
 
-  addInteraction(interactions, data) {
-    let alone = false;
-    if (!Array.isArray(interactions)) {
-      alone = true;
-      interactions = [interactions];
-    }
-    const raws = []
-    for (let i = 0; i < interactions.length; i++) {
-      let raw = interactions[i];
-      if (typeof raw === 'string') {
-        raw = handler.getInteractionHandler(raw)({ data });
-      }
-      raws.push({
-        withRequest: helper.getRequestFromBasicInteraction(raw),
-        willRespondWith: {
-          status: raw.status || 200,
-          body: raw.return || ''
-        }
-      });
-    }
-    return alone ? this.addMockInteraction(raws[0]) : this.addMockInteraction(raws);
-  },
-
   addMockInteraction(interactions, data) {
     let alone = false;
     if (!Array.isArray(interactions)) {

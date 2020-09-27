@@ -17,7 +17,6 @@ class Tosser {
     this.expect = spec._expect;
     this.stores = spec._stores;
     this.returns = spec._returns;
-    this.basicInteractions = spec.basicInteractions;
     this.mockInteractions = spec.mockInteractions;
     this.pactInteractions = spec.pactInteractions;
     this.previousLogLevel = spec.previousLogLevel;
@@ -62,10 +61,6 @@ class Tosser {
   async addInteractionsToServer() {
     const mockIdPromises = [];
     const pactIdPromises = [];
-    for (let i = 0; i < this.basicInteractions.length; i++) {
-      const raw = this.basicInteractions[i];
-      mockIdPromises.push(mock.addInteraction(raw.interaction, raw.data));
-    }
     for (let i = 0; i < this.mockInteractions.length; i++) {
       const raw = this.mockInteractions[i];
       mockIdPromises.push(mock.addMockInteraction(raw.interaction, raw.data));

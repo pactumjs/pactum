@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 
 const log = require('./logger');
-const { PactumInteractionError } = require('./errors');
 
 const helper = {
 
@@ -194,31 +193,6 @@ const helper = {
 
   sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-  },
-
-  getRequestFromBasicInteraction(interaction) {
-    const request = {
-      method: 'GET'
-    };
-    if(!interaction) {
-      throw new PactumInteractionError('`interaction` is required');
-    }
-    if (interaction.get) {
-      request.path = interaction.get;
-    } else if (interaction.post) {
-      request.method = 'POST';
-      request.path = interaction.post;
-    } else if (interaction.put) {
-      request.method = 'PUT';
-      request.path = interaction.put;
-    } else if (interaction.patch) {
-      request.method = 'PATCH';
-      request.path = interaction.patch;
-    } else if (interaction.delete) {
-      request.method = 'DELETE';
-      request.path = interaction.delete;
-    }
-    return request;
   }
 
 };

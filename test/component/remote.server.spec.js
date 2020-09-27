@@ -36,16 +36,6 @@ describe('Remote Server', () => {
     });
   });
 
-  it('useInteraction', async () => {
-    await pactum.spec()
-      .useInteraction({ get: '/remote' })
-      .get('http://localhost:9393/remote')
-      .expectStatus(200);
-    await pactum.spec()
-      .get('http://localhost:9393/remote')
-      .expectStatus(404);
-  });
-
   it('useMockInteraction', async () => {
     await pactum.spec()
       .useMockInteraction({
@@ -123,40 +113,6 @@ describe('Remote Server', () => {
     await pactum.spec()
       .get('http://localhost:9393/remote')
       .expectStatus(404)
-  });
-
-
-  it('useInteraction - not exercised', async () => {
-    let err;
-    try {
-      await pactum.spec()
-        .useInteraction({ get: '/remote' })
-        .useInteraction({ get: '/remote1' })
-        .get('http://localhost:9393/remote2')
-        .expectStatus(200);
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals('Interaction not exercised: GET - /remote');
-    await pactum.spec()
-      .get('http://localhost:9393/remote')
-      .expectStatus(404)
-    await pactum.spec()
-      .get('http://localhost:9393/remote1')
-      .expectStatus(404)
-  });
-
-  it('useInteraction - empty', async () => {
-    let err;
-    try {
-      await pactum.spec()
-        .useInteraction()
-        .get('http://localhost:9393/remote')
-        .expectStatus(200);
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals('`interaction` is required');
   });
 
   after(async () => {

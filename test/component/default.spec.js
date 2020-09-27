@@ -43,10 +43,19 @@ describe('Mock - Default Mock Interaction', () => {
         }
       }
     });
-    mock.addInteraction({
-      post: '/api/projects',
-      return: {
-        message: 'ok'
+    mock.addMockInteraction({
+      withRequest: {
+        method: 'POST',
+        path: '/api/projects'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          message: 'ok'
+        }
       }
     });
   });
@@ -263,10 +272,19 @@ describe('Mock - Default Mock Interactions', () => {
         }
       }
     }]);
-    mock.addInteraction([{
-      post: '/api/projects',
-      return: {
-        message: 'ok'
+    mock.addMockInteraction([{
+      withRequest: {
+        method: 'POST',
+        path: '/api/projects'
+      },
+      willRespondWith: {
+        status: 200,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          message: 'ok'
+        }
       }
     }]);
   });

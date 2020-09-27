@@ -181,50 +181,6 @@ describe('Data Handler', () => {
 
 });
 
-describe('Basic Interaction Handler', () => {
-
-  it('invalid handler name', () => {
-    let err;
-    try {
-      handler.addInteractionHandler();
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals('`name` is required');
-  });
-
-  it('empty handler name', () => {
-    let err;
-    try {
-      handler.addInteractionHandler('');
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals('`name` is required');
-  });
-
-  it('invalid handler function', () => {
-    let err;
-    try {
-      handler.addInteractionHandler('hello');
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals('`func` is required');
-  });
-
-  it('get invalid handler function', () => {
-    let err;
-    try {
-      handler.getInteractionHandler('hello');
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals('Custom Interaction Handler Not Found - hello');
-  });
-
-});
-
 describe('Mock Interaction Handler', () => {
 
   it('invalid handler name', () => {

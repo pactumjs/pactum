@@ -1,15 +1,3 @@
-export interface BasicInteraction {
-  get?: string;
-  post?: string;
-  put?: string;
-  patch?: string;
-  delete?: string;
-  /** status code to return */
-  status?: number;
-  /** body to return */
-  return?: any;
-}
-
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD';
 
 export interface GraphQLRequest {
@@ -92,21 +80,6 @@ export function start(port: number): Promise<void>;
  * stops the mock server
  */
 export function stop(): Promise<void>;
-
-/**
- * adds a basic mock interaction
- * @returns interaction id
- * @example
- * mock.addInteraction({
- *  get: '/api/users',
- *  return: []
- * });
- */
-export function addInteraction(interaction: BasicInteraction): string;
-export function addInteraction(interactions: BasicInteraction[]): string[];
-export function addInteraction(interaction: BasicInteraction): Promise<string>;
-export function addInteraction(interactions: BasicInteraction[]): Promise<string[]>;
-
 
 /**
  * adds a mock interaction
