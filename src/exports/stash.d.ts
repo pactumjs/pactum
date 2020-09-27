@@ -1,4 +1,11 @@
 /**
+ * loads data templates & maps from file system
+ * @example
+ * stash.loadData('./data');
+ */
+export function loadData(path?: string): void;
+
+/**
  * loads data maps
  * @example
  * stash.addDataMap({

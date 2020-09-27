@@ -1,9 +1,11 @@
 const pactum = require('../../src/index');
+const stash = pactum.stash;
 
 describe('Templates & Maps', () => {
 
   before(() => {
-    pactum.stash.addDataTemplate({
+    stash.loadData('./test/data');
+    stash.addDataTemplate({
       'User.NewUser': {
         FirstName: 'Jon',
         LastName: 'Snow',
@@ -15,7 +17,7 @@ describe('Templates & Maps', () => {
         Realm: 'The North'
       }
     });
-    pactum.stash.addDataMap({
+    stash.addDataMap({
       User: {
         FirstName: 'Jon',
         LastName: 'Snow',
@@ -25,8 +27,8 @@ describe('Templates & Maps', () => {
         Wall: 'Castle Black'
       }
     });
-    pactum.stash.addDataMap([]);
-    pactum.stash.addDataTemplate([]);
+    stash.addDataMap([]);
+    stash.addDataTemplate([]);
     pactum.handler.addDataHandler('GetZero', () => 0);
     pactum.handler.addDataHandler('GetAuthToken', () => 'Basic xyz');
   });
@@ -213,9 +215,36 @@ describe('Templates & Maps', () => {
       });
   });
 
+  it('post new army from a template in fs', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/army',
+          body: {
+            "Name": "Golden Army",
+            "Count": 10000,
+            "Alliance": "Stark",
+            "Cavalry": "@DATA:MAP::Unknown@"
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/army')
+      .withJson({
+        '@DATA:TEMPLATE@': 'Army:New',
+        '@OVERRIDES@': {
+          'Cavalry': '@DATA:MAP::Unknown@'
+        }
+      })
+      .expectStatus(200);
+  });
+
   after(() => {
-    pactum.stash.clearDataTemplates();
-    pactum.stash.clearDataMaps();
+    stash.clearDataTemplates();
+    stash.clearDataMaps();
   });
 
 });

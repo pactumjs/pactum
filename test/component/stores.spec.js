@@ -85,6 +85,27 @@ describe('Stores', () => {
       .expectStatus(200);
   });
 
+  it('invalid spec reference', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/stores',
+          body: {
+            UserId: '@DATA:SPEC::Unknown@'
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/stores')
+      .withJson({
+        UserId: '@DATA:SPEC::Unknown@'
+      })
+      .expectStatus(200);
+  });
+
   afterEach(() => {
     stash.clearDataSpecs();
   });

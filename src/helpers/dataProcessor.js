@@ -95,14 +95,16 @@ const dataProcessor = {
         const refType = dataRefMatch.match(DATA_REF_TYPE_PATTERN)[0].replace('::', '');
         const refValue = dataRefMatch.match(DATA_REF_VALUE_PATTERN)[0].replace('::', '');
         if (refType === '@DATA:MAP') {
-          return jq(refValue, { data: this.map }).value;
+          const value = jq(refValue, { data: this.map }).value;
+          return typeof value === 'undefined' ? raw : value;
         }
         if (refType === '@DATA:FUN') {
           const handlerFun = handler.getDataHandler(refValue);
           return handlerFun();
         }
         if (refType === '@DATA:SPEC') {
-          return jq(refValue, { data: stash.getDataSpecs() }).value;
+          const value = jq(refValue, { data: stash.getDataSpecs() }).value;
+          return typeof value === 'undefined' ? raw : value;
         }
       }
     }

@@ -1,0 +1,6 @@
+{
+  "House:New": {
+    "Name": "@DATA:MAP::House.Name@",
+    "Owner": "@DATA:MAP::House.Owner@"
+  }
+}
