@@ -96,10 +96,10 @@ export function stop(): Promise<void>;
  *  }
  * });
  */
-export function addMockInteraction(interaction: MockInteraction): string;
-export function addMockInteraction(interaction: MockInteraction[]): string[];
-export function addMockInteraction(interaction: MockInteraction): Promise<string>;
-export function addMockInteraction(interaction: MockInteraction[]): Promise<string[]>;
+export function addMockInteraction(interaction: MockInteraction | string): string;
+export function addMockInteraction(interaction: MockInteraction[] | string[]): string[];
+export function addMockInteraction(interaction: MockInteraction | string): Promise<string>;
+export function addMockInteraction(interaction: MockInteraction[] | string[]): Promise<string[]>;
 
 /**
  * adds pact interaction used for contract testing
@@ -119,11 +119,10 @@ export function addMockInteraction(interaction: MockInteraction[]): Promise<stri
  *  }
  * });
  */
-export function addPactInteraction(interaction: PactInteraction): string;
-export function addPactInteraction(interactions: PactInteraction[]): string[];
-export function addPactInteraction(interaction: PactInteraction): Promise<string>;
-export function addPactInteraction(interactions: PactInteraction[]): Promise<string[]>;
-
+export function addPactInteraction(interaction: PactInteraction | string): string;
+export function addPactInteraction(interactions: PactInteraction[] | string[]): string[];
+export function addPactInteraction(interaction: PactInteraction | string): Promise<string>;
+export function addPactInteraction(interactions: PactInteraction[] | string[]): Promise<string[]>;
 /**
  * returns interaction details
  */
