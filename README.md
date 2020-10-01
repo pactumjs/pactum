@@ -109,7 +109,7 @@ Scenario: Check TeaPot
 
 It allows verification of returned status codes, headers, body, json objects, json schemas & response times. Learn more about available assertions at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#resonse-validation)
 
-Running complex component test expectations.
+Running complex test expectations.
 
 ```javascript
 it('should have a user with id', () => {

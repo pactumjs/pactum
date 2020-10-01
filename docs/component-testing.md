@@ -4,465 +4,255 @@ Component testing is defined as a software testing type, in which the testing is
 
 These tests are all about testing the functionality of individual service. During this, your service will be talking to other external services. But instead of talking to real external services, they talk to mock versions of external services.
 
-## Table of contents
+It involves testing a service in isolation. Usually during this type of testing we spin up our service under test in a controlled environment where we a mock server to simulate external services & a testing tool to send requests & validate responses.
 
-* [Getting Started](#getting-started)
-* [API](#api)
-  * [HTTP Requests](#http-requests)
-  * [HTTP Methods](#http-methods)
-  * [HTTP Expectations](#http-expectations)
-  * [Request Settings](#request-settings)
-* [Examples](#examples)
+## Example
 
-## Getting Started
+To better understand component testing, consider an e-commerce application that has multiple micro-services that power it.
 
-### Simple Test
+Let's look at a couple of services.
 
-Let's assume you have an order-service which is a REST API service running on port 3000.
-Assuming all the external dependencies of the **order-service** are mocked.
+**order-service** helps users to place an order. It has an API endpoint `/api/orders` that accepts a POST request with the following JSON with product details.
 
-The below code will run an expectation on **order-service**.
+```json
+{
+  "name": "iPhone X",
+  "quantity": 2
+}
+```
+
+A simple API test case to buy a product will look like
 
 ```javascript
-// imports pactum library
-const pactum = require('pactum');
-
-// this is a test step in mocha
-it('should fetch order details', async () => {
-  await pactum
-    // assume you have an order-service running locally on port 3000
-    .get('http://localhost:3000/api/orders/123')
-    // set an expectation of 200
-    .expectStatus(200)
-    // set an expectation on the response body
-    .expectJson({
-      orderId: '123',
-      price: '3030',
-      currency: 'INR'
+it('should buy an iPhone', () => {
+  await pactum.spec()
+    .post('/api/orders')
+    .withJson({
+      "name": "iPhone",
+      "quantity": 1
     })
-    // execute the test case
-    .toss();
+    .expectStatus(200);
+});
+```
+
+But internally, **order-service** will communicate with **inventory-service** to check if the product is available or not. *inventory-service* exposes an API endpoint `/api/inventory` that returns available products in the inventory.
+
+When user places an order, *order-service* will make a GET request to `/api/inventory?product=iPhone`. Based on the response from the *inventory-service*, it will accept an order or reject an order.
+
+We can write two simple functional tests
+
+* Buy a product which is in-stock
+* Buy a product which is out-of-stock
+
+Usually we will spin up a mock server that will return a successful response for a particular product (*iPhone*) & unsuccessful response for another product (*Galaxy*).
+
+```javascript
+it('should buy a product which is in stock', () => {
+  await pactum.spec()
+    .post('/api/orders')
+    .withJson({
+      "name": "iPhone",
+      "quantity": 1
+    })
+    .expectStatus(200);
+});
+
+it('should not buy a product which is out-of-stock', () => {
+  await pactum.spec()
+    .post('/api/orders')
+    .withJson({
+      "name": "Galaxy",
+      "quantity": 1
+    })
+    .expectStatus(400)
+    .expectJson({
+      "message": "product is out-of-stock"
+    });
+});
+```
+
+As the functionality of the service grows, the dependency of the service on other services increases. To test different scenarios, it becomes difficult to control the behavior of mock server.
+
+But **pactum** makes component testing easy & fun as it allows us to control the behavior of mock server for each & every test case. It works on top of [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing) & [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server). If you haven't read about them, use the above links to learn more about them.
+
+Instead of spinning a separate mock server, pactum comes with it. Multiple interactions can be added to the mock server before the execution of a test case through `useMockInteraction` method. If these interactions are not exercised then the test case will fail. If an unexpected request is sent to the mock server, it will respond with *404* - *Interaction Not Found*.
+
+```javascript
+before(async () => {
+  await mock.start(3000);
+});
+
+it('should buy a product which is in stock', () => {
+  await pactum.spec()
+    .useMockInteraction({
+      withRequest: {
+        method: 'GET',
+        path: '/api/inventory',
+        query: {
+          product: 'iPhone'
+        }
+      },
+      willRespondWith: {
+        status: 200,
+        body: {
+          "InStock": true
+        }
+      }
+    })
+    .post('/api/orders')
+    .withJson({
+      "name": "iPhone",
+      "quantity": 1
+    })
+    .expectStatus(200);
+});
+
+it('should not buy a product which is out-of-stock', () => {
+  await pactum.spec()
+    .useMockInteraction({
+      withRequest: {
+        method: 'GET',
+        path: '/api/inventory',
+        query: {
+          product: 'iPhone'
+        }
+      },
+      willRespondWith: {
+        status: 200,
+        body: {
+          "InStock": false
+        }
+      }
+    })
+    .post('/api/orders')
+    .withJson({
+      "name": "iPhone",
+      "quantity": 1
+    })
+    .expectStatus(400)
+    .expectJson({
+      "message": "product is out-of-stock"
+    });
+});
+
+after(async () => {
+  await mock.stop();
 });
 ```
 
 ## API
 
-### HTTP Requests
+### Multiple Interactions
 
-HTTP requests are messages sent by the client to initiate an action on the server.
+`useMockInteraction` method will add interactions to the mock server. Once the interactions are added, you can build your request & expectations. 
 
-#### pactum
-
-| Method                              | Description                               |
-| ----------------------------------- | ----------------------------------------- |
-| `get('url')`                        | HTTP method                               |
-| `withQueryParam('postId', '1')`     | query parameter attached to the url       |
-| `withQueryParams({'postId': '1'})`  | query parameters attached to the url      |
-| `withHeaders({})`                   | request headers                           |
-| `withBody('Hello')`                 | request body                              |
-| `withJson({id: 1})`                 | request json object                       |
-| `withGraphQLQuery('{ hero }')`      | graphQL query                             |
-| `withGraphQLVariables({})`          | graphQL variables                         |
-| `withForm({})`                      | object to send as form data               |
-| `withMultiPartFormData('','', {})`  | object to send as multi part form data    |
-| `__setLogLevel('DEBUG')`            | sets log level for troubleshooting        |
-| `withRequestTimeout(2000)`         | sets request timeout                      |
-| `retry({})`                         | retry options                             |                
+ * These interactions are auto removed after the spec is executed.
+ * If these interactions are not exercised, the test case will fail.
+ * You can add multiple interactions for a single test case.
 
 ```javascript
-const pactum = require('pactum');
-
-// performs a get request with query
-it('GET - with query', async () => {
-  await pactum
-    .get('https://jsonplaceholder.typicode.com/comments')
-    .withQueryParam('postId', 1)
-    .withQueryParam('id', 1)
-    .expectStatus(200)
-    .toss();
-});
-
-// performs a post request with JSON
-it('POST', async () => {
-  await pactum
-    .post('https://jsonplaceholder.typicode.com/posts')
+it('should not buy a product which is out-of-stock', () => {
+  await pactum.spec()
+    .useMockInteraction(/* one interaction details */)
+    .useMockInteraction(/* another interaction details */)
+    .post('/api/orders')
     .withJson({
-      title: 'foo',
-      body: 'bar',
-      userId: 1
+      "name": "iPhone",
+      "quantity": 1
     })
-    .expectStatus(201)
-    .toss();
-});
-
-// performs a post request with headers & body
-it('POST - with body', async () => {
-  await pactum
-    .post('https://jsonplaceholder.typicode.com/posts')
-    .withHeaders({
-      "content-type": "application/json"
-    })
-    .withBody({
-      title: 'foo',
-      body: 'bar',
-      userId: 1
-    })
-    .expectStatus(201)
-    .toss();
-});
-```
-
-##### retryOptions
-
-| Property  | Type       | Description                                |
-| --------- | ---------- | ------------------------------------------ |
-| count     | `number`   | number of times to retry - defaults to 3   |
-| delay     | `number`   | delay between retries - defaults to 1000ms |
-| strategy  | `function` | retry strategy function - returns boolean  |
-| strategy  | `string`   | retry strategy handler name                | 
-
-```javascript
-const pactum = require('pactum');
-
-it('should get the newly added post', () => {
-  return pactum
-    .get('https://jsonplaceholder.typicode.com/posts/12')
-    .retry({
-      count: 2,
-      delay: 2000,
-      strategy: (res) => res.statusCode !== 202
-    })
-    .expectStatus(200);
-});
-
-pactum.handler.addRetryHandler('waitForPost', (res) => { /* Custom Retry Strategy Code */});
-
-it('should get the newly added post', () => {
-  return pactum
-    .get('https://jsonplaceholder.typicode.com/posts/12')
-    .retry({
-      strategy: 'waitForPost' // Default Count: 3 & Delay: 1000 milliseconds
-    })
-    .expectStatus(200);
-});
-```
-
-
-### HTTP Methods
-
-The request method indicates the method to be performed on the resource identified by the given Request-URI.
-
-#### pactum
-
-| Method   | Description                                | Usage                          |
-| -------- | ------------------------------------------ | ------------------------------ |
-| `get`    | performs a GET request on the resource     | `await pactum.get('url')`      |
-| `post`   | performs a POST request on the resource    | `await pactum.post('url')`     |
-| `put`    | performs a PUT request on the resource     | `await pactum.put('url')`      |
-| `del`    | performs a DELETE request on the resource  | `await pactum.delete('url')`      |
-| `patch`  | performs a PATCH request on the resource   | `await pactum.patch('url')`    |
-| `head`   | performs a HEAD request on the resource    | `await pactum.head('url')`     |
-
-```javascript
-// performs a delete request
-it('DELETE', async () => {
-  await pactum
-    .delete('https://jsonplaceholder.typicode.com/posts/1')
-    .expectStatus(200)
-    .toss();
-});
-```
-
-### HTTP Expectations
-
-Expectations help to assert the response received from the server.
-
-#### pactum
-
-| Method                                  | Description                                                      |
-| --------------------------------------- | ---------------------------------------------------------------- |
-| `expect('handler', data)`               | runs custom expect handler                                       |
-| `expectStatus(201)`                     | check HTTP status                                                |
-| `expectHeader('key', 'value')`          | check HTTP header key + value (RegExp)                           |
-| `expectHeaderContains('key', 'value')`  | check HTTP header key contains partial value (RegExp)            |
-| `expectBody('value')`                   | check exact match of body                                        |
-| `expectBodyContains('value')`           | check body contains the value (RegExp)                           |
-| `expectJson({json})`                    | check exact match of json                                        |
-| `expectJsonLike({json})`                | check loose match of json (RegExp)                               |
-| `expectJsonSchema({schema})`            | validate [json-schema](https://json-schema.org/learn/)           |
-| `expectJsonQuery('path', 'value')`      | validate [json-query](https://www.npmjs.com/package/json-query)  |
-| `expectJsonQueryLike('path', {json}`    | check loose match of json-query                                  |
-| `expectResponseTime(10)`                | check if request completes within a specified duration (ms)      |
-
-```javascript
-const pactum = require('pactum');
-
-it('GET', async () => {
-  await pactum
-    .get('https://jsonplaceholder.typicode.com/posts/1')
-    .expectStatus(200)
-    .expectHeader('content-type', 'application/json; charset=utf-8')
-    .expectHeader('connection', /\w+/)
-    .expectHeaderContains('content-type', 'application/json')
+    .expectStatus(400)
     .expectJson({
-      "userId": 1,
-      "id": 1,
-      "title": "some title",
-      "body": "some body"
-    })
-    .expectJsonLike({
-      userId: 1,
-      id: 1
-    })
-    .expectJsonLike({
-      title: "some title",
-      body: "some body"
-    })
-    .expectJsonSchema({
-      "properties": {
-        "userId": {
-          "type": "number"
-        }
-      },
-      "required": ["userId", "id"]
-    })
-    .expectJsonSchema({
-      "properties": {
-        "title": {
-          "type": "string"
-        }
-      },
-      "required": ["title", "body"]
-    })
-    .expectResponseTime(1000)
-    .toss();
+      "message": "product is out-of-stock"
+    });
 });
 ```
 
-### Request Settings
+### Mock Interaction Handlers
 
-Default options are configured for all the requests
+There are high chances that you wanted to use same interaction in multiple occasions. To reuse interactions, you can create separate *js* files to hold interactions & import them in your spec file. This is one way to solve the issue. But there is a better way.
 
-### pactum.request
+Mock handlers help us to reuse interactions across tests. Use `addMockInteractionHandler` function to temporarily store an interaction & later use it in test cases.
 
-### setBaseUrl
-Type: `Function`<br>
+It accepts two arguments
 
-Sets the base URL for all the HTTP requests.
+* handler name - a string to reference the interaction later
+* callback function - it should return a mock interaction
 
-```javascript
-pactum.request.setBaseUrl('http://localhost:3000');
-pactum.get('/api/projects');
-// Request will be sent to http://localhost:3000/api/projects
-```
-
-### setDefaultTimeout
-Type: `Function`<br>
-
-Sets the default timeout for all the HTTP requests.
-The default value is 3000ms
+While using a mock handler, you can pass custom data into it to change the behavior of the interaction. Look at the below example where we use the same interaction in both scenarios.
 
 ```javascript
-// sets default timeout to 5000ms
-pactum.request.setDefaultTimeout(5000);
-```
+const handler = pactum.handler;
 
-### setDefaultHeader
-Type: `Function`<br>
-
-Sets default headers for all the HTTP requests. The default header will be overridden if provided at the spec level.
-
-```javascript
-pactum.request.setDefaultHeader('Authorization', 'Basic xxxxx');
-pactum.request.setDefaultHeader('content-type', 'application/json');
-```
-
-----------------------------------------------------------------------------------------------------------------
-
-<a href="https://github.com/ASaiAnudeep/pactum/wiki" >
-  <img src="https://img.shields.io/badge/PREV-Home-orange" alt="Home" align="left" style="display: inline;" />
-</a>
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing" >
-  <img src="https://img.shields.io/badge/NEXT-Contract%20Testing-blue" alt="Contract Testing" align="right" style="display: inline;" />
-</a>
-
-<br>
-
-----------------------------------------------------------------------------------------------------------------
-
-
-# Examples
-
-Refer the below examples to get started with component testing.
-
-## Simple Component Tests
-
-```javascript
-const pactum = require('pactum');
-
-describe('JSON Placeholder', () => {
-
-  it('GET', async () => {
-    await pactum
-      .get('https://jsonplaceholder.typicode.com/posts/1')
-      .expectStatus(200)
-      .expectHeader('content-type', 'application/json; charset=utf-8')
-      .expectHeader('connection', /\w+/)
-      .expectJsonLike({
-        userId: 1,
-        id: 1
-      })
-      .expectJsonSchema({
-        "properties": {
-          "userId": {
-            "type": "number"
-          }
-        },
-        "required": ["userId", "id"]
-      })
-      .toss();
-  });
-
-  it('GET - with query', async () => {
-    await pactum
-      .get('https://jsonplaceholder.typicode.com/comments')
-      .withQueryParam('postId', 1)
-      .expectStatus(200)
-      .expectHeaderContains('content-type', 'application/json')
-      .expectJsonLike([
-        {
-          postId: 1,
-          id: 1,
-          name: /\w+/
+before(async () => {
+  handler.addMockInteractionHandler('get product', (ctx) => {
+    return {
+      withRequest: {
+        method: 'GET',
+        path: '/api/inventory',
+        query: {
+          product: ctx.data.product
         }
-      ])
-      .toss();
-  });
-
-  it('POST - with body', async () => {
-    await pactum
-      .post('https://jsonplaceholder.typicode.com/posts')
-      .withHeaders({
-        "content-type": "application/json"
-      })
-      .withBody({
-        title: 'foo',
-        body: 'bar',
-        userId: 1
-      })
-      .expectStatus(201)
-      .toss();
-  });
-
-  it('PUT', async () => {
-    await pactum
-      .put('https://jsonplaceholder.typicode.com/posts/1')
-      .withJson({
-        id: 1,
-        title: 'foo',
-        body: 'bar',
-        userId: 1
-      })
-      .expectStatus(200)
-      .toss();
-  });
-
-})
-```
-
-## Component Tests With Mock Server
-
-During component testing, your service will be running in a controlled environment. Instead of talking to external services, it will be communicating with a mock server.
-
-**pactum** comes with a mock server where you will able to control the behavior of each external service. *Interactions* are a way to instruct the mock server to simulate the behavior of external services. 
-
-Multiple interactions can be added to the mock server before the execution of a test case through `addMockInteraction` or `addPactInteraction` methods. If these interactions are not exercised then the test case will fail. If an unexpected request is received by the mock server, it will respond with *404* - *Interaction Not Found*. All interactions added at the test case level will be removed after its execution. Use the `__setLogLevel('DEBUG')` method to see the logs from the mock server for troubleshooting purposes.
-
-Learn more about interactions at [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions)
-
-```javascript
-const pactum = require('pactum');
-
-describe('Mock', () => {
-
-  before(async () => {
-    await pactum.mock.start();
-  });
-
-  it('GET - one interaction - with one query', async () => {
-    await pactum
-      // this mock interaction will removed after the execution of current spec.
-      .addMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1',
-          query: {
-            name: 'fake'
-          }
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'fake'
-          }
+      },
+      willRespondWith: {
+        status: 200,
+        body: {
+          "InStock": ctx.data.inStock
         }
-      })
-      .get('http://localhost:9393/api/projects/1')
-      .withQueryParam('name', 'fake')
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'fake'
-      })
-      .toss();
+      }
+    }    
   });
+});
 
-  it('GET - multiple interactions', async () => {
-    await pactum
-      .addMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1'
-        },
-        willRespondWith: {
-          status: 200,
-          body: {
-            id: 1
-          }
-        }
-      })
-      .addMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/2'
-        },
-        willRespondWith: {
-          status: 200,
-          body: {
-            id: 2
-          }
-        }
-      })
-      .get('http://localhost:9393/api/projects')
-      .withQueryParam('name', 'fake')
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'fake'
-      })
-      .toss();
-  });
+it('should buy a product which is in stock', () => {
+  await pactum.spec()
+    .useMockInteraction('get product', { product: 'iPhone', inStock: true })
+    .post('/api/orders')
+    .withJson({
+      "name": "iPhone",
+      "quantity": 1
+    })
+    .expectStatus(200);
+});
 
-  after(async () => {
-    await pactum.mock.stop();
-  });
-
+it('should not buy a product which is out-of-stock', () => {
+  await pactum.spec()
+    .useMockInteraction('get product', { product: 'iPhone', inStock: false })
+    .post('/api/orders')
+    .withJson({
+      "name": "iPhone",
+      "quantity": 1
+    })
+    .expectStatus(400)
+    .expectJson({
+      "message": "product is out-of-stock"
+    });
 });
 ```
+
+### Non CRUD Endpoints
+
+Not all endpoints will perform CRUD operations. Some endpoints will perform some long running operations in the background even though it sends a response immediately. It becomes difficult to test how it interacts with other services in the background.
+
+This library helps to validate whether these interactions are exercised or not. We can also validate the number of times the interaction is exercised.
+
+Use `mock.addMockInteraction` to add a interaction to the server & later use `mock.getInteraction` to get interaction details & perform validations on it.
+
+Lets look at an example
+
+```javascript
+it('some background process', () => {
+  const id = mock.addMockInteraction('get product');
+  await pactum.spec()
+    .post('/api/process')
+    .expectStatus(202);
+  // wait for the process to complete
+  const interaction = mock.getInteraction(id);
+  expect(interaction.exercised).equals(true);
+  expect(interaction.callCount).equals(1);
+});
+```
+
+### Using Remote Interaction
 
 
 ----------------------------------------------------------------------------------------------------------------
