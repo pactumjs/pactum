@@ -1,50 +1,65 @@
 # Component Testing
 
-Component testing is defined as a software testing type, in which the testing is performed on each component separately without integrating with other components.
+Component testing is defined as a software testing type, in which the testing is performed on each component (*or service*) separately without integrating with other components (*or services*).
 
 These tests are all about testing the functionality of individual service. During this, your service will be talking to other external services. But instead of talking to real external services, they talk to mock versions of external services.
 
-It involves testing a service in isolation. Usually during this type of testing we spin up our service under test in a controlled environment where we have a mock server to simulate external services & a testing tool to send requests & validate responses.
+It involves testing a service in isolation by 
+
+* starting a mock server locally (*lets say in port 4000*)
+* starting the service under test locally (*lets say in port 3000*) by updating the configuration of it to point the mock server for all external calls.
+* if the service is dependent on a database, start it & connect it to your service.
 
 ## Example
 
 To better understand component testing, consider an e-commerce application that has multiple micro-services that power it.
 
-Let's look at a couple of services.
-
-**order-service** helps users to place an order. It has an API endpoint `/api/orders` that accepts a POST request with the following JSON with product details.
-
-```json
-{
-  "name": "iPhone X",
-  "quantity": 2
-}
-```
-
-A simple API test case to buy a product will look like
-
-```javascript
-it('should buy an iPhone', async () => {
-  await pactum.spec()
-    .post('/api/orders')
-    .withJson({
-      "name": "iPhone",
-      "quantity": 1
-    })
-    .expectStatus(200);
-});
-```
-
-But internally, **order-service** will communicate with the **inventory-service** to check if the product is available or not. *inventory-service* exposes an API endpoint `/api/inventory` that returns available products in the inventory.
-
-When user places an order, *order-service* will make a GET request to `/api/inventory?product=iPhone`. Based on the response from the *inventory-service*, it will accept or reject an order.
+It has a **order-service** that manages orders. When a user places an order, it will internally communicates with the **inventory-service** to check if the product is available or not. 
 
 We can write two simple functional tests
 
 * Buy a product which is in-stock
 * Buy a product which is out-of-stock
 
-Usually we will spin up a mock server that will return a successful response for a particular product (*iPhone*) & unsuccessful response for another product (*Galaxy*).
+
+*order-service* has an API endpoint `/api/orders` that accepts a POST request with the following JSON with product details.
+
+```json
+{
+  "Name": "iPhone X",
+  "Quantity": 2
+}
+```
+
+*inventory-service* exposes an API endpoint `/api/inventory` that returns available products in the inventory. When requested it will return product availability details in the form of following JSON
+
+```json
+{
+  "InStock": true
+}
+```
+
+When user places an order, *order-service* will make a GET request to `/api/inventory?product=iPhone`. Based on the response from the *inventory-service*, it will accept or reject an order.
+
+We train the mock server to return a successful response for product - *iPhone* & unsuccessful response for product - *Galaxy*.
+
+If the mock server is written in **express** the internal code for mock server will look like
+
+```javascript
+const app = require('express')();
+
+app.get('/api/inventory', (req, res) => {
+  if (req.query.product === 'iPhone') {
+    res.send({ InStock = true });
+  } else {
+    res.send({ InStock = false });
+  }
+});
+
+app.listen(4000, () => {});
+```
+
+Lets look at the component tests.
 
 ```javascript
 it('should buy a product which is in stock', () => {
