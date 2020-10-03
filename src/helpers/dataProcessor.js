@@ -99,8 +99,9 @@ const dataProcessor = {
           return typeof value === 'undefined' ? raw : value;
         }
         if (refType === '@DATA:FUN') {
-          const handlerFun = handler.getDataHandler(refValue);
-          return handlerFun();
+          const [handlerName, ...args] = refValue.split(',');
+          const handlerFun = handler.getDataFunHandler(handlerName);
+          return handlerFun({ data: args });
         }
         if (refType === '@DATA:SPEC') {
           const value = jq(refValue, { data: stash.getDataSpecs() }).value;

@@ -62,7 +62,7 @@ export function addStateHandler(name: string, func: StateHandlerFunction): void;
 /**
  * adds a custom data handler
  */
-export function addDataHandler(name: string, func: DataHandlerFunction): void;
+export function addDataFunHandler(name: string, func: DataHandlerFunction): void;
 
 /**
  * adds a custom mock interaction handler

@@ -104,7 +104,7 @@ const pactum = require('pactum');
 const mock = pactum.mock;
 
 before(async () => {
-  await mock.start(3000);
+  await mock.start(4000);
 });
 
 it('should buy a product which is in stock', () => {

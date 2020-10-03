@@ -142,7 +142,7 @@ describe('Data Handler', () => {
   it('invalid handler name', () => {
     let err;
     try {
-      handler.addDataHandler();
+      handler.addDataFunHandler();
     } catch (error) {
       err = error;
     }
@@ -152,7 +152,7 @@ describe('Data Handler', () => {
   it('empty handler name', () => {
     let err;
     try {
-      handler.addDataHandler('');
+      handler.addDataFunHandler('');
     } catch (error) {
       err = error;
     }
@@ -162,7 +162,7 @@ describe('Data Handler', () => {
   it('invalid handler function', () => {
     let err;
     try {
-      handler.addDataHandler('hello');
+      handler.addDataFunHandler('hello');
     } catch (error) {
       err = error;
     }
@@ -172,7 +172,7 @@ describe('Data Handler', () => {
   it('get invalid handler function', () => {
     let err;
     try {
-      handler.getDataHandler('hello');
+      handler.getDataFunHandler('hello');
     } catch (error) {
       err = error;
     }

@@ -634,3 +634,41 @@ describe('Data Processing - Actual Data - Both Templates & Maps', () => {
   });
 
 });
+
+describe('Data Processing - Invalid Data', () => {
+
+  before(() => {
+    stash.clearDataTemplates();
+    stash.clearDataMaps();
+    stash.addDataTemplate({
+      'User': {
+        Name: '@DATA:MAP::User.Name@',
+        Age: '@DATA:MAP::User.Age@'
+      }
+    });
+    dp.processMaps();
+    dp.processTemplates();
+  });
+
+  it('processData - invalid data template & reference', () => {
+    let data = {
+      '@DATA:TEMPLATE@': 'NotFound',
+      '@OVERRIDES@': {
+        Name: '@DATA:FUNCTION::Hello@'
+      }
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals({
+      '@DATA:TEMPLATE@': 'NotFound',
+      '@OVERRIDES@': {
+        Name: '@DATA:FUNCTION::Hello@'
+      }
+    });
+  });
+
+  after(() => {
+    stash.clearDataTemplates();
+    stash.clearDataMaps();
+  });
+
+});
