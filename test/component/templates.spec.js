@@ -29,8 +29,9 @@ describe('Templates & Maps', () => {
     });
     stash.addDataMap([]);
     stash.addDataTemplate([]);
-    pactum.handler.addDataHandler('GetZero', () => 0);
-    pactum.handler.addDataHandler('GetAuthToken', () => 'Basic xyz');
+    pactum.handler.addDataFunHandler('GetZero', () => 0);
+    pactum.handler.addDataFunHandler('GetAuthToken', () => 'Basic xyz');
+    pactum.handler.addDataFunHandler('GetNumber', (ctx) => ctx.data[0]);
   });
 
   it('new user with pure template', async () => {
@@ -179,7 +180,7 @@ describe('Templates & Maps', () => {
         }
       })
       .get('http://localhost:9393/api/users')
-      .withQueryParams('age', '@DATA:FUN::GetZero@')
+      .withQueryParams('age', '@DATA:FUN::GetNumber,0@')
       .withHeaders('Authorization', '@DATA:FUN::GetAuthToken@')
       .expectStatus(200);
   });

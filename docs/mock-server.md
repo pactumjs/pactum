@@ -345,9 +345,9 @@ mock.addPactInteraction({
 
 ## Data Management
 
-**pactum** comes with a concept of *Data Templates* & *Data References* to manage your test data. It helps us to re-use data across tests during [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing).
+**pactum** comes with a concept of *Data Templates* & *Data References* to manage your test data. It helps us to re-use data across tests.
 
-Data Management can also be applied to the mock server to re-use mock data across interactions. Learn more about data management with **pactum** at [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#data-management)
+Data Management can also be applied to the mock server to re-use mock data across interactions. Learn more about data management with **pactum** at [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
 
 ```javascript
 const pactum = require('pactum');
@@ -591,6 +591,11 @@ const interaction = {
 Pactum allows us to add or remove interactions dynamically through the REST API.
 Once the server is started, interact with the following API to control the mock server.
 
+```javascript
+const mock = require('pactum').mock;
+mock.start(3000);
+```
+
 ### Mock Interactions
 
 #### /api/pactum/mockInteractions
@@ -612,6 +617,9 @@ Response - returns all the mock interactions
 ```JSON
 [
   {
+    "id": "<id>",
+    "exercised": false,
+    "callCount": 0,
     "withRequest": {
       "method": "GET",
       "path": "/api/projects/2",
@@ -700,6 +708,9 @@ Response - returns all the pact interactions
 ```JSON
 [
   {
+    "id": "<id>",
+    "exercised": true,
+    "callCount": 1,
     "consumer": "consumer-name",
     "provider": "provider-name",
     "state": "provider state",
@@ -775,10 +786,63 @@ curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteracti
 curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteractions'
 ```
 
+### Interaction Handlers
+
+Interaction Handler allows us to dynamically enable & reuse interactions in the mock server. Let's say you have a mock server running on port 3000 with one interaction handler.
+
+```javascript
+const pactum = require('pactum');
+const mock = pactum.mock;
+const handler = pactum.handler;
+
+handler.addMockInteractionHandler('get user with', (ctx) => {
+  const user = db.getUser(ctx.data.id);
+  return {
+    withRequest: {
+      method: 'GET',
+      path: `/api/users/${ctx.data.id}`
+    },
+    willRespondWith: {
+      status: 200,
+      body: user
+    }
+  }
+});
+
+mock.start(3000);
+```
+
+If you start the above mock server, by default it will have zero interactions in it. To add the interaction with handler name `'get user with'`, perform the following request.
+
+```Shell
+curl --location --request POST 'http://localhost:9393/api/pactum/handlers' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "handlers": [
+      {
+        "name": "get user with",
+        "type": "MOCK"
+      }
+    ],
+    "data": {
+      "id": 10 
+    }
+  }'
+```
+
+Response - returns the mock interaction id.
+
+```JSON
+[ "x121w" ]
+```
+
 ## Next
 
 ----------------------------------------------------------------------------------------------------------------
 
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/API-Testing" >
+  <img src="https://img.shields.io/badge/PREV-API%20Testing-orange" alt="API Testing" align="left" style="display: inline;" />
+</a>
 <a href="https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing" >
   <img src="https://img.shields.io/badge/NEXT-Component%20Testing-blue" alt="Component Testing" align="right" style="display: inline;" />
 </a>

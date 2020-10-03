@@ -4,20 +4,21 @@ const config = require('../config');
 
 const remote = {
 
-  addMockInteraction(interactions, data) {
-    return addInteractions(interactions, data, 'api/pactum/mockInteractions', 'MOCK');
+  addMockInteraction(interactions, data, alone) {
+    return addInteractions(interactions, data, 'api/pactum/mockInteractions', 'MOCK', alone);
   },
 
-  addPactInteraction(interactions, data) {
-    return addInteractions(interactions, data, 'api/pactum/pactInteractions', 'PACT');
+  addPactInteraction(interactions, data, alone) {
+    return addInteractions(interactions, data, 'api/pactum/pactInteractions', 'PACT', alone);
   },
 
-  async getInteraction(ids) {
-    const interactions = await Promise.all([
+  async getInteraction(ids, alone) {
+    let interactions = await Promise.all([
       get(`${config.mock.remote}/api/pactum/pactInteractions?ids=${ids.join(',')}`),
       get(`${config.mock.remote}/api/pactum/mockInteractions?ids=${ids.join(',')}`)
     ]);
-    return interactions[0].concat(interactions[1]);
+    interactions = interactions[0].concat(interactions[1]);
+    return alone ? interactions[0] : interactions;
   },
 
   removeInteraction(ids) {
@@ -100,7 +101,7 @@ function getHandlersPayload(handlerNames, type, data) {
   return payload;
 }
 
-async function addInteractions(interactions, data, path, type) {
+async function addInteractions(interactions, data, path, type, alone) {
   const { raws, handlers } = getRawsAndHandlers(interactions);
   let ids = [];
   if (raws.length > 0) {
@@ -110,7 +111,7 @@ async function addInteractions(interactions, data, path, type) {
     const payload = getHandlersPayload(handlers, type, data);
     ids = ids.concat(await post(`${config.mock.remote}/api/pactum/handlers`, payload));
   }
-  return ids;
+  return alone ? ids[0] : ids;
 }
 
 module.exports = remote;

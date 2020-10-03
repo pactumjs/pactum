@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const mock = pactum.mock;
 const handler = pactum.handler;
 
-describe('Remote Server', () => {
+describe('Remote Server - use with spec', () => {
 
   before(() => {
     mock.useRemoteServer('http://localhost:9393');
@@ -113,6 +113,130 @@ describe('Remote Server', () => {
     await pactum.spec()
       .get('http://localhost:9393/remote')
       .expectStatus(404)
+  });
+
+  after(async () => {
+    await mock.clearInteractions();
+    config.mock.remote = '';
+  });
+
+});
+
+describe('Remote Server - before and after spec', () => {
+
+  before(() => {
+    mock.useRemoteServer('http://localhost:9393');
+    handler.addMockInteractionHandler('mock remote handler', () => {
+      return {
+        id: 'id2',
+        withRequest: {
+          method: 'GET',
+          path: '/remote/mock/handler'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }
+    });
+  });
+
+  it('add mock interaction & get', async () => {
+    const id = await mock.addMockInteraction({
+      id: 'id',
+      withRequest: {
+        method: 'GET',
+        path: '/remote/get'
+      },
+      willRespondWith: {
+        status: 200
+      }
+    });
+    expect(id).equals('id');
+    const interaction = await mock.getInteraction('id');
+    expect(interaction).deep.equals({
+      id: 'id',
+      withRequest: { method: 'GET', path: '/remote/get' },
+      willRespondWith: { status: 200 },
+      exercised: false,
+      callCount: 0
+    });
+  });
+
+  it('add mock interactions & get them', async () => {
+    const ids = await mock.addMockInteraction([
+      {
+        id: 'id1',
+        withRequest: {
+          method: 'GET',
+          path: '/remote/get'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      },
+      {
+        id: 'id2',
+        withRequest: {
+          method: 'GET',
+          path: '/remote/get'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }
+    ]);
+    expect(ids).deep.equals(['id1', 'id2']);
+    const interactions = await mock.getInteraction(['id1', 'id2']);
+    expect(interactions).deep.equals([
+      {
+        id: 'id1',
+        withRequest: { method: 'GET', path: '/remote/get' },
+        willRespondWith: { status: 200 },
+        exercised: false,
+        callCount: 0
+      },
+      {
+        id: 'id2',
+        withRequest: { method: 'GET', path: '/remote/get' },
+        willRespondWith: { status: 200 },
+        exercised: false,
+        callCount: 0
+      }
+    ]);
+  });
+
+  it('add mock interactions with a handler & get them', async () => {
+    const ids = await mock.addMockInteraction([
+      {
+        id: 'id1',
+        withRequest: {
+          method: 'GET',
+          path: '/remote/get'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      },
+      'mock remote handler'
+    ]);
+    expect(ids).deep.equals(['id1', 'id2']);
+    const interactions = await mock.getInteraction(['id1', 'id2']);
+    expect(interactions).deep.equals([
+      {
+        id: 'id1',
+        withRequest: { method: 'GET', path: '/remote/get' },
+        willRespondWith: { status: 200 },
+        exercised: false,
+        callCount: 0
+      },
+      {
+        id: 'id2',
+        withRequest: { method: 'GET', path: '/remote/mock/handler' },
+        willRespondWith: { status: 200 },
+        exercised: false,
+        callCount: 0
+      }
+    ]);
   });
 
   after(async () => {

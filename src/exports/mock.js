@@ -38,7 +38,7 @@ const mock = {
       interactions = [interactions];
     }
     if (config.mock.remote) {
-      return remote.addMockInteraction(interactions, data);
+      return remote.addMockInteraction(interactions, data, alone);
     }
     const ids = [];
     for (let i = 0; i < interactions.length; i++) {
@@ -60,7 +60,7 @@ const mock = {
       interactions = [interactions];
     }
     if (config.mock.remote) {
-      return remote.addPactInteraction(interactions, data);
+      return remote.addPactInteraction(interactions, data, alone);
     }
     const ids = [];
     for (let i = 0; i < interactions.length; i++) {
@@ -82,7 +82,7 @@ const mock = {
       alone = true;
     }
     if (config.mock.remote) {
-      return remote.getInteraction(ids);
+      return remote.getInteraction(ids, alone);
     }
     const interactions = [];
     ids.forEach(id => interactions.push(this._server.getInteraction(id)));
