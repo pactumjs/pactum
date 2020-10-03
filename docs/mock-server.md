@@ -12,7 +12,10 @@ Mock server comes in handy while using this library for component & contract tes
 * [Adding Behavior](#adding-behavior)
   * [Mock Interactions](#mock-interactions)
   * [Pact Interactions](#pact-interactions)
+  * [Handlers](#handlers)
+* [Data Management](#data-management)
 * [Matching](#matching)
+* [Remote API](#remote-api)
 
 ## Getting Started
 
@@ -343,9 +346,39 @@ mock.addPactInteraction({
 | willRespondWith.headers          | response headers                |
 | willRespondWith.body             | response body                   |
 
-## Data Management
+### Handlers
 
-**pactum** comes with a concept of *Data Templates* & *Data References* to manage your test data. It helps us to re-use data across tests.
+Mock handlers help us to reuse same kind of interactions with modifications. Use `handler.addMockInteractionHandler` or `handler.addPactInteractionHandler` functions to temporarily store interactions & later use the handler name to add them to the mock server.
+
+```javascript
+const mock = pactum.mock;
+const handler = pactum.handler;
+
+handler.addMockInteractionHandler('get product', (ctx) => {
+  return {
+    withRequest: {
+      method: 'GET',
+      path: '/api/inventory',
+      query: {
+        product: ctx.data.product
+      }
+    },
+    willRespondWith: {
+      status: 200,
+      body: {
+        "InStock": ctx.data.inStock
+      }
+    }
+  }    
+});
+
+mock.addMockInteraction('get product', { product: 'iPhone', inStock: true });
+mock.addMockInteraction('get product', { product: 'iPhone', inStock: false });
+
+mock.start(3000);
+```
+
+## Data Management
 
 Data Management can also be applied to the mock server to re-use mock data across interactions. Learn more about data management with **pactum** at [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
 
