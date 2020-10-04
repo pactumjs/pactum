@@ -233,31 +233,31 @@ describe('Data Processing - Maps', () => {
 
   it('processMaps - complex array of objects', () => {
     stash.addDataMap({
-        User: {
-          'Name': '@DATA:MAP::Defaults.User.Name@',
-          'Age': '@DATA:MAP::Defaults.User.Age@',
-          'Address': '@DATA:MAP::Defaults.Address[Type=Home]@'
-        }
-      });
+      User: {
+        'Name': '@DATA:MAP::Defaults.User.Name@',
+        'Age': '@DATA:MAP::Defaults.User.Age@',
+        'Address': '@DATA:MAP::Defaults.Address[Type=Home]@'
+      }
+    });
     stash.addDataMap({
-        Defaults: {
-          'User': {
-            'Name': 'Snow',
-            'Age': 18
+      Defaults: {
+        'User': {
+          'Name': 'Snow',
+          'Age': 18
+        },
+        'Address': [
+          {
+            'Type': 'Home',
+            'Castle': '@DATA:MAP::Defaults.Castle@'
           },
-          'Address': [
-            {
-              'Type': 'Home',
-              'Castle': '@DATA:MAP::Defaults.Castle@'
-            },
-            {
-              'Type': 'Work',
-              'Castle': 'Castle Black'
-            }
-          ],
-          'Castle': 'WinterFell'
-        }
-      });
+          {
+            'Type': 'Work',
+            'Castle': 'Castle Black'
+          }
+        ],
+        'Castle': 'WinterFell'
+      }
+    });
     dp.processMaps();
     expect(dp.map).deep.equals({
       User: {
@@ -284,6 +284,24 @@ describe('Data Processing - Maps', () => {
           }
         ],
         'Castle': 'WinterFell'
+      }
+    });
+  });
+
+  it('processMaps - multiple maps in a single string', () => {
+    stash.addDataMap({
+      User: {
+        FirstName: 'Jon',
+        LastName: 'Snow',
+        FullName: '@DATA:MAP::User.FirstName@ @DATA:MAP::User.LastName@'
+      }
+    });
+    dp.processMaps();
+    expect(dp.map).deep.equals({
+      User: {
+        'FirstName': 'Jon',
+        'LastName': 'Snow',
+        'FullName': 'Jon Snow'
       }
     });
   });
@@ -528,7 +546,8 @@ describe('Data Processing - Actual Data - Only Maps', () => {
           'Type': 'Work',
           'Castle': 'Castle Black'
         }
-      ]});
+      ]
+    });
   });
 
   after(() => {

@@ -38,6 +38,18 @@ describe('Stores', () => {
         UserId: '@DATA:SPEC::UserId@'
       })
       .expectStatus(200);
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/stores/1'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/stores/@DATA:SPEC::UserId@')
+      .expectStatus(200);
   });
 
   it('store multiple value', async () => {

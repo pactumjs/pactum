@@ -90,23 +90,30 @@ const dataProcessor = {
   getDataRefValue(raw) {
     const dataRefMatches = raw.match(DATA_REF_PATTERN);
     if (dataRefMatches) {
+      const values = [];
       for (let i = 0; i < dataRefMatches.length; i++) {
         const dataRefMatch = dataRefMatches[i];
         const refType = dataRefMatch.match(DATA_REF_TYPE_PATTERN)[0].replace('::', '');
         const refValue = dataRefMatch.match(DATA_REF_VALUE_PATTERN)[0].replace('::', '');
         if (refType === '@DATA:MAP') {
           const value = jq(refValue, { data: this.map }).value;
-          return typeof value === 'undefined' ? raw : value;
+          values.push(typeof value === 'undefined' ? raw : value);
         }
         if (refType === '@DATA:FUN') {
           const [handlerName, ...args] = refValue.split(',');
           const handlerFun = handler.getDataFunHandler(handlerName);
-          return handlerFun({ data: args });
+          values.push(handlerFun({ data: args }));
         }
         if (refType === '@DATA:SPEC') {
           const value = jq(refValue, { data: stash.getDataSpecs() }).value;
-          return typeof value === 'undefined' ? raw : value;
+          values.push(typeof value === 'undefined' ? raw : value);
         }
+      }
+      if (values.length === 1 && raw.length === dataRefMatches[0].length) {
+        return values[0];
+      }
+      for (let i = 0; i < dataRefMatches.length; i++) {
+        raw = raw.replace(dataRefMatches[i], values[i]);
       }
     }
     return raw;

@@ -42,16 +42,15 @@ class Tosser {
   updateRequest() {
     processor.processMaps();
     processor.processTemplates();
-    const query = helper.getPlainQuery(processor.processData(this.request.qs));
+    this.request = processor.processData(this.request);
+    const query = helper.getPlainQuery(this.request.qs);
     if (query) {
       this.request.url = this.request.url + '?' + query;
     }
     setBaseUrl(this.request);
     this.request.timeout = this.request.timeout || config.request.timeout;
     setHeaders(this.request);
-    this.request.headers = processor.processData(this.request.headers);
     setMultiPartFormData(this.request);
-    this.request.data = processor.processData(this.request.data);
   }
 
   setState() {

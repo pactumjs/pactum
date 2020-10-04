@@ -214,6 +214,7 @@ before(() => {
     'User:New': {
       "FirstName": "@DATA:MAP::User.FirstName@",
       "LastName": "@DATA:MAP::User.LastName@",
+      "FullName": "@DATA:MAP::User.FirstName@ @DATA:MAP::User.LastName@",
       "Age": 26,
       "Gender": "male",
       "House": "Castle Black"
@@ -256,36 +257,31 @@ before(() => {
 
 #### Data Function
 
-A Data Function is a custom data handler that returns some sort of data that can be referenced in data templates or tests. 
+Data Functions can ease up your life when working with dynamic values. A Data Function is a custom data handler function that returns some sort of data that can be referenced later.
 
-Use `handler.addDataFunHandler` to add a custom data handler function. To use the function in the tests or in the template, use `@DATA:FUN::<handler-name>@` as the value.
+Use `handler.addDataFunHandler` to add a custom data function handler. To use the data function in the tests or in the template, use `@DATA:FUN::<handler-name>@`.
 
 ```javascript
 const pactum = require('pactum');
 const handler = pactum.handler;
 
-before(() => {
-  handler.addDataFunHandler('GetTimeStamp', () => {
-    return Date.now();
-  });
-  handler.addDataFunHandler('GetAuthToken', () => {
-    return 'Basic some-token';
-  });
+handler.addDataFunHandler('GetTimeStamp', () => {
+  return Date.now();
+});
+handler.addDataFunHandler('GetAuthToken', () => {
+  return 'Basic some-token';
 });
 
-it('order an item', async () => {
-  await pactum.spec()
-    .post('/api/order')
-    .withHeaders('Authorization', '@DATA:FUN::GetAuthToken@')
-    .withJson({
-      'Item': 'Sword',
-      'CreatedAt': '@DATA:FUN::GetTimeStamp@'
-    });
-});
+await pactum.spec()
+  .post('/api/order')
+  .withHeaders('Authorization', '@DATA:FUN::GetAuthToken@')
+  .withJson({
+    'Item': 'Sword',
+    'CreatedAt': '@DATA:FUN::GetTimeStamp@'
+  });
 ```
 
 Data functions also accepts custom data as arguments in the form of array. To pass data use comma separated values after handler name `@DATA:FUN::<handler-name>,<arg1>,<arg2>@`.
-
 
 ```javascript
 handler.addDataFunHandler('GetFormattedDate', (ctx) => {
