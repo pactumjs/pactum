@@ -60,7 +60,7 @@ describe('Chai Like Assertions', () => {
   });
 
   it('should return a valid schema', async () => {
-    expect(response).to.have.jsonSchema({ properties: { name: 'string' }});
+    expect(response).to.have.jsonSchema({ properties: { name: { type: 'string' } }});
   });
 
   it('should return a response within 500 ms', async () => {

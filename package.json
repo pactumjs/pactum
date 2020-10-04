@@ -65,8 +65,8 @@
   "author": "Anudeep <asa.anudeep4@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@exodus/schemasafe": "^1.0.0-rc.2",
     "deep-override": "^1.0.1",
-    "djv": "^2.1.3-alpha.0",
     "form-data": "^3.0.0",
     "json-query": "^2.2.2",
     "parse-graphql": "^1.0.0",

@@ -1,10 +1,10 @@
 const assert = require('assert');
 const jqy = require('json-query');
-const djv = require('djv');
 
 const Compare = require('../helpers/compare');
 const processor = require('../helpers/dataProcessor');
 const handler = require('../exports/handler');
+const jsv = require('../plugins/json.schema');
 
 class Expect {
 
@@ -193,12 +193,9 @@ class Expect {
   _validateJsonSchema(response) {
     this.jsonSchema = processor.processData(this.jsonSchema);
     for (let i = 0; i < this.jsonSchema.length; i++) {
-      const jS = this.jsonSchema[i];
-      const jsv = new djv();
-      jsv.addSchema('test', { common: jS });
-      const validation = jsv.validate('test#/common', response.json);
-      if (validation) {
-        this.fail(`Response doesn't match with JSON schema - ${JSON.stringify(validation, null, 2)}`);
+      const errors = jsv.validate(this.jsonSchema[i], response.json);
+      if (errors) {
+        this.fail(`Response doesn't match with JSON schema: \n ${JSON.stringify(errors, null, 2)}`);
       }
     }
   }
