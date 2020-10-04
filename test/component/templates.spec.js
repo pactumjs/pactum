@@ -243,6 +243,29 @@ describe('Templates & Maps', () => {
       .expectStatus(200);
   });
 
+  it('expect schema from a template in fs', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/army'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            "Name": "Golden Army",
+            "Count": 10000,
+            "Alliance": "Stark"
+          }
+        }
+      })
+      .get('http://localhost:9393/api/army')
+      .expectStatus(200)
+      .expectJsonSchema({
+        '@DATA:TEMPLATE@': 'Schema:Army'
+      });
+  });
+
   after(() => {
     stash.clearDataTemplates();
     stash.clearDataMaps();
