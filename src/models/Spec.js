@@ -275,6 +275,11 @@ class Spec {
     return this;
   }
 
+  expectJsonMatch(value) {
+    this._expect.jsonMatch.push(value);
+    return this;
+  }
+
   expectResponseTime(value) {
     this._expect.responseTime = value;
     return this;

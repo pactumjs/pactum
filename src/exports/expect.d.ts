@@ -6,9 +6,10 @@ export interface Have {
   bodyContains(value: any): void;
   json(value: any): void;
   jsonLike(value: any): void;
-  jsonQuery(path: string, value: any): void;
-  jsonQueryLike(path: string, value: any): void;
+  jsonAt(path: string, value: any): void;
+  jsonLikeAt(path: string, value: any): void;
   jsonSchema(schema: object): void;
+  jsonMatch(value: object): void;
   responseTimeLessThan(ms: number): void;
   _(handler: string, data: any): void
 }

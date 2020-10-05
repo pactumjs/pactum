@@ -5,6 +5,7 @@ const Compare = require('../helpers/compare');
 const processor = require('../helpers/dataProcessor');
 const handler = require('../exports/handler');
 const jsv = require('../plugins/json.schema');
+const jmv = require('../plugins/json.match');
 
 class Expect {
 
@@ -17,6 +18,7 @@ class Expect {
     this.jsonQuery = [];
     this.jsonQueryLike = [];
     this.jsonSchema = [];
+    this.jsonMatch = [];
     this.headers = [];
     this.headerContains = [];
     this.responseTime = null;
@@ -34,6 +36,7 @@ class Expect {
     this._validateJsonQuery(response);
     this._validateJsonQueryLike(response);
     this._validateJsonSchema(response);
+    this._validateJsonMatch(response);
     this._validateResponseTime(response);
     this._validateCustomExpectHandlers(request, response);
   }
@@ -196,6 +199,19 @@ class Expect {
       const errors = jsv.validate(this.jsonSchema[i], response.json);
       if (errors) {
         this.fail(`Response doesn't match with JSON schema: \n ${JSON.stringify(errors, null, 2)}`);
+      }
+    }
+  }
+
+  _validateJsonMatch(response) {
+    this.jsonMatch = processor.processData(this.jsonMatch);
+    for (let i = 0; i < this.jsonMatch.length; i++) {
+      const data = this.jsonMatch[i];
+      const rules = jmv.getMatchingRules(data, '$.body');
+      const value = jmv.getRawValue(data);
+      const errors = jmv.validate(response.json, value, rules, '$.body');
+      if (errors) {
+        this.fail(errors.replace('$.body', '$'));
       }
     }
   }

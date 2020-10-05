@@ -1,4 +1,5 @@
 const pactum = require('../../src/index');
+const { like } = pactum.matchers;
 const expect = require('chai').expect;
 
 describe('Expects', () => {
@@ -275,6 +276,18 @@ describe('Expects', () => {
       err = error;
     }
     expect(err).not.undefined;
+  });
+
+  it('failed json match', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .get('http://localhost:9393/api/users/1')
+        .expectJsonMatch(like({ id: 1}));
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals(`Json doesn't have type "object" at "$" but found "string"`);
   });
 
   it('network error', async () => {

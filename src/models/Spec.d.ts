@@ -418,6 +418,20 @@ declare class Spec {
   expectJsonLikeAt(path: string, value: any): Spec;
 
   /**
+   * expects the json at to match with value
+   * @example
+   * const { like } = pactum.matchers;
+   * 
+   * await pactum
+   *  .get('/api/users')
+   *  .expectJsonMatch({
+   *    id: like(1),
+   *    name: 'jon'
+   *  });
+   */
+  expectJsonMatch(value: object): Spec;
+
+  /**
    * expects request completes within a specified duration (ms)
    */
   expectResponseTime(value: number): Spec;
