@@ -361,8 +361,8 @@ Expectations help to assert the response received from the server.
 | `expectJson`            | check exact match of json               |
 | `expectJsonLike`        | check loose match of json               |
 | `expectJsonSchema`      | check json schema                       |
-| `expectJsonQuery`       | check json using **json-query**         |
-| `expectJsonQueryLike`   | check json like using **json-query**    |
+| `expectJsonAt`          | check json using **json-query**         |
+| `expectJsonLikeAt`      | check json like using **json-query**    |
 | `expectResponseTime`    | check response time                     |
 
 #### Status & Headers & Response Time
@@ -438,7 +438,7 @@ it('posts should have a item with title -"some title"', async () => {
 });
 ```
 
-##### expectJsonQuery
+##### expectJsonAt
 
 Allows validation of specific part in a JSON. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
 
@@ -457,12 +457,12 @@ it('get people', async () => {
         { name: 'Mike', country: 'NZ' }
       ]
     })
-    .expectJsonQuery('people[country=NZ].name', 'Matt')
-    .expectJsonQuery('people[*].name', ['Matt', 'Pete', 'Mike']);
+    .expectJsonAt('people[country=NZ].name', 'Matt')
+    .expectJsonAt('people[*].name', ['Matt', 'Pete', 'Mike']);
 });
 ```
 
-##### expectJsonQueryLike
+##### expectJsonLikeAt
 
 Allows validation of specific part in a JSON. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
 
@@ -481,8 +481,8 @@ it('get people', async () => {
         { name: 'Mike', country: 'NZ' }
       ]
     })
-    .expectJsonQuery('people[*].name', ['Matt', 'Pete', 'Mike']);
-    .expectJsonQueryLike('people[*].name', ['Mike', 'Matt']);
+    .expectJsonAt('people[*].name', ['Matt', 'Pete', 'Mike']);
+    .expectJsonLikeAt('people[*].name', ['Mike', 'Matt']);
 });
 ```
 

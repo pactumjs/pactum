@@ -402,10 +402,10 @@ declare class Spec {
    * @example
    * await pactum
    *  .get('some-url')
-   *  .expectJsonQuery('[0].name', 'Matt')
-   *  .expectJsonQuery('[*].name', ['Matt', 'Pet', 'Don']);
+   *  .expectJsonAt('[0].name', 'Matt')
+   *  .expectJsonAt('[*].name', ['Matt', 'Pet', 'Don']);
    */
-  expectJsonQuery(path: string, query: any): Spec;
+  expectJsonAt(path: string, query: any): Spec;
 
   /**
    * expects the json at path to be like the value (uses expectJsonLike internally)
@@ -413,9 +413,9 @@ declare class Spec {
    * @example
    * await pactum
    *  .get('some-url')
-   *  .expectJsonQueryLike('[*].name', ['Matt', 'Pet', 'Don']);
+   *  .expectJsonLikeAt('[*].name', ['Matt', 'Pet', 'Don']);
    */
-  expectJsonQueryLike(path: string, value: any): Spec;
+  expectJsonLikeAt(path: string, value: any): Spec;
 
   /**
    * expects request completes within a specified duration (ms)

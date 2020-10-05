@@ -141,7 +141,7 @@ it('should have a user with id', () => {
         }
       }
     })
-    .expectJsonQueryLike('[0].address[*].city', ['Boston', 'NewYork'])
+    .expectJsonLikeAt('[0].address[*].city', ['Boston', 'NewYork'])
     .expectResponseTime(100);
 });
 ```

@@ -332,8 +332,8 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .expectJsonQuery('people[country=NZ].name', 'Matt')
-      .expectJsonQuery('people[*].name', ['Matt', 'Pete', 'Mike'])
+      .expectJsonAt('people[country=NZ].name', 'Matt')
+      .expectJsonAt('people[*].name', ['Matt', 'Pete', 'Mike'])
   });
 
   it('json query - on root array', () => {
@@ -354,9 +354,9 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .expectJsonQuery('[1].country', 'AU')
-      .expectJsonQuery('[country=NZ].name', 'Matt')
-      .expectJsonQuery('[*].name', ['Matt', 'Pete', 'Mike'])
+      .expectJsonAt('[1].country', 'AU')
+      .expectJsonAt('[country=NZ].name', 'Matt')
+      .expectJsonAt('[*].name', ['Matt', 'Pete', 'Mike'])
   });
 
   it('json query - on root object - fails', async () => {
@@ -381,8 +381,8 @@ describe('Expects', () => {
         })
         .get('http://localhost:9393/api/users')
         .expectStatus(200)
-        .expectJsonQuery('people[country=NZ].name', 'Matt')
-        .expectJsonQuery('people[*].name', ['Matt', 'Pete']);
+        .expectJsonAt('people[country=NZ].name', 'Matt')
+        .expectJsonAt('people[*].name', ['Matt', 'Pete']);
     } catch (error) {
       err = error;
     }
@@ -409,7 +409,7 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .expectJsonQueryLike('people[*].name', ['Matt', 'Pete']);
+      .expectJsonLikeAt('people[*].name', ['Matt', 'Pete']);
   });
 
   it('json query like - fails', async () => {
@@ -434,7 +434,7 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .expectJsonQueryLike('people[*].name', ['Matt', 'Pet']);  
+      .expectJsonLikeAt('people[*].name', ['Matt', 'Pet']);  
     } catch (error) {
       err = error;   
     }
