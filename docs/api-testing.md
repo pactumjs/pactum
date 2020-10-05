@@ -363,6 +363,7 @@ Expectations help to assert the response received from the server.
 | `expectJsonSchema`      | check json schema                       |
 | `expectJsonAt`          | check json using **json-query**         |
 | `expectJsonLikeAt`      | check json like using **json-query**    |
+| `expectJsonMatch`       | check json to match                     |
 | `expectResponseTime`    | check response time                     |
 
 #### Status & Headers & Response Time
@@ -506,6 +507,24 @@ it('get people', async () => {
       properties: {
         "people": "array"
       }
+    });
+});
+```
+
+##### expectJsonMatch
+
+Allows validation of JSON with a set of matchers. See [matching](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server#matching) for more usage details.
+
+```javascript
+const { like } = pactum.matchers;
+
+it('get people', async () => {
+  const response = await pactum.spec()
+    .get('https://some-api/people')
+    .expectStatus(200)
+    .expectJsonMatch({
+      id: like(1),
+      name: 'jon'
     });
 });
 ```
