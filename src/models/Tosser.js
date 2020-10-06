@@ -210,6 +210,7 @@ async function getResponse(req) {
   let res = {};
   const requestStartTime = Date.now();
   try {
+    log.debug(`${req.method} ${req.url}`);
     res = await phin(req);
     res.json = helper.getJson(res.body);
   } catch (error) {

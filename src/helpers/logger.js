@@ -51,35 +51,35 @@ class Logger {
 
   trace(...msg) {
     if (this.levelValue <= LEVEL_TRACE) {
-      process.stdout.write(`${cyan('PACTUM')} ${magenta('TRACE')} `);
+      process.stdout.write(`[${magenta('T')}] `);
       this.console.debug(...msg);
     }
   }
 
   debug(...msg) {
     if (this.levelValue <= LEVEL_DEBUG) {
-      process.stdout.write(`${cyan('PACTUM')} ${blue('DEBUG')} `);
+      process.stdout.write(`[${blue('D')}] `);
       this.console.debug(...msg);
     }
   }
 
   info(...msg) {
     if (this.levelValue <= LEVEL_INFO) {
-      process.stdout.write(`${cyan('PACTUM')} ${green('INFO')} `);
+      process.stdout.write(`[${green('I')}] `);
       this.console.info(...msg);
     }
   }
 
   warn(...msg) {
     if (this.levelValue <= LEVEL_WARN) {
-      process.stdout.write(`${cyan('PACTUM')} ${yellow('WARN')} `);
+      process.stdout.write(`[${yellow('W')}] `);
       this.console.warn(...msg);
     }
   }
 
   error(...msg) {
     if (this.levelValue <= LEVEL_ERROR) {
-      process.stdout.write(`${cyan('PACTUM')} ${red('ERROR')} `);
+      process.stdout.write(`[${red('E')}] `);
       this.console.error(...msg);
     }
   }
