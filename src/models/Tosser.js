@@ -32,9 +32,7 @@ class Tosser {
     await this.setResponse();
     this.setPreviousLogLevel();
     await this.removeInteractionsFromServer();
-    this.validateError();
-    this.validateInteractions();
-    this.validateResponse();
+    this.validate()
     this.storeSpecData();
     return this.getOutput();
   }
@@ -108,12 +106,29 @@ class Tosser {
     if (this.mockIds.length > 0) {
       this.mockInteractions.length = 0;
       this.mockInteractions = this.mockInteractions.concat(await mock.getInteraction(this.mockIds));
-      await mock.removeInteraction(this.mockIds);  
+      await mock.removeInteraction(this.mockIds);
     }
     if (this.pactIds.length > 0) {
       this.pactInteractions.length = 0;
       this.pactInteractions = this.pactInteractions.concat(await mock.getInteraction(this.pactIds));
       await mock.removeInteraction(this.pactIds);
+    }
+  }
+
+  validate() {
+    this.validateError();
+    try {
+      this.validateInteractions();
+      this.validateResponse();
+    } catch (error) {
+      const res = {
+        statusCode: this.response.statusCode,
+        headers: this.response.headers,
+        body: this.response.json
+      }
+      log.warn('Request', JSON.stringify(this.request, null, 2));
+      log.warn('Response', JSON.stringify(res, null, 2));
+      throw error;
     }
   }
 
@@ -218,22 +233,7 @@ async function getResponse(req) {
     res = error;
   }
   res.responseTime = Date.now() - requestStartTime;
-  printRequestResponse(req, res);
   return res;
-}
-
-function printRequestResponse(req, res) {
-  if (log.levelValue <= 4) {
-    const rr = {
-      request: req,
-      response: {
-        statusCode: res.statusCode,
-        headers: res.headers,
-        json: res.json
-      }
-    }
-    log.debug('Request & Response =>', JSON.stringify(rr, null, 2));
-  }
 }
 
 module.exports = Tosser;

@@ -1,4 +1,4 @@
-const { options, cyan, magenta, blue, green, yellow, red } = require('./colors');
+const { options, magenta, blue, green, yellow, red } = require('./colors');
 
 const LEVEL_TRACE = 3;
 const LEVEL_DEBUG = 4;
@@ -52,35 +52,35 @@ class Logger {
   trace(...msg) {
     if (this.levelValue <= LEVEL_TRACE) {
       process.stdout.write(`[${magenta('T')}] `);
-      this.console.debug(...msg);
+      msg.forEach(m => this.console.debug(m));
     }
   }
 
   debug(...msg) {
     if (this.levelValue <= LEVEL_DEBUG) {
       process.stdout.write(`[${blue('D')}] `);
-      this.console.debug(...msg);
+      msg.forEach(m => this.console.debug(m));
     }
   }
 
   info(...msg) {
     if (this.levelValue <= LEVEL_INFO) {
       process.stdout.write(`[${green('I')}] `);
-      this.console.info(...msg);
+      msg.forEach(m => this.console.info(m));
     }
   }
 
   warn(...msg) {
     if (this.levelValue <= LEVEL_WARN) {
       process.stdout.write(`[${yellow('W')}] `);
-      this.console.warn(...msg);
+      msg.forEach(m => this.console.warn(m));
     }
   }
 
   error(...msg) {
     if (this.levelValue <= LEVEL_ERROR) {
       process.stdout.write(`[${red('E')}] `);
-      this.console.error(...msg);
+      msg.forEach(m => this.console.error(m));
     }
   }
 
