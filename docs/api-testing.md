@@ -25,10 +25,25 @@ Lets get started with API Testing.
 
 * [Getting Started](#getting-started)
 * [API](#api)
+  * [Testing Style](#testing-style)
   * [Request Making](#request-making)
+    * [Query Params](#query-params)
+    * [Headers](#headers)
+    * [Body](#body)
+    * [Form Data](#form-data)
+    * [GraphQL](#graphql)
+    * [Request Timeout](#request-timeout)
   * [Response Validation](#response-validation)
-  * [Nested Dependent HTTP Calls](#nested-dependent-http-calls)
-  * [Retry Mechanism](#retry-mechanism)
+    * [Status & Headers & Response Time](#status-&-headers-&-response-time)
+    * [JSON](#json)
+      * [expectJson](#expectJson)
+      * [expectJsonLike](#expectJsonLike)
+      * [expectJsonSchema](#expectJsonSchema)
+      * [expectJsonAt](#expectJsonAt)
+      * [expectJsonLikeAt](#expectJsonLikeAt)
+      * [expectJsonMatch](#expectJsonMatch)
+    * [Custom Validations](#custom-validations)
+  * [Request Settings](#request-settings)
 
 
 ## Getting Started
@@ -72,6 +87,8 @@ mocha test.js
 ```
 
 ## API
+
+### Testing Style
 
 Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations.
 
@@ -222,7 +239,7 @@ it('get all comments', async () => {
 });
 ```
 
-#### Body (JSON)
+#### Body
 
 Use `withBody` or `withJson` methods to pass the body to the request.
 
@@ -324,7 +341,7 @@ it('post graphql query & variables', async () => {
 });
 ```
 
-#### RequestTimeout
+#### Request Timeout
 
 By default, pactum's request will timeout after 3000 ms. To increase the timeout for the current request use the `withRequestTimeout` method. **Make Sure To Increase The Test Runners Timeout As Well**
 
@@ -529,7 +546,7 @@ it('get people', async () => {
 });
 ```
 
-#### Custom Expect Handlers
+#### Custom Validations
 
 You can also add custom expect handlers to this library for making much more complicated assertions that are ideal to your requirement. You can bring your own assertion library or take advantage of popular libraries like [chai](https://www.npmjs.com/package/chai).
 
@@ -662,217 +679,14 @@ pactum.request.setDefaultHeader('Authorization', 'Basic xxxxx');
 pactum.request.setDefaultHeader('content-type', 'application/json');
 ```
 
-### Nested Dependent HTTP Calls
-
-API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to the next tests using [json-query](https://www.npmjs.com/package/json-query) or custom handler functions.
-
-#### returns 
-
-Use `returns` method to return custom response from the received JSON.
-
-##### json-query
-
-```javascript
-const pactum = require('pactum');
-
-it('should return all posts and first post should have comments', async () => {
-  const postID = await pactum.spec()
-    .get('http://jsonplaceholder.typicode.com/posts')
-    .expectStatus(200)
-    .returns('[0].id');
-  await pactum.spec()
-    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
-    .expectStatus(200);
-});
-```
-
-Use multiple `returns` to return an array of custom responses from the received JSON.
-
-```javascript
-const pactum = require('pactum');
-
-it('first & second posts should have comments', async () => {
-  const ids = await pactum.spec()
-    .get('http://jsonplaceholder.typicode.com/posts')
-    .expectStatus(200)
-    .returns('[0].id')
-    .returns('[1].id');
-  await pactum.spec()
-    .get(`http://jsonplaceholder.typicode.com/posts/${ids[0]}/comments`)
-    .expectStatus(200);
-  await pactum.spec()
-    .get(`http://jsonplaceholder.typicode.com/posts/${ids[1]}/comments`)
-    .expectStatus(200);
-});
-```
-
-##### AdHoc Handler
-
-We can also use a custom handler function to return data. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects. 
-
-```javascript
-const pactum = require('pactum');
-
-it('should return all posts and first post should have comments', async () => {
-  const postID = await pactum.spec()
-    .get('http://jsonplaceholder.typicode.com/posts')
-    .expectStatus(200)
-    .returns((ctx) => { return ctx.res.json[0].id });
-  await pactum.spec()
-    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
-    .expectStatus(200);
-});
-```
-
-##### Common Handler
-
-We can also use a custom common handler function to return data & use it at different places.
-
-```javascript
-const pactum = require('pactum');
-const handler = pactum.handler;
-
-before(() => {
-  handler.addReturnHandler('user id', (ctx) => {
-    const res = ctx.res;
-    return res.json[0].id;
-  });
-});
-
-it('should return all posts and first post should have comments', async () => {
-  const postID = await pactum.spec()
-    .get('http://jsonplaceholder.typicode.com/posts')
-    .expectStatus(200)
-    .returns('user id');
-  await pactum.spec()
-    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
-    .expectStatus(200);
-});
-```
-
-**Note**: *While evaluating the string passed to the returns function, the library sees if there is a handler function with the name. If not found it will execute the json-query.*
-
-#### stores
-
-Use `stores` method to save response data under *data management* which can be referenced later in specs. This method accepts two arguments `key` & `value`.
-
-* `key` is a string that can be referenced in other parts to fetch corresponding value.
-* `value` is a *json-query* that will fetch custom response data & save it against the key.
-
-```javascript
-await pactum.spec()
-  .get('http://jsonplaceholder.typicode.com/posts')
-  .stores('FirstPost', '[0]')
-  .stores('SecondPost', '[1]')
-  .stores('AllPosts', '.');
-
-/*
-
-Lets say the response is
-  [
-    {
-      id: 1,
-      user: 'jon'
-    },
-    {
-      id: 2,
-      user: 'snow'
-    }
-  ]
-
-  @DATA:SPEC::FirstPost@ will contain the first item in the response JSON
-    {
-      id: 1,
-      user: 'jon'
-    }
-
-  @DATA:SPEC::SecondPost@ will contain the second item in the response JSON
-    {
-      id: 2,
-      user: 'snow'
-    }
-  
-  @DATA:SPEC::AllPosts@ will have the entire JSON response.
-*/
-
-await pactum.spec()
-  .patch('http://jsonplaceholder.typicode.com/posts')
-  .withJson({
-    id: '@DATA:SPEC::FirstPost.id@'
-    title: 'new title'
-  });
-});
-```
-
-### Retry Mechanism
-
-Not all APIs perform simple CRUD operations. Some operations take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response. (*Make sure to update test runners default timeout*) 
-
-Use `retry` to specify your retry strategy. It accepts options object as an argument. If the strategy function returns true, it will perform the request again.
-
-##### retryOptions
-
-| Property  | Type       | Description                                |
-| --------- | ---------- | ------------------------------------------ |
-| count     | `number`   | number of times to retry - defaults to 3   |
-| delay     | `number`   | delay between retries - defaults to 1000ms |
-| strategy  | `function` | retry strategy function - returns boolean  |
-| strategy  | `string`   | retry strategy handler name                | 
-
-#### AdHoc Handler
-
-We can use a custom handler function to return a boolean. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects. 
-
-
-```javascript
-await pactum.spec()
-  .get('https://jsonplaceholder.typicode.com/posts/12')
-  .retry({
-    count: 2,
-    delay: 2000,
-    strategy: ({res}) => { return res.statusCode === 202 }
-  })
-  .expectStatus(200);
-```
-
-#### Common Handler
-
-We can also use a custom common handler function to return data & use it at different places.
-
-```javascript
-const pactum = require('pactum');
-const handler = pactum.handler;
-
-before(() => {
-  handler.addRetryHandler('on 404', (ctx) => {
-    const res = ctx.res;
-    if (res.statusCode === 404) {
-      return true;
-    } else {
-      return false
-    }
-  });
-});
-
-it('should get posts', async () => {
-  await pactum.spec()
-    .get('http://jsonplaceholder.typicode.com/posts')
-    .retry({
-      strategy: 'on 404'
-    })
-    .expectStatus(200);
-});
-```
 
 ## Next
-
-Learn about how *pactum* makes data management easy in the next page.
 
 ----------------------------------------------------------------------------------------------------------------
 
 <a href="https://github.com/ASaiAnudeep/pactum/wiki" >
   <img src="https://img.shields.io/badge/PREV-Home-orange" alt="Home" align="left" style="display: inline;" />
 </a>
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Data-Management" >
-  <img src="https://img.shields.io/badge/NEXT-Data%20Management-blue" alt="Data Management" align="right" style="display: inline;" />
+<a href="https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing" >
+  <img src="https://img.shields.io/badge/NEXT-Integration%20Testing-blue" alt="Integration Testing" align="right" style="display: inline;" />
 </a>

@@ -174,15 +174,16 @@ describe('Chai Like Assertions', () => {
 
 });
 ```
+ 
+Learn more about api testing with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 
-This library also offers 
- 
- * Custom Assertions 
- * Retry Mechanism
- * Chaining Multiple Requests.
- * Data Management.
- 
- Learn more about api testing with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+## Integration Testing
+
+Integration Testing is defined as a type of testing where software modules or components are logically integrated & tested.
+
+API Integration Testing has many aspects but usually involves passing data between tests or waiting for some action to be reflected in the system.
+
+
 
 ## Mock Server
 
