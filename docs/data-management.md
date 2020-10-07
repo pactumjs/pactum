@@ -281,7 +281,7 @@ await pactum.spec()
   });
 ```
 
-Data functions also accepts custom data as arguments in the form of array. To pass data use comma separated values after handler name `@DATA:FUN::<handler-name>,<arg1>,<arg2>@`.
+Data functions also accepts custom data as arguments in the form of array. To pass data use comma separated values after handler name `@DATA:FUN::<handler-name>:<arg1>,<arg2>@`.
 
 ```javascript
 handler.addDataFunHandler('GetFormattedDate', (ctx) => {
@@ -289,11 +289,18 @@ handler.addDataFunHandler('GetFormattedDate', (ctx) => {
   return moment.format(fmt);
 });
 
+handler.addDataFunHandler('GetSum', (ctx) => {
+  const a = parseInt(ctx.data[0]);
+  const b = parseInt(ctx.data[1]);
+  return a + b;
+});
+
 await pactum.spec()
   .post('/api/order')
   .withJson({
     'Item': 'Sword',
-    'CreatedAt': '@DATA:FUN::GetFormattedDate,dddd@'
+    'CreatedAt': '@DATA:FUN::GetFormattedDate:dddd@',
+    'CreatedAt': '@DATA:FUN::GetSum:5,10@'
   });
 ```
 

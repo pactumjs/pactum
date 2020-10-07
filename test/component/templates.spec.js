@@ -32,6 +32,7 @@ describe('Templates & Maps', () => {
     pactum.handler.addDataFunHandler('GetZero', () => 0);
     pactum.handler.addDataFunHandler('GetAuthToken', () => 'Basic xyz');
     pactum.handler.addDataFunHandler('GetNumber', (ctx) => ctx.data[0]);
+    pactum.handler.addDataFunHandler('GetSum', (ctx) => parseInt(ctx.data[0]) + parseInt(ctx.data[1]));
   });
 
   it('new user with pure template', async () => {
@@ -169,7 +170,8 @@ describe('Templates & Maps', () => {
           method: 'GET',
           path: '/api/users',
           query: {
-            age: 0
+            age: 0,
+            mass: 10
           },
           headers: {
             'Authorization': 'Basic xyz'
@@ -180,7 +182,8 @@ describe('Templates & Maps', () => {
         }
       })
       .get('http://localhost:9393/api/users')
-      .withQueryParams('age', '@DATA:FUN::GetNumber,0@')
+      .withQueryParams('age', '@DATA:FUN::GetNumber:0@')
+      .withQueryParams('mass', '@DATA:FUN::GetSum:3,7@')
       .withHeaders('Authorization', '@DATA:FUN::GetAuthToken@')
       .expectStatus(200);
   });
