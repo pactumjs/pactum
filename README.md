@@ -15,6 +15,7 @@ This library can be integrated with test runners like **cucumber**, **mocha**, *
 This readme offers an introduction to the library. For more information visit the following links.
 
 * [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+* [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
 * [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
 * [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
@@ -175,7 +176,7 @@ describe('Chai Like Assertions', () => {
 });
 ```
  
-Learn more about api testing with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+Learn more about building requests & validating responses with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 
 ## Integration Testing
 
@@ -183,7 +184,53 @@ Integration Testing is defined as a type of testing where software modules or co
 
 API Integration Testing has many aspects but usually involves passing data between tests or waiting for some action to be reflected in the system.
 
+### Nested Dependent HTTP Calls
 
+```javascript
+const pactum = require('pactum');
+
+it('should return all posts and first post should have comments', async () => {
+  const postID = await pactum.spec()
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .returns('[0].id');
+  await pactum.spec()
+    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
+    .expectStatus(200);
+});
+```
+
+```javascript
+it('create new user', async () => {
+  await pactum.spec()
+    .post('/api/users')
+    .withJson(/* user details */)
+    .expectStatus(200)
+    .stores('UserID', 'id'); // if response body = { id: 'C001019' }
+});
+
+it('validate new user details', async () => {
+  await pactum.spec()
+    .get('/api/users')
+    .withQueryParams('id', '@DATA:SPEC::UserId@')
+    .expectStatus(200);
+});
+```
+
+### Retry Mechanism
+
+```javascript
+await pactum.spec()
+  .get('/some/async/operation')
+  .retry({
+    count: 2,
+    delay: 2000,
+    strategy: ({res}) => { return res.statusCode === 202 }
+  })
+  .expectStatus(200);
+```
+
+Learn more about these features at [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
 
 ## Mock Server
 

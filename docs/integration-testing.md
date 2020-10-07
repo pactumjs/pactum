@@ -215,7 +215,7 @@ We can use a custom handler function to return a boolean. A *context* object is 
 
 ```javascript
 await pactum.spec()
-  .get('https://jsonplaceholder.typicode.com/posts/12')
+  .get('/some/async/operation')
   .retry({
     count: 2,
     delay: 2000,
