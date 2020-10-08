@@ -6,7 +6,7 @@ const config = require('../config');
 
 let dataMap = {};
 let dataTemplate = {};
-let dataSpec = {};
+let dataStore = {};
 
 const stash = {
 
@@ -76,17 +76,17 @@ const stash = {
     config.data.template.enabled = false;
   },
 
-  addDataSpec(spec) {
-    Object.assign(dataSpec, spec);
+  addDataStore(store) {
+    Object.assign(dataStore, store);
     config.data.ref.spec.enabled = true;
   },
 
-  getDataSpecs() {
-    return dataSpec;
+  getDataStore() {
+    return dataStore;
   },
 
-  clearDataSpecs() {
-    dataSpec = {};
+  clearDataStores() {
+    dataStore = {};
     config.data.ref.spec.enabled = false;
   }
 

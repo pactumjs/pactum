@@ -104,8 +104,8 @@ const dataProcessor = {
           const handlerFun = handler.getDataFunHandler(handlerName);
           values.push(handlerFun({ data: args.length > 0 ? args[0].split(',') : args }));
         }
-        if (refType === '@DATA:SPEC') {
-          const value = jq(refValue, { data: stash.getDataSpecs() }).value;
+        if (refType === '@DATA:STR') {
+          const value = jq(refValue, { data: stash.getDataStore() }).value;
           values.push(typeof value === 'undefined' ? raw : value);
         }
       }

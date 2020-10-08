@@ -1172,6 +1172,61 @@ describe('JSON Like Array of Objects', () => {
 
 });
 
+describe('JSON Like - Expressions', () => {
+
+  it('object fulfil simple expression', () => {
+    const actual = { id: 1 };
+    const expected = { id: '@( $ === 1 )@'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('object does not fulfil simple expression', () => {
+    const actual = { id: 1 };
+    const expected = { id: '@( $ > 1 )@'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't fulfil expression '$.id > 1'`);
+  });
+
+  it('array fulfil simple expression', () => {
+    const actual = [{ id: 1 }];
+    const expected = '@( $.length === 1 )@';
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('array does not fulfil simple expression', () => {
+    const actual = [{ id: 1 }];
+    const expected = '@( $.length > 1 )@';
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't fulfil expression '$.length > 1'`);
+  });
+
+  it('object fulfil complex expression', () => {
+    const actual = { id: 1, marks: { maths: 70 } };
+    const expected = { id: 1, marks: { maths: '@( $ > 50 )@' } };
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('object does not fulfil complex expression', () => {
+    const actual = { id: 1, marks: { maths: 70 } };
+    const expected = { id: 1, marks: { maths: '@( $ > 80 )@' } };
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't fulfil expression '$.marks.maths > 80'`);
+  });
+
+});
+
 describe('JSON Match - Object - no matching rules', () => {
 
   before(() => {

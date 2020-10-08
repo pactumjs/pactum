@@ -153,7 +153,7 @@ class Tosser {
       const value = jqy(store.value, { data: this.response.json }).value;
       const specData = {};
       specData[store.key] = value;
-      stash.addDataSpec(specData);
+      stash.addDataStore(specData);
     }
   }
 

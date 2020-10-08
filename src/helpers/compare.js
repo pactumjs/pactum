@@ -1,5 +1,7 @@
 const log = require('./logger');
 
+const EXPRESSION_PATTERN = /^@\(.*\)@$/g;
+
 class Compare {
 
   jsonLike(actual, expected) {
@@ -73,6 +75,20 @@ class LikeJson {
     return '';
   }
 
+  expressionCompare(actual, expected, actualPath, expectedPath) {
+    if (typeof expected === 'string') {
+      const expressions = expected.match(EXPRESSION_PATTERN);
+      if (expressions) {
+        const expression = expressions[0].replace('$', 'actual').slice(2, -2);
+        const res = eval(expression);
+        if (res !== true) {
+          return `Json doesn't fulfil expression '${expression.replace('actual', expectedPath).trim()}'`
+        }
+        return true;
+      }
+    }
+  }
+
   valueCompare(actual, expected, actualPath, expectedPath) {
     if (actual === expected) {
       return '';
@@ -82,6 +98,10 @@ class LikeJson {
         return '';
       }
       return `Json doesn't match with '${expected}' at '${expectedPath}' but found '${actual}'`;
+    }
+    const exprRes = this.expressionCompare(actual, expected, actualPath, expectedPath);
+    if (exprRes) {
+      return exprRes === true ? '' : exprRes;
     }
     if (typeof expected !== typeof actual) {
       return `Json doesn't have type '${typeof expected}' at '${expectedPath}' but found '${typeof actual}'`;

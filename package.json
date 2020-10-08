@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "REST API Testing Tool to write e2e, integration, contract & component or service level tests",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",

@@ -163,14 +163,14 @@ Lets say the response is
 */
 ```
 
-To later refer the stored value, you need to use `@DATA:SPEC::<name>@` or `@DATA:SPEC::<name><json-query>@` as a place holder in the requests.
+To later refer the stored value, you need to use `@DATA:STR::<name>@` or `@DATA:STR::<name><json-query>@` as a place holder in the requests.
 
 ```javascript
 // It will make a GET request to http://jsonplaceholder.typicode.com/posts/1
 await pactum.spec()
-  .get('http://jsonplaceholder.typicode.com/posts/@DATA:SPEC::FirstPost.id@')
+  .get('http://jsonplaceholder.typicode.com/posts/@DATA:STR::FirstPost.id@')
   .withJson({
-    id: '@DATA:SPEC::FirstPost.id@'
+    id: '@DATA:STR::FirstPost.id@'
     title: 'new title'
   });
 });
@@ -188,7 +188,7 @@ await pactum.spec()
 await pactum.spec()
   .post('http://jsonplaceholder.typicode.com/posts')
   .withJson({
-    data: '@DATA:SPEC::SecondPost@'
+    data: '@DATA:STR::SecondPost@'
   });
 });
 ```

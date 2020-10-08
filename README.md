@@ -212,7 +212,7 @@ it('create new user', async () => {
 it('validate new user details', async () => {
   await pactum.spec()
     .get('/api/users')
-    .withQueryParams('id', '@DATA:SPEC::UserId@')
+    .withQueryParams('id', '@DATA:STR::UserId@')
     .expectStatus(200);
 });
 ```

@@ -437,6 +437,7 @@ it('get post with id 1', async () => {
 Performs partial deep equal. 
 
 * Allows Regular Expressions.
+* Allows JavaScript Expressions.
 * Order of items in an array doesn't matter.
 
 ```javascript
@@ -452,7 +453,32 @@ it('posts should have a item with title -"some title"', async () => {
     ]);
   
   // Chai Style Assertions
-  // pactum.expect(response).should.have.jsonLike({});
+  // pactum.expect(response).should.have.jsonLike();
+  // spec.response().should.have.jsonLike();
+});
+```
+
+###### JS Expressions
+
+JS Expressions help to perform custom & complex assertions on a JSON. A JS Expression should start with `@(` & end with `)@`. 
+
+Expression should
+ * be a valid JavaScript expression.
+ * have `$` to represent current value.
+ * return a *boolean*.
+
+```javascript
+it('get users', async () => {
+  const response = await pactum.spec()
+    .get('/api/users')
+    .expectStatus(200)
+    .expectJsonLike('@( $.length === 10 )@'); // api should return an array with length 10
+    .expectJsonLike([
+      {
+        name: 'jon',
+        age: '@( $ > 30 )@' // age should be greater than 30
+      }
+    ])
 });
 ```
 
