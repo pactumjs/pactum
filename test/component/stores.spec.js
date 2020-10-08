@@ -35,8 +35,20 @@ describe('Stores', () => {
       })
       .post('http://localhost:9393/api/stores')
       .withJson({
-        UserId: '@DATA:SPEC::UserId@'
+        UserId: '@DATA:STR::UserId@'
       })
+      .expectStatus(200);
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'POST',
+          path: '/api/stores/1'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/stores/@DATA:STR::UserId@')
       .expectStatus(200);
   });
 
@@ -80,7 +92,7 @@ describe('Stores', () => {
       })
       .post('http://localhost:9393/api/stores')
       .withJson({
-        UserId: '@DATA:SPEC::FirstUser.id@'
+        UserId: '@DATA:STR::FirstUser.id@'
       })
       .expectStatus(200);
   });
@@ -92,7 +104,7 @@ describe('Stores', () => {
           method: 'POST',
           path: '/api/stores',
           body: {
-            UserId: '@DATA:SPEC::Unknown@'
+            UserId: '@DATA:STR::Unknown@'
           }
         },
         willRespondWith: {
@@ -101,13 +113,13 @@ describe('Stores', () => {
       })
       .post('http://localhost:9393/api/stores')
       .withJson({
-        UserId: '@DATA:SPEC::Unknown@'
+        UserId: '@DATA:STR::Unknown@'
       })
       .expectStatus(200);
   });
 
   afterEach(() => {
-    stash.clearDataSpecs();
+    stash.clearDataStores();
   });
 
 });

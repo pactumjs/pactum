@@ -40,7 +40,10 @@ describe('Mock', () => {
         },
         "required": ["name", "id"]
       })
-      .expectJsonQuery('id', 1)
+      .expectJsonSchemaAt('id', {
+        "type": "number"
+      })
+      .expectJsonAt('id', 1)
       .expectResponseTime(100)
       .toss();
   });
@@ -330,7 +333,7 @@ describe('Mock', () => {
         },
         "required": ["name", "id"]
       })
-      .expectJsonQuery('id', 1)
+      .expectJsonAt('id', 1)
       .toss();
   });
 
@@ -373,7 +376,7 @@ describe('Mock', () => {
         },
         "required": ["name", "id"]
       })
-      .expectJsonQuery('id', 1)
+      .expectJsonAt('id', 1)
       .toss();
   });
 

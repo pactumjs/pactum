@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "REST API Testing Tool to write e2e, integration, contract & component or service level tests",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -65,8 +65,8 @@
   "author": "Anudeep <asa.anudeep4@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@exodus/schemasafe": "^1.0.0-rc.2",
     "deep-override": "^1.0.1",
-    "djv": "^2.1.3-alpha.0",
     "form-data": "^3.0.0",
     "json-query": "^2.2.2",
     "parse-graphql": "^1.0.0",

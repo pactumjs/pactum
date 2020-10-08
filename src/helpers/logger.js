@@ -1,4 +1,4 @@
-const { options, cyan, magenta, blue, green, yellow, red } = require('./colors');
+const { options, magenta, blue, green, yellow, red } = require('./colors');
 
 const LEVEL_TRACE = 3;
 const LEVEL_DEBUG = 4;
@@ -51,36 +51,36 @@ class Logger {
 
   trace(...msg) {
     if (this.levelValue <= LEVEL_TRACE) {
-      process.stdout.write(`${cyan('PACTUM')} ${magenta('TRACE')} `);
-      this.console.debug(...msg);
+      process.stdout.write(`[${magenta('T')}] `);
+      msg.forEach(m => this.console.debug(m));
     }
   }
 
   debug(...msg) {
     if (this.levelValue <= LEVEL_DEBUG) {
-      process.stdout.write(`${cyan('PACTUM')} ${blue('DEBUG')} `);
-      this.console.debug(...msg);
+      process.stdout.write(`[${blue('D')}] `);
+      msg.forEach(m => this.console.debug(m));
     }
   }
 
   info(...msg) {
     if (this.levelValue <= LEVEL_INFO) {
-      process.stdout.write(`${cyan('PACTUM')} ${green('INFO')} `);
-      this.console.info(...msg);
+      process.stdout.write(`[${green('I')}] `);
+      msg.forEach(m => this.console.info(m));
     }
   }
 
   warn(...msg) {
     if (this.levelValue <= LEVEL_WARN) {
-      process.stdout.write(`${cyan('PACTUM')} ${yellow('WARN')} `);
-      this.console.warn(...msg);
+      process.stdout.write(`[${yellow('W')}] `);
+      msg.forEach(m => this.console.warn(m));
     }
   }
 
   error(...msg) {
     if (this.levelValue <= LEVEL_ERROR) {
-      process.stdout.write(`${cyan('PACTUM')} ${red('ERROR')} `);
-      this.console.error(...msg);
+      process.stdout.write(`[${red('E')}] `);
+      msg.forEach(m => this.console.error(m));
     }
   }
 

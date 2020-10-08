@@ -402,10 +402,10 @@ declare class Spec {
    * @example
    * await pactum
    *  .get('some-url')
-   *  .expectJsonQuery('[0].name', 'Matt')
-   *  .expectJsonQuery('[*].name', ['Matt', 'Pet', 'Don']);
+   *  .expectJsonAt('[0].name', 'Matt')
+   *  .expectJsonAt('[*].name', ['Matt', 'Pet', 'Don']);
    */
-  expectJsonQuery(path: string, query: any): Spec;
+  expectJsonAt(path: string, query: any): Spec;
 
   /**
    * expects the json at path to be like the value (uses expectJsonLike internally)
@@ -413,9 +413,40 @@ declare class Spec {
    * @example
    * await pactum
    *  .get('some-url')
-   *  .expectJsonQueryLike('[*].name', ['Matt', 'Pet', 'Don']);
+   *  .expectJsonLikeAt('[*].name', ['Matt', 'Pet', 'Don']);
    */
-  expectJsonQueryLike(path: string, value: any): Spec;
+  expectJsonLikeAt(path: string, value: any): Spec;
+
+  /**
+   * expects the response to match with json schema
+   * @see https://json-schema.org/learn/
+   * @example
+   * await pactum
+   *  .get('/api/users/1')
+   *  .expectJsonSchemaAt('user.address', {
+   *    "type": "object",
+   *    "properties": {
+   *      "city": {
+   *        "type": "string"
+   *      }
+   *    }
+   *  });
+   */
+  expectJsonSchemaAt(path: string, schema: object): Spec;
+
+  /**
+   * expects the json at to match with value
+   * @example
+   * const { like } = pactum.matchers;
+   * 
+   * await pactum
+   *  .get('/api/users')
+   *  .expectJsonMatch({
+   *    id: like(1),
+   *    name: 'jon'
+   *  });
+   */
+  expectJsonMatch(value: object): Spec;
 
   /**
    * expects request completes within a specified duration (ms)

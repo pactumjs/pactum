@@ -8,13 +8,23 @@
 
 **pactum** is a REST API Testing Tool used to write e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
-This library can be integrated with test runners like **cucumber**, **mocha**, **jest** or any other runners. It is *simple*, *fast*, *easy* and *fun* to use.
+##### Why pactum?
+
+* Lightweight.
+* Clear & Comprehensive Testing Style.
+* Works with **cucumber**, **mocha**, **jest**.
+* Elegant Data Management.
+* Customizable Assertions & Retry Mechanisms.
+* Powerful Mock Server.
+* Ideal for *component*, *contract* & *e2e* testing of APIs.
+* It is *simple*, *fast*, *fun* & *easy* to use.
 
 ## Documentation
 
 This readme offers an introduction to the library. For more information visit the following links.
 
 * [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+* [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
 * [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
 * [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
@@ -141,7 +151,7 @@ it('should have a user with id', () => {
         }
       }
     })
-    .expectJsonQueryLike('[0].address[*].city', ['Boston', 'NewYork'])
+    .expectJsonLikeAt('[0].address[*].city', ['Boston', 'NewYork'])
     .expectResponseTime(100);
 });
 ```
@@ -174,15 +184,62 @@ describe('Chai Like Assertions', () => {
 
 });
 ```
+ 
+Learn more about building requests & validating responses with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 
-This library also offers 
- 
- * Custom Assertions 
- * Retry Mechanism
- * Chaining Multiple Requests.
- * Data Management.
- 
- Learn more about api testing with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+## Integration Testing
+
+Integration Testing is defined as a type of testing where software modules or components are logically integrated & tested.
+
+API Integration Testing has many aspects but usually involves passing data between tests or waiting for some action to be reflected in the system.
+
+### Nested Dependent HTTP Calls
+
+```javascript
+const pactum = require('pactum');
+
+it('should return all posts and first post should have comments', async () => {
+  const postID = await pactum.spec()
+    .get('http://jsonplaceholder.typicode.com/posts')
+    .expectStatus(200)
+    .returns('[0].id');
+  await pactum.spec()
+    .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
+    .expectStatus(200);
+});
+```
+
+```javascript
+it('create new user', async () => {
+  await pactum.spec()
+    .post('/api/users')
+    .withJson(/* user details */)
+    .expectStatus(200)
+    .stores('UserID', 'id'); // if response body = { id: 'C001019' }
+});
+
+it('validate new user details', async () => {
+  await pactum.spec()
+    .get('/api/users')
+    .withQueryParams('id', '@DATA:STR::UserId@')
+    .expectStatus(200);
+});
+```
+
+### Retry Mechanism
+
+```javascript
+await pactum.spec()
+  .get('/some/async/operation')
+  .retry({
+    count: 2,
+    delay: 2000,
+    strategy: ({res}) => { return res.statusCode === 202 }
+  })
+  .expectStatus(200);
+```
+
+Learn more about these features at [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
 
 ## Mock Server
 

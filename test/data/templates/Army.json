@@ -3,5 +3,13 @@
     "Name": "@DATA:MAP::Army.Name@",
     "Count": 10000,
     "Alliance": "Stark"
+  },
+  "Schema:Army": {
+    "type": "object",
+    "required": [
+      "Name",
+      "Count",
+      "Alliance"
+    ]
   }
 }

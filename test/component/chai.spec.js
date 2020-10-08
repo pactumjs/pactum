@@ -53,14 +53,14 @@ describe('Chai Like Assertions', () => {
   it('should return a valid user', async () => {
     expect(response).to.have.json({ name: 'snow'});
     expect(response).should.have.jsonLike({ name: 'snow'});
-    expect(response).to.have.jsonQuery('name', 'snow');
-    expect(response).to.have.jsonQueryLike('name', 'snow');
+    expect(response).to.have.jsonAt('name', 'snow');
+    expect(response).to.have.jsonLikeAt('name', 'snow');
     expect(response).to.have.body(`{"name":"snow"}`);
     spec.response().to.have.bodyContains(`snow`);
   });
 
   it('should return a valid schema', async () => {
-    expect(response).to.have.jsonSchema({ properties: { name: 'string' }});
+    expect(response).to.have.jsonSchema({ properties: { name: { type: 'string' } }});
   });
 
   it('should return a response within 500 ms', async () => {
