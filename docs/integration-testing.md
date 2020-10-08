@@ -6,7 +6,11 @@ When it comes to API Integration Testing, essentially it involves testing how mu
 
 This document explains the features that are offered by **pactum** to support integration testing.
 
-*Note: All the features of `pactum.spec()` can be applied for any type of testing. This documentation segregates the features of this library in a place where it makes more sense.*
+*Note: This documentation majorly focuses on chaining multiple requests & passing data between them. Basic & Advanced features are covered in places where it makes more sense.*
+
+## Pre Requisite
+
+* [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 
 ## Table of contents
 
@@ -14,6 +18,7 @@ This document explains the features that are offered by **pactum** to support in
 * [API](#api)
   * [Nested Dependent HTTP Calls](#nested-dependent-http-calls)
   * [Retry Mechanism](#retry-mechanism)
+* [Next](#next)
 
 ## Getting Started
 
@@ -254,6 +259,13 @@ it('should get posts', async () => {
 ```
 
 ## Next
+
+* [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
+* [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
+* [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+* [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+  * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
+  * [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
 
 ----------------------------------------------------------------------------------------------------------------
 

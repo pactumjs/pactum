@@ -8,7 +8,16 @@
 
 **pactum** is a REST API Testing Tool used to write e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
-This library can be integrated with test runners like **cucumber**, **mocha**, **jest** or any other runners. It is *simple*, *fast*, *easy* and *fun* to use.
+##### Why pactum?
+
+* Lightweight.
+* Clear & Comprehensive Testing Style.
+* Works with **cucumber**, **mocha**, **jest**.
+* Elegant Data Management.
+* Customizable Assertions & Retry Mechanisms.
+* Powerful Mock Server.
+* Ideal for *component*, *contract* & *e2e* testing of APIs.
+* It is *simple*, *fast*, *fun* & *easy* to use.
 
 ## Documentation
 

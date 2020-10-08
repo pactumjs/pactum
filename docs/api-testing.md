@@ -2,24 +2,7 @@
 
 API Testing in general can greatly improve the efficiency of our testing strategy helping us to deliver software faster than ever. It has many aspects but generally consists of making a request & validating the response. 
 
-* It can be performed at different levels of a software development life cycle.
-* It can be performed independent of the language used to develop the application. (*java based applications API can be tested in other programming languages*)
-* In the market there are numerous tools available that allow us to test our APIs for different test types.
-
-Instead of using different tools for each test type, **pactum** comes with all the popular features in a single bundle.
-
-##### Why pactum?
-
-* Super lightweight.
-* Quick & easy to send requests & validate responses.
-* Out of the box Data Management.
-* Easy to chain multiple requests.
-* Fully customizable Retry Mechanisms, Assertions.
-* Works with any of the test runners like **mocha**, **cucumber**, **jest**.
-* Ideal for *component testing*, *contract testing* & *e2e testing*.
-* Ability to control the behavior of external services with a powerful mock server. (*learn more at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)*)
-
-Lets get started with API Testing.
+*Note: This documentation majorly focuses on request making & response validation. Advanced features are covered in places where it makes more sense.*
 
 ## Table of contents
 
@@ -44,7 +27,7 @@ Lets get started with API Testing.
       * [expectJsonMatch](#expectJsonMatch)
     * [Custom Validations](#custom-validations)
   * [Request Settings](#request-settings)
-
+* [Next](#next)
 
 ## Getting Started
 
@@ -376,10 +359,10 @@ Expectations help to assert the response received from the server.
 | `expectBody`            | check exact match of body               |
 | `expectBodyContains`    | check body contains the value           |
 | `expectJson`            | check exact match of json               |
-| `expectJsonLike`        | check loose match of json               |
-| `expectJsonSchema`      | check json schema                       |
 | `expectJsonAt`          | check json using **json-query**         |
+| `expectJsonLike`        | check loose match of json               |
 | `expectJsonLikeAt`      | check json like using **json-query**    |
+| `expectJsonSchema`      | check json schema                       |
 | `expectJsonMatch`       | check json to match                     |
 | `expectResponseTime`    | check response time                     |
 
@@ -432,6 +415,30 @@ it('get post with id 1', async () => {
 });
 ```
 
+##### expectJsonAt
+
+Allows validation of specific part in a JSON. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
+
+* Performs deep equal or strict equal.
+* Order of items in an array does matter.
+
+```javascript
+it('get people', async () => {
+  const response = await pactum.spec()
+    .get('https://some-api/people')
+    .expectStatus(200)
+    .expectJson({
+      people: [
+        { name: 'Matt', country: 'NZ' },
+        { name: 'Pete', country: 'AU' },
+        { name: 'Mike', country: 'NZ' }
+      ]
+    })
+    .expectJsonAt('people[country=NZ].name', 'Matt')
+    .expectJsonAt('people[*].name', ['Matt', 'Pete', 'Mike']);
+});
+```
+
 ##### expectJsonLike
 
 Performs partial deep equal. 
@@ -479,30 +486,6 @@ it('get users', async () => {
         age: '@( $ > 30 )@' // age should be greater than 30
       }
     ])
-});
-```
-
-##### expectJsonAt
-
-Allows validation of specific part in a JSON. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
-
-* Performs deep equal or strict equal.
-* Order of items in an array does matter.
-
-```javascript
-it('get people', async () => {
-  const response = await pactum.spec()
-    .get('https://some-api/people')
-    .expectStatus(200)
-    .expectJson({
-      people: [
-        { name: 'Matt', country: 'NZ' },
-        { name: 'Pete', country: 'AU' },
-        { name: 'Mike', country: 'NZ' }
-      ]
-    })
-    .expectJsonAt('people[country=NZ].name', 'Matt')
-    .expectJsonAt('people[*].name', ['Matt', 'Pete', 'Mike']);
 });
 ```
 
@@ -707,6 +690,14 @@ pactum.request.setDefaultHeader('content-type', 'application/json');
 
 
 ## Next
+
+* [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
+* [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
+* [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
+* [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+* [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+  * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
+  * [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
 
 ----------------------------------------------------------------------------------------------------------------
 
