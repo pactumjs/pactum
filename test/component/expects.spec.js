@@ -278,6 +278,32 @@ describe('Expects', () => {
     expect(err).not.undefined;
   });
 
+  it('failed json schema at', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/users/1'
+          },
+          willRespondWith: {
+            status: 200,
+            body: {
+              id: 1
+            }
+          }
+        })
+        .get('http://localhost:9393/api/users/1')
+        .expectJsonSchemaAt('id', {
+          "type": "string"
+        });
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
   it('failed json match', async () => {
     let err;
     try {

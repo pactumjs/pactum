@@ -40,6 +40,9 @@ describe('Mock', () => {
         },
         "required": ["name", "id"]
       })
+      .expectJsonSchemaAt('id', {
+        "type": "number"
+      })
       .expectJsonAt('id', 1)
       .expectResponseTime(100)
       .toss();

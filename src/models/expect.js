@@ -14,10 +14,11 @@ class Expect {
     this.body = null;
     this.bodyContains = [];
     this.json = [];
-    this.jsonLike = [];
     this.jsonQuery = [];
+    this.jsonLike = [];
     this.jsonQueryLike = [];
     this.jsonSchema = [];
+    this.jsonSchemaQuery = [];
     this.jsonMatch = [];
     this.headers = [];
     this.headerContains = [];
@@ -36,6 +37,7 @@ class Expect {
     this._validateJsonQuery(response);
     this._validateJsonQueryLike(response);
     this._validateJsonSchema(response);
+    this._validateJsonSchemaQuery(response);
     this._validateJsonMatch(response);
     this._validateResponseTime(response);
     this._validateCustomExpectHandlers(request, response);
@@ -199,6 +201,18 @@ class Expect {
       const errors = jsv.validate(this.jsonSchema[i], response.json);
       if (errors) {
         this.fail(`Response doesn't match with JSON schema: \n ${JSON.stringify(errors, null, 2)}`);
+      }
+    }
+  }
+
+  _validateJsonSchemaQuery(response) {
+    this.jsonSchemaQuery = processor.processData(this.jsonSchemaQuery);
+    for (let i = 0; i < this.jsonSchemaQuery.length; i++) {
+      const jQ = this.jsonSchemaQuery[i];
+      const value = jqy(jQ.path, { data: response.json }).value;
+      const errors = jsv.validate(jQ.value, value);
+      if (errors) {
+        this.fail(`Response doesn't match with JSON schema at ${jQ.path}: \n ${JSON.stringify(errors, null, 2)}`);
       }
     }
   }

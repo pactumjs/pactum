@@ -265,6 +265,11 @@ class Spec {
     return this;
   }
 
+  expectJsonSchemaAt(path, value) {
+    this._expect.jsonSchemaQuery.push({ path, value });
+    return this;
+  }
+
   expectJsonAt(path, value) {
     this._expect.jsonQuery.push({ path, value });
     return this;

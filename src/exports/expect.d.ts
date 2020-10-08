@@ -9,6 +9,7 @@ export interface Have {
   jsonAt(path: string, value: any): void;
   jsonLikeAt(path: string, value: any): void;
   jsonSchema(schema: object): void;
+  jsonSchemaAt(path: string, schema: object): void;
   jsonMatch(value: object): void;
   responseTimeLessThan(ms: number): void;
   _(handler: string, data: any): void

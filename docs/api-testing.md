@@ -530,9 +530,34 @@ it('get people', async () => {
       ]
     })
     .expectJsonSchema({
-      properties: {
-        "people": "array"
+      "type": "object",
+      "properties": {
+        "people": {
+          "type": "array"
+        }
       }
+    });
+});
+```
+
+##### expectJsonSchemaAt
+
+Allows validation of the schema of a JSON at a specific place. See [json-schema](https://json-schema.org/learn/) for more usage details.
+
+```javascript
+it('get people', async () => {
+  const response = await pactum.spec()
+    .get('https://some-api/people')
+    .expectStatus(200)
+    .expectJson({
+      people: [
+        { name: 'Matt', country: 'NZ' },
+        { name: 'Pete', country: 'AU' },
+        { name: 'Mike', country: 'NZ' }
+      ]
+    })
+    .expectJsonSchemaAt('people', {
+      "type": "array"
     });
 });
 ```

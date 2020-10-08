@@ -58,6 +58,11 @@ class Have {
     this._validate();
   }
 
+  jsonSchemaAt(path, value) {
+    this.expect.jsonSchemaQuery.push({ path, value });
+    this._validate();
+  }
+
   jsonMatch(value) {
     this.expect.jsonMatch.push(value);
     this._validate();
