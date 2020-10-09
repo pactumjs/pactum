@@ -1,4 +1,5 @@
 import * as Spec from './models/Spec';
+import * as E2E from './models/E2E';
 
 export * as consumer from './exports/consumer';
 export * as expect from './exports/expect';
@@ -20,5 +21,7 @@ export * as state from './exports/state';
  */
 export function spec(): Spec;
 export function spec(name?: string, data?: any): Spec;
+
+export function e2e(name: string): E2E;
 
 export namespace pactum { }

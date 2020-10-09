@@ -1,4 +1,5 @@
 const Spec = require('./models/Spec');
+const E2E = require('./models/E2E');
 
 const mock = require('./exports/mock');
 const consumer = require('./exports/consumer');
@@ -26,6 +27,10 @@ const pactum = {
 
   spec(name, data) {
     return new Spec(name, data);
+  },
+
+  e2e(name) {
+    return new E2E(name);
   }
 
 };
