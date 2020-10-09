@@ -18,6 +18,11 @@ interface StateHandlerContext {
   spec?: Spec;
 }
 
+interface SpecHandlerContext {
+  data?: any;
+  spec?: Spec;
+}
+
 interface RequestResponseContext {
   req: Request;
   res: Response;
@@ -31,6 +36,7 @@ interface DataHandlerContext {
   data?: any;
 }
 
+export type SpecHandlerFunction = (ctx: SpecHandlerContext) => void;
 export type ExpectHandlerFunction = (ctx: ExpectHandlerContext) => void;
 export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
 export type ReturnHandlerFunction = (ctx: RequestResponseContext) => any;
@@ -38,6 +44,11 @@ export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
 export type DataHandlerFunction = (ctx: DataHandlerContext) => any;
 export type MockInteractionHandlerFunction = (ctx: DataHandlerContext) => MockInteraction;
 export type PactInteractionHandlerFunction = (ctx: DataHandlerContext) => PactInteraction;
+
+/**
+ * adds a custom spec handler
+ */
+export function addSpecHandler(name: string, func: SpecHandlerFunction): void;
 
 /**
  * adds a custom expect handler

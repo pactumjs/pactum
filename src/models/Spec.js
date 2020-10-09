@@ -2,7 +2,6 @@ const FormData = require('form-data');
 const Tosser = require('./Tosser');
 const Expect = require('./expect');
 const State = require('./State');
-const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
@@ -11,7 +10,7 @@ const handler = require('../exports/handler');
 
 class Spec {
 
-  constructor() {
+  constructor(name, data) {
     this.id = helper.getRandomId();
     this._request = {};
     this._response = null;
@@ -22,6 +21,14 @@ class Spec {
     this.previousLogLevel = null;
     this.mockInteractions = [];
     this.pactInteractions = [];
+    this.runHandler(name, data);
+  }
+
+  runHandler(name, data) {
+    if (typeof name !== 'undefined') {
+      const fun = handler.getSpecHandler(name);
+      fun({ spec: this, data });
+    }
   }
 
   setState(name, data) {

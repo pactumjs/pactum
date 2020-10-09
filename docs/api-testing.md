@@ -363,6 +363,7 @@ Expectations help to assert the response received from the server.
 | `expectJsonLike`        | check loose match of json               |
 | `expectJsonLikeAt`      | check json like using **json-query**    |
 | `expectJsonSchema`      | check json schema                       |
+| `expectJsonSchemaAt`    | check json schema using **json-query**  |
 | `expectJsonMatch`       | check json to match                     |
 | `expectResponseTime`    | check response time                     |
 

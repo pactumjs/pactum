@@ -24,8 +24,8 @@ const pactum = {
   stash,
   expect,
 
-  spec() {
-    return new Spec();
+  spec(name, data) {
+    return new Spec(name, data);
   }
 
 };

@@ -19,5 +19,6 @@ export * as state from './exports/state';
  *  .expectStatus(200);
  */
 export function spec(): Spec;
+export function spec(name?: string, data?: any): Spec;
 
 export namespace pactum { }
