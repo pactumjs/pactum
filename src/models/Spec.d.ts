@@ -503,6 +503,13 @@ declare class Spec {
    * @requires .toss() should be called beforehand.
    */
   response(): Expect;
+
+  /**
+   * _should be used with pactum.e2e()_
+   * 
+   * returns new instance of cleanup spec
+   */
+  clean(name?: string, data?: any): Spec;
 }
 
 declare namespace Spec {}

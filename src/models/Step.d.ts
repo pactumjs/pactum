@@ -8,6 +8,8 @@ declare class StepSpec extends Spec {
 
 declare class Step {
   spec(name?: string, data?: any): StepSpec;
+  clean(name?: string, data?: any): CleanStep;
+  toss(): Promise<void>;
 }
 
 declare namespace Step {}

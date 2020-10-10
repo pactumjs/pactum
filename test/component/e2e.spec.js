@@ -39,6 +39,24 @@ before(() => {
       }
     }
   });
+  handler.addSpecHandler('User.AddUser', (ctx) => {
+    const spec = ctx.spec;
+    spec.useMockInteraction('save user');
+    spec.post('http://localhost:9393/api/users');
+    spec.expectStatus(200);
+  });
+  handler.addSpecHandler('User.DeleteUser', (ctx) => {
+    const spec = ctx.spec;
+    spec.useMockInteraction('delete user');
+    spec.delete('http://localhost:9393/api/users/1');
+    spec.expectStatus(200);
+  });
+  handler.addSpecHandler('User.GetUser', (ctx) => {
+    const spec = ctx.spec;
+    spec.useMockInteraction('get user');
+    spec.get('http://localhost:9393/api/users/1');
+    spec.expectStatus(200);
+  });
 });
 
 describe('E2E - All Passed', () => {
@@ -80,6 +98,7 @@ describe('E2E - First Step Failed', () => {
   });
 
   it('save user', async () => {
+    let err;
     try {
       await this.e2e.step('Save User')
         .spec()
@@ -91,16 +110,17 @@ describe('E2E - First Step Failed', () => {
         .delete('http://localhost:9393/api/users/1')
         .expectStatus(200);
     } catch (error) {
-      expect(error).not.undefined;
+      err= error;
     }
+    expect(err).not.undefined;
   });
 
-  it('get user', async () => {
+  it('should skip this `e2e.step`', async () => {
     await this.e2e.step('Get User')
       .spec()
       .useMockInteraction('get user')
       .get('http://localhost:9393/api/users/1')
-      .expectStatus(200);
+      .expectStatus(400);
   });
 
   it('clean up', async () => {
@@ -148,11 +168,13 @@ describe('E2E - One Clean Up Failed', () => {
   });
 
   it('clean up', async () => {
+    let err;
     try {
       await this.e2e.cleanup();  
     } catch (error) {
-      expect(error).not.undefined;      
+      err = error;
     }
+    expect(err).not.undefined;
   });
 
 });
@@ -176,7 +198,7 @@ describe('E2E - All Clean Ups Failed', () => {
   });
 
   it('save user two', async () => {
-    await this.e2e.step('Save User One')
+    await this.e2e.step('Save User Two')
       .spec()
       .useMockInteraction('save user')
       .post('http://localhost:9393/api/users')
@@ -196,11 +218,108 @@ describe('E2E - All Clean Ups Failed', () => {
   });
 
   it('clean up', async () => {
+    let err;
     try {
       await this.e2e.cleanup();  
     } catch (error) {
-      expect(error).not.undefined;      
+      err = error;
     }
+    expect(err).not.undefined;
+  });
+
+});
+
+describe('E2E - Using Spec Handlers', () => {
+
+  before(() => {
+    this.e2e = pactum.e2e('Add User');
+  });
+
+  it('save user', async () => {
+    await this.e2e
+      .step('Save User')
+      .spec('User.AddUser')
+      .clean('User.DeleteUser');
+  });
+
+  it('get user', async () => {
+    await this.e2e
+      .step('Get User')
+      .spec('User.GetUser');
+  });
+
+  it('clean up', async () => {
+    await this.e2e.cleanup();
+  });
+
+});
+
+describe('E2E - Multiple Specs in a single Step', () => {
+
+  before(() => {
+    this.e2e = pactum.e2e('Add User');
+  });
+
+  it('save & get & delete user', async () => {
+    const step = this.e2e.step('User Workflow');
+    step.spec('User.AddUser');
+    step.spec('User.GetUser');
+    step.spec('User.DeleteUser');
+    await step.toss();
+  });
+
+});
+
+describe('E2E - Multiple Specs in a single Step & a clean', () => {
+
+  before(() => {
+    this.e2e = pactum.e2e('Add User');
+  });
+
+  it('save & get & delete user', async () => {
+    const step = this.e2e.step('User Workflow');
+    step.spec('User.AddUser');
+    step.spec('User.GetUser');
+    step.clean('User.DeleteUser');
+    await step.toss();
+  });
+
+  it('cleanup', async () => {
+    await this.e2e.cleanup();
+  });
+
+});
+
+describe('E2E - One step fails in a step', () => {
+
+  before(() => {
+    this.e2e = pactum.e2e('Add User');
+  });
+
+  it('save & get & delete user', async () => {
+    let err;
+    try {
+      const step = this.e2e.step('User Workflow');
+    step.spec('User.AddUser');
+    step.spec('User.GetUser').expectStatus(400);
+    step.spec('User.DeleteUser');
+    await step.toss();  
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+  it('should skip this `e2e.step`', async () => {
+    const step = this.e2e.step('User Workflow');
+    step.spec('User.AddUser');
+    step.spec('User.GetUser').expectStatus(400);
+    step.clean('User.DeleteUser');
+    await step.toss();
+  });
+
+  it('cleanup', async () => {
+    await this.e2e.cleanup();
   });
 
 });

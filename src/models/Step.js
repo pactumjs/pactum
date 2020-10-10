@@ -8,6 +8,7 @@ class CleanStep extends Spec {
     this.spec = spec;
   }
 
+  // this is for supporting - `await step().spec().clean()`
   toss() {
     return this.spec.toss();
   }
@@ -20,27 +21,32 @@ class CleanStep extends Spec {
 
 class StepSpec extends Spec {
 
-  constructor(name, data, bail) {
+  constructor(name, data, step) {
     super(name, data);
-    this.bail = bail;
+    this.step = step;
+    this.bail = step.bail;
   }
 
   clean(name, data) {
-    this._clean = new CleanStep(name, data, this);
-    return this._clean;
+    const _clean = new CleanStep(name, data, this);
+    this.step.cleans.push(_clean);
+    return _clean;
   }
 
   async toss() {
     if (this.bail) {
-      log.warn(`Skipping Step`);
+      log.warn(`Skipping Spec in Step - ${this.step.name}`);
       this.status = 'SKIPPED';
+      this.step.statuses.push('SKIPPED');
       return;
     }
     try {
       await super.toss();
-      this.status = 'PASSED';  
+      this.status = 'PASSED';
+      this.step.statuses.push('PASSED');  
     } catch (error) {
       this.status = 'FAILED';
+      this.step.statuses.push('FAILED');
       throw error; 
     }
   }
@@ -52,11 +58,27 @@ class Step {
   constructor(name, bail) {
     this.name = name;
     this.bail = bail;
+    this.statuses = [];
+    this.specs = [];
+    this.cleans = [];
   }
 
   spec(name, data) {
-    this._spec = new StepSpec(name, data, this.bail);
-    return this._spec;
+    const _spec = new StepSpec(name, data, this);
+    this.specs.push(_spec);
+    return _spec;
+  }
+
+  clean(name, data) {
+    const _spec = new CleanStep(name, data, this);
+    this.cleans.push(_spec);
+    return _spec;
+  }
+
+  async toss() {
+    for (let i = 0; i < this.specs.length; i++) {
+      await this.specs[i].toss();
+    }
   }
 
 }
