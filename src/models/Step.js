@@ -37,18 +37,9 @@ class StepSpec extends Spec {
     if (this.bail) {
       log.warn(`Skipping Spec in Step - ${this.step.name}`);
       this.status = 'SKIPPED';
-      this.step.statuses.push('SKIPPED');
       return;
     }
-    try {
-      await super.toss();
-      this.status = 'PASSED';
-      this.step.statuses.push('PASSED');  
-    } catch (error) {
-      this.status = 'FAILED';
-      this.step.statuses.push('FAILED');
-      throw error; 
-    }
+    await super.toss();
   }
 
 }
@@ -58,7 +49,6 @@ class Step {
   constructor(name, bail) {
     this.name = name;
     this.bail = bail;
-    this.statuses = [];
     this.specs = [];
     this.cleans = [];
   }

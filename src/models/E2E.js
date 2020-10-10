@@ -9,7 +9,7 @@ class E2E {
   }
 
   step(name) {
-    const bail = this.steps.some(_step => _step.statuses.some(status => status === 'FAILED'));
+    const bail = this.steps.some(_step => _step.specs.some(spec => spec.status === 'FAILED'));
     const _step = new Step(name, bail);
     this.steps.push(_step);
     return _step;
@@ -22,15 +22,14 @@ class E2E {
       const cleans = _step.cleans;
       for (let j = cleans.length - 1; j >= 0; j--) {
         const _clean = cleans[j];
-        if (_step.statuses.every(status => status === 'PASSED')) {
+        if (_step.specs.every(spec => spec.status === 'PASSED')) {
           try {
             await _clean.clean();
-            _clean.status = 'PASSED';
           } catch (error) {
-            _clean.status = 'FAILED';
             errors.push(error);
           }
         } else {
+          _clean.status = 'SKIPPED';
           log.warn(`Skipping Clean Step - ${_step.name}`);
         }
       }

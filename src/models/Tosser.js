@@ -120,7 +120,9 @@ class Tosser {
     try {
       this.validateInteractions();
       this.validateResponse();
+      this.spec.status = 'PASSED';
     } catch (error) {
+      this.spec.status = 'FAILED';
       const res = {
         statusCode: this.response.statusCode,
         headers: this.response.headers,
