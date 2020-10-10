@@ -1,4 +1,5 @@
 const Spec = require('./Spec');
+const log = require('../helpers/logger');
 
 class CleanStep extends Spec {
 
@@ -19,9 +20,9 @@ class CleanStep extends Spec {
 
 class StepSpec extends Spec {
 
-  constructor(name, data) {
+  constructor(name, data, bail) {
     super(name, data);
-    this._clean = null;
+    this.bail = bail;
   }
 
   clean(name, data) {
@@ -29,17 +30,32 @@ class StepSpec extends Spec {
     return this._clean;
   }
 
+  async toss() {
+    if (this.bail) {
+      log.warn(`Skipping Step`);
+      this.status = 'SKIPPED';
+      return;
+    }
+    try {
+      await super.toss();
+      this.status = 'PASSED';  
+    } catch (error) {
+      this.status = 'FAILED';
+      throw error; 
+    }
+  }
+
 }
 
 class Step {
 
-  constructor(name) {
+  constructor(name, bail) {
     this.name = name;
-    this._spec = null;
+    this.bail = bail;
   }
 
   spec(name, data) {
-    this._spec = new StepSpec(name, data);
+    this._spec = new StepSpec(name, data, this.bail);
     return this._spec;
   }
 
