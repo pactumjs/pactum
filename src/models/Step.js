@@ -1,5 +1,7 @@
 const Spec = require('./Spec');
 const log = require('../helpers/logger');
+const helper = require('../helpers/helper');
+const reporter = require('../exports/reporter');
 
 class CleanStep extends Spec {
 
@@ -37,6 +39,7 @@ class StepSpec extends Spec {
     if (this.bail) {
       log.warn(`Skipping Spec in Step - ${this.step.name}`);
       this.status = 'SKIPPED';
+      helper.afterSpecReport(this, reporter);
       return;
     }
     await super.toss();
@@ -47,6 +50,7 @@ class StepSpec extends Spec {
 class Step {
 
   constructor(name, bail) {
+    this.id = helper.getRandomId();
     this.name = name;
     this.bail = bail;
     this.specs = [];

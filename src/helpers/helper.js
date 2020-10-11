@@ -193,6 +193,27 @@ const helper = {
 
   sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  },
+
+  afterSpecReport(spec, reporter) {
+    const data = {
+      id: spec.id,
+      status: spec.status,
+      failure: spec.failure,
+      request: {
+        method: spec._request.method,
+        path: spec._request.url
+      }
+    };
+    if (spec._response) {
+      data.start = spec.start;
+      data.end = Date.now().toString();
+      data.response = {
+        statusCode: spec._response.statusCode,
+        duration: spec._response.responseTime
+      }
+    }
+    reporter.afterSpec(data);
   }
 
 };

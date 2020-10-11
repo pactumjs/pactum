@@ -1,9 +1,11 @@
 const Step = require('./Step');
 const log = require('../helpers/logger');
+const helper = require('../helpers/helper');
 
 class E2E {
 
   constructor(name) {
+    this.id = helper.getRandomId();
     this.name = name;
     this.steps = [];
   }

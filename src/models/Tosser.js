@@ -6,6 +6,7 @@ const log = require('../helpers/logger');
 const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const stash = require('../exports/stash');
+const reporter = require('../exports/reporter');
 const processor = require('../helpers/dataProcessor');
 
 class Tosser {
@@ -26,6 +27,7 @@ class Tosser {
   }
 
   async toss() {
+    this.spec.start = Date.now().toString();
     this.updateRequest();
     await this.setState()
     await this.addInteractionsToServer();
@@ -121,8 +123,11 @@ class Tosser {
       this.validateInteractions();
       this.validateResponse();
       this.spec.status = 'PASSED';
+      helper.afterSpecReport(this.spec, reporter);
     } catch (error) {
       this.spec.status = 'FAILED';
+      this.spec.failure = error.toString();
+      helper.afterSpecReport(this.spec, reporter);
       const res = {
         statusCode: this.response.statusCode,
         headers: this.response.headers,
@@ -136,6 +141,9 @@ class Tosser {
 
   validateError() {
     if (this.response instanceof Error) {
+      this.spec.status = 'ERROR';
+      this.spec.failure = this.response.toString();
+      helper.afterSpecReport(this.spec, reporter);
       this.expect.fail(this.response);
     }
   }

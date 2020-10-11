@@ -13,6 +13,7 @@ class Spec {
   constructor(name, data) {
     this.id = helper.getRandomId();
     this.status = 'N/A';
+    this.failure = '';
     this._request = {};
     this._response = null;
     this._returns = [];
