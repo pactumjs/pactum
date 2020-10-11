@@ -214,6 +214,25 @@ const helper = {
       }
     }
     reporter.afterSpec(data);
+  },
+
+  afterStepReport(step, reporter) {
+    const data = {
+      id: step.id,
+      name: step.name,
+      specs: step.specs.map(spec => spec.id),
+      cleans: step.cleans.map(spec => spec.id)
+    }
+    reporter.afterStep(data);
+  },
+
+  afterTestReport(test, reporter) {
+    const data = {
+      id: test.id,
+      name: test.name,
+      steps: test.steps.map(step => step.id)
+    }
+    reporter.afterTest(data);
   }
 
 };

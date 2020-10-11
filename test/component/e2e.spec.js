@@ -329,6 +329,7 @@ describe('E2E', () => {
   });
 
   after(() => {
+    reporter.end();
     reporter.get().length = 0;
   });
 
