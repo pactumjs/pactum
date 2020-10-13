@@ -3,15 +3,15 @@ const reporter = pactum.reporter;
 const request = pactum.request;
 const jr = require('../../src/plugins/json.reporter');
 
-describe('Recorder', () => {
+describe('Default Recorder', () => {
 
   before(() => {
     jr.reset();
-    request.setDefaultRecorders('TraceId', 'REQ_HEADERS', 'x-trace-id');
-    request.setDefaultRecorders('Method', 'REQ_BODY', 'method');
-    request.setDefaultRecorders('Connection', 'RES_HEADERS', 'connection');
-    request.setDefaultRecorders('Path', 'RES_BODY', 'path');
-    reporter.enableJsonReporter('./reports', 'spec-recorder-reporter.json');
+    request.setDefaultRecorders('TraceId', 'req.headers.x-trace-id');
+    request.setDefaultRecorders('Method', 'req.body.method');
+    request.setDefaultRecorders('Connection', 'res.headers.connection');
+    request.setDefaultRecorders('Path', 'res.body.path');
+    reporter.enableJsonReporter('./reports', 'default-recorder-reporter.json');
   });
 
   it('res header data to recorder', async () => {
@@ -41,6 +41,31 @@ describe('Recorder', () => {
   });
 
   after(() => {
+    request.getDefaultRecorders().length = 0;
+    reporter.end();
+    reporter.get().length = 0;
+  });
+
+});
+
+describe('Recorder', () => {
+
+  before(() => {
+    jr.reset();
+    reporter.enableJsonReporter('./reports', 'spec-recorder-reporter.json');
+  });
+
+  it('res header data to recorder', async () => {
+    await pactum.spec()
+      .useMockInteraction('default get')
+      .get('http://localhost:9393/default/get')
+      .records('Method', 'method')
+      .records('Path', 'res.body.path')
+      .expectStatus(200);
+  });
+
+  after(() => {
+    request.getDefaultRecorders().length = 0;
     reporter.end();
     reporter.get().length = 0;
   });

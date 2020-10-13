@@ -494,6 +494,11 @@ declare class Spec {
   returns(handler: ReturnHandlerFunction): Spec;
 
   /**
+   * records data that will be available in reports
+   */
+  records(name: string, path: string): Spec;
+
+  /**
    * executes the test case
    */
   toss(): Promise<T>;

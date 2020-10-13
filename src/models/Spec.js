@@ -18,6 +18,7 @@ class Spec {
     this._request = {};
     this._response = null;
     this._returns = [];
+    this._recorders = [];
     this._stores = [];
     this._expect = new Expect();
     this._state = new State();
@@ -307,6 +308,11 @@ class Spec {
 
   stores(key, value) {
     this._stores.push({ key, value });
+    return this;
+  }
+
+  records(name, path) {
+    this._recorders.push({ name, path });
     return this;
   }
 

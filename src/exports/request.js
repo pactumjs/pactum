@@ -49,8 +49,8 @@ const request = {
     config.request.headers = {};
   },
 
-  setDefaultRecorders(name, src, path) {
-    records.push({ name, src, path });
+  setDefaultRecorders(name, path) {
+    records.push({ name, path });
   },
 
   getDefaultRecorders() {

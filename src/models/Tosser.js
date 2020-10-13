@@ -19,6 +19,7 @@ class Tosser {
     this.expect = spec._expect;
     this.stores = spec._stores;
     this.returns = spec._returns;
+    this.recorders = spec._recorders;
     this.mockInteractions = spec.mockInteractions;
     this.pactInteractions = spec.pactInteractions;
     this.previousLogLevel = spec.previousLogLevel;
@@ -109,6 +110,7 @@ class Tosser {
   recordData() {
     const defaultRecorders = request.getDefaultRecorders();
     defaultRecorders.forEach(recorder => { recordData(recorder, this.spec )});
+    this.recorders.forEach(recorder => { recordData(recorder, this.spec )});
   }
 
   async removeInteractionsFromServer() {
@@ -255,15 +257,19 @@ async function getResponse(req) {
 
 function recordData(recorder, spec) {
   try {
-    const { name, src, path } = recorder;
+    let { name, path } = recorder;
     let data;
-    if (src === 'REQ_HEADERS') {
+    if (path.startsWith('req.headers')) {
+      path = path.replace('req.headers', '');
       data = spec._request.headers;
-    } else if (src === 'REQ_BODY') {
+    } else if (path.startsWith('req.body')) {
+      path = path.replace('req.body', '');
       data = spec._request.data;
-    } else if (src === 'RES_HEADERS') {
+    } else if (path.startsWith('res.headers')) {
+      path = path.replace('res.headers', '');
       data = spec._response.headers;
     } else {
+      path = path.replace('res.body', '');
       data = spec._response.json;
     }
     const value = jqy(path, { data }).value;

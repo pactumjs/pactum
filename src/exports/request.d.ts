@@ -29,9 +29,7 @@ export function removeDefaultHeader(key: string): void;
  */
 export function removeDefaultHeaders(): void;
 
-export type SourceType = 'REQ_HEADERS'|'REQ_BODY'|'RES_HEADERS'|'RES_BODY';
-
 /**
- * records data to be available in reports
+ * records data that will be available in reports
  */
-export function setDefaultRecorders(name: string, source: SourceType, path: string): void;
+export function setDefaultRecorders(name: string, path: string): void;
