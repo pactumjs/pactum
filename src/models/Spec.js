@@ -194,6 +194,14 @@ class Spec {
     return this;
   }
 
+  withAuth(username, password) {
+    if (!this._request.core) {
+      this._request.core = {};
+    }
+    this._request.core.auth = `${username}:${password}`;
+    return this;
+  }
+
   retry(options) {
     if (!options) {
       throw new PactumRequestError('Invalid retry options');

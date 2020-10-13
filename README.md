@@ -241,6 +241,58 @@ await pactum.spec()
 
 Learn more about these features at [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
 
+### e2e Testing
+
+End-To-End testing is a software testing method that validates entire software from starting to end along with its integration with external interfaces.
+
+Pactum allows to
+
+* Share Context
+* Set Up & Tear Down
+* Reuse Specs
+
+```javascript
+const pactum = require('pactum');
+
+describe('user should be able to create an order', () => {
+
+  const test = pactum.e2e('AddNewOrder');
+
+  it('create an order', async () => {
+    await test.step('CreateOrder').spec()
+      .post('/api/order')
+      .withJson({ /* order details */ })
+      .expectStatus(200)
+      .stores('OrderId', 'Id'); // stores id from response
+      .clean() // registers a clean up step
+      .delete('/api/order/@DATA:STR::OrderId@')
+      .expectStatus(200);
+  });
+
+  it('update the created order', async () => {
+    await test.step('UpdateOrder').spec()
+      .put('/api/order/@DATA:STR::OrderId@')
+      .withJson({ /* update order details */ })
+      .expectStatus(200);
+  });
+
+  it('get created order', async () => {
+    await test.step('GetOrder').spec()
+      .get('/api/order')
+      .withQueryParams('id', '@DATA:STR::OrderId@')
+      .expectStatus(200);
+  });
+
+  it('clean up', async () => {
+    await test.cleanup(); // runs all registered clean up specs in LIFO order
+  });
+
+});
+```
+
+Learn more about these features at [E2E Testing](https://github.com/ASaiAnudeep/pactum/wiki/E2E-Testing)
+
+
 ## Mock Server
 
 Mock Server allows you to mock any server or service via HTTP or HTTPS, such as a REST endpoint. Simply it is a simulator for HTTP-based APIs.

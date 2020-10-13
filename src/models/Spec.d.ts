@@ -277,6 +277,11 @@ declare class Spec {
   withCore(options: RequestOptions): Spec;
 
   /**
+   * basic auth
+   */
+  withAuth(username: string, password: string): Spec;
+
+  /**
    * retry request on specific conditions before making assertions
    * @example
    * await pactum

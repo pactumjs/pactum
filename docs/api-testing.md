@@ -187,6 +187,7 @@ To pass additional parameters to the request, we can chain or use the following 
 | `withMultiPartFormData`   | object to send as multi part form data    |
 | `withRequestTimeout`      | sets request timeout                      |
 | `withCore`                | http request options                      |
+| `withAuth`                | basic auth details                        |
 | `__setLogLevel`           | sets log level for troubleshooting        |
 | `toss`                    | runs the spec & returns a promise         |
 
