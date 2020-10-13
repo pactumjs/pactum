@@ -111,6 +111,7 @@ const helper = {
       }
     }
   },
+
   /**
    * validates if the value is string or not
    * @param {string} value - value to be validated
@@ -200,19 +201,20 @@ const helper = {
       id: spec.id,
       status: spec.status,
       failure: spec.failure,
+      start: spec.start,
+      end: Date.now().toString(),
       request: {
         method: spec._request.method,
         path: spec._request.url
       }
     };
     if (spec._response) {
-      data.start = spec.start;
-      data.end = Date.now().toString();
       data.response = {
         statusCode: spec._response.statusCode,
         duration: spec._response.responseTime
       }
     }
+    data.recorded = spec.recorded;
     reporter.afterSpec(data);
   },
 

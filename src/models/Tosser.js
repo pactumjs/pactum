@@ -1,13 +1,14 @@
 const phin = require('phin');
 const jqy = require('json-query');
-const helper = require('../helpers/helper');
 const config = require('../config');
+const helper = require('../helpers/helper');
+const processor = require('../helpers/dataProcessor');
 const log = require('../helpers/logger');
 const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const stash = require('../exports/stash');
 const reporter = require('../exports/reporter');
-const processor = require('../helpers/dataProcessor');
+const request = require('../exports/request');
 
 class Tosser {
 
@@ -34,7 +35,8 @@ class Tosser {
     await this.setResponse();
     this.setPreviousLogLevel();
     await this.removeInteractionsFromServer();
-    this.validate()
+    this.recordData();
+    this.validate();
     this.storeSpecData();
     return this.getOutput();
   }
@@ -102,6 +104,11 @@ class Tosser {
     if (this.previousLogLevel) {
       log.setLevel(this.previousLogLevel);
     }
+  }
+
+  recordData() {
+    const defaultRecorders = request.getDefaultRecorders();
+    defaultRecorders.forEach(recorder => { recordData(recorder, this.spec )});
   }
 
   async removeInteractionsFromServer() {
@@ -244,6 +251,27 @@ async function getResponse(req) {
   }
   res.responseTime = Date.now() - requestStartTime;
   return res;
+}
+
+function recordData(recorder, spec) {
+  try {
+    const { name, src, path } = recorder;
+    let data;
+    if (src === 'REQ_HEADERS') {
+      data = spec._request.headers;
+    } else if (src === 'REQ_BODY') {
+      data = spec._request.data;
+    } else if (src === 'RES_HEADERS') {
+      data = spec._response.headers;
+    } else {
+      data = spec._response.json;
+    }
+    const value = jqy(path, { data }).value;
+    spec.recorded[name] = value;
+  } catch (error) {
+    log.warn('Unable to record data');
+    log.warn(error.toString());
+  }
 }
 
 module.exports = Tosser;

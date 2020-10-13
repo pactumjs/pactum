@@ -28,7 +28,9 @@ const reporter = {
     await reporters.forEach(async rpt => await rpt.end());
   },
 
-  enableJsonReporter() {
+  enableJsonReporter(path, file) {
+    if (path) jr.path = path;
+    if (file) jr.file = file;
     this.add(jr);
   }
 

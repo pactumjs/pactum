@@ -14,6 +14,7 @@ class Spec {
     this.id = helper.getRandomId();
     this.status = 'N/A';
     this.failure = '';
+    this.recorded = {};
     this._request = {};
     this._response = null;
     this._returns = [];

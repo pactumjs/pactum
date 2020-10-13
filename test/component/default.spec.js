@@ -431,7 +431,7 @@ describe('Mock - Defaults', () => {
   });
 
   it('request - setDefaultHeader', async () => {
-    pactum.request.setDefaultHeader('content-type', 'application/json');
+    pactum.request.setDefaultHeaders('content-type', 'application/json');
     await pactum.spec()
       .get('http://localhost:9393/api')
       .expectStatus(404);

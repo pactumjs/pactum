@@ -4,4 +4,4 @@ node_modules
 .eslintrc.json
 pacts/
 coverage/
-report.json
+reports/

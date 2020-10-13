@@ -705,13 +705,13 @@ The default value is **3000 ms**
 pactum.request.setDefaultTimeout(5000);
 ```
 
-#### setDefaultHeader
+#### setDefaultHeaders
 
 Sets default headers for all the HTTP requests.
 
 ```javascript
-pactum.request.setDefaultHeader('Authorization', 'Basic xxxxx');
-pactum.request.setDefaultHeader('content-type', 'application/json');
+pactum.request.setDefaultHeaders('Authorization', 'Basic xxxxx');
+pactum.request.setDefaultHeaders({ 'content-type': 'application/json'});
 ```
 
 

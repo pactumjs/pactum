@@ -1,13 +1,9 @@
 export * as FormData from 'form-data';
 
 /**
- * adds a default header to all the requests
- */
-export function setDefaultHeader(key: string, value: string): void;
-
-/**
  * adds default headers to all the requests
  */
+export function setDefaultHeaders(key: string, value: string): void;
 export function setDefaultHeaders(headers: object): void;
 
 /**
@@ -32,3 +28,10 @@ export function removeDefaultHeader(key: string): void;
  * removes all default headers
  */
 export function removeDefaultHeaders(): void;
+
+export type SourceType = 'REQ_HEADERS'|'REQ_BODY'|'RES_HEADERS'|'RES_BODY';
+
+/**
+ * records data to be available in reports
+ */
+export function setDefaultRecorders(name: string, source: SourceType, path: string): void;

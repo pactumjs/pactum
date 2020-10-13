@@ -7,4 +7,4 @@ export interface Reporter {
 
 export function add(reporter: Reporter): void;
 
-export function enableJsonReporter(): void;
+export function enableJsonReporter(dir?: string, file?: string): void;

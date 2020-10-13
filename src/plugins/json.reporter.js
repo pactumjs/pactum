@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 const specs = [];
 const steps = [];
@@ -7,7 +8,8 @@ const tests = [];
 const jr = {
 
   name: 'JsonReporter',
-  path: './report.json',
+  path: './reports',
+  file: 'report.json',
 
   afterSpec(spec) {
     specs.push(spec);
@@ -40,7 +42,16 @@ const jr = {
         test.steps[j] = steps.find(step => step.id === stepId);
       }
     }
-    fs.writeFileSync(this.path, JSON.stringify({ tests }, null, 2));
+    if (!fs.existsSync(this.path)) {
+      fs.mkdirSync(this.path, { recursive: true });
+    }
+    fs.writeFileSync(path.resolve(this.path, this.file), JSON.stringify({ tests, steps, specs }, null, 2));
+  },
+
+  reset() {
+    tests.length = 0;
+    steps.length = 0;
+    specs.length = 0;
   }
 
 }

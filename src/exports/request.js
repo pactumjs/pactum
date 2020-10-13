@@ -4,22 +4,24 @@ const config = require('../config');
 const helper = require('../helpers/helper');
 const { PactumRequestError } = require('../helpers/errors');
 
+const records = [];
+
 const request = {
 
   FormData: form,
 
-  setDefaultHeader(key, value) {
+  setDefaultHeaders(key, value) {
     if (!key) {
       throw new PactumRequestError(`Invalid header key provided - ${key}`);
     }
-    config.request.headers[key] = value;
-  },
-
-  setDefaultHeaders(headers) {
-    if (!helper.isValidObject(headers)) {
-      throw new PactumRequestError(`Invalid headers provided - ${headers}`);
+    if (typeof key === 'string') {
+      config.request.headers[key] = value;
+    } else {
+      if (!helper.isValidObject(key)) {
+        throw new PactumRequestError(`Invalid headers provided - ${key}`);
+      }
+      Object.assign(config.request.headers, key);
     }
-    Object.assign(config.request.headers, headers);
   },
 
   setDefaultTimeout(timeout) {
@@ -45,6 +47,14 @@ const request = {
 
   removeDefaultHeaders() {
     config.request.headers = {};
+  },
+
+  setDefaultRecorders(name, src, path) {
+    records.push({ name, src, path });
+  },
+
+  getDefaultRecorders() {
+    return records;
   }
 
 };
