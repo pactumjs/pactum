@@ -17,7 +17,6 @@
 * Customizable Assertions & Retry Mechanisms.
 * Powerful Mock Server.
 * Ideal for *component*, *contract* & *e2e* testing of APIs.
-* It is *simple*, *fast*, *fun* & *easy* to use.
 
 ## Documentation
 
@@ -25,6 +24,7 @@ This readme offers an introduction to the library. For more information visit th
 
 * [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 * [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
+* [E2E Testing](https://github.com/ASaiAnudeep/pactum/wiki/E2E-Testing)
 * [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
 * [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
@@ -241,7 +241,7 @@ await pactum.spec()
 
 Learn more about these features at [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
 
-### e2e Testing
+## e2e Testing
 
 End-To-End testing is a software testing method that validates entire software from starting to end along with its integration with external interfaces.
 
@@ -259,28 +259,22 @@ describe('user should be able to create an order', () => {
   const test = pactum.e2e('AddNewOrder');
 
   it('create an order', async () => {
-    await test.step('CreateOrder').spec()
-      .post('/api/order')
-      .withJson({ /* order details */ })
-      .expectStatus(200)
-      .stores('OrderId', 'Id'); // stores id from response
-      .clean() // registers a clean up step
-      .delete('/api/order/@DATA:STR::OrderId@')
-      .expectStatus(200);
+    await test
+      .step('CreateOrder') // unique name for the step
+      .spec('Order.AddOrder', { product: 'watch' }) // spec to run
+      .clean('Order.DeleteOrder', { id: '@DATA:STR::OrderId@'}); // clean up to run at the end
   });
 
   it('update the created order', async () => {
-    await test.step('UpdateOrder').spec()
-      .put('/api/order/@DATA:STR::OrderId@')
-      .withJson({ /* update order details */ })
-      .expectStatus(200);
+    await test
+      .step('UpdateOrder') // unique name for the step
+      .spec('Order.UpdateOrder', { /* details to update */});
   });
 
   it('get created order', async () => {
-    await test.step('GetOrder').spec()
-      .get('/api/order')
-      .withQueryParams('id', '@DATA:STR::OrderId@')
-      .expectStatus(200);
+    await test
+      .step('GetOrder') // unique name for the step
+      .spec('Order.GetOrder', { /* details to validate */});
   });
 
   it('clean up', async () => {

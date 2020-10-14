@@ -268,10 +268,9 @@ describe('E2E', () => {
 
     it('save & get & delete user', async () => {
       const step = this.e2e.step('User Workflow');
-      step.spec('User.AddUser');
-      step.spec('User.GetUser');
-      step.spec('User.DeleteUser');
-      await step.toss();
+      await step.spec('User.AddUser');
+      await step.spec('User.GetUser');
+      await step.spec('User.DeleteUser');
     });
 
   });
@@ -284,10 +283,9 @@ describe('E2E', () => {
 
     it('save & get & delete user', async () => {
       const step = this.e2e.step('User Workflow');
-      step.spec('User.AddUser');
-      step.spec('User.GetUser');
-      step.clean('User.DeleteUser');
-      await step.toss();
+      await step.spec('User.AddUser');
+      await step.spec('User.GetUser');
+      await step.clean('User.DeleteUser');
     });
 
     it('cleanup', async () => {
@@ -306,10 +304,9 @@ describe('E2E', () => {
       let err;
       try {
         const step = this.e2e.step('User Workflow');
-        step.spec('User.AddUser');
-        step.spec('User.GetUser').expectStatus(400);
-        step.spec('User.DeleteUser');
-        await step.toss();
+        await step.spec('User.AddUser');
+        await step.spec('User.GetUser').expectStatus(400);
+        await step.spec('User.DeleteUser');
       } catch (error) {
         err = error;
       }
@@ -318,10 +315,9 @@ describe('E2E', () => {
 
     it('should skip this `e2e.step`', async () => {
       const step = this.e2e.step('User Workflow');
-      step.spec('User.AddUser');
-      step.spec('User.GetUser').expectStatus(400);
+      await step.spec('User.AddUser');
+      await step.spec('User.GetUser').expectStatus(400);
       step.clean('User.DeleteUser');
-      await step.toss();
     });
 
     it('cleanup', async () => {

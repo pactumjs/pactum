@@ -12,7 +12,12 @@ class CleanStep extends Spec {
 
   // this is for supporting - `await step().spec().clean()`
   toss() {
-    return this.spec.toss();
+    if (this.spec instanceof StepSpec) {
+      return this.spec.toss();
+    } else {
+      log.warn('Should not await on clean spec');
+      return Promise.resolve();
+    }
   }
 
   clean() {
@@ -67,12 +72,6 @@ class Step {
     const _spec = new CleanStep(name, data, this);
     this.cleans.push(_spec);
     return _spec;
-  }
-
-  async toss() {
-    for (let i = 0; i < this.specs.length; i++) {
-      await this.specs[i].toss();
-    }
   }
 
 }

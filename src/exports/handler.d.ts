@@ -19,8 +19,8 @@ interface StateHandlerContext {
 }
 
 interface SpecHandlerContext {
+  spec: Spec;
   data?: any;
-  spec?: Spec;
 }
 
 interface RequestResponseContext {
