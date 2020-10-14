@@ -461,7 +461,7 @@ declare class Spec {
   /**
    * stores spec response data 
    */
-  stores(key: string, value: string): Spec;
+  stores(name: string, path: string): Spec;
 
   /**
    * returns custom response from json response using custom handler

@@ -314,8 +314,8 @@ class Spec {
     return this;
   }
 
-  stores(key, value) {
-    this._stores.push({ key, value });
+  stores(name, path) {
+    this._stores.push({ name, path });
     return this;
   }
 

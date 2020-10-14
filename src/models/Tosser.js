@@ -109,8 +109,8 @@ class Tosser {
 
   recordData() {
     const defaultRecorders = request.getDefaultRecorders();
-    defaultRecorders.forEach(recorder => { recordData(recorder, this.spec )});
-    this.recorders.forEach(recorder => { recordData(recorder, this.spec )});
+    defaultRecorders.forEach(recorder => { recordData(recorder, this.spec) });
+    this.recorders.forEach(recorder => { recordData(recorder, this.spec) });
   }
 
   async removeInteractionsFromServer() {
@@ -169,9 +169,8 @@ class Tosser {
   storeSpecData() {
     for (let i = 0; i < this.stores.length; i++) {
       const store = this.stores[i];
-      const value = jqy(store.value, { data: this.response.json }).value;
       const specData = {};
-      specData[store.key] = value;
+      specData[store.name] = getPathValueFromSpec(store.path, this.spec);
       stash.addDataStore(specData);
     }
   }
@@ -189,7 +188,7 @@ class Tosser {
         if (_customHandlerFun) {
           outputs.push(_customHandlerFun(ctx));
         } else {
-          outputs.push(jqy(_handler, { data: this.response.json }).value);
+          outputs.push(getPathValueFromSpec(_handler, this.spec));
         }
       }
     }
@@ -258,26 +257,29 @@ async function getResponse(req) {
 function recordData(recorder, spec) {
   try {
     let { name, path } = recorder;
-    let data;
-    if (path.startsWith('req.headers')) {
-      path = path.replace('req.headers', '');
-      data = spec._request.headers;
-    } else if (path.startsWith('req.body')) {
-      path = path.replace('req.body', '');
-      data = spec._request.data;
-    } else if (path.startsWith('res.headers')) {
-      path = path.replace('res.headers', '');
-      data = spec._response.headers;
-    } else {
-      path = path.replace('res.body', '');
-      data = spec._response.json;
-    }
-    const value = jqy(path, { data }).value;
-    spec.recorded[name] = value;
+    spec.recorded[name] = getPathValueFromSpec(path, spec);
   } catch (error) {
     log.warn('Unable to record data');
     log.warn(error.toString());
   }
+}
+
+function getPathValueFromSpec(path, spec) {
+  let data;
+  if (path.startsWith('req.headers')) {
+    path = path.replace('req.headers', '');
+    data = spec._request.headers;
+  } else if (path.startsWith('req.body')) {
+    path = path.replace('req.body', '');
+    data = spec._request.data;
+  } else if (path.startsWith('res.headers')) {
+    path = path.replace('res.headers', '');
+    data = spec._response.headers;
+  } else {
+    path = path.replace('res.body', '');
+    data = spec._response.json;
+  }
+  return jqy(path, { data }).value;
 }
 
 module.exports = Tosser;
