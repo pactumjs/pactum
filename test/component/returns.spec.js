@@ -106,5 +106,47 @@ describe('Returns', () => {
     expect(response).deep.equals([1, 1]);
   });
 
+  it('return response headers', async () => {
+    const response = await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            id: 1
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .expectStatus(200)
+      .returns('res.headers.connection');
+    expect(response).equals('close');
+  });
+
+  it('return request headers', async () => {
+    const response = await pactum.spec()
+      .useMockInteraction('default get')
+      .get('http://localhost:9393/default/get')
+      .withHeaders('trace-id', 'xyz')
+      .expectStatus(200)
+      .returns('req.headers.trace-id');
+    expect(response).equals('xyz');
+  });
+
+  it('return request body', async () => {
+    const response = await pactum.spec()
+      .useMockInteraction('default post')
+      .post('http://localhost:9393/default/post')
+      .withBody({
+        method: 'POST',
+        path: '/default/post'
+      })
+      .expectStatus(200)
+      .returns('req.body.method');
+    expect(response).equals('POST');
+  });
 
 });

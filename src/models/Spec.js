@@ -2,7 +2,6 @@ const FormData = require('form-data');
 const Tosser = require('./Tosser');
 const Expect = require('./expect');
 const State = require('./State');
-const Interaction = require('./interaction');
 const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const { PactumRequestError } = require('../helpers/errors');
@@ -11,17 +10,29 @@ const handler = require('../exports/handler');
 
 class Spec {
 
-  constructor() {
+  constructor(name, data) {
     this.id = helper.getRandomId();
+    this.status = 'N/A';
+    this.failure = '';
+    this.recorded = {};
     this._request = {};
     this._response = null;
     this._returns = [];
+    this._recorders = [];
     this._stores = [];
     this._expect = new Expect();
     this._state = new State();
     this.previousLogLevel = null;
     this.mockInteractions = [];
     this.pactInteractions = [];
+    this.runHandler(name, data);
+  }
+
+  runHandler(name, data) {
+    if (typeof name !== 'undefined') {
+      const fun = handler.getSpecHandler(name);
+      fun({ spec: this, data });
+    }
   }
 
   setState(name, data) {
@@ -183,6 +194,14 @@ class Spec {
     return this;
   }
 
+  withAuth(username, password) {
+    if (!this._request.core) {
+      this._request.core = {};
+    }
+    this._request.core.auth = `${username}:${password}`;
+    return this;
+  }
+
   retry(options) {
     if (!options) {
       throw new PactumRequestError('Invalid retry options');
@@ -295,8 +314,13 @@ class Spec {
     return this;
   }
 
-  stores(key, value) {
-    this._stores.push({ key, value });
+  stores(name, path) {
+    this._stores.push({ name, path });
+    return this;
+  }
+
+  records(name, path) {
+    this._recorders.push({ name, path });
     return this;
   }
 

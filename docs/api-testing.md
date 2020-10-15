@@ -187,6 +187,7 @@ To pass additional parameters to the request, we can chain or use the following 
 | `withMultiPartFormData`   | object to send as multi part form data    |
 | `withRequestTimeout`      | sets request timeout                      |
 | `withCore`                | http request options                      |
+| `withAuth`                | basic auth details                        |
 | `__setLogLevel`           | sets log level for troubleshooting        |
 | `toss`                    | runs the spec & returns a promise         |
 
@@ -363,6 +364,7 @@ Expectations help to assert the response received from the server.
 | `expectJsonLike`        | check loose match of json               |
 | `expectJsonLikeAt`      | check json like using **json-query**    |
 | `expectJsonSchema`      | check json schema                       |
+| `expectJsonSchemaAt`    | check json schema using **json-query**  |
 | `expectJsonMatch`       | check json to match                     |
 | `expectResponseTime`    | check response time                     |
 
@@ -704,13 +706,13 @@ The default value is **3000 ms**
 pactum.request.setDefaultTimeout(5000);
 ```
 
-#### setDefaultHeader
+#### setDefaultHeaders
 
 Sets default headers for all the HTTP requests.
 
 ```javascript
-pactum.request.setDefaultHeader('Authorization', 'Basic xxxxx');
-pactum.request.setDefaultHeader('content-type', 'application/json');
+pactum.request.setDefaultHeaders('Authorization', 'Basic xxxxx');
+pactum.request.setDefaultHeaders({ 'content-type': 'application/json'});
 ```
 
 

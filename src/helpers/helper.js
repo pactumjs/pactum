@@ -111,6 +111,7 @@ const helper = {
       }
     }
   },
+
   /**
    * validates if the value is string or not
    * @param {string} value - value to be validated
@@ -193,6 +194,47 @@ const helper = {
 
   sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  },
+
+  afterSpecReport(spec, reporter) {
+    const data = {
+      id: spec.id,
+      status: spec.status,
+      failure: spec.failure,
+      start: spec.start,
+      end: Date.now().toString(),
+      request: {
+        method: spec._request.method,
+        path: spec._request.url
+      }
+    };
+    if (spec._response) {
+      data.response = {
+        statusCode: spec._response.statusCode,
+        duration: spec._response.responseTime
+      }
+    }
+    data.recorded = spec.recorded;
+    reporter.afterSpec(data);
+  },
+
+  afterStepReport(step, reporter) {
+    const data = {
+      id: step.id,
+      name: step.name,
+      specs: step.specs.map(spec => spec.id),
+      cleans: step.cleans.map(spec => spec.id)
+    }
+    reporter.afterStep(data);
+  },
+
+  afterTestReport(test, reporter) {
+    const data = {
+      id: test.id,
+      name: test.name,
+      steps: test.steps.map(step => step.id)
+    }
+    reporter.afterTest(data);
   }
 
 };

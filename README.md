@@ -8,7 +8,7 @@
 
 **pactum** is a REST API Testing Tool used to write e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies & combines the implementation of a consumer-driven contract library [Pact](https://docs.pact.io) for JavaScript.
 
-##### Why pactum?
+#### *Why pactum?*
 
 * Lightweight.
 * Clear & Comprehensive Testing Style.
@@ -17,7 +17,6 @@
 * Customizable Assertions & Retry Mechanisms.
 * Powerful Mock Server.
 * Ideal for *component*, *contract* & *e2e* testing of APIs.
-* It is *simple*, *fast*, *fun* & *easy* to use.
 
 ## Documentation
 
@@ -25,7 +24,9 @@ This readme offers an introduction to the library. For more information visit th
 
 * [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 * [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
+* [E2E Testing](https://github.com/ASaiAnudeep/pactum/wiki/E2E-Testing)
 * [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
+* [Reporting](https://github.com/ASaiAnudeep/pactum/wiki/Reporting)
 * [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 * [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
@@ -240,6 +241,52 @@ await pactum.spec()
 ```
 
 Learn more about these features at [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
+
+## e2e Testing
+
+End-To-End testing is a software testing method that validates entire software from starting to end along with its integration with external interfaces.
+
+Pactum allows to
+
+* Share Context
+* Set Up & Tear Down
+* Reuse Specs
+
+```javascript
+const pactum = require('pactum');
+
+describe('user should be able to create an order', () => {
+
+  const test = pactum.e2e('AddNewOrder');
+
+  it('create an order', async () => {
+    await test
+      .step('CreateOrder') // unique name for the step
+      .spec('post order') // spec to run
+      .clean('delete order'); // clean up to run at the end
+  });
+
+  it('update the created order', async () => {
+    await test
+      .step('UpdateOrder') // unique name for the step
+      .spec('update order'); // spec to run
+  });
+
+  it('get created order', async () => {
+    await test
+      .step('GetOrder') // unique name for the step
+      .spec('get order'); // spec to run
+  });
+
+  it('clean up', async () => {
+    await test.cleanup(); // runs all registered clean up specs in LIFO order
+  });
+
+});
+```
+
+Learn more about these features at [E2E Testing](https://github.com/ASaiAnudeep/pactum/wiki/E2E-Testing)
+
 
 ## Mock Server
 

@@ -665,6 +665,47 @@ describe('Mock', () => {
       .expectStatus(200);
   });
 
+  it('GET - with core options & auth', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/core',
+          headers: {
+            'authorization': 'Basic dXNlcjpwYXNz'
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393')
+      .withCore({
+        path: '/api/core'
+      })
+      .withAuth('user', 'pass')
+      .expectStatus(200);
+  });
+
+  it('GET - with auth', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/auth',
+          headers: {
+            'authorization': 'Basic dXNlcjpwYXNz'
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/api/auth')
+      .withAuth('user', 'pass')
+      .expectStatus(200);
+  });
+
 });
 
 describe('Mock Interactions - Handler', () => {

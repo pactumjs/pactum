@@ -14,11 +14,11 @@ describe('request', () => {
   });
 
   it('setDefaultHeader - null', () => {
-    expect(() => request.setDefaultHeader(null)).throws('Invalid header key provided - null');
+    expect(() => request.setDefaultHeaders(null)).throws('Invalid header key provided - null');
   });
 
   it('setDefaultHeader - undefined', () => {
-    expect(() => request.setDefaultHeader()).throws('Invalid header key provided - undefined');
+    expect(() => request.setDefaultHeaders()).throws('Invalid header key provided - undefined');
   });
 
   it('removeDefaultHeader - undefined', () => {
@@ -29,13 +29,9 @@ describe('request', () => {
     request.removeDefaultHeader('present');
   });
 
-  it('setDefaultHeaders - null', () => {
-    expect(() => request.setDefaultHeaders(null)).throws('Invalid headers provided - null');
-  });
-
   it('setDefaultHeader & setDefaultHeaders & remove', () => {
-    request.setDefaultHeader('hello', 'world');
-    request.setDefaultHeader('no', 'space');
+    request.setDefaultHeaders('hello', 'world');
+    request.setDefaultHeaders('no', 'space');
     request.setDefaultHeaders({
       'gta': 'v',
       'hello': 'space'

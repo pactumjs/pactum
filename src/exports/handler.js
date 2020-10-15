@@ -1,6 +1,7 @@
 const { PactumHandlerError } = require('../helpers/errors');
 const config = require('../config');
 
+const specHandlers = {};
 const expectHandlers = {};
 const retryHandlers = {};
 const returnHandlers = {};
@@ -10,6 +11,16 @@ const mockInteractionHandlers = {};
 const pactInteractionHandlers = {};
 
 const handler = {
+
+  addSpecHandler(name, func) {
+    isValidHandler(name, func);
+    specHandlers[name] = func;
+  },
+
+  getSpecHandler(name) {
+    if (specHandlers[name]) return specHandlers[name];
+    throw new PactumHandlerError(`Custom Spec Handler Not Found - ${name}`);
+  },
 
   addExpectHandler(name, func) {
     isValidHandler(name, func);

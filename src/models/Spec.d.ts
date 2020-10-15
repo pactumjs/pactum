@@ -277,6 +277,11 @@ declare class Spec {
   withCore(options: RequestOptions): Spec;
 
   /**
+   * basic auth
+   */
+  withAuth(username: string, password: string): Spec;
+
+  /**
    * retry request on specific conditions before making assertions
    * @example
    * await pactum
@@ -456,7 +461,7 @@ declare class Spec {
   /**
    * stores spec response data 
    */
-  stores(key: string, value: string): Spec;
+  stores(name: string, path: string): Spec;
 
   /**
    * returns custom response from json response using custom handler
@@ -494,6 +499,11 @@ declare class Spec {
   returns(handler: ReturnHandlerFunction): Spec;
 
   /**
+   * records data that will be available in reports
+   */
+  records(name: string, path: string): Spec;
+
+  /**
    * executes the test case
    */
   toss(): Promise<T>;
@@ -503,6 +513,13 @@ declare class Spec {
    * @requires .toss() should be called beforehand.
    */
   response(): Expect;
+
+  /**
+   * _should be used with pactum.e2e()_
+   * 
+   * returns new instance of cleanup spec
+   */
+  clean(name?: string, data?: any): Spec;
 }
 
 declare namespace Spec {}

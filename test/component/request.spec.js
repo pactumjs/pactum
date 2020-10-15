@@ -39,7 +39,7 @@ describe('Request', () => {
 
   it('with default header', async () => {
     request.setBaseUrl('http://localhost:9393');
-    request.setDefaultHeader('x', 'a');
+    request.setDefaultHeaders('x', 'a');
     await pactum.spec()
       .useMockInteraction({
         withRequest: {
@@ -59,7 +59,7 @@ describe('Request', () => {
 
   it('with override default header to empty value', async () => {
     request.setBaseUrl('http://localhost:9393');
-    request.setDefaultHeader('x', 'a');
+    request.setDefaultHeaders('x', 'a');
     await pactum.spec()
       .useMockInteraction({
         withRequest: {
@@ -80,7 +80,7 @@ describe('Request', () => {
 
   it('with override default header', async () => {
     request.setBaseUrl('http://localhost:9393');
-    request.setDefaultHeader('x', 'a');
+    request.setDefaultHeaders('x', 'a');
     await pactum.spec()
       .useMockInteraction({
         withRequest: {
