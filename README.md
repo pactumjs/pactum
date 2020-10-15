@@ -26,6 +26,7 @@ This readme offers an introduction to the library. For more information visit th
 * [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
 * [E2E Testing](https://github.com/ASaiAnudeep/pactum/wiki/E2E-Testing)
 * [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
+* [Reporting](https://github.com/ASaiAnudeep/pactum/wiki/Reporting)
 * [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 * [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
@@ -261,20 +262,20 @@ describe('user should be able to create an order', () => {
   it('create an order', async () => {
     await test
       .step('CreateOrder') // unique name for the step
-      .spec('Order.AddOrder', { product: 'watch' }) // spec to run
-      .clean('Order.DeleteOrder', { id: '@DATA:STR::OrderId@'}); // clean up to run at the end
+      .spec('post order') // spec to run
+      .clean('delete order'); // clean up to run at the end
   });
 
   it('update the created order', async () => {
     await test
       .step('UpdateOrder') // unique name for the step
-      .spec('Order.UpdateOrder', { /* details to update */});
+      .spec('update order'); // spec to run
   });
 
   it('get created order', async () => {
     await test
       .step('GetOrder') // unique name for the step
-      .spec('Order.GetOrder', { /* details to validate */});
+      .spec('get order'); // spec to run
   });
 
   it('clean up', async () => {

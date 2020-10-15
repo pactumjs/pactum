@@ -5,9 +5,16 @@ const reporter = require('../exports/reporter');
 
 class E2E {
 
-  constructor(name) {
+  constructor(options) {
     this.id = helper.getRandomId();
-    this.name = name;
+    if (typeof options === 'string') {
+      this.name = options;
+      this.params = {};
+    } else {
+      this.name = options.name;
+      this.params = options.params;
+    }
+    
     this.steps = [];
   }
 
