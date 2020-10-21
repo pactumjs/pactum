@@ -54,13 +54,13 @@ class Server {
 
   addMockInteraction(id, interaction) {
     this.mockInteractions.set(id, interaction);
-    log.debug('Mock Interaction added to Server -', id);
+    log.debug(`Mock Interaction added to Server - ${id}`);
   }
 
   addPactInteraction(id, interaction) {
     store.addInteraction(interaction);
     this.pactInteractions.set(id, interaction);
-    log.debug('Pact Interaction added to Server -', id);
+    log.debug(`Pact Interaction added to Server - ${id}`);
   }
 
   removeInteraction(id) {
@@ -69,18 +69,18 @@ class Server {
     } else if (this.pactInteractions.has(id)) {
       this.removePactInteraction(id);
     } else {
-      log.warn('Unable to remove interaction. Interaction not found with id', id);
+      log.warn(`Unable to remove interaction. Interaction not found with id - ${id}`);
     }
   }
 
   removeMockInteraction(id) {
     this.mockInteractions.delete(id);
-    log.trace('Removed mock interaction with id', id);
+    log.trace(`Removed mock interaction with id - ${id}`);
   }
 
   removePactInteraction(id) {
     this.pactInteractions.delete(id);
-    log.trace('Removed pact interaction with id', id);
+    log.trace(`Removed pact interaction with id - ${id}`);
   }
 
   clearMockInteractions() {
@@ -134,10 +134,8 @@ class Server {
 function registerAllRoutes(server, app) {
   app.all('/*', (req, response) => {
     const res = new ExpressResponse(response);
-    log.debug('Finding matching interaction from pact interactions -', server.pactInteractions.size);
     let interaction = utils.getMatchingInteraction(req, server.pactInteractions);
     if (!interaction) {
-      log.debug('Finding matching interaction from mock interactions -', server.mockInteractions.size);
       interaction = utils.getMatchingInteraction(req, server.mockInteractions);
     }
     if (interaction) {
@@ -217,10 +215,9 @@ function sendInteractionNotFoundResponse(req, res) {
     method: req.method,
     path: req.path,
     headers: req.headers,
-    query: req.query ? JSON.parse(JSON.stringify(req.query)) : req.query,
+    query: req.query,
     body: req.body
   });
-  log.debug(helper.stringify(req.body));
   res.status(404);
   res.send('Interaction Not Found');
 }
@@ -331,7 +328,7 @@ function handleRemoteInteractions(req, response, server, interactionType) {
           });
         } else {
           for (const [id, interaction] of interactions) {
-            log.trace('Fetching remote interaction', id);
+            log.trace(`Fetching remote interaction - ${id}`);
             const raw = JSON.parse(JSON.stringify(interaction.rawInteraction));
             raw.id = interaction.id;
             raw.exercised = interaction.exercised || false;
@@ -413,9 +410,12 @@ function bodyParser(req, res, next) {
 }
 
 function logger(req, res, next) {
-  log.trace('Request', req.method, req.path);
-  log.trace('Request Query', req.query);
-  log.trace('Request Headers', req.headers);
+  log.trace('Request', {
+    method: req.method,
+    path: req.path,
+    query: req.query,
+    headers: req.headers
+  });
   next();
 }
 

@@ -142,8 +142,8 @@ class Tosser {
         headers: this.response.headers,
         body: this.response.json
       }
-      log.warn('Request', JSON.stringify(this.request, null, 2));
-      log.warn('Response', JSON.stringify(res, null, 2));
+      log.warn('Request', this.request);
+      log.warn('Response', res);
       throw error;
     }
   }

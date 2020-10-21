@@ -8,7 +8,7 @@ class Compare {
     const comparer = new LikeJson();
     const message = comparer.compare(actual, expected);
     const equal = message === '';
-    log.debug('JSON Like:', equal, message);
+    log.debug(`JSON Like | Equal - ${equal} | Message - ${message}`);
     return { equal, message };
   }
 
@@ -48,7 +48,7 @@ class Compare {
         }
       }
     }
-    log.debug('JSON Match', equal, message);
+    log.debug(`JSON Match | Equal - ${equal} | Message - ${message}`);
     return { equal, message };
   }
 

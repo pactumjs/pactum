@@ -1,6 +1,7 @@
 const assert = require('assert');
 const jqy = require('json-query');
 
+const log = require('../helpers/logger');
 const Compare = require('../helpers/compare');
 const processor = require('../helpers/dataProcessor');
 const handler = require('../exports/handler');
@@ -47,6 +48,7 @@ class Expect {
     for (let i = 0; i < interactions.length; i++) {
       const interaction = interactions[i];
       if (!interaction.exercised) {
+        log.warn('Interaction Not Exercised', interaction.withRequest);
         this.fail(`Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
       }
     }
