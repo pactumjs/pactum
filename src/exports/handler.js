@@ -9,6 +9,7 @@ const stateHandlers =  {};
 const dataHandlers = {};
 const mockInteractionHandlers = {};
 const pactInteractionHandlers = {};
+const assertHandlers = {};
 
 const handler = {
 
@@ -90,6 +91,16 @@ const handler = {
   getPactInteractionHandler(name) {
     if (pactInteractionHandlers[name]) return pactInteractionHandlers[name];
     throw new PactumHandlerError(`Custom Pact Interaction Handler Not Found - ${name}`);
+  },
+
+  addAssertHandler(name, func) {
+    isValidHandler(name, func);
+    assertHandlers[name] = func;
+  },
+
+  getAssertHandler(name) {
+    if (assertHandlers[name]) return assertHandlers[name];
+    throw new PactumHandlerError(`Custom Assert Handler Not Found - ${name}`);
   }
 
 }
