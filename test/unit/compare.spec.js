@@ -1174,11 +1174,11 @@ describe('JSON Like Array of Objects', () => {
 
 });
 
-describe('JSON Like - Expressions', () => {
+describe('JSON Like - Assert Expressions', () => {
 
   it('object fulfil simple expression', () => {
     const actual = { id: 1 };
-    const expected = { id: '@( $ === 1 )@'};
+    const expected = { id: '$V === 1'};
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(true);
@@ -1186,7 +1186,7 @@ describe('JSON Like - Expressions', () => {
 
   it('object does not fulfil simple expression', () => {
     const actual = { id: 1 };
-    const expected = { id: '@( $ > 1 )@'};
+    const expected = { id: '$V > 1'};
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
@@ -1195,7 +1195,7 @@ describe('JSON Like - Expressions', () => {
 
   it('array fulfil simple expression', () => {
     const actual = [{ id: 1 }];
-    const expected = '@( $.length === 1 )@';
+    const expected = '$V.length === 1';
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(true);
@@ -1203,7 +1203,7 @@ describe('JSON Like - Expressions', () => {
 
   it('array does not fulfil simple expression', () => {
     const actual = [{ id: 1 }];
-    const expected = '@( $.length > 1 )@';
+    const expected = '$V.length > 1';
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
@@ -1212,7 +1212,7 @@ describe('JSON Like - Expressions', () => {
 
   it('object fulfil complex expression', () => {
     const actual = { id: 1, marks: { maths: 70 } };
-    const expected = { id: 1, marks: { maths: '@( $ > 50 )@' } };
+    const expected = { id: 1, marks: { maths: '$V > 50' } };
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(true);
@@ -1220,16 +1220,29 @@ describe('JSON Like - Expressions', () => {
 
   it('object does not fulfil complex expression', () => {
     const actual = { id: 1, marks: { maths: 70 } };
-    const expected = { id: 1, marks: { maths: '@( $ > 80 )@' } };
+    const expected = { id: 1, marks: { maths: '$V > 80' } };
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
     expect(res.message).equals(`Json doesn't fulfil expression '$.marks.maths > 80'`);
   });
 
+  it('object fulfil simple custom includes expression', () => {
+    settings.setAssertExpressionIncludes('$');
+    const actual = { id: 1 };
+    const expected = { id: '$ === 1'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  afterEach(() => {
+    settings.setAssertExpressionIncludes('$V');
+  });
+
 });
 
-describe('JSON Like - Assertions', () => {
+describe('JSON Like - Assert Handlers', () => {
 
   before(() => {
     handler.addAssertHandler('number', (ctx) => {

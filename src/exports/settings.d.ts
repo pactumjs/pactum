@@ -7,3 +7,4 @@ export type LogLevel = 'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR';
 export function setLogLevel(level: LogLevel): void;
 
 export function setAssertHandlerStartsWith(value: string): void;
+export function setAssertExpressionIncludes(value: string): void;

@@ -9,6 +9,10 @@ const settings = {
 
   setAssertHandlerStartsWith(value) {
     config.assert.handler.startsWith = value;
+  },
+
+  setAssertExpressionIncludes(value) {
+    config.assert.expression.includes = value;
   }
 
 }

@@ -2,8 +2,6 @@ const config = require('../config');
 const log = require('./logger');
 const handler = require('../exports/handler');
 
-const EXPRESSION_PATTERN = /^@\(.*\)@$/g;
-
 class Compare {
 
   jsonLike(actual, expected) {
@@ -79,9 +77,9 @@ class LikeJson {
 
   expressionCompare(actual, expected, actualPath, expectedPath) {
     if (typeof expected === 'string') {
-      const expressions = expected.match(EXPRESSION_PATTERN);
-      if (expressions) {
-        const expression = expressions[0].replace('$', 'actual').slice(2, -2);
+      const exp = config.assert.expression.includes;
+      if (expected.includes(exp)) {
+        const expression = expected.replace(exp, 'actual');
         const res = eval(expression);
         if (res !== true) {
           return `Json doesn't fulfil expression '${expression.replace('actual', expectedPath).trim()}'`;
