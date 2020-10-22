@@ -114,7 +114,7 @@ describe('Retries', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).contains('Custom Retry Handler Not Found - RetryTill400');
+    expect(err.message).contains(`Retry Handler Not Found - 'RetryTill400'`);
   });
 
 });

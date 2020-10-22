@@ -1,6 +1,7 @@
 const expect = require('chai').expect;
 const Compare = require('../../src/helpers/compare');
 const handler = require('../../src/exports/handler');
+const settings = require('../../src/exports/settings');
 
 describe('JSON Like - Object - Equal Properties', () => {
 
@@ -1271,6 +1272,19 @@ describe('JSON Like - Assertions', () => {
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
     expect(res.message).equals(`Json doesn't have value '#number py' at '$.id' but found '1'`);
+  });
+
+  it('object fulfil simple custom starts with assert', () => {
+    settings.setAssertHandlerStartsWith('#$');
+    const actual = { id: 1 };
+    const expected = { id: '#$number'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  afterEach(() => {
+    settings.setAssertHandlerStartsWith('#');
   });
 
 });

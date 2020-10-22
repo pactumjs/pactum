@@ -20,7 +20,7 @@ const handler = {
 
   getSpecHandler(name) {
     if (specHandlers[name]) return specHandlers[name];
-    throw new PactumHandlerError(`Custom Spec Handler Not Found - ${name}`);
+    throw new PactumHandlerError(`Spec Handler Not Found - '${name}'`);
   },
 
   addExpectHandler(name, func) {
@@ -30,7 +30,7 @@ const handler = {
 
   getExpectHandler(name) {
     if (expectHandlers[name]) return expectHandlers[name];
-    throw new PactumHandlerError(`Custom Expect Handler Not Found - ${name}`);
+    throw new PactumHandlerError(`Expect Handler Not Found - '${name}'`);
   },
 
   addRetryHandler(name, func) {
@@ -40,7 +40,7 @@ const handler = {
 
   getRetryHandler(name) {
     if (retryHandlers[name]) return retryHandlers[name];
-    throw new PactumHandlerError(`Custom Retry Handler Not Found - ${name}`);
+    throw new PactumHandlerError(`Retry Handler Not Found - '${name}'`);
   },
 
   addReturnHandler(name, func) {
@@ -59,7 +59,7 @@ const handler = {
 
   getStateHandler(name) {
     if (stateHandlers[name]) return stateHandlers[name];
-    throw new PactumHandlerError(`Custom State Handler Not Found - ${name}`);
+    throw new PactumHandlerError(`State Handler Not Found - '${name}'`);
   },
 
   addDataFunHandler(name, func) {
@@ -70,7 +70,7 @@ const handler = {
 
   getDataFunHandler(name) {
     if (dataHandlers[name]) return dataHandlers[name];
-    throw new PactumHandlerError(`Custom Data Handler Not Found - ${name}`);
+    throw new PactumHandlerError(`Data Handler Not Found - '${name}'`);
   },
 
   addMockInteractionHandler(name, func) {
@@ -80,7 +80,7 @@ const handler = {
 
   getMockInteractionHandler(name) {
     if (mockInteractionHandlers[name]) return mockInteractionHandlers[name];
-    throw new PactumHandlerError(`Custom Mock Interaction Handler Not Found - ${name}`);
+    throw new PactumHandlerError(`Mock Interaction Handler Not Found - '${name}'`);
   },
 
   addPactInteractionHandler(name, func) {
@@ -90,7 +90,7 @@ const handler = {
 
   getPactInteractionHandler(name) {
     if (pactInteractionHandlers[name]) return pactInteractionHandlers[name];
-    throw new PactumHandlerError(`Custom Pact Interaction Handler Not Found - ${name}`);
+    throw new PactumHandlerError(`Pact Interaction Handler Not Found - '${name}'`);
   },
 
   addAssertHandler(name, func) {
@@ -100,7 +100,7 @@ const handler = {
 
   getAssertHandler(name) {
     if (assertHandlers[name]) return assertHandlers[name];
-    throw new PactumHandlerError(`Custom Assert Handler Not Found - ${name}`);
+    throw new PactumHandlerError(`Assert Handler Not Found - '${name}'`);
   }
 
 }

@@ -1,3 +1,4 @@
+const config = require('../config');
 const log = require('./logger');
 const handler = require('../exports/handler');
 
@@ -91,8 +92,9 @@ class LikeJson {
   }
 
   valueAssertionCompare(actual, expected, actualPath, expectedPath) {
-    if (typeof expected === 'string' && expected.startsWith('#')) {
-      const [handlerName, ..._args] = expected.slice(1).split(':');
+    const sw = config.assert.handler.startsWith;
+    if (typeof expected === 'string' && expected.startsWith(sw)) {
+      const [handlerName, ..._args] = expected.slice(sw.length).split(':');
       try {
         const handlerFun = handler.getAssertHandler(handlerName);
         const args = _args.length > 0 ? _args[0].split(',') : _args;

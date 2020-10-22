@@ -81,7 +81,7 @@ describe('Remote Server - use with spec', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).contains('Custom Mock Interaction Handler Not Found - random mock remote handler');
+    expect(err.message).contains(`Mock Interaction Handler Not Found - 'random mock remote handler'`);
   });
 
   it('usePactInteraction', async () => {

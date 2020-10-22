@@ -64,7 +64,7 @@ describe('State', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom State Handler Not Found - invalid state');
+    expect(err.message).equals(`State Handler Not Found - 'invalid state'`);
   });
 
   it('set state from state object', async () => {

@@ -32,6 +32,11 @@ const config = {
       enabled: false,
       processed: false
     }
+  },
+  assert: {
+    handler: {
+      startsWith: '#'
+    }
   }
 };
 

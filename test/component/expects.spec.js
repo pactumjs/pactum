@@ -68,7 +68,7 @@ describe('Expects', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom Expect Handler Not Found - isAddress');
+    expect(err.message).equals(`Expect Handler Not Found - 'isAddress'`);
   });
 
   it('failed custom expect handler with data', async () => {
