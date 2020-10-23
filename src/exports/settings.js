@@ -7,12 +7,12 @@ const settings = {
     logger.setLevel(level);
   },
 
-  setAssertHandlerStartsWith(value) {
-    config.assert.handler.startsWith = value;
+  setAssertHandlerStrategy(strategy) {
+    config.assert.handler = strategy;
   },
 
-  setAssertExpressionIncludes(value) {
-    config.assert.expression.includes = value;
+  setAssertExpressionStrategy(strategy) {
+    config.assert.expression = strategy;
   }
 
 }

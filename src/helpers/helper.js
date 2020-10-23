@@ -235,6 +235,19 @@ const helper = {
       steps: test.steps.map(step => step.id)
     }
     reporter.afterTest(data);
+  },
+
+  matchesStrategy(value, strategy) {
+    if (strategy.starts && !value.startsWith(strategy.starts)) return false;
+    if (strategy.ends && !value.endsWith(strategy.ends)) return false;
+    if (strategy.includes && !value.includes(strategy.includes)) return false;
+    return true;
+  },
+
+  sliceStrategy(value, strategy) {
+    if (strategy.starts) value = value.slice(strategy.starts.length);
+    if (strategy.ends) value = value.slice(0, -(strategy.ends.length));
+    return value;
   }
 
 };

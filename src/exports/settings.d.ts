@@ -6,5 +6,11 @@ export type LogLevel = 'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR';
 */
 export function setLogLevel(level: LogLevel): void;
 
-export function setAssertHandlerStartsWith(value: string): void;
-export function setAssertExpressionIncludes(value: string): void;
+export interface Strategy {
+  starts?: string;
+  ends?: string;
+  includes?: string;
+}
+
+export function setAssertHandlerStrategy(strategy: Strategy): void;
+export function setAssertExpressionStrategy(strategy: Strategy): void;

@@ -1228,7 +1228,7 @@ describe('JSON Like - Assert Expressions', () => {
   });
 
   it('object fulfil simple custom includes expression', () => {
-    settings.setAssertExpressionIncludes('$');
+    settings.setAssertExpressionStrategy({ includes: '$' });
     const actual = { id: 1 };
     const expected = { id: '$ === 1'};
     const compare = new Compare();
@@ -1237,7 +1237,7 @@ describe('JSON Like - Assert Expressions', () => {
   });
 
   afterEach(() => {
-    settings.setAssertExpressionIncludes('$V');
+    settings.setAssertExpressionStrategy({ includes: '$V' });
   });
 
 });
@@ -1288,7 +1288,7 @@ describe('JSON Like - Assert Handlers', () => {
   });
 
   it('object fulfil simple custom starts with assert', () => {
-    settings.setAssertHandlerStartsWith('#$');
+    settings.setAssertHandlerStrategy({ starts: '#$' });
     const actual = { id: 1 };
     const expected = { id: '#$number'};
     const compare = new Compare();
@@ -1296,8 +1296,36 @@ describe('JSON Like - Assert Handlers', () => {
     expect(res.equal).equals(true);
   });
 
+  it('object fulfil simple custom ends with assert', () => {
+    settings.setAssertHandlerStrategy({ ends: '#$' });
+    const actual = { id: 1 };
+    const expected = { id: 'number#$'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('object fulfil simple custom starts & ends with assert', () => {
+    settings.setAssertHandlerStrategy({ starts: '#$', ends: '$#' });
+    const actual = { id: 1 };
+    const expected = { id: '#$number$#'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('simple assert satisfies only one strategy', () => {
+    settings.setAssertHandlerStrategy({ starts: '#', ends: '$#' });
+    const actual = { id: '1' };
+    const expected = { id: '#number'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value '#number' at '$.id' but found '1'`);
+  });
+
   afterEach(() => {
-    settings.setAssertHandlerStartsWith('#');
+    settings.setAssertHandlerStrategy({ starts: '#' });
   });
 
 });

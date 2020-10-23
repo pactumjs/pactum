@@ -1,6 +1,7 @@
 const config = require('../config');
 const log = require('./logger');
 const handler = require('../exports/handler');
+const helper = require('../helpers/helper');
 
 class Compare {
 
@@ -77,9 +78,9 @@ class LikeJson {
 
   expressionCompare(actual, expected, actualPath, expectedPath) {
     if (typeof expected === 'string') {
-      const exp = config.assert.expression.includes;
-      if (expected.includes(exp)) {
-        const expression = expected.replace(exp, 'actual');
+      const value = config.assert.expression.includes;
+      if (helper.matchesStrategy(expected, config.assert.expression)) {
+        const expression = expected.replace(value, 'actual');
         const res = eval(expression);
         if (res !== true) {
           return `Json doesn't fulfil expression '${expression.replace('actual', expectedPath).trim()}'`;
@@ -90,9 +91,9 @@ class LikeJson {
   }
 
   valueAssertionCompare(actual, expected, actualPath, expectedPath) {
-    const sw = config.assert.handler.startsWith;
-    if (typeof expected === 'string' && expected.startsWith(sw)) {
-      const [handlerName, ..._args] = expected.slice(sw.length).split(':');
+    const sw = config.assert.handler.starts;
+    if (typeof expected === 'string' && helper.matchesStrategy(expected, config.assert.handler)) {
+      const [handlerName, ..._args] = helper.sliceStrategy(expected, config.assert.handler).split(':');
       try {
         const handlerFun = handler.getAssertHandler(handlerName);
         const args = _args.length > 0 ? _args[0].split(',') : _args;

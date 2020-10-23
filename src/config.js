@@ -35,7 +35,7 @@ const config = {
   },
   assert: {
     handler: {
-      startsWith: '#'
+      starts: '#'
     },
     expression: {
       includes: '$V'
