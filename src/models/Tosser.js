@@ -34,6 +34,7 @@ class Tosser {
     await this.setState()
     await this.addInteractionsToServer();
     await this.setResponse();
+    await this.sleep(this.spec._waitDuration);
     this.setPreviousLogLevel();
     await this.removeInteractionsFromServer();
     this.recordData();
@@ -172,6 +173,12 @@ class Tosser {
       const specData = {};
       specData[store.name] = getPathValueFromSpec(store.path, this.spec);
       stash.addDataStore(specData);
+    }
+  }
+
+  sleep(ms) {
+    if (typeof ms === 'number') {
+      return helper.sleep(ms);
     }
   }
 

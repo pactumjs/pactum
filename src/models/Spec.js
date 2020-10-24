@@ -25,6 +25,7 @@ class Spec {
     this.previousLogLevel = null;
     this.mockInteractions = [];
     this.pactInteractions = [];
+    this._waitDuration = null;
     this.runHandler(name, data);
   }
 
@@ -326,6 +327,11 @@ class Spec {
 
   records(name, path) {
     this._recorders.push({ name, path });
+    return this;
+  }
+
+  wait(ms) {
+    this._waitDuration = ms;
     return this;
   }
 

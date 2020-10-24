@@ -329,3 +329,25 @@ describe('Mock Interactions - Body', () => {
   });
 
 });
+
+describe('Mock Interactions - Wait', () => {
+
+  it('ignoring all query params', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/mock/query'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/mock/query')
+      .withQueryParams('id', 1)
+      .withQueryParams('name', 'snow')
+      .wait(1)
+      .expectStatus(200);
+  });
+
+});

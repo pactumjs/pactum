@@ -519,6 +519,17 @@ declare class Spec {
   records(name: string, path: string): Spec;
 
   /**
+   * waits after performing a request & before response validation
+   * @example
+   * await pactum.spec()
+   *  .useMockInteraction('some background operation')
+   *  .post('/url/)
+   *  .wait(1000)
+   *  .expectStatus(200)
+   */
+  wait(milliseconds: number): Spec;
+
+  /**
    * executes the test case
    */
   toss(): Promise<T>;
