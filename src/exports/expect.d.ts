@@ -5,12 +5,13 @@ export interface Have {
   body(value: any): void;
   bodyContains(value: any): void;
   json(value: any): void;
-  jsonLike(value: any): void;
   jsonAt(path: string, value: any): void;
+  jsonLike(value: any): void;
   jsonLikeAt(path: string, value: any): void;
   jsonSchema(schema: object): void;
   jsonSchemaAt(path: string, schema: object): void;
   jsonMatch(value: object): void;
+  jsonMatchAt(path: string, value: object): void;
   responseTimeLessThan(ms: number): void;
   _(handler: string, data: any): void
 }

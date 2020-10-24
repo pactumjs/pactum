@@ -63,6 +63,18 @@ describe('Chai Like Assertions', () => {
     expect(response).to.have.jsonSchema({ properties: { name: { type: 'string' } }});
   });
 
+  it('should return a valid schema at', async () => {
+    expect(response).to.have.jsonSchemaAt('.', { properties: { name: { type: 'string' } }});
+  });
+
+  it('should return a match', async () => {
+    expect(response).to.have.jsonMatch(pactum.matchers.like({ name: 'snow'}));
+  });
+
+  it('should return a match at', async () => {
+    expect(response).to.have.jsonMatchAt('.', pactum.matchers.like({ name: 'snow'}));
+  });
+
   it('should return a response within 500 ms', async () => {
     expect(response).to.have.responseTimeLessThan(500);
   });

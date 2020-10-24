@@ -21,6 +21,7 @@ class Expect {
     this.jsonSchema = [];
     this.jsonSchemaQuery = [];
     this.jsonMatch = [];
+    this.jsonMatchQuery = [];
     this.headers = [];
     this.headerContains = [];
     this.responseTime = null;
@@ -40,6 +41,7 @@ class Expect {
     this._validateJsonSchema(response);
     this._validateJsonSchemaQuery(response);
     this._validateJsonMatch(response);
+    this._validateJsonMatchQuery(response);
     this._validateResponseTime(response);
     this._validateCustomExpectHandlers(request, response);
   }
@@ -228,6 +230,20 @@ class Expect {
       const errors = jmv.validate(response.json, value, rules, '$.body');
       if (errors) {
         this.fail(errors.replace('$.body', '$'));
+      }
+    }
+  }
+
+  _validateJsonMatchQuery(response) {
+    this.jsonMatchQuery = processor.processData(this.jsonMatchQuery);
+    for (let i = 0; i < this.jsonMatchQuery.length; i++) {
+      const jQ = this.jsonMatchQuery[i];
+      const actualValue = jqy(jQ.path, { data: response.json }).value;
+      const rules = jmv.getMatchingRules(jQ.value, jQ.path);
+      const expectedValue = jmv.getRawValue(jQ.value);
+      const errors = jmv.validate(actualValue, expectedValue, rules, jQ.path);
+      if (errors) {
+        this.fail(errors);
       }
     }
   }
