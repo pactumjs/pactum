@@ -12,6 +12,12 @@ const jr = {
   file: 'report.json',
 
   afterSpec(spec) {
+    if (spec.status === 'PASSED') {
+      spec.request.headers = undefined;
+      spec.request.body = undefined;
+      spec.response.headers = undefined;
+      spec.response.body = undefined;
+    }
     specs.push(spec);
   },
 

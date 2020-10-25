@@ -205,14 +205,18 @@ const helper = {
       end: Date.now().toString(),
       request: {
         method: spec._request.method,
-        path: spec._request.url
+        path: spec._request.url,
+        headers: spec._request.headers,
+        body: spec._request.data
       }
     };
     if (spec._response) {
       data.response = {
         statusCode: spec._response.statusCode,
-        duration: spec._response.responseTime
+        headers: spec._response.headers,
+        body: spec._response.json || spec._response.body
       }
+      data.duration = spec._response.responseTime;
     }
     data.recorded = spec.recorded;
     reporter.afterSpec(data);
