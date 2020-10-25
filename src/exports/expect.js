@@ -68,6 +68,11 @@ class Have {
     this._validate();
   }
 
+  jsonMatchAt(path, value) {
+    this.expect.jsonMatchQuery.push(value);
+    this._validate();
+  }
+
   responseTimeLessThan(ms) {
     this.expect.responseTime = ms;
     this._validate();

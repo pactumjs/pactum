@@ -25,13 +25,13 @@ This readme offers an introduction to the library. For more information visit th
 * [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
 * [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
 * [E2E Testing](https://github.com/ASaiAnudeep/pactum/wiki/E2E-Testing)
-* [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
-* [Reporting](https://github.com/ASaiAnudeep/pactum/wiki/Reporting)
 * [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 * [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
 * [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
   * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
   * [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
+* [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
+* [Reporting](https://github.com/ASaiAnudeep/pactum/wiki/Reporting)
 
 ## Installation
 

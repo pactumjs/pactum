@@ -73,17 +73,25 @@ class Logger {
   warn(...msg) {
     if (this.levelValue <= LEVEL_WARN) {
       process.stdout.write(`[${yellow('W')}] `);
-      msg.forEach(m => this.console.warn(m));
+      msg.forEach(m => this.console.warn(getMessage(m)));
     }
   }
 
   error(...msg) {
     if (this.levelValue <= LEVEL_ERROR) {
       process.stdout.write(`[${red('E')}] `);
-      msg.forEach(m => this.console.error(m));
+      msg.forEach(m => this.console.error(getMessage(m)));
     }
   }
 
+}
+
+function getMessage(msg) {
+  try {
+    return typeof msg === 'object' ? JSON.stringify(msg, null, 2) : msg; 
+  } catch (_) {
+    return msg;
+  }
 }
 
 module.exports = new Logger();

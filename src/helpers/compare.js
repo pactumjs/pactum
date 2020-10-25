@@ -1,6 +1,7 @@
+const config = require('../config');
 const log = require('./logger');
-
-const EXPRESSION_PATTERN = /^@\(.*\)@$/g;
+const handler = require('../exports/handler');
+const helper = require('../helpers/helper');
 
 class Compare {
 
@@ -8,7 +9,7 @@ class Compare {
     const comparer = new LikeJson();
     const message = comparer.compare(actual, expected);
     const equal = message === '';
-    log.debug('JSON Like:', equal, message);
+    log.debug(`JSON Like | Equal - ${equal} | Message - ${message}`);
     return { equal, message };
   }
 
@@ -48,7 +49,7 @@ class Compare {
         }
       }
     }
-    log.debug('JSON Match', equal, message);
+    log.debug(`JSON Match | Equal - ${equal} | Message - ${message}`);
     return { equal, message };
   }
 
@@ -77,14 +78,32 @@ class LikeJson {
 
   expressionCompare(actual, expected, actualPath, expectedPath) {
     if (typeof expected === 'string') {
-      const expressions = expected.match(EXPRESSION_PATTERN);
-      if (expressions) {
-        const expression = expressions[0].replace('$', 'actual').slice(2, -2);
+      const value = config.assert.expression.includes;
+      if (helper.matchesStrategy(expected, config.assert.expression)) {
+        const expression = expected.replace(value, 'actual');
         const res = eval(expression);
         if (res !== true) {
-          return `Json doesn't fulfil expression '${expression.replace('actual', expectedPath).trim()}'`
+          return `Json doesn't fulfil expression '${expression.replace('actual', expectedPath).trim()}'`;
         }
         return true;
+      }
+    }
+  }
+
+  valueAssertionCompare(actual, expected, actualPath, expectedPath) {
+    const sw = config.assert.handler.starts;
+    if (typeof expected === 'string' && helper.matchesStrategy(expected, config.assert.handler)) {
+      const [handlerName, ..._args] = helper.sliceStrategy(expected, config.assert.handler).split(':');
+      try {
+        const handlerFun = handler.getAssertHandler(handlerName);
+        const args = _args.length > 0 ? _args[0].split(',') : _args;
+        const res = handlerFun({ data: actual, args });
+        if (res !== true) {
+          return `Json doesn't fulfil assertion '${expected}' at '${expectedPath}'`;
+        }
+        return true;
+      } catch (_) {
+        return;
       }
     }
   }
@@ -102,6 +121,10 @@ class LikeJson {
     const exprRes = this.expressionCompare(actual, expected, actualPath, expectedPath);
     if (exprRes) {
       return exprRes === true ? '' : exprRes;
+    }
+    const valueAssertRes = this.valueAssertionCompare(actual, expected, actualPath, expectedPath);
+    if (valueAssertRes) {
+      return valueAssertRes === true ? '' : valueAssertRes;
     }
     if (typeof expected !== typeof actual) {
       return `Json doesn't have type '${typeof expected}' at '${expectedPath}' but found '${typeof actual}'`;

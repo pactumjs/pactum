@@ -11,7 +11,7 @@ describe('Expects', () => {
     }
     pactum.handler.addExpectHandler('isUser', isUser);
 
-    const hasAddress = function ({res, data}) {
+    const hasAddress = function ({ res, data }) {
       const address = res.json;
       expect(address.type).equals(data);
     }
@@ -53,8 +53,8 @@ describe('Expects', () => {
         }
       })
       .get('http://localhost:9393/api/users/1')
-      .expect(({ res }) => { 
-        expect(res.json).deep.equals({ id: 1 }); 
+      .expect(({ res }) => {
+        expect(res.json).deep.equals({ id: 1 });
       })
       .expectStatus(200);
   });
@@ -68,7 +68,7 @@ describe('Expects', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom Expect Handler Not Found - isAddress');
+    expect(err.message).equals(`Expect Handler Not Found - 'isAddress'`);
   });
 
   it('failed custom expect handler with data', async () => {
@@ -245,7 +245,7 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectJsonLike({ id: 1})
+        .expectJsonLike({ id: 1 })
     } catch (error) {
       err = error;
     }
@@ -309,7 +309,7 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectJsonMatch(like({ id: 1}));
+        .expectJsonMatch(like({ id: 1 }));
     } catch (error) {
       err = error;
     }
@@ -455,6 +455,45 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
+        .useMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/users'
+          },
+          willRespondWith: {
+            status: 200,
+            body: {
+              people: [
+                { name: 'Matt', country: 'NZ' },
+                { name: 'Pete', country: 'AU' },
+                { name: 'Mike', country: 'NZ' }
+              ]
+            }
+          }
+        })
+        .get('http://localhost:9393/api/users')
+        .expectStatus(200)
+        .expectJsonLikeAt('people[*].name', ['Matt', 'Pet']);
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+  it('failed response time', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .get('http://localhost:9393/api/users/1')
+        .expectResponseTime(-1)
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).contains(`Request took longer than -1ms`);
+  });
+
+  it('json match at', async () => {
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -473,23 +512,36 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .expectJsonLikeAt('people[*].name', ['Matt', 'Pet']);  
-    } catch (error) {
-      err = error;   
-    }
-    expect(err).not.undefined; 
+      .expectJsonMatchAt('people[*].name', pactum.matchers.eachLike('Matt'));
   });
 
-  it('failed response time', async () => {
+  it('json match at - fails', async () => {
     let err;
     try {
       await pactum.spec()
-        .get('http://localhost:9393/api/users/1')
-        .expectResponseTime(-1)
+        .useMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/users'
+          },
+          willRespondWith: {
+            status: 200,
+            body: {
+              people: [
+                { name: 'Matt', country: 'NZ' },
+                { name: 'Pete', country: 'AU' },
+                { name: 'Mike', country: 'NZ' }
+              ]
+            }
+          }
+        })
+        .get('http://localhost:9393/api/users')
+        .expectStatus(200)
+        .expectJsonMatchAt('people[*].name', pactum.matchers.eachLike(12));
     } catch (error) {
       err = error;
     }
-    expect(err.message).contains(`Request took longer than -1ms`);
+    expect(err).not.undefined;
   });
 
 });

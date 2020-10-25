@@ -25,6 +25,7 @@ class Spec {
     this.previousLogLevel = null;
     this.mockInteractions = [];
     this.pactInteractions = [];
+    this._waitDuration = null;
     this.runHandler(name, data);
   }
 
@@ -304,6 +305,11 @@ class Spec {
     return this;
   }
 
+  expectJsonMatchAt(path, value) {
+    this._expect.jsonMatchQuery.push({ path, value });
+    return this;
+  }
+
   expectResponseTime(value) {
     this._expect.responseTime = value;
     return this;
@@ -321,6 +327,11 @@ class Spec {
 
   records(name, path) {
     this._recorders.push({ name, path });
+    return this;
+  }
+
+  wait(ms) {
+    this._waitDuration = ms;
     return this;
   }
 

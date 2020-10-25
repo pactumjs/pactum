@@ -31,8 +31,8 @@ describe('Templates & Maps', () => {
     stash.addDataTemplate([]);
     pactum.handler.addDataFunHandler('GetZero', () => 0);
     pactum.handler.addDataFunHandler('GetAuthToken', () => 'Basic xyz');
-    pactum.handler.addDataFunHandler('GetNumber', (ctx) => ctx.data[0]);
-    pactum.handler.addDataFunHandler('GetSum', (ctx) => parseInt(ctx.data[0]) + parseInt(ctx.data[1]));
+    pactum.handler.addDataFunHandler('GetNumber', (ctx) => ctx.args[0]);
+    pactum.handler.addDataFunHandler('GetSum', (ctx) => parseInt(ctx.args[0]) + parseInt(ctx.args[1]));
   });
 
   it('new user with pure template', async () => {

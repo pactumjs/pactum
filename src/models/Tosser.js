@@ -34,6 +34,7 @@ class Tosser {
     await this.setState()
     await this.addInteractionsToServer();
     await this.setResponse();
+    await this.sleep(this.spec._waitDuration);
     this.setPreviousLogLevel();
     await this.removeInteractionsFromServer();
     this.recordData();
@@ -142,8 +143,8 @@ class Tosser {
         headers: this.response.headers,
         body: this.response.json
       }
-      log.warn('Request', JSON.stringify(this.request, null, 2));
-      log.warn('Response', JSON.stringify(res, null, 2));
+      log.warn('Request', this.request);
+      log.warn('Response', res);
       throw error;
     }
   }
@@ -172,6 +173,12 @@ class Tosser {
       const specData = {};
       specData[store.name] = getPathValueFromSpec(store.path, this.spec);
       stash.addDataStore(specData);
+    }
+  }
+
+  sleep(ms) {
+    if (typeof ms === 'number') {
+      return helper.sleep(ms);
     }
   }
 

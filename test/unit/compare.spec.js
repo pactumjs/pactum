@@ -1,5 +1,7 @@
 const expect = require('chai').expect;
 const Compare = require('../../src/helpers/compare');
+const handler = require('../../src/exports/handler');
+const settings = require('../../src/exports/settings');
 
 describe('JSON Like - Object - Equal Properties', () => {
 
@@ -1172,11 +1174,11 @@ describe('JSON Like Array of Objects', () => {
 
 });
 
-describe('JSON Like - Expressions', () => {
+describe('JSON Like - Assert Expressions', () => {
 
   it('object fulfil simple expression', () => {
     const actual = { id: 1 };
-    const expected = { id: '@( $ === 1 )@'};
+    const expected = { id: '$V === 1'};
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(true);
@@ -1184,7 +1186,7 @@ describe('JSON Like - Expressions', () => {
 
   it('object does not fulfil simple expression', () => {
     const actual = { id: 1 };
-    const expected = { id: '@( $ > 1 )@'};
+    const expected = { id: '$V > 1'};
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
@@ -1193,7 +1195,7 @@ describe('JSON Like - Expressions', () => {
 
   it('array fulfil simple expression', () => {
     const actual = [{ id: 1 }];
-    const expected = '@( $.length === 1 )@';
+    const expected = '$V.length === 1';
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(true);
@@ -1201,7 +1203,7 @@ describe('JSON Like - Expressions', () => {
 
   it('array does not fulfil simple expression', () => {
     const actual = [{ id: 1 }];
-    const expected = '@( $.length > 1 )@';
+    const expected = '$V.length > 1';
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
@@ -1210,7 +1212,7 @@ describe('JSON Like - Expressions', () => {
 
   it('object fulfil complex expression', () => {
     const actual = { id: 1, marks: { maths: 70 } };
-    const expected = { id: 1, marks: { maths: '@( $ > 50 )@' } };
+    const expected = { id: 1, marks: { maths: '$V > 50' } };
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(true);
@@ -1218,11 +1220,112 @@ describe('JSON Like - Expressions', () => {
 
   it('object does not fulfil complex expression', () => {
     const actual = { id: 1, marks: { maths: 70 } };
-    const expected = { id: 1, marks: { maths: '@( $ > 80 )@' } };
+    const expected = { id: 1, marks: { maths: '$V > 80' } };
     const compare = new Compare();
     const res = compare.jsonLike(actual, expected);
     expect(res.equal).equals(false);
     expect(res.message).equals(`Json doesn't fulfil expression '$.marks.maths > 80'`);
+  });
+
+  it('object fulfil simple custom includes expression', () => {
+    settings.setAssertExpressionStrategy({ includes: '$' });
+    const actual = { id: 1 };
+    const expected = { id: '$ === 1'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  afterEach(() => {
+    settings.setAssertExpressionStrategy({ includes: '$V' });
+  });
+
+});
+
+describe('JSON Like - Assert Handlers', () => {
+
+  before(() => {
+    handler.addAssertHandler('number', (ctx) => {
+      return typeof ctx.data === 'number';
+    });
+    handler.addAssertHandler('type', (ctx) => {
+      return typeof ctx.data === ctx.args[0];
+    });
+  });
+
+  it('object fulfil simple assert', () => {
+    const actual = { id: 1 };
+    const expected = { id: '#number'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('object does not fulfil simple assert', () => {
+    const actual = { id: '1' };
+    const expected = { id: '#number'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't fulfil assertion '#number' at '$.id'`);
+  });
+
+  it('object fulfil simple assert with args', () => {
+    const actual = { id: 1 };
+    const expected = { id: '#type:number'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('simple assert does not exist', () => {
+    const actual = { id: '1' };
+    const expected = { id: '#number py'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value '#number py' at '$.id' but found '1'`);
+  });
+
+  it('object fulfil simple custom starts with assert', () => {
+    settings.setAssertHandlerStrategy({ starts: '#$' });
+    const actual = { id: 1 };
+    const expected = { id: '#$number'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('object fulfil simple custom ends with assert', () => {
+    settings.setAssertHandlerStrategy({ ends: '#$' });
+    const actual = { id: 1 };
+    const expected = { id: 'number#$'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('object fulfil simple custom starts & ends with assert', () => {
+    settings.setAssertHandlerStrategy({ starts: '#$', ends: '$#' });
+    const actual = { id: 1 };
+    const expected = { id: '#$number$#'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(true);
+  });
+
+  it('simple assert satisfies only one strategy', () => {
+    settings.setAssertHandlerStrategy({ starts: '#', ends: '$#' });
+    const actual = { id: '1' };
+    const expected = { id: '#number'};
+    const compare = new Compare();
+    const res = compare.jsonLike(actual, expected);
+    expect(res.equal).equals(false);
+    expect(res.message).equals(`Json doesn't have value '#number' at '$.id' but found '1'`);
+  });
+
+  afterEach(() => {
+    settings.setAssertHandlerStrategy({ starts: '#' });
   });
 
 });

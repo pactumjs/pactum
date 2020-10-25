@@ -33,7 +33,12 @@ interface ExpectHandlerContext extends RequestResponseContext {
 }
 
 interface DataHandlerContext {
-  data?: any;
+  args?: string[];
+}
+
+interface AssertionContext {
+  data: any;
+  args?: string[];
 }
 
 export type SpecHandlerFunction = (ctx: SpecHandlerContext) => void;
@@ -44,6 +49,7 @@ export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
 export type DataHandlerFunction = (ctx: DataHandlerContext) => any;
 export type MockInteractionHandlerFunction = (ctx: DataHandlerContext) => MockInteraction;
 export type PactInteractionHandlerFunction = (ctx: DataHandlerContext) => PactInteraction;
+export type AssertHandlerFunction = (ctx: AssertionContext) => boolean;
 
 /**
  * adds a custom spec handler
@@ -84,3 +90,8 @@ export function addMockInteractionHandler(name: string, func: MockInteractionHan
  * adds a custom pact interaction handler
  */
 export function addPactInteractionHandler(name: string, func: PactInteractionHandlerFunction): void;
+
+/**
+ * adds a custom assert handler
+ */
+export function addAssertHandler(name: string, func: AssertHandlerFunction): void;

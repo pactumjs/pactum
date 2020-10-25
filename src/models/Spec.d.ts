@@ -440,7 +440,7 @@ declare class Spec {
   expectJsonSchemaAt(path: string, schema: object): Spec;
 
   /**
-   * expects the json at to match with value
+   * expects the json to match with value
    * @example
    * const { like } = pactum.matchers;
    * 
@@ -452,6 +452,21 @@ declare class Spec {
    *  });
    */
   expectJsonMatch(value: object): Spec;
+
+  /**
+   * expects the json at path to match with value
+   * @see https://www.npmjs.com/package/json-query
+   * @example
+   * const { like } = pactum.matchers;
+   * 
+   * await pactum
+   *  .get('/api/users')
+   *  .expectJsonMatchAt('people[0]', {
+   *    id: like(1),
+   *    name: 'jon'
+   *  });
+   */
+  expectJsonMatchAt(path: string, value: object): Spec;
 
   /**
    * expects request completes within a specified duration (ms)
@@ -502,6 +517,17 @@ declare class Spec {
    * records data that will be available in reports
    */
   records(name: string, path: string): Spec;
+
+  /**
+   * waits after performing a request & before response validation
+   * @example
+   * await pactum.spec()
+   *  .useMockInteraction('some background operation')
+   *  .post('/url/)
+   *  .wait(1000)
+   *  .expectStatus(200)
+   */
+  wait(milliseconds: number): Spec;
 
   /**
    * executes the test case

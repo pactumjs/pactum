@@ -78,12 +78,10 @@ const store = {
       const interaction = interactions[i];
       const id = interaction.id;
       if (!this.interactionExerciseCounter.has(id)) {
-        log.warn(`Pact Interaction Not Exercised | Id: ${id}`);
-        const msg = {
+        log.warn(`Pact Interaction Not Exercised | Id: ${id}`, {
           request: interaction.request,
           response: interaction.response
-        };
-        log.warn(JSON.stringify(msg, null, 2));
+        });
       } else {
         _exercisedInteractions.push(interaction);
       }

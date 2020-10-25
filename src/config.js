@@ -32,6 +32,14 @@ const config = {
       enabled: false,
       processed: false
     }
+  },
+  assert: {
+    handler: {
+      starts: '#'
+    },
+    expression: {
+      includes: '$V'
+    }
   }
 };
 

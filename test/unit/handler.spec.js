@@ -176,7 +176,7 @@ describe('Data Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom Data Handler Not Found - hello');
+    expect(err.message).equals(`Data Handler Not Found - 'hello'`);
   });
 
 });
@@ -220,7 +220,7 @@ describe('Mock Interaction Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom Mock Interaction Handler Not Found - hello');
+    expect(err.message).equals(`Mock Interaction Handler Not Found - 'hello'`);
   });
 
 });
@@ -264,7 +264,51 @@ describe('Pact Interaction Handler', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('Custom Pact Interaction Handler Not Found - hello');
+    expect(err.message).equals(`Pact Interaction Handler Not Found - 'hello'`);
+  });
+
+});
+
+describe('Spec Handler', () => {
+
+  it('invalid handler name', () => {
+    let err;
+    try {
+      handler.addSpecHandler();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('empty handler name', () => {
+    let err;
+    try {
+      handler.addSpecHandler('');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`name` is required');
+  });
+
+  it('invalid handler function', () => {
+    let err;
+    try {
+      handler.addSpecHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('`func` is required');
+  });
+
+  it('get invalid handler function', () => {
+    let err;
+    try {
+      handler.getSpecHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals(`Spec Handler Not Found - 'hello'`);
   });
 
 });

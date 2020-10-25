@@ -100,9 +100,9 @@ const dataProcessor = {
           values.push(typeof value === 'undefined' ? raw : value);
         }
         if (refType === '@DATA:FUN') {
-          const [handlerName, ...args] = refValue.split(':');
+          const [handlerName, ..._args] = refValue.split(':');
           const handlerFun = handler.getDataFunHandler(handlerName);
-          values.push(handlerFun({ data: args.length > 0 ? args[0].split(',') : args }));
+          values.push(handlerFun({ args: _args.length > 0 ? _args[0].split(',') : _args }));
         }
         if (refType === '@DATA:STR') {
           const value = jq(refValue, { data: stash.getDataStore() }).value;
