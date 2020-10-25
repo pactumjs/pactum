@@ -33,12 +33,12 @@ interface ExpectHandlerContext extends RequestResponseContext {
 }
 
 interface DataHandlerContext {
-  data?: any;
+  args?: string[];
 }
 
 interface AssertionContext {
   data: any;
-  args?: any;
+  args?: string[];
 }
 
 export type SpecHandlerFunction = (ctx: SpecHandlerContext) => void;
