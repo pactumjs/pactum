@@ -1,13 +1,10 @@
 const expect = require('chai').expect;
 const pactum = require('../../src/index');
 const handler = pactum.handler;
-const reporter = pactum.reporter;
-const jr = require('../../src/plugins/json.reporter');
 
 describe('E2E', () => {
 
   before(() => {
-    jr.reset();
     handler.addMockInteractionHandler('get user', () => {
       return {
         withRequest: {
@@ -62,7 +59,6 @@ describe('E2E', () => {
       spec.get('http://localhost:9393/api/users/1');
       spec.expectStatus(200);
     });
-    reporter.enableJsonReporter();
   });
 
   describe('E2E - All Passed', () => {
@@ -324,11 +320,6 @@ describe('E2E', () => {
       await this.e2e.cleanup();
     });
 
-  });
-
-  after(() => {
-    reporter.end();
-    reporter.get().length = 0;
   });
 
 });

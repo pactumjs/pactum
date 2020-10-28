@@ -351,6 +351,33 @@ describe('Expects', () => {
     expect(err.message).contains('Interaction not exercised');
   });
 
+  it('interaction not exercised error - with headers, body & matching', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useMockInteraction({
+          withRequest: {
+            method: 'POST',
+            path: '/api',
+            headers: {
+              token: ''
+            },
+            body: {
+              id: like(1)
+            }
+          },
+          willRespondWith: {
+            status: 200
+          }
+        })
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200);
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).contains('Interaction not exercised');
+  });
+
   it('json query - on root object', () => {
     return pactum.spec()
       .useMockInteraction({

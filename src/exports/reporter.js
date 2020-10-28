@@ -1,5 +1,3 @@
-const jr = require('../plugins/json.reporter');
-
 const reporters = [];
 
 const reporter = {
@@ -26,12 +24,6 @@ const reporter = {
 
   async end() {
     await reporters.forEach(async rpt => await rpt.end());
-  },
-
-  enableJsonReporter(path, file) {
-    if (path) jr.path = path;
-    if (file) jr.file = file;
-    this.add(jr);
   }
 
 };

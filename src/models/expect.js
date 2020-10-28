@@ -50,7 +50,13 @@ class Expect {
     for (let i = 0; i < interactions.length; i++) {
       const interaction = interactions[i];
       if (!interaction.exercised) {
-        log.warn('Interaction Not Exercised', interaction.withRequest);
+        const intReq = {
+          method: interaction.withRequest.method,
+          path: interaction.withRequest.path,
+          headers: interaction.withRequest.headers,
+          body: interaction.withRequest.body
+        }
+        log.warn('Interaction Not Exercised', intReq);
         this.fail(`Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
       }
     }
