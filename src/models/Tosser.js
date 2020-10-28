@@ -191,8 +191,8 @@ class Tosser {
         outputs.push(_handler(ctx));
       }
       if (typeof _handler === 'string') {
-        const _customHandlerFun = handler.getReturnHandler(_handler);
-        if (_customHandlerFun) {
+        if (helper.matchesStrategy(_handler, config.strategy.return.handler)) {
+          const _customHandlerFun = handler.getReturnHandler(helper.sliceStrategy(_handler, config.strategy.return.handler));
           outputs.push(_customHandlerFun(ctx));
         } else {
           outputs.push(getPathValueFromSpec(_handler, this.spec));

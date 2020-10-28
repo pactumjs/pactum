@@ -1,5 +1,6 @@
 const pactum = require('../../src/index');
 const expect = require('chai').expect;
+const settings = pactum.settings;
 
 describe('Returns', () => {
 
@@ -80,8 +81,26 @@ describe('Returns', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .returns('GetID');
+      .returns('#GetID');
     expect(response).equals(1);
+    settings.setReturnHandlerStrategy({ starts: '##' });
+    const response2 = await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            id: 1
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .expectStatus(200)
+      .returns('##GetID');
+    expect(response2).equals(1);
   });
 
   it('multiple returns', async () => {
@@ -102,7 +121,7 @@ describe('Returns', () => {
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
       .returns('id')
-      .returns('GetID');
+      .returns('#GetID');
     expect(response).deep.equals([1, 1]);
   });
 
@@ -147,6 +166,10 @@ describe('Returns', () => {
       .expectStatus(200)
       .returns('req.body.method');
     expect(response).equals('POST');
+  });
+
+  afterEach(() => {
+    settings.setReturnHandlerStrategy({ starts: '#' });
   });
 
 });

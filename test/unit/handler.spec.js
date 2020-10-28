@@ -101,6 +101,16 @@ describe('Return Handler', () => {
     expect(err.message).equals('`func` is required');
   });
 
+  it('get invalid handler function', () => {
+    let err;
+    try {
+      handler.getReturnHandler('hello');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals(`Return Handler Not Found - 'hello'`);
+  });
+
 });
 
 describe('State Handler', () => {

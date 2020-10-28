@@ -49,7 +49,8 @@ const handler = {
   },
 
   getReturnHandler(name) {
-    return returnHandlers[name];
+    if (returnHandlers[name]) return returnHandlers[name];
+    throw new PactumHandlerError(`Return Handler Not Found - '${name}'`);
   },
 
   addStateHandler(name, func) {
