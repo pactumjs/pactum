@@ -1,7 +1,7 @@
 const Step = require('./Step');
 const log = require('../helpers/logger');
 const helper = require('../helpers/helper');
-const reporter = require('../exports/reporter');
+const rlc = require('../helpers/reporter.lifeCycle');
 
 class E2E {
 
@@ -42,12 +42,12 @@ class E2E {
           }
         } else {
           _clean.status = 'SKIPPED';
-          helper.afterSpecReport(_clean, reporter);
+          rlc.afterSpecReport(_clean);
           log.warn(`Skipping Clean Step - ${_step.name}`);
         }
       }
     }
-    helper.afterTestReport(this, reporter);
+    rlc.afterTestReport(this);
     if (errors.length > 0) {
       throw errors[0];
     }
@@ -58,7 +58,7 @@ class E2E {
 function reportStep(steps) {
   if (steps.length > 0) {
     const lastStep = steps[steps.length - 1];
-    helper.afterStepReport(lastStep, reporter);
+    rlc.afterStepReport(lastStep);
   }
 }
 

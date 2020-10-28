@@ -4,10 +4,10 @@ const config = require('../config');
 const helper = require('../helpers/helper');
 const processor = require('../helpers/dataProcessor');
 const log = require('../helpers/logger');
+const rlc = require('../helpers/reporter.lifeCycle');
 const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const stash = require('../exports/stash');
-const reporter = require('../exports/reporter');
 const request = require('../exports/request');
 
 class Tosser {
@@ -133,11 +133,11 @@ class Tosser {
       this.validateInteractions();
       this.validateResponse();
       this.spec.status = 'PASSED';
-      helper.afterSpecReport(this.spec, reporter);
+      rlc.afterSpecReport(this.spec);
     } catch (error) {
       this.spec.status = 'FAILED';
       this.spec.failure = error.toString();
-      helper.afterSpecReport(this.spec, reporter);
+      rlc.afterSpecReport(this.spec);
       const res = {
         statusCode: this.response.statusCode,
         headers: this.response.headers,
@@ -153,7 +153,7 @@ class Tosser {
     if (this.response instanceof Error) {
       this.spec.status = 'ERROR';
       this.spec.failure = this.response.toString();
-      helper.afterSpecReport(this.spec, reporter);
+      rlc.afterSpecReport(this.spec);
       this.expect.fail(this.response);
     }
   }

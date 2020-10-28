@@ -21,7 +21,15 @@ export * as state from './exports/state';
  *  .expectStatus(200);
  */
 export function spec(): Spec;
-export function spec(name?: string, data?: any): Spec;
+/**
+ * @param ctx - test runner context
+ */
+export function spec(ctx?: object): Spec;
+/**
+ * @param name - spec handler name
+ * @param data - custom data
+ */
+export function spec(name: string, data?: any): Spec;
 
 export function e2e(name: string): E2E;
 

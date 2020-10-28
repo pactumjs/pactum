@@ -19,6 +19,16 @@ declare class Spec {
   constructor();
 
   /**
+   * sets a custom name for the spec
+   * @example
+   * await pactum
+   *  .name('Get Users From The System')
+   *  .get('/api/users')
+   *  .expectStatus(200);
+   */
+  name(value: string): Spec;
+
+  /**
    * runs the specified state handler
    * @example
    * await pactum
