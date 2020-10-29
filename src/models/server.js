@@ -2,11 +2,11 @@ const polka = require('polka');
 
 const Interaction = require('./interaction');
 
-const handler = require('../exports/handler');
 const helper = require('../helpers/helper');
 const utils = require('../helpers/utils');
 const store = require('../helpers/store');
 const log = require('../helpers/logger');
+const hr = require('../helpers/handler.runner');
 const config = require('../config');
 
 class Server {
@@ -269,12 +269,12 @@ function handleRemoteHandler(req, res, server) {
       for (let j = 0; j < handlers.length; j++) {
         const { name, type } = handlers[j];
         if (type === 'MOCK') {
-          const rawMock = handler.getMockInteractionHandler(name)({ data });
+          const rawMock = hr.mockInteraction(name, data);
           const interaction = new Interaction(rawMock, true);
           server.mockInteractions.set(interaction.id, interaction);
           ids.push(interaction.id);
         } else {
-          const rawPact = handler.getPactInteractionHandler(name)({ data });
+          const rawPact = hr.pactInteraction(name, data);
           const interaction = new Interaction(rawPact, false);
           server.pactInteractions.set(interaction.id, interaction);
           ids.push(interaction.id);

@@ -1,10 +1,8 @@
 const Interaction = require('../models/interaction');
 const Server = require('../models/server');
 const { PactumConfigurationError } = require('../helpers/errors');
-const log = require('../helpers/logger');
-const helper = require('../helpers/helper');
+const hr = require('../helpers/handler.runner');
 const remote = require('../helpers/remoteServer');
-const handler = require('../exports/handler');
 
 const config = require('../config');
 
@@ -43,7 +41,7 @@ const mock = {
     for (let i = 0; i < interactions.length; i++) {
       let raw = interactions[i];
       if (typeof raw === 'string') {
-        raw = handler.getMockInteractionHandler(raw)({ data });
+        raw = hr.mockInteraction(raw, data);
       }
       const interaction = new Interaction(raw, true);
       this._server.addMockInteraction(interaction.id, interaction);
@@ -65,7 +63,7 @@ const mock = {
     for (let i = 0; i < interactions.length; i++) {
       let raw = interactions[i];
       if (typeof raw === 'string') {
-        raw = handler.getPactInteractionHandler(raw)({ data });
+        raw = hr.pactInteraction(raw, data);
       }
       const interaction = new Interaction(raw, false);
       this._server.addPactInteraction(interaction.id, interaction);

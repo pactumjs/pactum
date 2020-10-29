@@ -708,49 +708,6 @@ describe('Mock', () => {
 
 });
 
-describe('Mock Interactions - Handler', () => {
-
-  before(() => {
-    handler.addMockInteractionHandler('get projects', () => {
-      return {
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects'
-        },
-        willRespondWith: {
-          status: 200
-        }
-      }
-    });
-    handler.addMockInteractionHandler('get project', (ctx) => {
-      return {
-        withRequest: {
-          method: 'GET',
-          path: `/api/projects/${ctx.data}`
-        },
-        willRespondWith: {
-          status: 200
-        }
-      }
-    });
-  });
-
-  it('GET - with handler name', async () => {
-    await pactum.spec()
-      .useMockInteraction('get projects')
-      .get('http://localhost:9393/api/projects')
-      .expectStatus(200);
-  });
-
-  it('GET - handler name & custom data', async () => {
-    await pactum.spec()
-      .useMockInteraction('get project', 1)
-      .get('http://localhost:9393/api/projects/1')
-      .expectStatus(200);
-  });
-
-});
-
 describe('Pact - matchers', () => {
 
   it('GET - one interaction', async () => {
@@ -947,41 +904,6 @@ describe('Pact - VALID', () => {
         }]
       }])
       .toss();
-  });
-
-});
-
-describe('Pact Interactions - Handler', () => {
-
-  before(() => {
-    handler.addPactInteractionHandler('get project', (ctx) => {
-      return {
-        provider: 'test-provider',
-        state: 'when there is a project with id 1',
-        uponReceiving: 'a request for project 1',
-        withRequest: {
-          method: 'GET',
-          path: `/api/projects/${ctx.data}`
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: ctx.data,
-            name: 'fake'
-          }
-        }
-      }
-    });
-  });
-
-  it('GET - handler name & custom data', async () => {
-    await pactum.spec()
-      .usePactInteraction('get project', 1)
-      .get('http://localhost:9393/api/projects/1')
-      .expectStatus(200);
   });
 
 });
