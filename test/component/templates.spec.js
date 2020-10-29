@@ -9,7 +9,7 @@ describe('Templates & Maps', () => {
       'User.NewUser': {
         FirstName: 'Jon',
         LastName: 'Snow',
-        Country: '@DATA:MAP::User.Country@',
+        Country: '$M{User.Country}',
         Addresses: []
       },
       'User.Address': {
@@ -113,7 +113,7 @@ describe('Templates & Maps', () => {
       .withJson({
         '@DATA:TEMPLATE@': 'User.NewUser',
         '@OVERRIDES@': {
-          Age: '@DATA:FUN::GetZero@',
+          Age: '$F{GetZero}',
           Addresses: [
             {
               '@DATA:TEMPLATE@': 'User.Address'
@@ -154,7 +154,7 @@ describe('Templates & Maps', () => {
             {
               '@DATA:TEMPLATE@': 'User.Address',
               '@OVERRIDES@': {
-                Castle: '@DATA:MAP::Castle.Wall@'
+                Castle: '$M{Castle.Wall}'
               }
             }
           ]
@@ -182,9 +182,9 @@ describe('Templates & Maps', () => {
         }
       })
       .get('http://localhost:9393/api/users')
-      .withQueryParams('age', '@DATA:FUN::GetNumber:0@')
-      .withQueryParams('mass', '@DATA:FUN::GetSum:3,7@')
-      .withHeaders('Authorization', '@DATA:FUN::GetAuthToken@')
+      .withQueryParams('age', '$F{GetNumber:0}')
+      .withQueryParams('mass', '$F{GetSum:3,7}')
+      .withHeaders('Authorization', '$F{GetAuthToken}')
       .expectStatus(200);
   });
 
@@ -195,13 +195,13 @@ describe('Templates & Maps', () => {
           method: 'GET',
           path: '/api/users',
           query: {
-            name: '@DATA:MAP::User.FirstName@'
+            name: '$M{User.FirstName}'
           }
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Authorization': '@DATA:FUN::GetAuthToken@'
+            'Authorization': '$F{GetAuthToken}'
           },
           body: {
             '@DATA:TEMPLATE@': 'User.NewUser'
@@ -229,7 +229,7 @@ describe('Templates & Maps', () => {
             "Name": "Golden Army",
             "Count": 10000,
             "Alliance": "Stark",
-            "Cavalry": "@DATA:MAP::Unknown@"
+            "Cavalry": "$M{Unknown}"
           }
         },
         willRespondWith: {
@@ -240,7 +240,7 @@ describe('Templates & Maps', () => {
       .withJson({
         '@DATA:TEMPLATE@': 'Army:New',
         '@OVERRIDES@': {
-          'Cavalry': '@DATA:MAP::Unknown@'
+          'Cavalry': '$M{Unknown}'
         }
       })
       .expectStatus(200);

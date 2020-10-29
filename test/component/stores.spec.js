@@ -35,7 +35,7 @@ describe('Stores', () => {
       })
       .post('http://localhost:9393/api/stores')
       .withJson({
-        UserId: '@DATA:STR::UserId@'
+        UserId: '$S{UserId}'
       })
       .expectStatus(200);
     await pactum.spec()
@@ -48,7 +48,7 @@ describe('Stores', () => {
           status: 200
         }
       })
-      .post('http://localhost:9393/api/stores/@DATA:STR::UserId@')
+      .post('http://localhost:9393/api/stores/$S{UserId}')
       .expectStatus(200);
   });
 
@@ -92,7 +92,7 @@ describe('Stores', () => {
       })
       .post('http://localhost:9393/api/stores')
       .withJson({
-        UserId: '@DATA:STR::FirstUser.id@'
+        UserId: '$S{FirstUser.id}'
       })
       .expectStatus(200);
   });
@@ -104,7 +104,7 @@ describe('Stores', () => {
           method: 'POST',
           path: '/api/stores',
           body: {
-            UserId: '@DATA:STR::Unknown@'
+            UserId: '$S{Unknown}'
           }
         },
         willRespondWith: {
@@ -113,7 +113,7 @@ describe('Stores', () => {
       })
       .post('http://localhost:9393/api/stores')
       .withJson({
-        UserId: '@DATA:STR::Unknown@'
+        UserId: '$S{Unknown}'
       })
       .expectStatus(200);
   });

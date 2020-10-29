@@ -196,8 +196,8 @@ describe('Data Processing - Maps', () => {
   it('processMaps - with basic data map', () => {
     stash.addDataMap({
       User: {
-        Name: '@DATA:MAP::Users[0].Name@',
-        House: '@DATA:MAP::Users[0].House@'
+        Name: '$M{Users[0].Name}',
+        House: '$M{Users[0].House}'
       },
       Users: [
         {
@@ -234,9 +234,9 @@ describe('Data Processing - Maps', () => {
   it('processMaps - complex array of objects', () => {
     stash.addDataMap({
       User: {
-        'Name': '@DATA:MAP::Defaults.User.Name@',
-        'Age': '@DATA:MAP::Defaults.User.Age@',
-        'Address': '@DATA:MAP::Defaults.Address[Type=Home]@'
+        'Name': '$M{Defaults.User.Name}',
+        'Age': '$M{Defaults.User.Age}',
+        'Address': '$M{Defaults.Address[Type=Home]}'
       }
     });
     stash.addDataMap({
@@ -248,7 +248,7 @@ describe('Data Processing - Maps', () => {
         'Address': [
           {
             'Type': 'Home',
-            'Castle': '@DATA:MAP::Defaults.Castle@'
+            'Castle': '$M{Defaults.Castle}'
           },
           {
             'Type': 'Work',
@@ -293,7 +293,7 @@ describe('Data Processing - Maps', () => {
       User: {
         FirstName: 'Jon',
         LastName: 'Snow',
-        FullName: '@DATA:MAP::User.FirstName@ @DATA:MAP::User.LastName@'
+        FullName: '$M{User.FirstName} $M{User.LastName}'
       }
     });
     dp.processMaps();
@@ -523,7 +523,7 @@ describe('Data Processing - Actual Data - Only Maps', () => {
 
   it('processData - with basic map - object', () => {
     let data = {
-      'Name': '@DATA:MAP::User.Name@'
+      'Name': '$M{User.Name}'
     };
     data = dp.processData(data);
     expect(data).deep.equals({
@@ -533,7 +533,7 @@ describe('Data Processing - Actual Data - Only Maps', () => {
 
   it('processData - with basic map - array', () => {
     let data = {
-      'Address': '@DATA:MAP::Address@'
+      'Address': '$M{Address}'
     };
     data = dp.processData(data);
     expect(data).deep.equals({
@@ -563,8 +563,8 @@ describe('Data Processing - Actual Data - Both Templates & Maps', () => {
     stash.clearDataMaps();
     stash.addDataTemplate({
       'User': {
-        Name: '@DATA:MAP::User.Name@',
-        Age: '@DATA:MAP::User.Age@'
+        Name: '$M{User.Name}',
+        Age: '$M{User.Age}'
       }
     });
     stash.addDataTemplate({
@@ -576,7 +576,7 @@ describe('Data Processing - Actual Data - Both Templates & Maps', () => {
           '@DATA:TEMPLATE@': 'User',
           '@OVERRIDES@': {
             Age: 12,
-            Education: '@DATA:MAP::Education@'
+            Education: '$M{Education}'
           }
         }
       ]
@@ -661,8 +661,8 @@ describe('Data Processing - Invalid Data', () => {
     stash.clearDataMaps();
     stash.addDataTemplate({
       'User': {
-        Name: '@DATA:MAP::User.Name@',
-        Age: '@DATA:MAP::User.Age@'
+        Name: '$M{User.Name}',
+        Age: '$M{User.Age}'
       }
     });
     dp.processMaps();
@@ -673,14 +673,14 @@ describe('Data Processing - Invalid Data', () => {
     let data = {
       '@DATA:TEMPLATE@': 'NotFound',
       '@OVERRIDES@': {
-        Name: '@DATA:FUNCTION::Hello@'
+        Name: '$F{Hello}'
       }
     };
     data = dp.processData(data);
     expect(data).deep.equals({
       '@DATA:TEMPLATE@': 'NotFound',
       '@OVERRIDES@': {
-        Name: '@DATA:FUNCTION::Hello@'
+        Name: '$F{Hello}'
       }
     });
   });
