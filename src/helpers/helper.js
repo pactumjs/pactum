@@ -20,6 +20,10 @@ const helper = {
     return Math.random().toString(36).substr(2, 5);
   },
 
+  getCurrentTime() {
+    return Date.now().toString();
+  },
+
   setValueFromMatcher(data) {
     if (Array.isArray(data)) {
       for (let i = 0; i < data.length; i++) {

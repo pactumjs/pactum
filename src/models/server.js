@@ -160,7 +160,24 @@ function sendInteractionFoundResponse(req, res, interaction) {
     }
   }
   interaction.callCount += 1;
+  // updateCalls(req, interaction)
 }
+
+// function updateCalls(req, interaction) {
+//   if (!interaction.calls) {
+//     interaction.calls = [];
+//   }
+//   interaction.calls.push({
+//     request: {
+//       method: req.method,
+//       path: req.path,
+//       query: req.query,
+//       headers: req.headers,
+//       body: req.body
+//     },
+//     exercisedAt: helper.getCurrentTime()
+//   });
+// }
 
 /**
  * sends response body
@@ -281,14 +298,14 @@ function handleRemoteInteractions(req, response, server, interactionType) {
   const res = new ExpressResponse(response);
   const mock = interactionType === 'MOCK';
   const interactions = (mock ? server.mockInteractions : server.pactInteractions);
-  const rawInteractions = [];
+  const raws = [];
   const ids = [];
   try {
     switch (req.method) {
       case 'POST':
         for (let i = 0; i < req.body.length; i++) {
-          const rawInteraction = req.body[i];
-          const remoteInteraction = new Interaction(rawInteraction, mock);
+          const raw = req.body[i];
+          const remoteInteraction = new Interaction(raw, mock);
           interactions.set(remoteInteraction.id, remoteInteraction);
           ids.push(remoteInteraction.id);
           if (!mock) {
@@ -308,7 +325,8 @@ function handleRemoteInteractions(req, response, server, interactionType) {
               raw.id = intObj.id;
               raw.exercised = intObj.exercised || false;
               raw.callCount = intObj.callCount;
-              rawInteractions.push(raw)
+              raw.calls = intObj.calls;
+              raws.push(raw)
             }
           });
         } else {
@@ -318,11 +336,12 @@ function handleRemoteInteractions(req, response, server, interactionType) {
             raw.id = interaction.id;
             raw.exercised = interaction.exercised || false;
             raw.callCount = interaction.callCount;
-            rawInteractions.push(raw);
+            raw.calls = interaction.calls;
+            raws.push(raw);
           }
         }
         res.status(200);
-        res.send(rawInteractions);
+        res.send(raws);
         break;
       case 'DELETE':
         if (req.query.ids) {

@@ -11,25 +11,23 @@ class InteractionRequest {
     helper.setMatchingRules(this.matchingRules, request.path, '$.path');
     this.path = helper.setValueFromMatcher(request.path);
     if (request.headers && typeof request.headers === 'object') {
-      this.rawHeaders = JSON.parse(JSON.stringify(request.headers));
       const rawLowerCaseHeaders = {};
-      for (const prop in this.rawHeaders) {
-        rawLowerCaseHeaders[prop.toLowerCase()] = this.rawHeaders[prop];
+      for (const prop in request.headers) {
+        rawLowerCaseHeaders[prop.toLowerCase()] = request.headers[prop];
       }
       helper.setMatchingRules(this.matchingRules, rawLowerCaseHeaders, '$.headers');
     }
     this.headers = helper.setValueFromMatcher(request.headers);
     if (request.query && typeof request.query === 'object') {
-      this.rawQuery = JSON.parse(JSON.stringify(request.query));
-      helper.setMatchingRules(this.matchingRules, this.rawQuery, '$.query');
+      helper.setMatchingRules(this.matchingRules, request.query, '$.query');
     }
     this.query = helper.setValueFromMatcher(request.query);
     for (const prop in this.query) {
       this.query[prop] = this.query[prop].toString();
     }
     if (request.body && typeof request.body === 'object') {
-      this.rawBody = JSON.parse(JSON.stringify(request.body));
-      helper.setMatchingRules(this.matchingRules, this.rawBody, '$.body');
+      // this.rawBody = JSON.parse(JSON.stringify(request.body));
+      helper.setMatchingRules(this.matchingRules, request.body, '$.body');
     }
     this.body = helper.setValueFromMatcher(request.body);
     if (request.graphQL) {
@@ -55,13 +53,11 @@ class InteractionRequestGraphQL {
 class InteractionResponse {
 
   constructor(response) {
+    this.matchingRules = {};
     this.status = response.status;
-    this.headers = response.headers;
-    if (response.body && typeof response.body === 'object') {
-      this.rawBody = JSON.parse(JSON.stringify(response.body));
-    } else {
-      this.rawBody = response.body;
-    }
+    helper.setMatchingRules(this.matchingRules, response.headers, '$.headers');
+    this.headers = helper.setValueFromMatcher(response.headers);
+    helper.setMatchingRules(this.matchingRules, response.body, '$.body');
     this.body = helper.setValueFromMatcher(response.body);
     if (response.fixedDelay) {
       this.delay = new InteractionResponseDelay('FIXED', response.fixedDelay);
@@ -102,13 +98,13 @@ class InteractionExpectations {
 
 class Interaction {
 
-  constructor(rawInteraction, mock = false) {
+  constructor(raw, mock = false) {
     processor.processMaps();
     processor.processTemplates();
-    rawInteraction = processor.processData(rawInteraction);
-    this.setDefaults(rawInteraction, mock);
-    validator.validateInteraction(rawInteraction, mock);
-    const { id, consumer, provider, state, uponReceiving, withRequest, willRespondWith, expects } = rawInteraction;
+    raw = processor.processData(raw);
+    this.setDefaults(raw, mock);
+    validator.validateInteraction(raw, mock);
+    const { id, consumer, provider, state, uponReceiving, withRequest, willRespondWith, expects } = raw;
     this.id = id || helper.getRandomId();
     this.callCount = 0;
     this.mock = mock;
@@ -116,7 +112,7 @@ class Interaction {
     this.provider = provider;
     this.state = state;
     this.uponReceiving = uponReceiving;
-    this.rawInteraction = rawInteraction;
+    this.rawInteraction = raw;
     this.withRequest = new InteractionRequest(withRequest);
     if (typeof willRespondWith === 'function') {
       this.willRespondWith = willRespondWith;
@@ -132,22 +128,22 @@ class Interaction {
     this.expects = new InteractionExpectations(expects);
   }
 
-  setDefaults(rawInteraction, mock) {
-    if (helper.isValidObject(rawInteraction)) {
+  setDefaults(raw, mock) {
+    if (helper.isValidObject(raw)) {
       if (mock) {
-        if (!rawInteraction.willRespondWith) {
-          rawInteraction.willRespondWith = {};
+        if (!raw.willRespondWith) {
+          raw.willRespondWith = {};
         }
-        const { willRespondWith } = rawInteraction;
+        const { willRespondWith } = raw;
         if (helper.isValidObject(willRespondWith)) {
           if (typeof willRespondWith.status === 'undefined') willRespondWith.status = 404;
         }
       }
-      if (!rawInteraction.expects) {
-        rawInteraction.expects = { exercised: true };
+      if (!raw.expects) {
+        raw.expects = { exercised: true };
       }
-      if (typeof rawInteraction.expects.exercised === 'undefined') {
-        rawInteraction.expects.exercised = true;
+      if (typeof raw.expects.exercised === 'undefined') {
+        raw.expects.exercised = true;
       }
     }
   }

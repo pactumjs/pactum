@@ -6,13 +6,13 @@ const ALLOWED_REQUEST_METHODS = new Set(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'
 
 const validator = {
 
-  validateInteraction(rawInteraction, mock) {
-    if (!helper.isValidObject(rawInteraction)) {
+  validateInteraction(raw, mock) {
+    if (!helper.isValidObject(raw)) {
       throw new PactumInteractionError('`interaction` is required');
     }
-    const { withRequest, willRespondWith } = rawInteraction;
+    const { withRequest, willRespondWith } = raw;
     if (!mock) {
-      this.validateRequiredFieldsPact(rawInteraction);
+      this.validateRequiredFieldsPact(raw);
     }
     this.validateWithRequest(withRequest);
     if (!mock) {
@@ -21,8 +21,8 @@ const validator = {
     this.validateWillRespondWith(willRespondWith, mock);
   },
 
-  validateRequiredFieldsPact(rawInteraction) {
-    const { provider, state, uponReceiving, consumer } = rawInteraction;
+  validateRequiredFieldsPact(raw) {
+    const { provider, state, uponReceiving, consumer } = raw;
     if (typeof provider !== 'string' || !provider) {
       throw new PactumInteractionError('`provider` is required');
     }
