@@ -774,8 +774,8 @@ describe('Interaction - Mock', () => {
       "state": undefined,
       "uponReceiving": undefined,
       "willRespondWith": {
-        "body": "Response Not Found",
-        "rawBody": "Response Not Found",
+        "body": undefined,
+        "rawBody": undefined,
         "headers": undefined,
         "status": 404,
         "delay": {
@@ -813,7 +813,7 @@ describe('Interaction - Mock', () => {
       },
       "rawInteraction": {
         "willRespondWith": {
-          "body": "Response Not Found",
+          // "body": "Response Not Found",
           "status": 404,
           "onCall": {
             "0": {
@@ -823,6 +823,124 @@ describe('Interaction - Mock', () => {
               "status": 200
             }
           }
+        },
+        "withRequest": {
+          "method": "GET",
+          "path": "/api/projects/1"
+        }
+      },
+    });
+  });
+
+  it('valid mock interaction - default response status', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "callCount": 0,
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "body": {
+          "id": 1,
+          "name": "fake"
+        },
+        "rawBody": {
+          "id": 1,
+          "name": "fake"
+        },
+        "headers": {
+          "content-type": "application/json"
+        },
+        "status": 404,
+        "delay": {
+          "type": "NONE",
+          "value": 0
+        }
+      },
+      "withRequest": {
+        "body": undefined,
+        "headers": undefined,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": undefined,
+        "matchingRules": {}
+      },
+      "rawInteraction": {
+        "willRespondWith": {
+          "headers": {
+            "content-type": "application/json"
+          },
+          "body": {
+            "id": 1,
+            "name": "fake"
+          },
+          "status": 404
+        },
+        "withRequest": {
+          "method": "GET",
+          "path": "/api/projects/1"
+        }
+      },
+    });
+  });
+
+  it('valid mock interaction - no willRespondWith', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const rawInteraction = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      }
+    };
+    const interaction = new Interaction(rawInteraction, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "callCount": 0,
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "body": undefined,
+        "rawBody": undefined,
+        "headers": undefined,
+        "status": 404,
+        "delay": {
+          "type": "NONE",
+          "value": 0
+        }
+      },
+      "withRequest": {
+        "body": undefined,
+        "headers": undefined,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": undefined,
+        "matchingRules": {}
+      },
+      "rawInteraction": {
+        "willRespondWith": {
+          "status": 404
         },
         "withRequest": {
           "method": "GET",
@@ -972,25 +1090,6 @@ describe('Interaction - Mock', () => {
       }
     };
     expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.query` should be object');
-  });
-
-  it('invalid mock interaction - no response status', () => {
-    const rawInteraction = {
-      withRequest: {
-        method: 'GET',
-        path: '/api/projects/1'
-      },
-      willRespondWith: {
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: {
-          id: 1,
-          name: 'fake'
-        }
-      }
-    };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.status` is required');
   });
 
   it('invalid mock interaction - fixed delay is string', () => {
@@ -1180,18 +1279,6 @@ describe('Interaction - Mock', () => {
       }
     };
     expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.min` should be less than `willRespondWith.randomDelay.max`');
-  });
-
-  it('invalid mock interaction - null response', () => {
-    this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
-      withRequest: {
-        method: 'GET',
-        path: '/api/projects/1'
-      },
-      willRespondWith: null
-    };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith` is required');
   });
 
   it('invalid mock interaction - null', () => {

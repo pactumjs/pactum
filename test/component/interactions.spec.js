@@ -623,7 +623,6 @@ describe('Mock', () => {
       })
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(404)
-      .expectBody('Response Not Found')
       .toss();
   });
 

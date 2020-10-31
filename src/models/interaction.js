@@ -124,10 +124,14 @@ class Interaction {
 
   setDefaults(rawInteraction, mock) {
     if (helper.isValidObject(rawInteraction)) {
-      const { willRespondWith } = rawInteraction;
-      if (mock && helper.isValidObject(willRespondWith) && willRespondWith.onCall) {
-        willRespondWith.status = willRespondWith.status ? willRespondWith.status : 404;
-        willRespondWith.body = willRespondWith.body ? willRespondWith.body : 'Response Not Found';
+      if (mock) {
+        if (!rawInteraction.willRespondWith) {
+          rawInteraction.willRespondWith = {};
+        }
+        const { willRespondWith } = rawInteraction;
+        if (helper.isValidObject(willRespondWith)) {
+          if (typeof willRespondWith.status === 'undefined') willRespondWith.status = 404;
+        }
       }
     }
   }
