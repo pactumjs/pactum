@@ -18,12 +18,12 @@ class InteractionRequest {
       }
       helper.setMatchingRules(this.matchingRules, rawLowerCaseHeaders, '$.headers');
     }
-    this.headers = processor.processData(helper.setValueFromMatcher(request.headers));
+    this.headers = helper.setValueFromMatcher(request.headers);
     if (request.query && typeof request.query === 'object') {
       this.rawQuery = JSON.parse(JSON.stringify(request.query));
       helper.setMatchingRules(this.matchingRules, this.rawQuery, '$.query');
     }
-    this.query = processor.processData(helper.setValueFromMatcher(request.query));
+    this.query = helper.setValueFromMatcher(request.query);
     for (const prop in this.query) {
       this.query[prop] = this.query[prop].toString();
     }
@@ -31,7 +31,7 @@ class InteractionRequest {
       this.rawBody = JSON.parse(JSON.stringify(request.body));
       helper.setMatchingRules(this.matchingRules, this.rawBody, '$.body');
     }
-    this.body = processor.processData(helper.setValueFromMatcher(request.body));
+    this.body = helper.setValueFromMatcher(request.body);
     if (request.graphQL) {
       this.graphQL = new InteractionRequestGraphQL(request.graphQL);
       this.body = {
@@ -56,13 +56,13 @@ class InteractionResponse {
 
   constructor(response) {
     this.status = response.status;
-    this.headers = processor.processData(response.headers);
+    this.headers = response.headers;
     if (response.body && typeof response.body === 'object') {
       this.rawBody = JSON.parse(JSON.stringify(response.body));
     } else {
       this.rawBody = response.body;
     }
-    this.body = processor.processData(helper.setValueFromMatcher(response.body));
+    this.body = helper.setValueFromMatcher(response.body);
     if (response.fixedDelay) {
       this.delay = new InteractionResponseDelay('FIXED', response.fixedDelay);
     } else if (response.randomDelay) {
@@ -96,6 +96,7 @@ class Interaction {
   constructor(rawInteraction, mock = false) {
     processor.processMaps();
     processor.processTemplates();
+    rawInteraction = processor.processData(rawInteraction);
     this.setDefaults(rawInteraction, mock);
     validator.validateInteraction(rawInteraction, mock);
     const { id, consumer, provider, state, uponReceiving, withRequest, willRespondWith } = rawInteraction;
