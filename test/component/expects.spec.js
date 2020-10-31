@@ -378,6 +378,54 @@ describe('Expects', () => {
     expect(err.message).contains('Interaction not exercised');
   });
 
+  it('interaction exercised error', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api'
+          },
+          willRespondWith: {
+            status: 200
+          },
+          expects: {
+            exercised: false
+          }
+        })
+        .get('http://localhost:9393/api')
+        .expectStatus(200);
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).contains('Interaction exercised');
+  });
+
+  it('interaction call count error', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api'
+          },
+          willRespondWith: {
+            status: 200
+          },
+          expects: {
+            callCount: 2
+          }
+        })
+        .get('http://localhost:9393/api')
+        .expectStatus(200);
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).contains('Interaction call count 1 !== 2');
+  });
+
   it('json query - on root object', () => {
     return pactum.spec()
       .useMockInteraction({

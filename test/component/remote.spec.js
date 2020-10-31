@@ -52,7 +52,8 @@ describe('Remote- post single mock interaction', () => {
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
-        }
+        },
+        expects: { exercised: true }
       }])
       .toss();
   });
@@ -78,7 +79,8 @@ describe('Remote- post single mock interaction', () => {
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
-        }
+        },
+        expects: { exercised: true }
       }])
       .toss();
   });
@@ -115,7 +117,8 @@ describe('Remote- post single mock interaction', () => {
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
-        }
+        },
+        expects: { exercised: true }
       }])
       .toss();
   });
@@ -185,7 +188,8 @@ describe('Remote- post single pact interaction', () => {
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
-        }
+        },
+        expects: { exercised: true }
       }])
       .toss();
   });
@@ -214,7 +218,8 @@ describe('Remote- post single pact interaction', () => {
         withRequest: {
           method: 'GET',
           path: '/api/projects/1'
-        }
+        },
+        expects: { exercised: true }
       }])
       .toss();
   });

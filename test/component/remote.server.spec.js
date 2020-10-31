@@ -158,7 +158,8 @@ describe('Remote Server - before and after spec', () => {
       withRequest: { method: 'GET', path: '/remote/get' },
       willRespondWith: { status: 200 },
       exercised: false,
-      callCount: 0
+      callCount: 0,
+      expects: { exercised: true }
     });
   });
 
@@ -193,14 +194,16 @@ describe('Remote Server - before and after spec', () => {
         withRequest: { method: 'GET', path: '/remote/get' },
         willRespondWith: { status: 200 },
         exercised: false,
-        callCount: 0
+        callCount: 0,
+        expects: { exercised: true }
       },
       {
         id: 'id2',
         withRequest: { method: 'GET', path: '/remote/get' },
         willRespondWith: { status: 200 },
         exercised: false,
-        callCount: 0
+        callCount: 0,
+        expects: { exercised: true }
       }
     ]);
   });
@@ -227,14 +230,16 @@ describe('Remote Server - before and after spec', () => {
         withRequest: { method: 'GET', path: '/remote/get' },
         willRespondWith: { status: 200 },
         exercised: false,
-        callCount: 0
+        callCount: 0,
+        expects: { exercised: true }
       },
       {
         id: 'id2',
         withRequest: { method: 'GET', path: '/remote/mock/handler' },
         willRespondWith: { status: 200 },
         exercised: false,
-        callCount: 0
+        callCount: 0,
+        expects: { exercised: true }
       }
     ]);
   });

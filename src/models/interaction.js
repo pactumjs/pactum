@@ -91,6 +91,15 @@ class InteractionResponseDelay {
 
 }
 
+class InteractionExpectations {
+  
+  constructor(expects) {
+    this.exercised = expects.exercised;
+    this.callCount = expects.callCount;
+  }
+
+}
+
 class Interaction {
 
   constructor(rawInteraction, mock = false) {
@@ -99,7 +108,7 @@ class Interaction {
     rawInteraction = processor.processData(rawInteraction);
     this.setDefaults(rawInteraction, mock);
     validator.validateInteraction(rawInteraction, mock);
-    const { id, consumer, provider, state, uponReceiving, withRequest, willRespondWith } = rawInteraction;
+    const { id, consumer, provider, state, uponReceiving, withRequest, willRespondWith, expects } = rawInteraction;
     this.id = id || helper.getRandomId();
     this.callCount = 0;
     this.mock = mock;
@@ -120,6 +129,7 @@ class Interaction {
         }
       }
     }
+    this.expects = new InteractionExpectations(expects);
   }
 
   setDefaults(rawInteraction, mock) {
@@ -132,6 +142,12 @@ class Interaction {
         if (helper.isValidObject(willRespondWith)) {
           if (typeof willRespondWith.status === 'undefined') willRespondWith.status = 404;
         }
+      }
+      if (!rawInteraction.expects) {
+        rawInteraction.expects = { exercised: true };
+      }
+      if (typeof rawInteraction.expects.exercised === 'undefined') {
+        rawInteraction.expects.exercised = true;
       }
     }
   }

@@ -65,7 +65,12 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           "body": {
             "id": 1,
@@ -148,7 +153,12 @@ describe('Interaction - Mock', () => {
         },
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           "body": {
             "id": 1,
@@ -258,7 +268,12 @@ describe('Interaction - Mock', () => {
           }
         }
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           "body": {
             "id": 1,
@@ -345,7 +360,12 @@ describe('Interaction - Mock', () => {
         },
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           "body": {
             "id": 1,
@@ -455,7 +475,12 @@ describe('Interaction - Mock', () => {
           }
         }
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           "body": {
             "id": 1,
@@ -552,7 +577,12 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           "body": {
             "id": 1,
@@ -631,7 +661,12 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           "body": {
             "id": 1,
@@ -722,7 +757,12 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           "body": {
             "id": 1,
@@ -811,7 +851,12 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           // "body": "Response Not Found",
           "status": 404,
@@ -884,7 +929,12 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           "headers": {
             "content-type": "application/json"
@@ -938,7 +988,12 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "willRespondWith": {
           "status": 404
         },
@@ -1377,7 +1432,12 @@ describe('Interaction - Pact', () => {
         "query": undefined,
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "provider": 'pro',
         "state": 'a state',
         "uponReceiving": 'description',
@@ -1456,7 +1516,12 @@ describe('Interaction - Pact', () => {
         "query": undefined,
         "matchingRules": {}
       },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      },
       "rawInteraction": {
+        "expects": { exercised: true },
         "consumer": "custom-consumer",
         "provider": 'pro',
         "state": 'a state',
