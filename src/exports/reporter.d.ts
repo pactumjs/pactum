@@ -1,3 +1,5 @@
+import { InteractionRequest, InteractionResponse } from './mock';
+
 export interface SpecRequest {
   method: string;
   path: string;
@@ -20,12 +22,24 @@ export interface SpecInfo {
   end: string;
 }
 
+export interface InteractionCall {
+  request: InteractionRequest;
+  exercisedAt: string;
+}
+
+export interface Interaction {
+  withRequest: InteractionRequest;
+  willRespondWith: InteractionResponse;
+  calls: InteractionCall[];
+}
+
 export interface SpecData {
   id: string;
   info: SpecInfo;
   request: SpecRequest;
   response?: SpecResponse;
   recorded?: object;
+  interactions: Interaction[];
 }
 
 export interface Reporter {
