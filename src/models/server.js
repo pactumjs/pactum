@@ -163,21 +163,21 @@ function sendInteractionFoundResponse(req, res, interaction) {
   // updateCalls(req, interaction)
 }
 
-// function updateCalls(req, interaction) {
-//   if (!interaction.calls) {
-//     interaction.calls = [];
-//   }
-//   interaction.calls.push({
-//     request: {
-//       method: req.method,
-//       path: req.path,
-//       query: req.query,
-//       headers: req.headers,
-//       body: req.body
-//     },
-//     exercisedAt: helper.getCurrentTime()
-//   });
-// }
+function updateCalls(req, interaction) {
+  if (!interaction.calls) {
+    interaction.calls = [];
+  }
+  interaction.calls.push({
+    request: {
+      method: req.method,
+      path: req.path,
+      query: req.query,
+      headers: req.headers,
+      body: req.body
+    },
+    exercisedAt: helper.getCurrentTime()
+  });
+}
 
 /**
  * sends response body

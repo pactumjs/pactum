@@ -33,4 +33,6 @@ export function spec(name: string, data?: any): Spec;
 
 export function e2e(name: string): E2E;
 
+export function sleep(ms: number): Promise<void>;
+
 export namespace pactum { }

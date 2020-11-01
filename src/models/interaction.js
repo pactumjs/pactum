@@ -108,6 +108,7 @@ class Interaction {
     this.id = id || helper.getRandomId();
     this.callCount = 0;
     this.exercised = false;
+    this.calls = [];
     this.mock = mock;
     this.consumer = consumer || config.pact.consumer;
     this.provider = provider;

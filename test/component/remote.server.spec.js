@@ -160,6 +160,7 @@ describe('Remote Server - before and after spec', () => {
       withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
       willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
       callCount: 0,
+      "calls": [],
       "exercised": false,
       expects: { exercised: true }
     });
@@ -198,6 +199,7 @@ describe('Remote Server - before and after spec', () => {
         withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
         willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
         callCount: 0,
+      "calls": [],
         "exercised": false,
         expects: { exercised: true }
       },
@@ -208,6 +210,7 @@ describe('Remote Server - before and after spec', () => {
         withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
         willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
         callCount: 0,
+      "calls": [],
         "exercised": false,
         expects: { exercised: true }
       }
@@ -238,6 +241,7 @@ describe('Remote Server - before and after spec', () => {
         withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
         willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
         callCount: 0,
+      "calls": [],
         "exercised": false,
         expects: { exercised: true }
       },
@@ -248,6 +252,7 @@ describe('Remote Server - before and after spec', () => {
         withRequest: { method: 'GET', path: '/remote/mock/handler', "matchingRules": {} },
         willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
         callCount: 0,
+      "calls": [],
         "exercised": false,
         expects: { exercised: true }
       }

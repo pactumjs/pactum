@@ -39,6 +39,7 @@ describe('Remote- post single mock interaction', () => {
         {
           id,
           "callCount": 0,
+          "calls": [],
           "exercised": false,
           "mock": true,
           "consumer": "consumer",
@@ -78,6 +79,7 @@ describe('Remote- post single mock interaction', () => {
         {
           id,
           "callCount": 0,
+          "calls": [],
           "exercised": false,
           "mock": true,
           "consumer": "consumer",
@@ -128,6 +130,7 @@ describe('Remote- post single mock interaction', () => {
         {
           id,
           "callCount": 1,
+          "calls": [],
           "exercised": true,
           "mock": true,
           "consumer": "consumer",
