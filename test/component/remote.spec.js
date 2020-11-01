@@ -1,12 +1,15 @@
 const pactum = require('../../src/index');
 const mock = require('../../src/exports/mock');
 const store = require('../../src/helpers/store');
+const helper = require('../../src/helpers/helper');
+const sandbox = require('sinon').createSandbox();
 
 describe('Remote- post single mock interaction', () => {
 
   let id;
 
   before(async () => {
+    sandbox.stub(helper, 'getCurrentTime').returns("123456");
     mock.clearInteractions();
     id = await pactum.spec()
       .post('http://localhost:9393/api/pactum/mockInteractions')
@@ -130,7 +133,21 @@ describe('Remote- post single mock interaction', () => {
         {
           id,
           "callCount": 1,
-          "calls": [],
+          "calls": [
+            {
+              "exercisedAt": "123456",
+              "request": {
+                "body": "",
+                "headers": {
+                  "connection": "close",
+                  "host": "localhost:9393"
+                },
+                "method": "GET",
+                "path": "/api/projects/1",
+                "query": {}
+              }
+            }
+          ],
           "exercised": true,
           "mock": true,
           "consumer": "consumer",
@@ -162,8 +179,8 @@ describe('Remote- post single mock interaction', () => {
       .toss();
   });
 
-
   after(async () => {
+    sandbox.restore();
     await pactum.spec()
       .delete(`http://localhost:9393/api/pactum/mockInteractions?ids=${id}`)
       .expectStatus(200)

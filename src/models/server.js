@@ -160,13 +160,10 @@ function sendInteractionFoundResponse(req, res, interaction) {
     }
   }
   interaction.callCount += 1;
-  // updateCalls(req, interaction)
+  updateCalls(req, interaction);
 }
 
 function updateCalls(req, interaction) {
-  if (!interaction.calls) {
-    interaction.calls = [];
-  }
   interaction.calls.push({
     request: {
       method: req.method,

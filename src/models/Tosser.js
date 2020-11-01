@@ -36,6 +36,7 @@ class Tosser {
     await this.setResponse();
     await this.sleep(this.spec._waitDuration);
     this.setPreviousLogLevel();
+    await this.getInteractionsFromServer();
     await this.removeInteractionsFromServer();
     this.recordData();
     this.validate();
@@ -114,15 +115,24 @@ class Tosser {
     this.recorders.forEach(recorder => { recordData(recorder, this.spec) });
   }
 
-  async removeInteractionsFromServer() {
+  async getInteractionsFromServer() {
     if (this.mockIds.length > 0) {
       this.mockInteractions.length = 0;
       this.mockInteractions = this.mockInteractions.concat(await mock.getInteraction(this.mockIds));
-      await mock.removeInteraction(this.mockIds);
+      this.spec.interactions = this.spec.interactions.concat(this.mockInteractions.filter(interaction => interaction.expects.exercised));
     }
     if (this.pactIds.length > 0) {
       this.pactInteractions.length = 0;
       this.pactInteractions = this.pactInteractions.concat(await mock.getInteraction(this.pactIds));
+      this.spec.interactions = this.spec.interactions.concat(this.pactInteractions.filter(interaction => interaction.expects.exercised));
+    }
+  }
+
+  async removeInteractionsFromServer() {
+    if (this.mockIds.length > 0) {
+      await mock.removeInteraction(this.mockIds);
+    }
+    if (this.pactIds.length > 0) {
       await mock.removeInteraction(this.pactIds);
     }
   }

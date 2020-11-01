@@ -26,6 +26,7 @@ class Spec {
     this.previousLogLevel = null;
     this.mockInteractions = [];
     this.pactInteractions = [];
+    this.interactions = [];
     this._waitDuration = null;
     this._init(name, data);
   }
