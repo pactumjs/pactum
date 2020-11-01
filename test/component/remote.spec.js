@@ -35,26 +35,38 @@ describe('Remote- post single mock interaction', () => {
     await pactum.spec()
       .get('http://localhost:9393/api/pactum/mockInteractions')
       .expectStatus(200)
-      .expectJson([{
-        id,
-        exercised: false,
-        callCount: 0,
-        willRespondWith: {
-          body: {
-            id: 1,
-            name: 'fake'
+      .expectJson([
+        {
+          id,
+          "callCount": 0,
+          "exercised": false,
+          "mock": true,
+          "consumer": "consumer",
+          "withRequest": {
+            "matchingRules": {},
+            "method": "GET",
+            "path": "/api/projects/1"
           },
-          headers: {
-            'content-type': 'application/json'
+          "willRespondWith": {
+            "matchingRules": {},
+            "status": 200,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "id": 1,
+              "name": "fake"
+            },
+            "delay": {
+              "type": "NONE",
+              "value": 0
+            }
           },
-          status: 200
-        },
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1'
-        },
-        expects: { exercised: true }
-      }])
+          "expects": {
+            "exercised": true
+          }
+        }
+      ])
       .toss();
   });
 
@@ -62,26 +74,38 @@ describe('Remote- post single mock interaction', () => {
     await pactum.spec()
       .get(`http://localhost:9393/api/pactum/mockInteractions?ids=${id}`)
       .expectStatus(200)
-      .expectJson([{
-        id,
-        exercised: false,
-        callCount: 0,
-        willRespondWith: {
-          body: {
-            id: 1,
-            name: 'fake'
+      .expectJson([
+        {
+          id,
+          "callCount": 0,
+          "exercised": false,
+          "mock": true,
+          "consumer": "consumer",
+          "withRequest": {
+            "matchingRules": {},
+            "method": "GET",
+            "path": "/api/projects/1"
           },
-          headers: {
-            'content-type': 'application/json'
+          "willRespondWith": {
+            "matchingRules": {},
+            "status": 200,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "id": 1,
+              "name": "fake"
+            },
+            "delay": {
+              "type": "NONE",
+              "value": 0
+            }
           },
-          status: 200
-        },
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1'
-        },
-        expects: { exercised: true }
-      }])
+          "expects": {
+            "exercised": true
+          }
+        }
+      ])
       .toss();
   });
 
@@ -100,26 +124,38 @@ describe('Remote- post single mock interaction', () => {
     await pactum.spec()
       .get(`http://localhost:9393/api/pactum/mockInteractions?ids=${id}`)
       .expectStatus(200)
-      .expectJson([{
-        id,
-        exercised: true,
-        callCount: 1,
-        willRespondWith: {
-          body: {
-            id: 1,
-            name: 'fake'
+      .expectJson([
+        {
+          id,
+          "callCount": 1,
+          "exercised": true,
+          "mock": true,
+          "consumer": "consumer",
+          "withRequest": {
+            "matchingRules": {},
+            "method": "GET",
+            "path": "/api/projects/1"
           },
-          headers: {
-            'content-type': 'application/json'
+          "willRespondWith": {
+            "matchingRules": {},
+            "status": 200,
+            "headers": {
+              "content-type": "application/json"
+            },
+            "body": {
+              "id": 1,
+              "name": "fake"
+            },
+            "delay": {
+              "type": "NONE",
+              "value": 0
+            }
           },
-          status: 200
-        },
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1'
-        },
-        expects: { exercised: true }
-      }])
+          "expects": {
+            "exercised": true
+          }
+        }
+      ])
       .toss();
   });
 
@@ -170,7 +206,6 @@ describe('Remote- post single pact interaction', () => {
       .expectStatus(200)
       .expectJsonLike([{
         id: /\w+/,
-        exercised: false,
         callCount: 0,
         provider: 'big',
         state: 'liquid',
@@ -200,7 +235,6 @@ describe('Remote- post single pact interaction', () => {
       .expectStatus(200)
       .expectJsonLike([{
         id: /\w+/,
-        exercised: false,
         callCount: 0,
         provider: 'big',
         state: 'liquid',

@@ -107,12 +107,12 @@ class Interaction {
     const { id, consumer, provider, state, uponReceiving, withRequest, willRespondWith, expects } = raw;
     this.id = id || helper.getRandomId();
     this.callCount = 0;
+    this.exercised = false;
     this.mock = mock;
     this.consumer = consumer || config.pact.consumer;
     this.provider = provider;
     this.state = state;
     this.uponReceiving = uponReceiving;
-    this.rawInteraction = raw;
     this.withRequest = new InteractionRequest(withRequest);
     if (typeof willRespondWith === 'function') {
       this.willRespondWith = willRespondWith;

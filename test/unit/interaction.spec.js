@@ -34,6 +34,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -65,24 +66,7 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      }
     });
   });
 
@@ -112,6 +96,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -146,27 +131,6 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1",
-          "query": {
-            "id": "1",
-            "name": "Jon"
-          }
-        }
       }
     });
   });
@@ -197,6 +161,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -239,27 +204,6 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1",
-          "query": {
-            "id": "1",
-            "name": "Jon"
-          }
-        }
       }
     });
   });
@@ -290,6 +234,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -324,27 +269,6 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1",
-          "body": {
-            "id": 1,
-            "name": "Jon"
-          }
-        }
       }
     });
   });
@@ -375,6 +299,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -417,27 +342,6 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1",
-          "body": {
-            "id": 1,
-            "name": "Jon"
-          }
-        }
       }
     });
   });
@@ -485,6 +389,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -516,25 +421,7 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200,
-          "fixedDelay": 10
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      }
     });
   });
 
@@ -564,6 +451,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -597,28 +485,7 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200,
-          "randomDelay": {
-            "min": 10,
-            "max": 100
-          }
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      }
     });
   });
 
@@ -649,6 +516,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -690,29 +558,7 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200,
-          "onCall": {
-            "1": {
-              "status": 404
-            }
-          }
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      }
     });
   });
 
@@ -738,6 +584,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -784,25 +631,7 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "status": 404,
-          "onCall": {
-            "0": {
-              "status": 404
-            },
-            "1": {
-              "status": 200
-            }
-          }
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      }
     });
   });
 
@@ -827,6 +656,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -858,24 +688,7 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "headers": {
-            "content-type": "application/json"
-          },
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "status": 404
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      }
     });
   });
 
@@ -891,6 +704,7 @@ describe('Interaction - Mock', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
@@ -917,17 +731,7 @@ describe('Interaction - Mock', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "willRespondWith": {
-          "status": 404
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      }
     });
   });
 
@@ -1327,6 +1131,7 @@ describe('Interaction - Pact', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": 'unit-test-consumer',
       "mock": false,
       "provider": 'pro',
@@ -1358,27 +1163,7 @@ describe('Interaction - Pact', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "provider": 'pro',
-        "state": 'a state',
-        "uponReceiving": 'description',
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      }
     });
   });
 
@@ -1408,6 +1193,7 @@ describe('Interaction - Pact', () => {
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "exercised": false,
       "consumer": 'custom-consumer',
       "mock": false,
       "provider": 'pro',
@@ -1439,28 +1225,7 @@ describe('Interaction - Pact', () => {
       "expects": {
         "exercised": true,
         "callCount": undefined
-      },
-      "rawInteraction": {
-        "expects": { exercised: true },
-        "consumer": "custom-consumer",
-        "provider": 'pro',
-        "state": 'a state',
-        "uponReceiving": 'description',
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      }
     });
   });
 

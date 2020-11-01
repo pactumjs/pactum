@@ -321,23 +321,13 @@ function handleRemoteInteractions(req, response, server, interactionType) {
           ids.forEach(id => {
             const intObj = interactions.get(id);
             if (intObj) {
-              const raw = JSON.parse(JSON.stringify(intObj.rawInteraction));
-              raw.id = intObj.id;
-              raw.exercised = intObj.exercised || false;
-              raw.callCount = intObj.callCount;
-              raw.calls = intObj.calls;
-              raws.push(raw)
+              raws.push(intObj);
             }
           });
         } else {
           for (const [id, interaction] of interactions) {
             log.trace(`Fetching remote interaction - ${id}`);
-            const raw = JSON.parse(JSON.stringify(interaction.rawInteraction));
-            raw.id = interaction.id;
-            raw.exercised = interaction.exercised || false;
-            raw.callCount = interaction.callCount;
-            raw.calls = interaction.calls;
-            raws.push(raw);
+            raws.push(interaction);
           }
         }
         res.status(200);
