@@ -49,9 +49,25 @@ class Expect {
   validateInteractions(interactions) {
     for (let i = 0; i < interactions.length; i++) {
       const interaction = interactions[i];
-      if (!interaction.exercised) {
-        log.warn('Interaction Not Exercised', interaction.withRequest);
+      const expects = interaction.expects;
+      const intReq = {
+        method: interaction.withRequest.method,
+        path: interaction.withRequest.path,
+        headers: interaction.withRequest.headers,
+        body: interaction.withRequest.body
+      }
+      if (expects.exercised && !interaction.exercised) {
+        log.warn('Interaction Not Exercised', intReq);
         this.fail(`Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+      }
+      if (!expects.exercised && interaction.exercised) {
+        log.warn('Interaction got Exercised', intReq);
+        this.fail(`Interaction exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+      }
+      if (typeof expects.callCount !== 'undefined') {
+        if (expects.callCount !== interaction.callCount) {
+          this.fail(`Interaction call count ${interaction.callCount} !== ${expects.callCount} for ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+        }
       }
     }
   }

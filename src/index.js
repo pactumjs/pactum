@@ -1,6 +1,8 @@
 const Spec = require('./models/Spec');
 const E2E = require('./models/E2E');
 
+const helper = require('./helpers/helper');
+
 const mock = require('./exports/mock');
 const consumer = require('./exports/consumer');
 const request = require('./exports/request');
@@ -33,6 +35,10 @@ const pactum = {
 
   e2e(name) {
     return new E2E(name);
+  },
+
+  sleep(ms) {
+    return helper.sleep(ms);
   }
 
 };

@@ -41,14 +41,23 @@ interface AssertionContext {
   args?: string[];
 }
 
+interface InteractionContext {
+  data?: any;
+}
+
+interface ParentHandler {
+  name: string;
+  data?: any;
+}
+
 export type SpecHandlerFunction = (ctx: SpecHandlerContext) => void;
 export type ExpectHandlerFunction = (ctx: ExpectHandlerContext) => void;
 export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
 export type ReturnHandlerFunction = (ctx: RequestResponseContext) => any;
 export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
 export type DataHandlerFunction = (ctx: DataHandlerContext) => any;
-export type MockInteractionHandlerFunction = (ctx: DataHandlerContext) => MockInteraction;
-export type PactInteractionHandlerFunction = (ctx: DataHandlerContext) => PactInteraction;
+export type MockInteractionHandlerFunction = (ctx: InteractionContext) => MockInteraction | ParentHandler;
+export type PactInteractionHandlerFunction = (ctx: InteractionContext) => PactInteraction | ParentHandler;
 export type AssertHandlerFunction = (ctx: AssertionContext) => boolean;
 
 /**

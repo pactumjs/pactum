@@ -155,10 +155,14 @@ describe('Remote Server - before and after spec', () => {
     const interaction = await mock.getInteraction('id');
     expect(interaction).deep.equals({
       id: 'id',
-      withRequest: { method: 'GET', path: '/remote/get' },
-      willRespondWith: { status: 200 },
-      exercised: false,
-      callCount: 0
+      "consumer": "consumer",
+      "mock": true,
+      withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
+      willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+      callCount: 0,
+      "calls": [],
+      "exercised": false,
+      expects: { exercised: true }
     });
   });
 
@@ -190,17 +194,25 @@ describe('Remote Server - before and after spec', () => {
     expect(interactions).deep.equals([
       {
         id: 'id1',
-        withRequest: { method: 'GET', path: '/remote/get' },
-        willRespondWith: { status: 200 },
-        exercised: false,
-        callCount: 0
+        "consumer": "consumer",
+        "mock": true,
+        withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
+        willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        callCount: 0,
+      "calls": [],
+        "exercised": false,
+        expects: { exercised: true }
       },
       {
         id: 'id2',
-        withRequest: { method: 'GET', path: '/remote/get' },
-        willRespondWith: { status: 200 },
-        exercised: false,
-        callCount: 0
+        "consumer": "consumer",
+        "mock": true,
+        withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
+        willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        callCount: 0,
+      "calls": [],
+        "exercised": false,
+        expects: { exercised: true }
       }
     ]);
   });
@@ -224,17 +236,25 @@ describe('Remote Server - before and after spec', () => {
     expect(interactions).deep.equals([
       {
         id: 'id1',
-        withRequest: { method: 'GET', path: '/remote/get' },
-        willRespondWith: { status: 200 },
-        exercised: false,
-        callCount: 0
+        "consumer": "consumer",
+        "mock": true,
+        withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
+        willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        callCount: 0,
+      "calls": [],
+        "exercised": false,
+        expects: { exercised: true }
       },
       {
         id: 'id2',
-        withRequest: { method: 'GET', path: '/remote/mock/handler' },
-        willRespondWith: { status: 200 },
-        exercised: false,
-        callCount: 0
+        "consumer": "consumer",
+        "mock": true,
+        withRequest: { method: 'GET', path: '/remote/mock/handler', "matchingRules": {} },
+        willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        callCount: 0,
+      "calls": [],
+        "exercised": false,
+        expects: { exercised: true }
       }
     ]);
   });

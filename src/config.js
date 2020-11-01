@@ -33,12 +33,19 @@ const config = {
       processed: false
     }
   },
-  assert: {
-    handler: {
-      starts: '#'
+  strategy: {
+    assert: {
+      handler: {
+        starts: '#'
+      },
+      expression: {
+        includes: '$V'
+      }
     },
-    expression: {
-      includes: '$V'
+    return: {
+      handler: {
+        starts: '#'
+      }
     }
   }
 };

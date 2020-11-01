@@ -2,11 +2,11 @@ const polka = require('polka');
 
 const Interaction = require('./interaction');
 
-const handler = require('../exports/handler');
 const helper = require('../helpers/helper');
 const utils = require('../helpers/utils');
 const store = require('../helpers/store');
 const log = require('../helpers/logger');
+const hr = require('../helpers/handler.runner');
 const config = require('../config');
 
 class Server {
@@ -109,21 +109,6 @@ class Server {
     }
   }
 
-  getInteractionDetails(id) {
-    let interaction = {};
-    if (this.mockInteractions.has(id)) {
-      interaction = this.mockInteractions.get(id);
-    } else if (this.pactInteractions.has(id)) {
-      interaction = this.pactInteractions.get(id);
-    } else {
-      log.warn(`Interaction Not Found - ${id}`);
-    }
-    return {
-      exercised: interaction.exercised || false,
-      callCount: interaction.callCount || 0
-    }
-  }
-
 }
 
 /**
@@ -175,6 +160,20 @@ function sendInteractionFoundResponse(req, res, interaction) {
     }
   }
   interaction.callCount += 1;
+  updateCalls(req, interaction);
+}
+
+function updateCalls(req, interaction) {
+  interaction.calls.push({
+    request: {
+      method: req.method,
+      path: req.path,
+      query: req.query,
+      headers: req.headers,
+      body: req.body
+    },
+    exercisedAt: helper.getCurrentTime()
+  });
 }
 
 /**
@@ -269,12 +268,12 @@ function handleRemoteHandler(req, res, server) {
       for (let j = 0; j < handlers.length; j++) {
         const { name, type } = handlers[j];
         if (type === 'MOCK') {
-          const rawMock = handler.getMockInteractionHandler(name)({ data });
+          const rawMock = hr.mockInteraction(name, data);
           const interaction = new Interaction(rawMock, true);
           server.mockInteractions.set(interaction.id, interaction);
           ids.push(interaction.id);
         } else {
-          const rawPact = handler.getPactInteractionHandler(name)({ data });
+          const rawPact = hr.pactInteraction(name, data);
           const interaction = new Interaction(rawPact, false);
           server.pactInteractions.set(interaction.id, interaction);
           ids.push(interaction.id);
@@ -296,14 +295,14 @@ function handleRemoteInteractions(req, response, server, interactionType) {
   const res = new ExpressResponse(response);
   const mock = interactionType === 'MOCK';
   const interactions = (mock ? server.mockInteractions : server.pactInteractions);
-  const rawInteractions = [];
+  const raws = [];
   const ids = [];
   try {
     switch (req.method) {
       case 'POST':
         for (let i = 0; i < req.body.length; i++) {
-          const rawInteraction = req.body[i];
-          const remoteInteraction = new Interaction(rawInteraction, mock);
+          const raw = req.body[i];
+          const remoteInteraction = new Interaction(raw, mock);
           interactions.set(remoteInteraction.id, remoteInteraction);
           ids.push(remoteInteraction.id);
           if (!mock) {
@@ -319,25 +318,17 @@ function handleRemoteInteractions(req, response, server, interactionType) {
           ids.forEach(id => {
             const intObj = interactions.get(id);
             if (intObj) {
-              const raw = JSON.parse(JSON.stringify(intObj.rawInteraction));
-              raw.id = intObj.id;
-              raw.exercised = intObj.exercised || false;
-              raw.callCount = intObj.callCount;
-              rawInteractions.push(raw)
+              raws.push(intObj);
             }
           });
         } else {
           for (const [id, interaction] of interactions) {
             log.trace(`Fetching remote interaction - ${id}`);
-            const raw = JSON.parse(JSON.stringify(interaction.rawInteraction));
-            raw.id = interaction.id;
-            raw.exercised = interaction.exercised || false;
-            raw.callCount = interaction.callCount;
-            rawInteractions.push(raw);
+            raws.push(interaction);
           }
         }
         res.status(200);
-        res.send(rawInteractions);
+        res.send(raws);
         break;
       case 'DELETE':
         if (req.query.ids) {

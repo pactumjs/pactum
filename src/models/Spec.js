@@ -12,6 +12,7 @@ class Spec {
 
   constructor(name, data) {
     this.id = helper.getRandomId();
+    this._name = ''; 
     this.status = 'N/A';
     this.failure = '';
     this.recorded = {};
@@ -25,11 +26,28 @@ class Spec {
     this.previousLogLevel = null;
     this.mockInteractions = [];
     this.pactInteractions = [];
+    this.interactions = [];
     this._waitDuration = null;
-    this.runHandler(name, data);
+    this._init(name, data);
   }
 
-  runHandler(name, data) {
+  _init(ctx, data) {
+    if (ctx && typeof ctx === "object") {
+      const test = ctx.test;
+      if (test && test.fullTitle) {
+        this._name = test.fullTitle();
+      }
+    } else {
+      this._runHandler(ctx, data);
+    }
+  }
+
+  name(value) {
+    this._name = value; 
+    return this;
+  }
+
+  _runHandler(name, data) {
     if (typeof name !== 'undefined') {
       const fun = handler.getSpecHandler(name);
       fun({ spec: this, data });

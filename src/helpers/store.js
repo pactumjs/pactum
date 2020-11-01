@@ -52,7 +52,7 @@ const store = {
     pactInteraction.request.body = interaction.withRequest.body;
     pactInteraction.response.status = interaction.willRespondWith.status;
     pactInteraction.response.body = interaction.willRespondWith.body;
-    helper.setMatchingRules(pactInteraction.response.matchingRules, interaction.willRespondWith.rawBody, '$.body');
+    pactInteraction.response.matchingRules = interaction.willRespondWith.matchingRules;
     pact.interactions.push(pactInteraction);
   },
 

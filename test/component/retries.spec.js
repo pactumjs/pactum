@@ -19,6 +19,9 @@ describe('Retries', () => {
               status: 200
             }
           }
+        },
+        expects: {
+          callCount: 2
         }
       })
       .get('http://localhost:9393/api/projects/1')

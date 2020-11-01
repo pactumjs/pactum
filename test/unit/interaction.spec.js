@@ -14,7 +14,7 @@ describe('Interaction - Mock', () => {
 
   it('valid mock interaction', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -30,26 +30,25 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(raw, true);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
       "state": undefined,
       "uponReceiving": undefined,
       "willRespondWith": {
+        "matchingRules": {},
         "body": {
           "id": 1,
           "name": "fake"
         },
         "headers": {
           "content-type": "application/json"
-        },
-        "rawBody": {
-          "id": 1,
-          "name": "fake"
         },
         "status": 200,
         "delay": {
@@ -65,28 +64,16 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
-      "rawInteraction": {
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      }
     });
   });
 
   it('valid mock interaction - with request query', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1',
@@ -106,26 +93,25 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(raw, true);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
       "state": undefined,
       "uponReceiving": undefined,
       "willRespondWith": {
+        "matchingRules": {},
         "body": {
           "id": 1,
           "name": "fake"
         },
         "headers": {
           "content-type": "application/json"
-        },
-        "rawBody": {
-          "id": 1,
-          "name": "fake"
         },
         "status": 200,
         "delay": {
@@ -142,38 +128,18 @@ describe('Interaction - Mock', () => {
           "id": "1",
           "name": "Jon"
         },
-        "rawQuery": {
-          "id": 1,
-          "name": 'Jon'
-        },
         "matchingRules": {}
       },
-      "rawInteraction": {
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1",
-          "query": {
-            "id": "1",
-            "name": "Jon"
-          }
-        }
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
       }
     });
   });
 
   it('valid mock interaction - with request query & matching rules', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1',
@@ -193,26 +159,25 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(raw, true);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
       "state": undefined,
       "uponReceiving": undefined,
       "willRespondWith": {
+        "matchingRules": {},
         "body": {
           "id": 1,
           "name": "fake"
         },
         "headers": {
           "content-type": "application/json"
-        },
-        "rawBody": {
-          "id": 1,
-          "name": "fake"
         },
         "status": 200,
         "delay": {
@@ -228,25 +193,6 @@ describe('Interaction - Mock', () => {
         "query": {
           "id": "1",
           "name": "Jon"
-        },
-        "rawQuery": {
-          "id": {
-            "contents": 1,
-            "json_class": "Pact::SomethingLike",
-            "value": 1
-          },
-          "name": {
-            "data": {
-              "generate": "Jon",
-              "matcher": {
-                "json_class": "Regexp",
-                "o": 0,
-                "s": "/w+/g"
-              }
-            },
-            "json_class": "Pact::Term",
-            "value": "Jon"
-          }
         },
         "matchingRules": {
           "$.query.id": {
@@ -258,32 +204,16 @@ describe('Interaction - Mock', () => {
           }
         }
       },
-      "rawInteraction": {
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1",
-          "query": {
-            "id": "1",
-            "name": "Jon"
-          }
-        }
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
       }
     });
   });
 
   it('valid mock interaction - with request body', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1',
@@ -303,26 +233,25 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(raw, true);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
       "state": undefined,
       "uponReceiving": undefined,
       "willRespondWith": {
+        "matchingRules": {},
         "body": {
           "id": 1,
           "name": "fake"
         },
         "headers": {
           "content-type": "application/json"
-        },
-        "rawBody": {
-          "id": 1,
-          "name": "fake"
         },
         "status": 200,
         "delay": {
@@ -339,38 +268,18 @@ describe('Interaction - Mock', () => {
           "id": 1,
           "name": "Jon"
         },
-        "rawBody": {
-          "id": 1,
-          "name": 'Jon'
-        },
         "matchingRules": {}
       },
-      "rawInteraction": {
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1",
-          "body": {
-            "id": 1,
-            "name": "Jon"
-          }
-        }
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
       }
     });
   });
 
   it('valid mock interaction - with request body & matching rules', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1',
@@ -390,26 +299,25 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(raw, true);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
       "state": undefined,
       "uponReceiving": undefined,
       "willRespondWith": {
+        "matchingRules": {},
         "body": {
           "id": 1,
           "name": "fake"
         },
         "headers": {
           "content-type": "application/json"
-        },
-        "rawBody": {
-          "id": 1,
-          "name": "fake"
         },
         "status": 200,
         "delay": {
@@ -426,25 +334,6 @@ describe('Interaction - Mock', () => {
           "id": 1,
           "name": "Jon"
         },
-        "rawBody": {
-          "id": {
-            "contents": 1,
-            "json_class": "Pact::SomethingLike",
-            "value": 1
-          },
-          "name": {
-            "data": {
-              "generate": "Jon",
-              "matcher": {
-                "json_class": "Regexp",
-                "o": 0,
-                "s": "/w+/g"
-              }
-            },
-            "json_class": "Pact::Term",
-            "value": "Jon"
-          }
-        },
         "matchingRules": {
           "$.body.id": {
             "match": "type"
@@ -455,39 +344,23 @@ describe('Interaction - Mock', () => {
           }
         }
       },
-      "rawInteraction": {
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1",
-          "body": {
-            "id": 1,
-            "name": "Jon"
-          }
-        }
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
       }
     });
   });
 
   it('valid mock interaction - function', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
       },
       willRespondWith: function () { }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(raw, true);
     expect(interaction.withRequest).deep.equals({
       "body": undefined,
       "headers": undefined,
@@ -500,7 +373,7 @@ describe('Interaction - Mock', () => {
 
   it('valid mock interaction - fixed Delay', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -517,26 +390,25 @@ describe('Interaction - Mock', () => {
         fixedDelay: 10
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(raw, true);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
       "state": undefined,
       "uponReceiving": undefined,
       "willRespondWith": {
+        "matchingRules": {},
         "body": {
           "id": 1,
           "name": "fake"
         },
         "headers": {
           "content-type": "application/json"
-        },
-        "rawBody": {
-          "id": 1,
-          "name": "fake"
         },
         "status": 200,
         "delay": {
@@ -552,29 +424,16 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
-      "rawInteraction": {
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200,
-          "fixedDelay": 10
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      }
     });
   });
 
   it('valid mock interaction - random Delay', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -594,26 +453,25 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(raw, true);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
       "state": undefined,
       "uponReceiving": undefined,
       "willRespondWith": {
+        "matchingRules": {},
         "body": {
           "id": 1,
           "name": "fake"
         },
         "headers": {
           "content-type": "application/json"
-        },
-        "rawBody": {
-          "id": 1,
-          "name": "fake"
         },
         "status": 200,
         "delay": {
@@ -631,32 +489,16 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
-      "rawInteraction": {
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200,
-          "randomDelay": {
-            "min": 10,
-            "max": 100
-          }
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      }
     });
   });
 
   it('valid mock interaction - single on Call', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -677,16 +519,19 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(raw, true);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
       "state": undefined,
       "uponReceiving": undefined,
       "willRespondWith": {
+        "matchingRules": {},
         "body": {
           "id": 1,
           "name": "fake"
@@ -694,23 +539,19 @@ describe('Interaction - Mock', () => {
         "headers": {
           "content-type": "application/json"
         },
-        "rawBody": {
-          "id": 1,
-          "name": "fake"
-        },
         "status": 200,
         "delay": {
           "type": "NONE",
           "value": 0
         },
         "1": {
+          "matchingRules": {},
           "body": undefined,
           "delay": {
             "type": "NONE",
             "value": 0
           },
           "headers": undefined,
-          "rawBody": undefined,
           "status": 404
         }
       },
@@ -722,33 +563,16 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
-      "rawInteraction": {
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200,
-          "onCall": {
-            "1": {
-              "status": 404
-            }
-          }
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      }
     });
   });
 
   it('valid mock interaction - multiple on Calls & no default', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -764,18 +588,20 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(raw, true);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": '',
       "mock": true,
       "provider": undefined,
       "state": undefined,
       "uponReceiving": undefined,
       "willRespondWith": {
-        "body": "Response Not Found",
-        "rawBody": "Response Not Found",
+        "matchingRules": {},
+        "body": undefined,
         "headers": undefined,
         "status": 404,
         "delay": {
@@ -783,23 +609,23 @@ describe('Interaction - Mock', () => {
           "value": 0
         },
         "0": {
+          "matchingRules": {},
           "body": undefined,
           "delay": {
             "type": "NONE",
             "value": 0
           },
           "headers": undefined,
-          "rawBody": undefined,
           "status": 404
         },
         "1": {
+          "matchingRules": {},
           "body": undefined,
           "delay": {
             "type": "NONE",
             "value": 0
           },
           "headers": undefined,
-          "rawBody": undefined,
           "status": 200
         }
       },
@@ -811,29 +637,117 @@ describe('Interaction - Mock', () => {
         "query": undefined,
         "matchingRules": {}
       },
-      "rawInteraction": {
-        "willRespondWith": {
-          "body": "Response Not Found",
-          "status": 404,
-          "onCall": {
-            "0": {
-              "status": 404
-            },
-            "1": {
-              "status": 200
-            }
-          }
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      }
+    });
+  });
+
+  it('valid mock interaction - default response status', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const raw = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      },
+      willRespondWith: {
+        headers: {
+          'content-type': 'application/json'
         },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
+        body: {
+          id: 1,
+          name: 'fake'
+        }
+      }
+    };
+    const interaction = new Interaction(raw, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "callCount": 0,
+      "calls": [],
+      "exercised": false,
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "matchingRules": {},
+        "body": {
+          "id": 1,
+          "name": "fake"
+        },
+        "headers": {
+          "content-type": "application/json"
+        },
+        "status": 404,
+        "delay": {
+          "type": "NONE",
+          "value": 0
         }
       },
+      "withRequest": {
+        "body": undefined,
+        "headers": undefined,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": undefined,
+        "matchingRules": {}
+      },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      }
+    });
+  });
+
+  it('valid mock interaction - no willRespondWith', () => {
+    this.helperGetRandomIdStub.returns('random');
+    const raw = {
+      withRequest: {
+        method: 'GET',
+        path: '/api/projects/1'
+      }
+    };
+    const interaction = new Interaction(raw, true);
+    expect(interaction).to.deep.equals({
+      "id": "random",
+      "callCount": 0,
+      "calls": [],
+      "exercised": false,
+      "consumer": '',
+      "mock": true,
+      "provider": undefined,
+      "state": undefined,
+      "uponReceiving": undefined,
+      "willRespondWith": {
+        "matchingRules": {},
+        "body": undefined,
+        "headers": undefined,
+        "status": 404,
+        "delay": {
+          "type": "NONE",
+          "value": 0
+        }
+      },
+      "withRequest": {
+        "body": undefined,
+        "headers": undefined,
+        "method": "GET",
+        "path": "/api/projects/1",
+        "query": undefined,
+        "matchingRules": {}
+      },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      }
     });
   });
 
   it('invalid mock interaction - no request method', () => {
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         path: '/api/projects/1'
       },
@@ -848,11 +762,11 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.method` is required');
+    expect(function () { new Interaction(raw, true); }).to.throws('`withRequest.method` is required');
   });
 
   it('invalid mock interaction - no request method', () => {
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'get',
         path: '/api/projects/1'
@@ -868,11 +782,11 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.method` is invalid');
+    expect(function () { new Interaction(raw, true); }).to.throws('`withRequest.method` is invalid');
   });
 
   it('invalid mock interaction - no request path', () => {
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET'
       },
@@ -887,11 +801,11 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.path` is required');
+    expect(function () { new Interaction(raw, true); }).to.throws('`withRequest.path` is required');
   });
 
   it('invalid mock interaction - query as null', () => {
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/query',
@@ -908,11 +822,11 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.query` should be object');
+    expect(function () { new Interaction(raw, true); }).to.throws('`withRequest.query` should be object');
   });
 
   it('invalid mock interaction - query as string', () => {
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/query',
@@ -929,11 +843,11 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.query` should be object');
+    expect(function () { new Interaction(raw, true); }).to.throws('`withRequest.query` should be object');
   });
 
   it('invalid mock interaction - query as empty string', () => {
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/query',
@@ -950,11 +864,11 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.query` should be object');
+    expect(function () { new Interaction(raw, true); }).to.throws('`withRequest.query` should be object');
   });
 
   it('invalid mock interaction - query as array', () => {
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/query',
@@ -971,31 +885,12 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`withRequest.query` should be object');
-  });
-
-  it('invalid mock interaction - no response status', () => {
-    const rawInteraction = {
-      withRequest: {
-        method: 'GET',
-        path: '/api/projects/1'
-      },
-      willRespondWith: {
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: {
-          id: 1,
-          name: 'fake'
-        }
-      }
-    };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.status` is required');
+    expect(function () { new Interaction(raw, true); }).to.throws('`withRequest.query` should be object');
   });
 
   it('invalid mock interaction - fixed delay is string', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -1012,12 +907,12 @@ describe('Interaction - Mock', () => {
         fixedDelay: "ten"
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.fixedDelay` should be number');
+    expect(function () { new Interaction(raw, true); }).to.throws('`willRespondWith.fixedDelay` should be number');
   });
 
   it('invalid mock interaction - fixed delay is less than 0', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -1034,12 +929,12 @@ describe('Interaction - Mock', () => {
         fixedDelay: -22
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.fixedDelay` should be greater than 0');
+    expect(function () { new Interaction(raw, true); }).to.throws('`willRespondWith.fixedDelay` should be greater than 0');
   });
 
   it('invalid mock interaction - random delay is string', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -1056,12 +951,12 @@ describe('Interaction - Mock', () => {
         randomDelay: "ten"
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay` should be object');
+    expect(function () { new Interaction(raw, true); }).to.throws('`willRespondWith.randomDelay` should be object');
   });
 
   it('invalid mock interaction - random delay min is string', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -1080,12 +975,12 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.min` should be number');
+    expect(function () { new Interaction(raw, true); }).to.throws('`willRespondWith.randomDelay.min` should be number');
   });
 
   it('invalid mock interaction - random delay max is string', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -1104,12 +999,12 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.max` should be number');
+    expect(function () { new Interaction(raw, true); }).to.throws('`willRespondWith.randomDelay.max` should be number');
   });
 
   it('invalid mock interaction - random delay min is less than 0', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -1129,12 +1024,12 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.min` should be greater than 0');
+    expect(function () { new Interaction(raw, true); }).to.throws('`willRespondWith.randomDelay.min` should be greater than 0');
   });
 
   it('invalid mock interaction - random delay max is less than 0', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -1154,12 +1049,12 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.max` should be greater than 0');
+    expect(function () { new Interaction(raw, true); }).to.throws('`willRespondWith.randomDelay.max` should be greater than 0');
   });
 
   it('invalid mock interaction - random delay max is less than min', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -1179,19 +1074,7 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith.randomDelay.min` should be less than `willRespondWith.randomDelay.max`');
-  });
-
-  it('invalid mock interaction - null response', () => {
-    this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
-      withRequest: {
-        method: 'GET',
-        path: '/api/projects/1'
-      },
-      willRespondWith: null
-    };
-    expect(function () { new Interaction(rawInteraction, true); }).to.throws('`willRespondWith` is required');
+    expect(function () { new Interaction(raw, true); }).to.throws('`willRespondWith.randomDelay.min` should be less than `willRespondWith.randomDelay.max`');
   });
 
   it('invalid mock interaction - null', () => {
@@ -1204,7 +1087,7 @@ describe('Interaction - Mock', () => {
 
   it('invalid mock interaction - onCall - string keys', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       withRequest: {
         method: 'GET',
         path: '/api/projects/1'
@@ -1215,7 +1098,7 @@ describe('Interaction - Mock', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, true); }).throws('Invalid interaction response onCall provided');
+    expect(function () { new Interaction(raw, true); }).throws('Invalid interaction response onCall provided');
   });
 
   after(() => {
@@ -1236,7 +1119,7 @@ describe('Interaction - Pact', () => {
 
   it('valid pact interaction', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       provider: 'pro',
       state: 'a state',
       uponReceiving: 'description',
@@ -1255,26 +1138,25 @@ describe('Interaction - Pact', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, false);
+    const interaction = new Interaction(raw, false);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": 'unit-test-consumer',
       "mock": false,
       "provider": 'pro',
       "state": 'a state',
       "uponReceiving": 'description',
       "willRespondWith": {
+        "matchingRules": {},
         "body": {
           "id": 1,
           "name": "fake"
         },
         "headers": {
           "content-type": "application/json"
-        },
-        "rawBody": {
-          "id": 1,
-          "name": "fake"
         },
         "status": 200,
         "delay": {
@@ -1290,31 +1172,16 @@ describe('Interaction - Pact', () => {
         "query": undefined,
         "matchingRules": {}
       },
-      "rawInteraction": {
-        "provider": 'pro',
-        "state": 'a state',
-        "uponReceiving": 'description',
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      }
     });
   });
 
   it('valid pact interaction - with custom consumer name', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       consumer: 'custom-consumer',
       provider: 'pro',
       state: 'a state',
@@ -1334,26 +1201,25 @@ describe('Interaction - Pact', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, false);
+    const interaction = new Interaction(raw, false);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
+      "calls": [],
+      "exercised": false,
       "consumer": 'custom-consumer',
       "mock": false,
       "provider": 'pro',
       "state": 'a state',
       "uponReceiving": 'description',
       "willRespondWith": {
+        "matchingRules": {},
         "body": {
           "id": 1,
           "name": "fake"
         },
         "headers": {
           "content-type": "application/json"
-        },
-        "rawBody": {
-          "id": 1,
-          "name": "fake"
         },
         "status": 200,
         "delay": {
@@ -1369,31 +1235,15 @@ describe('Interaction - Pact', () => {
         "query": undefined,
         "matchingRules": {}
       },
-      "rawInteraction": {
-        "consumer": "custom-consumer",
-        "provider": 'pro',
-        "state": 'a state',
-        "uponReceiving": 'description',
-        "willRespondWith": {
-          "body": {
-            "id": 1,
-            "name": "fake"
-          },
-          "headers": {
-            "content-type": "application/json"
-          },
-          "status": 200
-        },
-        "withRequest": {
-          "method": "GET",
-          "path": "/api/projects/1"
-        }
-      },
+      "expects": {
+        "exercised": true,
+        "callCount": undefined
+      }
     });
   });
 
   it('invalid pact interaction - no provider name', () => {
-    const rawInteraction = {
+    const raw = {
       state: 'a state',
       uponReceiving: 'description',
       withRequest: {
@@ -1411,11 +1261,11 @@ describe('Interaction - Pact', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws('`provider` is required');
+    expect(function () { new Interaction(raw, false); }).to.throws('`provider` is required');
   });
 
   it('invalid pact interaction - no state name', () => {
-    const rawInteraction = {
+    const raw = {
       provider: 'pro',
       uponReceiving: 'description',
       withRequest: {
@@ -1433,11 +1283,11 @@ describe('Interaction - Pact', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws('`state` is required');
+    expect(function () { new Interaction(raw, false); }).to.throws('`state` is required');
   });
 
   it('invalid pact interaction - no upon receiving description', () => {
-    const rawInteraction = {
+    const raw = {
       provider: 'pro',
       state: 'a state',
       withRequest: {
@@ -1455,12 +1305,12 @@ describe('Interaction - Pact', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws('`uponReceiving` is required');
+    expect(function () { new Interaction(raw, false); }).to.throws('`uponReceiving` is required');
   });
 
   it('invalid pact interaction - fixed delay', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       provider: 'pro',
       state: 'a state',
       uponReceiving: 'description',
@@ -1480,12 +1330,12 @@ describe('Interaction - Pact', () => {
         fixedDelay: 100
       }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support delays`);
+    expect(function () { new Interaction(raw, false); }).to.throws(`Pact interaction won't support delays`);
   });
 
   it('invalid pact interaction - random delay', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       provider: 'pro',
       state: 'a state',
       uponReceiving: 'description',
@@ -1505,12 +1355,12 @@ describe('Interaction - Pact', () => {
         randomDelay: { min: 100, max: 1000 }
       }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support delays`);
+    expect(function () { new Interaction(raw, false); }).to.throws(`Pact interaction won't support delays`);
   });
 
   it('invalid pact interaction - response function', () => {
     this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
+    const raw = {
       provider: 'pro',
       state: 'a state',
       uponReceiving: 'description',
@@ -1520,12 +1370,12 @@ describe('Interaction - Pact', () => {
       },
       willRespondWith: () => { }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws(`Pact interaction won't support function response`);
+    expect(function () { new Interaction(raw, false); }).to.throws(`Pact interaction won't support function response`);
   });
 
   it('invalid pact interaction - no consumer name', () => {
     config.pact.consumer = '';
-    const rawInteraction = {
+    const raw = {
       provider: 'some',
       state: 'a state',
       uponReceiving: 'description',
@@ -1544,7 +1394,7 @@ describe('Interaction - Pact', () => {
         }
       }
     };
-    expect(function () { new Interaction(rawInteraction, false); }).to.throws('`consumer` is required => Add consumer through `pactum.consumer.setConsumerName()`');
+    expect(function () { new Interaction(raw, false); }).to.throws('`consumer` is required => Add consumer through `pactum.consumer.setConsumerName()`');
   });
 
   after(() => {

@@ -6,9 +6,7 @@ const handler = require('../exports/handler');
 const logger = require('./logger');
 const config = require('../config');
 
-const DATA_REF_PATTERN = /(@DATA:\w+::[^@]+@)/g;
-const DATA_REF_TYPE_PATTERN = /(@DATA:\w+::)/g;
-const DATA_REF_VALUE_PATTERN = /(::.*[^@])/g;
+const DATA_REF_PATTERN = /(\$\w\{[^\}]+\})/g;
 
 const dataProcessor = {
 
@@ -93,18 +91,18 @@ const dataProcessor = {
       const values = [];
       for (let i = 0; i < dataRefMatches.length; i++) {
         const dataRefMatch = dataRefMatches[i];
-        const refType = dataRefMatch.match(DATA_REF_TYPE_PATTERN)[0].replace('::', '');
-        const refValue = dataRefMatch.match(DATA_REF_VALUE_PATTERN)[0].replace('::', '');
-        if (refType === '@DATA:MAP') {
+        const refType = dataRefMatch.slice(1, 2);
+        const refValue = dataRefMatch.slice(3, -1);
+        if (refType === 'M') {
           const value = jq(refValue, { data: this.map }).value;
           values.push(typeof value === 'undefined' ? raw : value);
         }
-        if (refType === '@DATA:FUN') {
+        if (refType === 'F') {
           const [handlerName, ..._args] = refValue.split(':');
           const handlerFun = handler.getDataFunHandler(handlerName);
           values.push(handlerFun({ args: _args.length > 0 ? _args[0].split(',') : _args }));
         }
-        if (refType === '@DATA:STR') {
+        if (refType === 'S') {
           const value = jq(refValue, { data: stash.getDataStore() }).value;
           values.push(typeof value === 'undefined' ? raw : value);
         }

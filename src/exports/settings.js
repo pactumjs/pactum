@@ -8,12 +8,16 @@ const settings = {
   },
 
   setAssertHandlerStrategy(strategy) {
-    config.assert.handler = strategy;
+    config.strategy.assert.handler = strategy;
   },
 
   setAssertExpressionStrategy(strategy) {
-    config.assert.expression = strategy;
-  }
+    config.strategy.assert.expression = strategy;
+  },
+
+  setReturnHandlerStrategy(strategy) {
+    config.strategy.return.handler = strategy;
+  },
 
 }
 

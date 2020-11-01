@@ -20,6 +20,10 @@ const helper = {
     return Math.random().toString(36).substr(2, 5);
   },
 
+  getCurrentTime() {
+    return Date.now().toString();
+  },
+
   setValueFromMatcher(data) {
     if (Array.isArray(data)) {
       for (let i = 0; i < data.length; i++) {
@@ -194,51 +198,6 @@ const helper = {
 
   sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-  },
-
-  afterSpecReport(spec, reporter) {
-    const data = {
-      id: spec.id,
-      status: spec.status,
-      failure: spec.failure,
-      start: spec.start,
-      end: Date.now().toString(),
-      request: {
-        method: spec._request.method,
-        path: spec._request.url,
-        headers: spec._request.headers,
-        body: spec._request.data
-      }
-    };
-    if (spec._response) {
-      data.response = {
-        statusCode: spec._response.statusCode,
-        headers: spec._response.headers,
-        body: spec._response.json || spec._response.body
-      }
-      data.duration = spec._response.responseTime;
-    }
-    data.recorded = spec.recorded;
-    reporter.afterSpec(data);
-  },
-
-  afterStepReport(step, reporter) {
-    const data = {
-      id: step.id,
-      name: step.name,
-      specs: step.specs.map(spec => spec.id),
-      cleans: step.cleans.map(spec => spec.id)
-    }
-    reporter.afterStep(data);
-  },
-
-  afterTestReport(test, reporter) {
-    const data = {
-      id: test.id,
-      name: test.name,
-      steps: test.steps.map(step => step.id)
-    }
-    reporter.afterTest(data);
   },
 
   matchesStrategy(value, strategy) {

@@ -4,10 +4,10 @@ const config = require('../config');
 const helper = require('../helpers/helper');
 const processor = require('../helpers/dataProcessor');
 const log = require('../helpers/logger');
+const rlc = require('../helpers/reporter.lifeCycle');
 const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const stash = require('../exports/stash');
-const reporter = require('../exports/reporter');
 const request = require('../exports/request');
 
 class Tosser {
@@ -36,6 +36,7 @@ class Tosser {
     await this.setResponse();
     await this.sleep(this.spec._waitDuration);
     this.setPreviousLogLevel();
+    await this.getInteractionsFromServer();
     await this.removeInteractionsFromServer();
     this.recordData();
     this.validate();
@@ -114,15 +115,24 @@ class Tosser {
     this.recorders.forEach(recorder => { recordData(recorder, this.spec) });
   }
 
-  async removeInteractionsFromServer() {
+  async getInteractionsFromServer() {
     if (this.mockIds.length > 0) {
       this.mockInteractions.length = 0;
       this.mockInteractions = this.mockInteractions.concat(await mock.getInteraction(this.mockIds));
-      await mock.removeInteraction(this.mockIds);
+      this.spec.interactions = this.spec.interactions.concat(this.mockInteractions.filter(interaction => interaction.expects.exercised));
     }
     if (this.pactIds.length > 0) {
       this.pactInteractions.length = 0;
       this.pactInteractions = this.pactInteractions.concat(await mock.getInteraction(this.pactIds));
+      this.spec.interactions = this.spec.interactions.concat(this.pactInteractions.filter(interaction => interaction.expects.exercised));
+    }
+  }
+
+  async removeInteractionsFromServer() {
+    if (this.mockIds.length > 0) {
+      await mock.removeInteraction(this.mockIds);
+    }
+    if (this.pactIds.length > 0) {
       await mock.removeInteraction(this.pactIds);
     }
   }
@@ -133,11 +143,11 @@ class Tosser {
       this.validateInteractions();
       this.validateResponse();
       this.spec.status = 'PASSED';
-      helper.afterSpecReport(this.spec, reporter);
+      rlc.afterSpecReport(this.spec);
     } catch (error) {
       this.spec.status = 'FAILED';
       this.spec.failure = error.toString();
-      helper.afterSpecReport(this.spec, reporter);
+      rlc.afterSpecReport(this.spec);
       const res = {
         statusCode: this.response.statusCode,
         headers: this.response.headers,
@@ -153,7 +163,7 @@ class Tosser {
     if (this.response instanceof Error) {
       this.spec.status = 'ERROR';
       this.spec.failure = this.response.toString();
-      helper.afterSpecReport(this.spec, reporter);
+      rlc.afterSpecReport(this.spec);
       this.expect.fail(this.response);
     }
   }
@@ -191,8 +201,8 @@ class Tosser {
         outputs.push(_handler(ctx));
       }
       if (typeof _handler === 'string') {
-        const _customHandlerFun = handler.getReturnHandler(_handler);
-        if (_customHandlerFun) {
+        if (helper.matchesStrategy(_handler, config.strategy.return.handler)) {
+          const _customHandlerFun = handler.getReturnHandler(helper.sliceStrategy(_handler, config.strategy.return.handler));
           outputs.push(_customHandlerFun(ctx));
         } else {
           outputs.push(getPathValueFromSpec(_handler, this.spec));

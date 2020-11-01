@@ -38,12 +38,18 @@ export interface MockInteractionResponse extends InteractionResponseWithDelay {
   onCall?: OnCall
 }
 
+export interface InteractionExpectations {
+  exercised?: boolean;
+  callCount?: number;
+}
+
 // TODO - accept function - (req, res)
 export interface MockInteraction {
   id?: string;
   provider?: string;
   withRequest: InteractionRequest;
   willRespondWith: MockInteractionResponse;
+  expects?: InteractionExpectations;
 }
 
 export interface PactInteraction {
@@ -56,6 +62,7 @@ export interface PactInteraction {
   uponReceiving: string;
   withRequest: InteractionRequest;
   willRespondWith: InteractionResponse;
+  expects?: InteractionExpectations;
 }
 
 export interface InteractionDetails {

@@ -78,8 +78,8 @@ class LikeJson {
 
   expressionCompare(actual, expected, actualPath, expectedPath) {
     if (typeof expected === 'string') {
-      const value = config.assert.expression.includes;
-      if (helper.matchesStrategy(expected, config.assert.expression)) {
+      const value = config.strategy.assert.expression.includes;
+      if (helper.matchesStrategy(expected, config.strategy.assert.expression)) {
         const expression = expected.replace(value, 'actual');
         const res = eval(expression);
         if (res !== true) {
@@ -91,9 +91,9 @@ class LikeJson {
   }
 
   valueAssertionCompare(actual, expected, actualPath, expectedPath) {
-    const sw = config.assert.handler.starts;
-    if (typeof expected === 'string' && helper.matchesStrategy(expected, config.assert.handler)) {
-      const [handlerName, ..._args] = helper.sliceStrategy(expected, config.assert.handler).split(':');
+    const sw = config.strategy.assert.handler.starts;
+    if (typeof expected === 'string' && helper.matchesStrategy(expected, config.strategy.assert.handler)) {
+      const [handlerName, ..._args] = helper.sliceStrategy(expected, config.strategy.assert.handler).split(':');
       try {
         const handlerFun = handler.getAssertHandler(handlerName);
         const args = _args.length > 0 ? _args[0].split(',') : _args;

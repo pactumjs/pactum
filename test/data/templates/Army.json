@@ -1,6 +1,6 @@
 {
   "Army:New": {
-    "Name": "@DATA:MAP::Army.Name@",
+    "Name": "$M{Army.Name}",
     "Count": 10000,
     "Alliance": "Stark"
   },
