@@ -2,31 +2,32 @@
 
 API Testing in general can greatly improve the efficiency of our testing strategy helping us to deliver software faster than ever. It has many aspects but generally consists of making a request & validating the response. 
 
-*Note: This documentation majorly focuses on request making & response validation. Advanced features are covered in places where it makes more sense.*
+*Note: This documentation majorly focuses on request making & response validation. Advanced features of API Testing are covered in the next sections.*
 
-## Table of contents
+## Table of Contents
 
 * [Getting Started](#getting-started)
-* [API](#api)
-  * [Testing Style](#testing-style)
-  * [Request Making](#request-making)
-    * [Query Params](#query-params)
-    * [Headers](#headers)
-    * [Body](#body)
-    * [Form Data](#form-data)
-    * [GraphQL](#graphql)
-    * [Request Timeout](#request-timeout)
-  * [Response Validation](#response-validation)
-    * [Status & Headers & Response Time](#status-&-headers-&-response-time)
-    * [JSON](#json)
-      * [expectJson](#expectJson)
-      * [expectJsonLike](#expectJsonLike)
-      * [expectJsonSchema](#expectJsonSchema)
-      * [expectJsonAt](#expectJsonAt)
-      * [expectJsonLikeAt](#expectJsonLikeAt)
-      * [expectJsonMatch](#expectJsonMatch)
-    * [Custom Validations](#custom-validations)
-  * [Request Settings](#request-settings)
+* [Testing Style](#testing-style)
+* [Request Making](#request-making)
+  * [Query Params](#query-params)
+  * [Headers](#headers)
+  * [Body](#body)
+  * [Form Data](#form-data)
+  * [GraphQL](#graphql)
+  * [Request Timeout](#request-timeout)
+* [Response Validation](#response-validation)
+  * [Status & Headers & Response Time](#status-&-headers-&-response-time)
+  * [JSON](#json)
+    * [expectJson](#expectJson)
+    * [expectJsonAt](#expectJsonAt)
+    * [expectJsonLike](#expectJsonLike)
+    * [expectJsonLikeAt](#expectJsonLikeAt)
+    * [expectJsonSchema](#expectJsonSchema)
+    * [expectJsonSchemaAt](#expectJsonSchemaAt)
+    * [expectJsonMatch](#expectJsonMatch)
+    * [expectJsonMatchAt](#expectJsonMatchAt)
+  * [Custom Validations](#custom-validations)
+* [Request Settings](#request-settings)
 * [Next](#next)
 
 ## Getting Started
@@ -69,9 +70,7 @@ Running the test
 mocha test.js
 ```
 
-## API
-
-### Testing Style
+## Testing Style
 
 Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations.
 
@@ -160,7 +159,7 @@ describe('should have a user with name bolt', () => {
 });
 ```
 
-### Request Making
+## Request Making
 
 The request method indicates the method to be performed on the resource identified by the given Request-URI.
 
@@ -189,9 +188,9 @@ To pass additional parameters to the request, we can chain or use the following 
 | `withCore`                | http request options                      |
 | `withAuth`                | basic auth details                        |
 | `__setLogLevel`           | sets log level for troubleshooting        |
-| `toss`                    | runs the spec & returns a promise         |
+| `toss` (optional)         | runs the spec & returns a promise         |
 
-#### Query Params
+### Query Params
 
 Use `withQueryParams` to pass query parameters to the request.
 
@@ -207,7 +206,7 @@ it('get random male user from India', async () => {
 });
 ```
 
-#### Headers
+### Headers
 
 Use `withHeaders` to pass headers to the request.
 
@@ -223,7 +222,7 @@ it('get all comments', async () => {
 });
 ```
 
-#### Body
+### Body
 
 Use `withBody` or `withJson` methods to pass the body to the request.
 
@@ -249,7 +248,7 @@ it('post json object', async () => {
 });
 ```
 
-#### Form Data
+### Form Data
 
 Use `withForm` or `withMultiPartFormData` to pass form data to the request.
 
@@ -298,7 +297,7 @@ it('post with multipart form data', async () => {
 });
 ```
 
-#### GraphQL
+### GraphQL
 
 Use `withGraphQLQuery` or `withGraphQLVariables` to pass GraphQL data to the request. *Works for only POST requests.*
 
@@ -325,7 +324,7 @@ it('post graphql query & variables', async () => {
 });
 ```
 
-#### Request Timeout
+### Request Timeout
 
 By default, pactum's request will timeout after 3000 ms. To increase the timeout for the current request use the `withRequestTimeout` method. **Make Sure To Increase The Test Runners Timeout As Well**
 
@@ -347,28 +346,30 @@ it('some action that will take more time to complete', async () => {
 
 
 
-### Response Validation
+## Response Validation
 
 Expectations help to assert the response received from the server.
 
-| Method                  | Description                             |
-| ----------------------- | --------------------------------------- |
-| `expect`                | runs custom expect handler              |
-| `expectStatus`          | check HTTP status                       |
-| `expectHeader`          | check HTTP header key + value           |
-| `expectHeaderContains`  | check HTTP header key + partial value   |
-| `expectBody`            | check exact match of body               |
-| `expectBodyContains`    | check body contains the value           |
-| `expectJson`            | check exact match of json               |
-| `expectJsonAt`          | check json using **json-query**         |
-| `expectJsonLike`        | check loose match of json               |
-| `expectJsonLikeAt`      | check json like using **json-query**    |
-| `expectJsonSchema`      | check json schema                       |
-| `expectJsonSchemaAt`    | check json schema using **json-query**  |
-| `expectJsonMatch`       | check json to match                     |
-| `expectResponseTime`    | check response time                     |
+| Method                  | Description                               |
+| ----------------------- | ----------------------------------------- |
+| `expect`                | runs custom expect handler                |
+| `expectStatus`          | check HTTP status                         |
+| `expectHeader`          | check HTTP header key + value             |
+| `expectHeaderContains`  | check HTTP header key + partial value     |
+| `expectBody`            | check exact match of body                 |
+| `expectBodyContains`    | check body contains the value             |
+| `expectJson`            | check exact match of json                 |
+| `expectJsonAt`          | check json using **json-query**           |
+| `expectJsonLike`        | check loose match of json                 |
+| `expectJsonLikeAt`      | check json like using **json-query**      |
+| `expectJsonSchema`      | check json schema                         |
+| `expectJsonSchemaAt`    | check json schema using **json-query**    |
+| `expectJsonMatch`       | check json to match                       |
+| `expectJsonMatchAt`     | check json to match using **json-query**  |
+| `expectResponseTime`    | check response time                       |
+| `wait`                  | wait before performing validation         |
 
-#### Status & Headers & Response Time
+### Status & Headers & Response Time
 
 Expecting Status Code & Headers from the response.
 
@@ -388,15 +389,15 @@ it('get post with id 1', async () => {
 });
 ```
 
-##### expectResponseTime
+#### expectResponseTime
 
 Checks if the request is completed within a specified duration (ms).
 
-#### JSON
+### JSON
 
 Most REST APIs will return a JSON response. This library has few methods to validate a JSON response in many aspects.
 
-##### expectJson
+#### expectJson
 
 Performs deep equal.
 
@@ -417,7 +418,7 @@ it('get post with id 1', async () => {
 });
 ```
 
-##### expectJsonAt
+#### expectJsonAt
 
 Allows validation of specific part in a JSON. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
 
@@ -441,12 +442,13 @@ it('get people', async () => {
 });
 ```
 
-##### expectJsonLike
+#### expectJsonLike
 
 Performs partial deep equal. 
 
 * Allows Regular Expressions.
-* Allows JavaScript Expressions.
+* Allows Assert Expressions.
+* Allows Assert Handlers.
 * Order of items in an array doesn't matter.
 
 ```javascript
@@ -467,35 +469,123 @@ it('posts should have a item with title -"some title"', async () => {
 });
 ```
 
-###### JS Expressions
+##### Assert Expressions
 
-JS Expressions help to perform custom & complex assertions on a JSON. A JS Expression should start with `@(` & end with `)@`. 
+Assert Expressions helps to run custom JavaScript code on a JSON that performs user defined assertions. 
 
-Expression should
- * be a valid JavaScript expression.
- * have `$` to represent current value.
- * return a *boolean*.
+ * Expression should contain `$V` to represent current value.
+ * Expression should be a valid JavaScript code.
+ * Expression should return a *boolean*.
+
+*Note* - *String containing **$V** will be automatically treated as a Assert Expression* 
 
 ```javascript
 it('get users', async () => {
-  const response = await pactum.spec()
+  await pactum.spec()
     .get('/api/users')
-    .expectStatus(200)
-    .expectJsonLike('@( $.length === 10 )@'); // api should return an array with length 10
+    .expectJsonLike('$V.length === 10'); // api should return an array with length 10
     .expectJsonLike([
       {
+        id: 'typeof $V === "string"',
         name: 'jon',
-        age: '@( $ > 30 )@' // age should be greater than 30
+        age: '$V > 30' // age should be greater than 30 
       }
-    ])
+    ]);
 });
 ```
 
-##### expectJsonLikeAt
+You are also allowed to change the default value `$V` to some other string based on your usage. *Be cautious that all the strings containing the new value will be treated as assert expressions and pactum will try to evaluate it as a javascript code*.
+
+```javascript
+pactum.settings.setAssertExpressionStrategy({ includes: '$' });
+
+it('get users', async () => {
+  await pactum.spec()
+    .get('/api/users')
+    .expectJsonLike([
+      {
+        name: 'jon',
+        age: '$ > 30' // age should be greater than 30 
+      }
+    ]);
+});
+```
+
+##### Assert Handlers
+
+Assert Handlers helps us to reuse the custom JavaScript assertion code on a JSON. With this we can easily extend the capabilities of `expectJsonLike` to solve complex assertions.
+
+ * Handler name will be prefixed with `#`.
+ * Handler function should return a *boolean*.
+
+*Note* - *String starting with **#** will be automatically treated as a Assert Handler*. 
+
+Handlers is a powerful concept in pactum that helps to reuse different things. To add a assert handler use `handler.addAssertHandler` function.
+
+* First param will be the name of the assert handler which will be used in `expectJsonLike` to refer it.
+* Second param will be a function that accepts a context object as an argument. Context object will have `data` property that will represent the current value in JSON. It also includes optional `args` property that includes custom arguments. 
+
+```javascript
+pactum.handler.addAssertHandler('number', (ctx) => {
+  return typeof ctx.data === 'number';
+});
+
+it('get users', async () => {
+  await pactum.spec()
+    .get('/api/users')
+    .expectJsonLike([
+      {
+        id: '#number',
+        name: 'jon'
+      }
+    ]);
+});
+```
+
+Custom arguments can be passed to the handler function by using comma separated values after `:`.
+
+```javascript
+pactum.handler.addAssertHandler('type', (ctx) => {
+  return typeof ctx.data === ctx.args[0];
+});
+
+it('get users', async () => {
+  await pactum.spec()
+    .get('/api/users')
+    .expectJsonLike([
+      {
+        id: '#type:number',
+        name: 'jon'
+      }
+    ]);
+});
+```
+
+You are also allowed to change the default value `#` to some other string based on your usage. *Be cautious that all the strings starting with the new value will be treated as assert handlers*.
+
+```javascript
+pactum.settings.setAssertHandlerStrategy({ starts: '##' });
+
+it('get users', async () => {
+  await pactum.spec()
+    .get('/api/users')
+    .expectJsonLike([
+      {
+        id: '##handlerName:arg1,arg2',
+        name: 'jon'
+      }
+    ]);
+});
+```
+
+#### expectJsonLikeAt
 
 Allows validation of specific part in a JSON. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
 
 * Performs partial deep equal.
+* Allows Regular Expressions.
+* Allows Assert Expressions.
+* Allows Assert Handlers.
 * Order of items in an array doesn't matter.
 
 ```javascript
@@ -515,7 +605,7 @@ it('get people', async () => {
 });
 ```
 
-##### expectJsonSchema
+#### expectJsonSchema
 
 Allows validation of the schema of a JSON. See [json-schema](https://json-schema.org/learn/) for more usage details.
 
@@ -542,7 +632,7 @@ it('get people', async () => {
 });
 ```
 
-##### expectJsonSchemaAt
+#### expectJsonSchemaAt
 
 Allows validation of the schema of a JSON at a specific place. See [json-schema](https://json-schema.org/learn/) for more usage details.
 
@@ -564,9 +654,9 @@ it('get people', async () => {
 });
 ```
 
-##### expectJsonMatch
+#### expectJsonMatch
 
-Allows validation of JSON with a set of matchers. See [matching](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server#matching) for more usage details.
+Allows validation of JSON with a set of matchers. See [Matching](https://github.com/ASaiAnudeep/pactum/wiki/Matching) for more usage details.
 
 ```javascript
 const { like } = pactum.matchers;
@@ -582,11 +672,29 @@ it('get people', async () => {
 });
 ```
 
-#### Custom Validations
+#### expectJsonMatchAt
+
+Allows validation of specific part in a JSON with a set of matchers. See [Matching](https://github.com/ASaiAnudeep/pactum/wiki/Matching) for more usage details. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
+
+```javascript
+const { like } = pactum.matchers;
+
+it('get people', async () => {
+  const response = await pactum.spec()
+    .get('https://some-api/people')
+    .expectStatus(200)
+    .expectJsonMatchAt('people[0]', {
+      id: like(1),
+      name: 'jon'
+    });
+});
+```
+
+### Custom Validations
 
 You can also add custom expect handlers to this library for making much more complicated assertions that are ideal to your requirement. You can bring your own assertion library or take advantage of popular libraries like [chai](https://www.npmjs.com/package/chai).
 
-##### AdHoc
+#### AdHoc
 
 You can simply pass a function as a parameter to `expect` & then write your logic that performs assertions. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects.
 
@@ -608,7 +716,7 @@ it('post should have a item with title -"some title"', async () => {
 });
 ```
 
-##### Common
+#### Common
 
 There might be a use case where you wanted to perform the same set of assertions. For such scenarios, you can add custom expect handlers that can be used at different places. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects & *data* (custom data).
 
@@ -674,11 +782,11 @@ it('should have a post with id 5', async () => {
 });
 ```
 
-### Request Settings
+## Request Settings
 
 This library also offers us to set default options for all the requests that are sent through it.
 
-#### setBaseUrl
+### setBaseUrl
 
 Sets the base URL for all the HTTP requests.
 
@@ -697,7 +805,7 @@ it('should have a post with id 5', async () => {
 });
 ```
 
-#### setDefaultTimeout
+### setDefaultTimeout
 
 Sets the default timeout for all the HTTP requests.
 The default value is **3000 ms**
@@ -706,7 +814,7 @@ The default value is **3000 ms**
 pactum.request.setDefaultTimeout(5000);
 ```
 
-#### setDefaultHeaders
+### setDefaultHeaders
 
 Sets default headers for all the HTTP requests.
 

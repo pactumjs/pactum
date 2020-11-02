@@ -203,7 +203,7 @@ Mock handlers help us to reuse interactions across tests. Use `handler.addMockIn
 
 It accepts two arguments
 
-* handler name - a string to reference the interaction later
+* handler name - a string to refer the interaction later
 * callback function - it should return a mock interaction
 
 While using a mock handler, you can pass custom data into it to change the behavior of the interaction. Look at the below example where we use the same interaction in both scenarios.
@@ -278,6 +278,18 @@ it('some background process', () => {
   expect(interaction.exercised).equals(true);
   expect(interaction.callCount).equals(1);
   mock.removeInteraction(id);
+});
+```
+
+We can also use `wait` method to pause the validation for the background process to complete.
+
+```javascript
+it('some background process', () => {
+  await pactum.spec()
+    .useMockInteraction('get product')
+    .post('/api/process')
+    .expectStatus(202)
+    .wait(1000);
 });
 ```
 

@@ -294,7 +294,7 @@ The final way of adding behavior to the mock server is through pact interactions
 Major differences between mock & pact interactions are
 
 * Pact Interactions generate a contract file which is later used for [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
-* Performs a **strong match** on tje received request's query params & JSON body.
+* Performs a **strong match** on the received request's query params & JSON body.
 * Performs a **loose match** on the received request's headers.
 
 Use `addPactInteraction` to add a pact interaction to the server. It returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
@@ -348,7 +348,12 @@ mock.addPactInteraction({
 
 ### Handlers
 
-Mock handlers help us to reuse same kind of interactions with modifications. Use `handler.addMockInteractionHandler` or `handler.addPactInteractionHandler` functions to temporarily store interactions & later use the handler name to add them to the mock server.
+Interaction handlers help us to reuse same kind of interactions with modifications. Use `handler.addMockInteractionHandler` or `handler.addPactInteractionHandler` functions to temporarily store interactions & later use the handler name to add them to the mock server.
+
+It accepts two arguments
+
+* handler name - a string to refer the interaction later
+* callback function - it should return a mock interaction or reference to other interaction
 
 ```javascript
 const mock = pactum.mock;
@@ -374,6 +379,44 @@ handler.addMockInteractionHandler('get product', (ctx) => {
 
 mock.addMockInteraction('get product', { product: 'iPhone', inStock: true });
 mock.addMockInteraction('get product', { product: 'iPhone', inStock: false });
+
+mock.start(3000);
+```
+
+Interaction handlers can refer other interaction handlers to make them more reusable. Instead of returning interaction, return an object with `name` & optional `data` property.
+
+```javascript
+const mock = pactum.mock;
+const handler = pactum.handler;
+
+handler.addMockInteractionHandler('get product', (ctx) => {
+  return {
+    withRequest: {
+      method: 'GET',
+      path: '/api/inventory',
+      query: {
+        product: ctx.data.product
+      }
+    },
+    willRespondWith: {
+      status: 200,
+      body: {
+        "InStock": ctx.data.inStock
+      }
+    }
+  }    
+});
+
+handler.addMockInteractionHandler('get product in stock', () => {
+  return { name: 'get product', data: { product: 'iPhone', inStock: true } };   
+});
+
+handler.addMockInteractionHandler('get product out of stock', () => {
+  return { name: 'get product', data: { product: 'iPhone', inStock: false } };   
+});
+
+mock.addMockInteraction('get product in stock');
+mock.addMockInteraction('get product out of stock');
 
 mock.start(3000);
 ```
@@ -426,14 +469,7 @@ mock.start(3000);
 
 ## Matching
 
-In real world applications, sometimes it is hard to match an expected request/response with actual request/response. To overcome such issues, **pactum** provides a mechanism for request & response matching.
-
-It supports following matchers
-
-* `like` or `somethingLike` - matches with the type
-* `regex` or `term` - matches with the regular expression
-* `eachLike` - matches all the elements in the array with the specified type
-* `contains` - checks if actual value contains a specified value in it
+Allows matching of request/response with a set of matchers. See [Matching](https://github.com/ASaiAnudeep/pactum/wiki/Matching) for more usage details.
 
 Matchers can be applied to
 

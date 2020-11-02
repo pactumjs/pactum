@@ -6,7 +6,7 @@ When it comes to API Integration Testing, essentially it involves testing how mu
 
 This document explains the features that are offered by **pactum** to support integration testing.
 
-*Note: This documentation majorly focuses on chaining multiple requests & passing data between them. Basic & Advanced features are covered in places where it makes more sense.*
+*Note: This documentation majorly focuses on chaining multiple requests & passing data between them.*
 
 ## Pre Requisite
 
@@ -15,28 +15,25 @@ This document explains the features that are offered by **pactum** to support in
 ## Table of contents
 
 * [Getting Started](#getting-started)
-* [API](#api)
-  * [Nested Dependent HTTP Calls](#nested-dependent-http-calls)
-  * [Retry Mechanism](#retry-mechanism)
+* [Nested Dependent HTTP Calls](#nested-dependent-http-calls)
+* [Retry Mechanism](#retry-mechanism)
 * [Next](#next)
 
 ## Getting Started
 
 Before getting started please learn more about [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing) with pactum.
 
-## API
-
-### Nested Dependent HTTP Calls
+## Nested Dependent HTTP Calls
 
 API testing is naturally asynchronous, which can make tests complex when these tests need to be chained. **Pactum** allows us to return custom data from the response that can be passed to the next tests using [json-query](https://www.npmjs.com/package/json-query) expressions or custom handler functions.
 
 You can pass data between tests by using either `returns` or `stores` methods.
 
-#### returns 
+### returns 
 
 Use `returns` method to return custom response from the received response JSON.
 
-##### json-query
+#### json-query
 
 `returns` method accepts a json-query expression as the first argument.
 
@@ -74,7 +71,7 @@ it('first & second posts should have comments', async () => {
 });
 ```
 
-##### AdHoc Handler
+#### AdHoc Handler
 
 We can also use a custom handler function to return data. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects. 
 
@@ -92,12 +89,14 @@ it('should return all posts and first post should have comments', async () => {
 });
 ```
 
-##### Common Handler
+#### Common Handler
 
 We can also use a custom common handler function to return data & use it across tests. It accepts two arguments.
 
 * *Fist Argument*: Name of the handler function used to refer it later in specs.
 * *Second Argument*: A function that receives context object with request & response details. The returned value will be the output of `await pactum.spec()`. The function should be synchronous.
+
+While using the common handlers, the name should be prefixed with `#` and can be customized using `pactum.settings.setReturnHandlerStrategy()`.
 
 ```javascript
 const pactum = require('pactum');
@@ -114,16 +113,14 @@ it('should return all posts and first post should have comments', async () => {
   const postID = await pactum.spec()
     .get('http://jsonplaceholder.typicode.com/posts')
     .expectStatus(200)
-    .returns('first post id');
+    .returns('#first post id');
   await pactum.spec()
     .get(`http://jsonplaceholder.typicode.com/posts/${postID}/comments`)
     .expectStatus(200);
 });
 ```
 
-**Note**: *While evaluating the string passed to the returns function, this library sees if there is a handler function with the name. If not found it will execute the json-query.*
-
-#### stores
+### stores
 
 Use `stores` method to save response data under *data management* which can be referenced later in specs. This method accepts two arguments.
 
@@ -168,14 +165,14 @@ Lets say the response is
 */
 ```
 
-To later refer the stored value, you need to use `@DATA:STR::<name>@` or `@DATA:STR::<name><json-query>@` as a place holder in the requests.
+To later refer the stored value, you need to use `$S{<name>}` or `$S{<name><json-query>}` as a place holder in the requests.
 
 ```javascript
 // It will make a GET request to http://jsonplaceholder.typicode.com/posts/1
 await pactum.spec()
-  .get('http://jsonplaceholder.typicode.com/posts/@DATA:STR::FirstPost.id@')
+  .get('http://jsonplaceholder.typicode.com/posts/$S{FirstPost.id}')
   .withJson({
-    id: '@DATA:STR::FirstPost.id@'
+    id: '$S{FirstPost.id}'
     title: 'new title'
   });
 });
@@ -193,19 +190,19 @@ await pactum.spec()
 await pactum.spec()
   .post('http://jsonplaceholder.typicode.com/posts')
   .withJson({
-    data: '@DATA:STR::SecondPost@'
+    data: '$S{SecondPost}'
   });
 });
 ```
 
 
-### Retry Mechanism
+## Retry Mechanism
 
 Not all APIs perform simple CRUD operations. Some operations take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response. (*Make sure to update test runners default timeout*) 
 
 Use `retry` to specify your retry strategy. It accepts options object as an argument. If the strategy function returns true, it will perform the request again.
 
-##### retryOptions
+#### retryOptions
 
 | Property  | Type       | Description                                |
 | --------- | ---------- | ------------------------------------------ |
@@ -214,7 +211,7 @@ Use `retry` to specify your retry strategy. It accepts options object as an argu
 | strategy  | `function` | retry strategy function - returns boolean  |
 | strategy  | `string`   | retry strategy handler name                | 
 
-#### AdHoc Handler
+### AdHoc Handler
 
 We can use a custom handler function to return a boolean. A *context* object is passed to the handler function which contains *req* (request) & *res* (response) objects. 
 
@@ -229,7 +226,7 @@ await pactum.spec()
   .expectStatus(200);
 ```
 
-#### Common Handler
+### Common Handler
 
 We can also use a custom common handler function to return data & use it at different places.
 

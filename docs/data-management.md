@@ -1,19 +1,18 @@
 # Data Management
 
-Data Management is one of the most powerful features of **pactum**. It saves time by allowing us too define common data in a single place & then reference it at multiple places.
+Data Management is one of the most powerful features of **pactum**. It saves time by allowing us to reuse common data.
 
 ## Table of Contents
 
-* [Example](#example)
-* [API](#api)
-  * [Data Template](#data-template)
-  * [Data References](#data-references)
-    * [Data Map](#data-map)
-    * [Data Function](#data-function)
-    * [Data Spec](#data-spec)
+* [Introduction](#introduction)
+* [Data Template](#data-template)
+* [Data References](#data-references)
+  * [Data Map](#data-map)
+  * [Data Function](#data-function)
+  * [Data Store](#data-store)
 * [Loading Data](#loading-data)
 
-## Example
+## Introduction
 
 As the functionality of the application grows, the scope of the testing grows with it. At one point, managing data becomes complex.
 
@@ -42,9 +41,7 @@ Now let's assume, your application no longer accepts the above JSON. It needs a 
 
 To solve these kind of problems, **pactum** comes with a concept of *Data Templates* & *Data References* to manage your test data. It helps us to re-use data across tests.
 
-## API
-
-### Data Template
+## Data Template
 
 A Data Template is a standard format for a particular resource. Once a template is defined, it can be used across all the tests to perform a request.
 
@@ -187,16 +184,16 @@ it('should add a user with address', async () => {
 });
 ```
 
-### Data References
+## Data References
 
-#### Data Map
+### Data Map
 
 A Data Map is a collection of data that can be referenced in data templates or tests. The major differences between a data template & a data map are
 
 * When a data template is used, the current object will be replaced.
 * When a data map is used, the current object's property value will be replaced.
 
-Use `stash.addDataMap` to add a data map. To use the map in the tests or in the template, use `@DATA:MAP::<json-query>@` as the value.
+Use `stash.addDataMap` to add a data map. To use the map in the tests or in the template, use `$M{<json-query>}` as the value.
 
 ```javascript
 const pactum = require('pactum');
@@ -212,9 +209,9 @@ before(() => {
   });
   stash.addDataTemplate({
     'User:New': {
-      "FirstName": "@DATA:MAP::User.FirstName@",
-      "LastName": "@DATA:MAP::User.LastName@",
-      "FullName": "@DATA:MAP::User.FirstName@ @DATA:MAP::User.LastName@",
+      "FirstName": "$M{User.FirstName}",
+      "LastName": "$M{User.LastName}",
+      "FullName": "$M{User.FirstName} $M{User.LastName}",
       "Age": 26,
       "Gender": "male",
       "House": "Castle Black"
@@ -244,8 +241,8 @@ before(() => {
   stash.addDataMap({
     'User': {
       'Default': {
-        'FirstName': '@DATA:MAP::User.FirstNames[0]@',
-        'LastName': '@DATA:MAP::User.LastNames[0]@',
+        'FirstName': '$M{User.FirstNames[0]}',
+        'LastName': '$M{User.LastNames[0]}',
         'Country': 'North'
       },
       'FirstNames': [ 'Jon', 'Ned', 'Ary' ],
@@ -255,11 +252,11 @@ before(() => {
 });
 ```
 
-#### Data Function
+### Data Function
 
 Data Functions can ease up your life when working with dynamic values. A Data Function is a custom data handler function that returns some sort of data that can be referenced later.
 
-Use `handler.addDataFunHandler` to add a custom data function handler. To use the data function in the tests or in the template, use `@DATA:FUN::<handler-name>@`.
+Use `handler.addDataFunHandler` to add a custom data function handler. To use the data function in the tests or in the template, use `$F{<handler-name>}`.
 
 ```javascript
 const pactum = require('pactum');
@@ -274,24 +271,24 @@ handler.addDataFunHandler('GetAuthToken', () => {
 
 await pactum.spec()
   .post('/api/order')
-  .withHeaders('Authorization', '@DATA:FUN::GetAuthToken@')
+  .withHeaders('Authorization', '$F{GetAuthToken}')
   .withJson({
     'Item': 'Sword',
-    'CreatedAt': '@DATA:FUN::GetTimeStamp@'
+    'CreatedAt': '$F{GetTimeStamp}'
   });
 ```
 
-Data functions also accepts custom data as arguments in the form of array. To pass data use comma separated values after handler name `@DATA:FUN::<handler-name>:<arg1>,<arg2>@`.
+Data functions also accepts custom data as arguments in the form of array. To pass data use comma separated values after handler name `$F{<handler-name>:<arg1>,<arg2>}`.
 
 ```javascript
 handler.addDataFunHandler('GetFormattedDate', (ctx) => {
-  const fmt = ctx.data[0];
+  const fmt = ctx.args[0];
   return moment.format(fmt);
 });
 
 handler.addDataFunHandler('GetSum', (ctx) => {
-  const a = parseInt(ctx.data[0]);
-  const b = parseInt(ctx.data[1]);
+  const a = parseInt(ctx.args[0]);
+  const b = parseInt(ctx.args[1]);
   return a + b;
 });
 
@@ -299,14 +296,14 @@ await pactum.spec()
   .post('/api/order')
   .withJson({
     'Item': 'Sword',
-    'CreatedAt': '@DATA:FUN::GetFormattedDate:dddd@',
-    'CreatedAt': '@DATA:FUN::GetSum:5,10@'
+    'CreatedAt': '$F{GetFormattedDate:dddd}',
+    'Qty': '$F{GetSum:5,10}'
   });
 ```
 
-#### Data Spec
+### Data Store
 
-A data spec is a reference of custom response data that is received while running API tests. This comes in handy while running integration or e2e API testing to pass data to next tests.
+A data store is a reference of custom response data that is received while running API tests. This comes in handy while running integration or e2e API testing to pass data between tests.
 
 See [Nested Dependent HTTP Calls](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#nested-dependent-http-calls) for more information.
 

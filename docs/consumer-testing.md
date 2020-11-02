@@ -153,7 +153,7 @@ const pactum = require('pactum');
 
 before(async () => {
   // sets the name of the consumer
-  pactum.consumer.setConsumerName('order-service');
+  pactum.pact.setConsumerName('order-service');
   // starts the mock server on port 9393
   await pactum.mock.start();
 });
@@ -198,7 +198,7 @@ it('should fetch order details', async () => {
 
 after(async () => {
   // saves the contract file in ./pacts/ folder
-  pactum.consumer.save();
+  pactum.pact.save();
   // stops the mock server
   await pactum.mock.stop();
 
@@ -232,9 +232,9 @@ await pactum
 The final step of consumer testing is to publish the contracts (pact files) to a shared location like pact-broker.
 
 ```javascript
-await pactum.consumer.publish({
+await pactum.pact.publish({
   pactFilesOrDirs: ['./pacts/'],
-  pactBrokerUrl: 'http://localhost:9292',
+  pactBroker: 'http://localhost:9292',
   consumerVersion: '1.2.3'
 });
 ```
@@ -272,7 +272,7 @@ Stops the mock server.
 pactum.mock.stop();
 ```
 
-### pactum.consumer
+### pactum.pact
 
 #### setConsumerName
 Type: `Function`<br>
@@ -280,7 +280,7 @@ Type: `Function`<br>
 sets the name of the consumer
 
 ```javascript
-pactum.consumer.setConsumerName('order-service');
+pactum.pact.setConsumerName('order-service');
 ```
 
 #### save
@@ -289,7 +289,7 @@ Type: `Function`<br>
 saves all the contracts(pact files) in the specified directory
 
 ```javascript
-pactum.consumer.save();
+pactum.pact.save();
 ```
 
 #### setPactFilesDirectory
@@ -300,7 +300,7 @@ sets directory for saving pact files
 *This should be called before save()*
 
 ```javascript
-pactum.consumer.setPactFilesDirectory('/path/for/saving/pact-files');
+pactum.pact.setPactFilesDirectory('/path/for/saving/pact-files');
 ```
 
 #### publish
@@ -311,9 +311,9 @@ publish pact files to pact broker
 *This should be called after save()*
 
 ```javascript
-pactum.consumer.publish({
+pactum.pact.publish({
   pactFilesOrDirs: ['./pacts/'],
-  pactBrokerUrl: 'http://pact-broker',
+  pactBroker: 'http://pact-broker',
   pactBrokerUsername: 'username',
   pactBrokerPassword: '********',
   consumerVersion: '1.2.22',

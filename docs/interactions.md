@@ -20,15 +20,15 @@ Interactions can be added or removed from the mock server in the following ways.
   * `pactum.addPactInteraction({ })` - auto removed after the test case execution
   * `pactum.addMockInteraction({ })` - auto removed after the test case execution
 * When using pactum as a **testing tool** or **mock server**
-  * `pactum.mock.addMockInteraction({ })`
-  * `pactum.mock.addPactInteraction({ })`
-  * `pactum.mock.addMockInteractions([{ }])`
-  * `pactum.mock.addPactInteractions([{ }])`
-  * `pactum.mock.removeInteraction('id')`
-  * `pactum.mock.clearInteractions()`
+  * `pactum.mock.addDefaultMockInteraction({ })`
+  * `pactum.mock.addDefaultPactInteraction({ })`
+  * `pactum.mock.addDefaultMockInteractions([{ }])`
+  * `pactum.mock.addDefaultPactInteractions([{ }])`
+  * `pactum.mock.removeDefaultInteraction('')`
+  * `pactum.mock.clearDefaultInteractions()`
 * Through **remote api**
-  * `/api/pactum/mockInteractions`
-  * `/api/pactum/pactInteractions`
+  * `/api/pactum/mockInteraction`
+  * `/api/pactum/pactInteraction`
 
 Learn more about these methods at [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
 
@@ -46,6 +46,7 @@ Mock Interaction will have the following properties.
 | withRequest.headers             | object      | request headers                 |
 | withRequest.query               | object      | query parameters                |
 | withRequest.body                | any         | request body                    |
+| withRequest.ignoreQuery         | boolean     | ignore request query            |
 | withRequest.ignoreBody          | boolean     | ignore request body             |
 | withRequest.graphQL             | object      | graphQL details                 |
 | withRequest.graphQL.query       | **string**  | graphQL query                   |
@@ -104,7 +105,7 @@ pactum.addMockInteraction({
 });
 
 // Dynamic Object (change behavior on consecutive calls)
-pactum.addMockInteraction({
+pactum.addDefaultMockInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/projects/1'
@@ -412,7 +413,7 @@ it('Matchers - Path & Query', () => {
       }
     })
     .get('http://localhost:9393/api/projects/1')
-    .withQueryParam('date', '12/00/9632')
+    .withQuery('date', '12/00/9632')
     .expectStatus(200);
 });
 
