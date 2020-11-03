@@ -6,9 +6,8 @@
 - 🚀 Simple & Powerful
 - 🔧 Extendable & Customizable
 - 🔥 Clear & Comprehensive Testing Style
-- 💎 Supports **cucumber**, **mocha**, **jest** or **jasmine**
-- ❤️ Ideal for component, contract & e2e testing of APIs
+- ❤️ Component, Contract & E2E testing of APIs
 
-[Get Started](#pactum)
+<a href="#pactum">Get Started</a>
 
 ![color](#f0f0f0)
