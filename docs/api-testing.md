@@ -1,176 +1,85 @@
-# API Testing (REST)
+# API Testing
 
 API Testing in general can greatly improve the efficiency of our testing strategy helping us to deliver software faster than ever. It has many aspects but generally consists of making a request & validating the response. 
 
-*Note: This documentation majorly focuses on request making & response validation. Advanced features of API Testing are covered in the next sections.*
-
-## Table of Contents
-
-* [Getting Started](#getting-started)
-* [Testing Style](#testing-style)
-* [Request Making](#request-making)
-  * [Query Params](#query-params)
-  * [Headers](#headers)
-  * [Body](#body)
-  * [Form Data](#form-data)
-  * [GraphQL](#graphql)
-  * [Request Timeout](#request-timeout)
-* [Response Validation](#response-validation)
-  * [Status & Headers & Response Time](#status-&-headers-&-response-time)
-  * [JSON](#json)
-    * [expectJson](#expectJson)
-    * [expectJsonAt](#expectJsonAt)
-    * [expectJsonLike](#expectJsonLike)
-    * [expectJsonLikeAt](#expectJsonLikeAt)
-    * [expectJsonSchema](#expectJsonSchema)
-    * [expectJsonSchemaAt](#expectJsonSchemaAt)
-    * [expectJsonMatch](#expectJsonMatch)
-    * [expectJsonMatchAt](#expectJsonMatchAt)
-  * [Custom Validations](#custom-validations)
-* [Request Settings](#request-settings)
-* [Next](#next)
-
-## Getting Started
-
-To get started we need to have NodeJS (>=8) installed in our system.
-
-```shell
-# create a new folder (optional)
-mkdir pactum-api-testing
-cd pactum-api-testing
-
-# initialize (optional)
-npm init -y
-
-# install pactum as a dev dependency
-npm install --save-dev pactum
-
-# install a test runner to run pactum tests
-# mocha / jest / cucumber
-npm install mocha -g
-```
-
-Create a JS file & copy the below code
-
-```javascript
-// test.js
-const pactum = require('pactum');
-
-it('should be a teapot', async () => {
-  await pactum.spec()
-    .get('http://httpbin.org/status/418')
-    .expectStatus(418);
-});
-```
-
-Running the test
-
-```shell
-# mocha is a test framework to execute test cases
-mocha test.js
-```
-
-## Testing Style
-
-Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations.
-
-Tests can be written in two styles
-
-* Chaining the request & expectations
-* Breaking the request & expectations (BDD Style)
-
-#### Chaining
-
-We can build the request & expectations by chaining the descriptive methods offered by this library.
-
-```javascript
-it('should have a user with name bolt', () => {
-  return pactum.spec()
-    .get('http://localhost:9393/api/users')
-    .withQueryParams('name', 'bolt')
-    .expectStatus(200)
-    .expectJson({
-      "id": 1,
-      "name": "bolt",
-      "createdAt": "2020-08-19T14:26:44.169Z"
-    })
-    .expectJsonSchema({
-      type: 'object',
-      properties: {
-        id: {
-          type: 'number'
-        }
-      }
-    })
-    .expectResponseTime(100);
-});
-```
-
-#### Breaking
-
-When you want to make your tests much more clearer, you can break your spec into multiple steps. This will come into handy when integrating **pactum** with **cucumber**. See [pactum-cucumber-boilerplate](https://github.com/ASaiAnudeep/pactum-cucumber-boilerplate) for more details on pactum & cucumber integration.
-
-
-Use `pactum.spec()` to get an instance of the spec. With **spec** you can build your request & expectations in multiple steps.
-
-Once the request is built, perform the request by calling `.toss()` method and wait for the promise to resolve. 
-
-**Assertions should be made after the request is performed & resolved**.
-
-Assertions should be made by either using `pactum.expect` or `spec.response()`.
-
-```javascript
-const pactum = require('pactum');
-const expect = pactum.expect;
-
-describe('should have a user with name bolt', () => {
-
-  let spec = pactum.spec();
-  let response;
-
-  it('given a user is requested', () => {
-    spec.get('http://localhost:9393/api/users');
-  });
-
-  it('with name bolt', () => {
-    spec.withQueryParams('name', 'bolt');
-  });
-
-  it('should return a response', async () => {
-    response = await spec.toss();
-  });
-
-  it('should return a status 200', () => {
-    expect(response).to.have.status(200);
-  });
-
-  it('should return a valid user', async () => {
-    spec.response().to.have.jsonLike({ name: 'snow'});
-  });
-
-  it('should return a valid user schema', async () => {
-    expect(response).to.have.jsonSchema({ type: 'object'});
-  });
-
-  it('should return response within 100 milliseconds', async () => {
-    spec.response().to.have.responseTimeLessThan(100);
-  });
-
-});
-```
+> This documentation majorly focuses on how to make a request & how to validate the received response using *pactum*.
 
 ## Request Making
+
+### spec
+
+`pactum.spec()` will return an instance of *spec* which can be used to build the request and expectations.
+
+```javascript
+const pactum = require('pactum');
+
+it('<test-name>', async () => {
+  await pactum.spec()
+    .get('http://httpbin.org/status/200');
+});
+```
+
+### Request Method
 
 The request method indicates the method to be performed on the resource identified by the given Request-URI.
 
 ```javascript
-await pactum.spec().get('http://httpbin.org/status/200');
-await pactum.spec().post('http://httpbin.org/status/200');
-await pactum.spec().put('http://httpbin.org/status/200');
-await pactum.spec().patch('http://httpbin.org/status/200');
-await pactum.spec().delete('http://httpbin.org/status/200');
-await pactum.spec().head('http://httpbin.org/status/200');
+const pactum = require('pactum');
+
+it('GET /user', async () => {
+  await pactum.spec()
+    .get('http://domain.com/user');
+});
+
+it('POST /user', async () => {
+  await pactum.spec()
+    .post('http://domain.com/user');
+});
+
+it('PUT /user', async () => {
+  await pactum.spec()
+    .put('http://domain.com/user');
+});
+
+it('PATCH /user', async () => {
+  await pactum.spec()
+    .patch('http://domain.com/user');
+});
+
+it('DELETE /user', async () => {
+  await pactum.spec()
+    .delete('http://domain.com/user');
+});
 ```
+
+It is a general practice in API Testing, where we set the base url to a constant value.
+
+<!-- tabs:start -->
+
+#### ** base.test.js **
+
+```javascript
+const pactum = require('pactum');
+const request = pactum.request;
+
+before(() => {
+  request.setBaseUrl('http://localhost:3000');
+});
+```
+
+#### ** projects.test.js **
+
+```javascript
+const pactum = require('pactum');
+
+it('should have a post with id 5', async () => {
+  // request will be sent to http://localhost:3000/api/projects
+  await pactum.spec()
+    .get('/api/projects');
+});
+```
+
+<!-- tabs:end -->
 
 To pass additional parameters to the request, we can chain or use the following methods individually to build our request.
 
@@ -192,7 +101,7 @@ To pass additional parameters to the request, we can chain or use the following 
 
 ### Query Params
 
-Use `withQueryParams` to pass query parameters to the request.
+Use `withQueryParams` to pass query parameters to the request. We can either pass key & value or object as an argument.
 
 ```javascript
 it('get random male user from India', async () => {
@@ -200,7 +109,8 @@ it('get random male user from India', async () => {
     .get('https://randomuser.me/api')
     .withQueryParams('gender', 'male')
     .withQueryParams({
-      'country': 'IND'
+      'country': 'IND',
+      'age': 17
     })
     .expectStatus(200);
 });
@@ -208,7 +118,7 @@ it('get random male user from India', async () => {
 
 ### Headers
 
-Use `withHeaders` to pass headers to the request.
+Use `withHeaders` to pass headers to the request. We can either pass key & value or object as an argument.
 
 ```javascript
 it('get all comments', async () => {
@@ -252,7 +162,7 @@ it('post json object', async () => {
 
 Use `withForm` or `withMultiPartFormData` to pass form data to the request.
 
-##### withForm
+#### withForm
 
 * Under the hood, pactum uses `phin.form`
 * `content-type` header will be auto updated to `application/x-www-form-urlencoded`
@@ -270,7 +180,7 @@ it('post with form', async () => {
 });
 ```
 
-##### withMultiPartFormData
+#### withMultiPartFormData
 
 * Under the hood it uses [form-data](https://www.npmjs.com/package/form-data)
 * `content-type` header will be auto updated to `multipart/form-data`
@@ -289,6 +199,7 @@ We can also directly use the form-data object.
 ```javascript
 const form = new pactum.request.FormData();
 form.append(/* form data */);
+
 it('post with multipart form data', async () => {
   await pactum.spec()
     .post('https://httpbin.org/forms/posts')
@@ -348,7 +259,9 @@ it('some action that will take more time to complete', async () => {
 
 ## Response Validation
 
-Expectations help to assert the response received from the server.
+**pactum** allows us to validate the received responses content & as well as external interactions made by the service under test during [Component Testing](component-testing).
+
+Expectations helps us to assert the response received from the server.
 
 | Method                  | Description                               |
 | ----------------------- | ----------------------------------------- |
@@ -371,7 +284,7 @@ Expectations help to assert the response received from the server.
 
 ### Status & Headers & Response Time
 
-Expecting Status Code & Headers from the response.
+Expecting Status Code & Headers & response time from the response.
 
 ```javascript
 const expect = pactum.expect;
@@ -382,16 +295,13 @@ it('get post with id 1', async () => {
     .expectStatus(200)
     .expectHeader('content-type', 'application/json; charset=utf-8')
     .expectHeader('connection', /\w+/)
-    .expectHeaderContains('content-type', 'application/json');
+    .expectHeaderContains('content-type', 'application/json')
+    .expectResponseTime(100);
 
   expect(response).to.have.status(200);
   expect(response).to.have.header('connection', 'close');
 });
 ```
-
-#### expectResponseTime
-
-Checks if the request is completed within a specified duration (ms).
 
 ### JSON
 

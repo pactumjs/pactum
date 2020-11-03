@@ -4,7 +4,7 @@ To get started we need to have NodeJS (>=8) installed in our system.
 
 ## Installation
 
-**pactum** is available as a npm package to download. Add it as a dependency to our new project or existing project.
+**pactum** is available as a npm package to download. Add it as a dependency to a new project or existing project.
 
 ### New Project
 
@@ -18,10 +18,6 @@ npm init -y
 
 # install pactum as a dev dependency
 npm install --save-dev pactum
-
-# install a test runner to run pactum tests
-# mocha / jest / cucumber
-npm install mocha -g
 ```
 
 ### Existing Project
@@ -36,11 +32,12 @@ npm install --save-dev pactum
 
 ## Running Testing
 
-**pactum** is not a test runner. It needs to be used alongside with a test runner like **mocha**, **jest**, **jasmine** or **cucumber**.
+!> **pactum** is not a test runner. It needs to be used alongside with a test runner like **mocha**, **jest**, **jasmine** or **cucumber**.
+
+Install a test runner that supports *promises*.
 
 ```shell
-# install a test runner to run pactum tests
-# mocha / jest / cucumber
+# install a test runner
 npm install mocha -g
 ```
 
@@ -71,7 +68,7 @@ mocha test.js
 
 ## Mock Server
 
-**pactum** can also be started as a standalone mock server or a service virtualization tool.
+**pactum** can also be used as a standalone mock server or a service virtualization tool to generate pact files for contract testing.
 
 <!-- tabs:start -->
 

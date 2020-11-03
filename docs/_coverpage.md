@@ -5,8 +5,8 @@
 - 🐦 Lightweight
 - 🚀 Simple & Powerful
 - 🔧 Extendable & Customizable
-- 🔥 Clear & Comprehensive Testing Style
-- ❤️ Component, Contract & E2E testing of APIs
+- 📚 Clear & Comprehensive Testing Style
+- 🔗 Component, Contract & E2E testing of APIs
 
 <a href="#pactum">Get Started</a>
 
