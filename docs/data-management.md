@@ -2,16 +2,6 @@
 
 Data Management is one of the most powerful features of **pactum**. It saves time by allowing us to reuse common data.
 
-## Table of Contents
-
-* [Introduction](#introduction)
-* [Data Template](#data-template)
-* [Data References](#data-references)
-  * [Data Map](#data-map)
-  * [Data Function](#data-function)
-  * [Data Store](#data-store)
-* [Loading Data](#loading-data)
-
 ## Introduction
 
 As the functionality of the application grows, the scope of the testing grows with it. At one point, managing data becomes complex.
@@ -110,7 +100,7 @@ it('should not add a user with negative age', async () => {
 });
 ```
 
-Templates can also reference other templates. *Be cautious not to create circular dependencies*
+!> Templates can also reference other templates. *Be cautious not to create circular dependencies*
 
 ```javascript
 const pactum = require('pactum');
@@ -231,7 +221,7 @@ before(() => {
 */
 ```
 
-It's perfectly legal to refer other data maps from a data map. *Be cautious not to create circular dependencies*
+!> It's perfectly legal to refer other data maps from a data map. *Be cautious not to create circular dependencies*
 
 ```javascript
 const pactum = require('pactum');
@@ -305,7 +295,7 @@ await pactum.spec()
 
 A data store is a reference of custom response data that is received while running API tests. This comes in handy while running integration or e2e API testing to pass data between tests.
 
-See [Nested Dependent HTTP Calls](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#nested-dependent-http-calls) for more information.
+See [Integration Testing](#integration-testing) for more information.
 
 ## Loading Data
 
@@ -327,13 +317,3 @@ stash.loadData(); // by default it looks for a directory `./data`
 stash.loadData('/path/to/data/folder');
 ```
 
-## Next
-
-----------------------------------------------------------------------------------------------------------------
-
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/API-Testing" >
-  <img src="https://img.shields.io/badge/PREV-API%20Testing-orange" alt="API Testing" align="left" style="display: inline;" />
-</a>
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server" >
-  <img src="https://img.shields.io/badge/NEXT-Mock%20Server-blue" alt="Mock Server" align="right" style="display: inline;" />
-</a>

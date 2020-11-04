@@ -132,6 +132,36 @@ it('get all comments', async () => {
 });
 ```
 
+It is a general practice in API Testing, where we set the default headers.
+
+<!-- tabs:start -->
+
+#### ** base.test.js **
+
+```javascript
+const pactum = require('pactum');
+const request = pactum.request;
+
+before(() => {
+  request.setBaseUrl('http://localhost:3000');
+  request.setDefaultHeaders('Authorization', 'Basic xxxxx');
+});
+```
+
+#### ** projects.test.js **
+
+```javascript
+const pactum = require('pactum');
+
+it('should have a post with id 5', async () => {
+  // request will be sent to http://localhost:3000/api/projects
+  await pactum.spec()
+    .get('/api/projects');
+});
+```
+
+<!-- tabs:end -->
+
 ### Body
 
 Use `withBody` or `withJson` methods to pass the body to the request.
@@ -387,7 +417,7 @@ Assert Expressions helps to run custom JavaScript code on a JSON that performs u
  * Expression should be a valid JavaScript code.
  * Expression should return a *boolean*.
 
-*Note* - *String containing **$V** will be automatically treated as a Assert Expression* 
+!> String containing **$V** will be automatically treated as a Assert Expression.
 
 ```javascript
 it('get users', async () => {
@@ -428,7 +458,7 @@ Assert Handlers helps us to reuse the custom JavaScript assertion code on a JSON
  * Handler name will be prefixed with `#`.
  * Handler function should return a *boolean*.
 
-*Note* - *String starting with **#** will be automatically treated as a Assert Handler*. 
+!> String starting with **#** will be automatically treated as a Assert Handler. 
 
 Handlers is a powerful concept in pactum that helps to reuse different things. To add a assert handler use `handler.addAssertHandler` function.
 
@@ -566,7 +596,7 @@ it('get people', async () => {
 
 #### expectJsonMatch
 
-Allows validation of JSON with a set of matchers. See [Matching](https://github.com/ASaiAnudeep/pactum/wiki/Matching) for more usage details.
+Allows validation of JSON with a set of matchers. See [Matching](matching) for more usage details.
 
 ```javascript
 const { like } = pactum.matchers;
@@ -584,7 +614,7 @@ it('get people', async () => {
 
 #### expectJsonMatchAt
 
-Allows validation of specific part in a JSON with a set of matchers. See [Matching](https://github.com/ASaiAnudeep/pactum/wiki/Matching) for more usage details. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
+Allows validation of specific part in a JSON with a set of matchers. See [Matching](matching) for more usage details. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
 
 ```javascript
 const { like } = pactum.matchers;
@@ -734,21 +764,13 @@ pactum.request.setDefaultHeaders({ 'content-type': 'application/json'});
 ```
 
 
-## Next
-
-* [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
-* [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
-* [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
-* [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
-* [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
-  * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
-  * [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
+# NEXT
 
 ----------------------------------------------------------------------------------------------------------------
 
-<a href="https://github.com/ASaiAnudeep/pactum/wiki" >
-  <img src="https://img.shields.io/badge/PREV-Home-orange" alt="Home" align="left" style="display: inline;" />
+<a href="#/quick-start" >
+  <img src="https://img.shields.io/badge/PREV-Quick%20Start-orange" alt="Quick Start" align="left" style="display: inline;" />
 </a>
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing" >
+<a href="#/integration-testing" >
   <img src="https://img.shields.io/badge/NEXT-Integration%20Testing-blue" alt="Integration Testing" align="right" style="display: inline;" />
 </a>

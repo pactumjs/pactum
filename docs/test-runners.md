@@ -4,7 +4,7 @@ We can integrate **pactum** with any of the test runners that support *promises*
 
 The whole documentation will be using **mocha** as the test runner. See [pactum-cucumber-boilerplate](https://github.com/ASaiAnudeep/pactum-cucumber-boilerplate) for a working example on running pactum with **cucumber**.
   
-> Before starting with **pactum**, get familiarize with any of the above test runners. It will help us to write more readable & maintainable tests. 
+> Before starting with **pactum**, get familiar with any of the above test runners. It will help us to write more readable & maintainable tests. 
 
 # Testing Style
 

@@ -4,24 +4,11 @@ Integration Testing is defined as a type of testing where software modules or co
 
 When it comes to API Integration Testing, essentially it involves testing how multiple APIs work together. These tests doesn't necessarily build business workflows but tests integration points between single or multiple API endpoints.
 
-This document explains the features that are offered by **pactum** to support integration testing.
-
-*Note: This documentation majorly focuses on chaining multiple requests & passing data between them.*
+> This documentation majorly focuses on the features offered by **pactum** to support integration testing by chaining multiple requests & passing data between them.
 
 ## Pre Requisite
 
-* [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
-
-## Table of contents
-
-* [Getting Started](#getting-started)
-* [Nested Dependent HTTP Calls](#nested-dependent-http-calls)
-* [Retry Mechanism](#retry-mechanism)
-* [Next](#next)
-
-## Getting Started
-
-Before getting started please learn more about [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing) with pactum.
+* [API Testing](#api-testing)
 
 ## Nested Dependent HTTP Calls
 
@@ -202,7 +189,7 @@ Not all APIs perform simple CRUD operations. Some operations take time & for suc
 
 Use `retry` to specify your retry strategy. It accepts options object as an argument. If the strategy function returns true, it will perform the request again.
 
-#### retryOptions
+### retryOptions
 
 | Property  | Type       | Description                                |
 | --------- | ---------- | ------------------------------------------ |
@@ -257,18 +244,11 @@ it('should get posts', async () => {
 
 ## Next
 
-* [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
-* [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
-* [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
-* [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
-  * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
-  * [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
-
 ----------------------------------------------------------------------------------------------------------------
 
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/API-Testing" >
+<a href="#/api-testing" >
   <img src="https://img.shields.io/badge/PREV-API%20Testing-orange" alt="API Testing" align="left" style="display: inline;" />
 </a>
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Data-Management" >
-  <img src="https://img.shields.io/badge/NEXT-Data%20Management-blue" alt="Data Management" align="right" style="display: inline;" />
+<a href="#/mock-server" >
+  <img src="https://img.shields.io/badge/NEXT-Mock%20Server-blue" alt="Mock Server" align="right" style="display: inline;" />
 </a>

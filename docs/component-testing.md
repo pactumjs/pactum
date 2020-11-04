@@ -12,9 +12,9 @@ It involves testing a service in isolation by
 
 ## Pre Requisite
 
-* [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
-* [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
-* [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
+* [API Testing](#api-testing)
+* [Integration Testing](#integration-testing)
+* [Mock Server](#mock-server)
 
 ## Example
 
@@ -94,9 +94,7 @@ it('should not buy a product which is out-of-stock', () => {
 
 This looks simple & easy to test. But as the functionality of the application grows, the dependency of the *order-service* on other services will increase. To test different scenarios, it becomes difficult to control the behavior of mock server.
 
-## API
-
-### Simple Component Tests
+## Simple Component Tests
 
 **pactum** makes component testing easy & fun as it allows us to control the behavior of the mock server for each & every test case. It works on top of [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing) & [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server). If you haven't read about them, use the above links to learn more about them.
 
@@ -171,7 +169,7 @@ after(async () => {
 });
 ```
 
-### Multiple Interactions
+## Multiple Interactions
 
 In real-life scenarios, a single service might be dependent upon *n* number of services. You can use `useMockInteraction` method multiple times to add multiple interactions.
 
@@ -195,7 +193,7 @@ it('should not buy a product which is out-of-stock', () => {
 });
 ```
 
-### Mock Interaction Handlers
+## Mock Interaction Handlers
 
 There are high chances that you wanted to use the same interaction in multiple occasions. To reuse interactions, you can create separate *js* files to hold interactions & import them in your spec file. This is one way to solve the issue. But there is a better way through *mock handlers*.
 
@@ -257,7 +255,7 @@ it('should not buy a product which is out-of-stock', () => {
 });
 ```
 
-### Non CRUD Endpoints
+## Non CRUD Endpoints
 
 Not all endpoints will perform CRUD operations. Some endpoints will perform some long running operations in the background even though it sends a response immediately. It becomes difficult to test how it interacts with other services in the background.
 
@@ -293,7 +291,7 @@ it('some background process', () => {
 });
 ```
 
-### Using Remote Mock Server
+## Using Remote Mock Server
 
 For some reasons, you want the mock server to be independent of component tests & you still want the ability to control it remotely while running your api tests. This can be achieved through `mock.useRemoteServer` function. While using remote server, all the existing functions will return promises.
 
@@ -377,15 +375,11 @@ it('some background process', () => {
 
 ## Next
 
-* [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
-  * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
-  * [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
+----
 
-----------------------------------------------------------------------------------------------------------------
-
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server" >
+<a href="#/mock-server" >
   <img src="https://img.shields.io/badge/PREV-Mock%20Server-blue" alt="Mock Server" align="left" style="display: inline;" />
 </a>
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing" >
+<a href="#/contract-testing" >
   <img src="https://img.shields.io/badge/NEXT-Contract%20Testing-blue" alt="Contract Testing" align="right" style="display: inline;" />
 </a>

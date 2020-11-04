@@ -6,33 +6,30 @@ At one end **pactum** is a REST API testing tool and on the other, it can act as
 
 Mock server comes in handy while using this library for component & contract testing.
 
-## Table of contents
-
-* [Getting Started](#getting-started)
-* [Adding Behavior](#adding-behavior)
-  * [Mock Interactions](#mock-interactions)
-  * [Pact Interactions](#pact-interactions)
-  * [Handlers](#handlers)
-* [Data Management](#data-management)
-* [Matching](#matching)
-* [Remote API](#remote-api)
-
 ## Getting Started
 
-#### Basic Setup
+### Basic Setup
 
 The below code will run the pactum mock server on port 3000
 
+<!-- tabs:start -->
+
+#### ** server.js **
+
 ```javascript
-// server.js
 const mock = require('pactum').mock;
 mock.start(3000);
 ```
 
+<!-- tabs:end -->
+
+Running the mock server.
+
 ```shell
-# Running Mock Server
 node server.js
 ```
+
+Check health
 
 ```shell
 # Returns OK
@@ -293,7 +290,7 @@ The final way of adding behavior to the mock server is through pact interactions
 
 Major differences between mock & pact interactions are
 
-* Pact Interactions generate a contract file which is later used for [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+* Pact Interactions generate a contract file which is later used for [Contract Testing](#contract-testing)
 * Performs a **strong match** on the received request's query params & JSON body.
 * Performs a **loose match** on the received request's headers.
 
@@ -423,7 +420,7 @@ mock.start(3000);
 
 ## Data Management
 
-Data Management can also be applied to the mock server to re-use mock data across interactions. Learn more about data management with **pactum** at [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
+Data Management can also be applied to the mock server to re-use mock data across interactions. Learn more about data management with **pactum** at [Data Management](#data-management)
 
 ```javascript
 const pactum = require('pactum');
@@ -469,7 +466,7 @@ mock.start(3000);
 
 ## Matching
 
-Allows matching of request/response with a set of matchers. See [Matching](https://github.com/ASaiAnudeep/pactum/wiki/Matching) for more usage details.
+Allows matching of request/response with a set of matchers. See [Matching](#matching) for more usage details.
 
 Matchers can be applied to
 
@@ -907,11 +904,11 @@ Response - returns the mock interaction id.
 
 ## Next
 
-----------------------------------------------------------------------------------------------------------------
+----
 
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/API-Testing" >
+<a href="#/api-testing" >
   <img src="https://img.shields.io/badge/PREV-API%20Testing-orange" alt="API Testing" align="left" style="display: inline;" />
 </a>
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing" >
+<a href="#/component-testing" >
   <img src="https://img.shields.io/badge/NEXT-Component%20Testing-blue" alt="Component Testing" align="right" style="display: inline;" />
 </a>

@@ -1,6 +1,5 @@
-- [Quick Start](quick-start.md)
-
-- Tutorial
+- **Tutorials**
+  - [Quick Start](quick-start.md)
   - [Test Runners](test-runners.md)
   - [API Testing](api-testing.md)
   - [Integration Testing](integration-testing.md)
@@ -9,12 +8,3 @@
   - [Component Testing](component-testing.md)
   - [Contract Testing](contract-testing.md)
   - [Data Management](data-management.md)
-
-- References
-  - [Spec](spec.md)
-  - [Mock](mock.md)
-  - [Handlers](handlers.md)
-  - [Stash](stash.md)
-  - [Settings](settings.md)
-  - [Request](request.md)
-  - [State](state.md)
