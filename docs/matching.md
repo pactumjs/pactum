@@ -22,9 +22,9 @@ It supports following matchers
 
 Matchers are applied on JSON
   
-* during response validation - [expectJsonMatch](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing#expectJsonMatch)
-* during request matching for interactions in [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
-* during request and response matching for [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+* during response validation - [expectJsonMatch](api-testing#expectJsonMatch)
+* during request matching for interactions in [Mock Server](mock-server)
+* during request and response matching for [Contract Testing](contract-testing)
 
 ## Type Matching
 

@@ -766,7 +766,7 @@ pactum.request.setDefaultHeaders({ 'content-type': 'application/json'});
 
 # NEXT
 
-----------------------------------------------------------------------------------------------------------------
+----
 
 <a href="#/quick-start" >
   <img src="https://img.shields.io/badge/PREV-Quick%20Start-orange" alt="Quick Start" align="left" style="display: inline;" />

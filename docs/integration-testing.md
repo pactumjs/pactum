@@ -8,7 +8,7 @@ When it comes to API Integration Testing, essentially it involves testing how mu
 
 ## Pre Requisite
 
-* [API Testing](#api-testing)
+* [API Testing](api-testing)
 
 ## Nested Dependent HTTP Calls
 
@@ -244,7 +244,7 @@ it('should get posts', async () => {
 
 ## Next
 
-----------------------------------------------------------------------------------------------------------------
+----
 
 <a href="#/api-testing" >
   <img src="https://img.shields.io/badge/PREV-API%20Testing-orange" alt="API Testing" align="left" style="display: inline;" />

@@ -2,7 +2,7 @@
 
 Consumer testing is the first step in contract testing. This testing helps in building/generating contracts for consumers with its external providers.
 
-In **pactum**, consumer tests are written as a wrapper around the [component testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing).
+In **pactum**, consumer tests are written as a wrapper around the [component testing](component-testing).
 
 ## Table of contents
 
@@ -12,7 +12,7 @@ In **pactum**, consumer tests are written as a wrapper around the [component tes
 
 ## Getting Started
 
-Before getting started with consumer testing, get familiar with [component testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+Before getting started with consumer testing, get familiar with [component testing](component-testing)
 
 ### Example Scenario
 
@@ -321,12 +321,11 @@ pactum.pact.publish({
 });
 ```
 
-----------------------------------------------------------------------------------------------------------------
+----
 
-
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing" >
+<a href="#/contract-testing" >
   <img src="https://img.shields.io/badge/PREV-Contract%20Testing-orange" alt="Contract Testing" align="left" style="display: inline;" />
 </a>
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification" >
+<a href="#/provider-verification" >
   <img src="https://img.shields.io/badge/NEXT-Provider%20Verification-blue" alt="Provider Verification" align="right" style="display: inline;" />
 </a>

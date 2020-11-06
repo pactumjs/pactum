@@ -20,18 +20,8 @@
 
 ## Documentation
 
-This readme offers an introduction to the library. For more information visit the following links.
+This readme offers an introduction to the library. For more information visit [pactum](https://asaianudeep.github.io/pactum)
 
-* [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
-* [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
-* [E2E Testing](https://github.com/ASaiAnudeep/pactum/wiki/E2E-Testing)
-* [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
-* [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
-* [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
-  * [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
-  * [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
-* [Data Management](https://github.com/ASaiAnudeep/pactum/wiki/Data-Management)
-* [Reporting](https://github.com/ASaiAnudeep/pactum/wiki/Reporting)
 
 ## Installation
 
@@ -186,7 +176,7 @@ describe('Chai Like Assertions', () => {
 });
 ```
  
-Learn more about building requests & validating responses with **pactum** at [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
+Learn more about building requests & validating responses with **pactum** at [API Testing](https://asaianudeep.github.io/pactum/#/api-testing)
 
 ## Integration Testing
 
@@ -240,7 +230,7 @@ await pactum.spec()
   .expectStatus(200);
 ```
 
-Learn more about these features at [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
+Learn more about these features at [Integration Testing](https://asaianudeep.github.io/pactum/#/integration-testing)
 
 ## e2e Testing
 
@@ -285,7 +275,7 @@ describe('user should be able to create an order', () => {
 });
 ```
 
-Learn more about these features at [E2E Testing](https://github.com/ASaiAnudeep/pactum/wiki/E2E-Testing)
+Learn more about these features at [E2E Testing](https://asaianudeep.github.io/pactum/#/e2e-testing)
 
 
 ## Mock Server
@@ -323,14 +313,14 @@ pactum.mock.addMockInteraction({
 pactum.mock.start(3000);
 ```
 
-Learn more about **pactum** as a *mock server* at [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
+Learn more about **pactum** as a *mock server* at [Mock Server](https://asaianudeep.github.io/pactum/#/mock-server)
 
 
 ## Component Testing
 
 Component testing is defined as a software testing type, in which the testing is performed on each component separately without integrating with other components. So the service under test might be talking to a mock server, instead of talking to real external services.
 
-**Pactum** comes with a mock server where you will able to control the behavior of each external service. Interactions are a way to instruct the mock server to simulate the behavior of external services. Learn more about interactions at [Interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions).
+**Pactum** comes with a mock server where you will able to control the behavior of each external service. Interactions are a way to instruct the mock server to simulate the behavior of external services.
 
 Running a component test expectation with mocking an external dependency.
 
@@ -375,7 +365,7 @@ after(() => {
 });
 ```
 
-Learn more about component testing with **pactum** at [Component Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing)
+Learn more about component testing with **pactum** at [Component Testing](https://asaianudeep.github.io/pactum/#/component-testing)
 
 ## Contract Testing
 
@@ -383,7 +373,7 @@ Contract Testing is a technique for testing interactions between applications (o
 
 Learn more about contract testing at [pact.io](https://docs.pact.io)
 
-Learn more about contract testing with **pactum** at [Contract Testing](https://github.com/ASaiAnudeep/pactum/wiki/Contract-Testing)
+Learn more about contract testing with **pactum** at [Contract Testing](https://asaianudeep.github.io/pactum/#/contract-testing)
 
 [![Contract Testing](https://img.youtube.com/vi/-6x6XBDf9sQ/0.jpg)](https://www.youtube.com/watch?v=-6x6XBDf9sQ)
 
@@ -442,7 +432,7 @@ after(async () => {
 });
 ```
 
-Learn more about **pactum** as a consumer tester at [Consumer Testing](https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing)
+Learn more about **pactum** as a consumer tester at [Consumer Testing](https://asaianudeep.github.io/pactum/#/consumer-testing)
 
 ### Provider Verification
 
@@ -457,7 +447,7 @@ await pactum.provider.validate({
 });
 ```
 
-Learn more about **pactum** as a provider verifier at [Provider Verification](https://github.com/ASaiAnudeep/pactum/wiki/Provider-Verification)
+Learn more about **pactum** as a provider verifier at [Provider Verification](https://asaianudeep.github.io/pactum/#/provider-verification)
 
 
 
@@ -467,6 +457,6 @@ Inspired from [frisby](https://docs.frisbyjs.com/) testing style & [pact](https:
 
 ----------------------------------------------------------------------------------------------------------------
 
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/API-Testing" >
+<a href="https://asaianudeep.github.io/pactum/#/api-testing" >
   <img src="https://img.shields.io/badge/NEXT-API%20Testing-blue" alt="API Testing" align="right" style="display: inline;" />
 </a>

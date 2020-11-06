@@ -8,3 +8,5 @@
   - [Component Testing](component-testing.md)
   - [Contract Testing](contract-testing.md)
   - [Data Management](data-management.md)
+  - [Matching](matching.md)
+  - [Reporting](reporting.md)

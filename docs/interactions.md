@@ -7,12 +7,7 @@ Interactions are the way to instruct or train the mock server to respond in a pa
 
 The main difference between mock & pact interactions is that mock interaction cannot form a contract while a pact interaction can.
 
-## Table of contents
-
-* [API](#api)
-* [Matching](#matching)
-
-## API
+## Adding Interactions
 
 Interactions can be added or removed from the mock server in the following ways.
 

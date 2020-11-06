@@ -60,7 +60,7 @@ await mock.stop();
 
 ## Adding Behavior
 
-By now, you know how to start & stop a mock server. To add behavior, we need to add [interactions](https://github.com/ASaiAnudeep/pactum/wiki/Interactions) to it. An interaction contains request & response details. When a real request is sent to mock server, it will try to match the received request with interactions request. If a match is found it will return the specified response or 404 will be returned.
+By now, you know how to start & stop a mock server. To add behavior, we need to add to it. An interaction contains request & response details. When a real request is sent to mock server, it will try to match the received request with interactions request. If a match is found it will return the specified response or 404 will be returned.
 
 We have two kinds of interactions. They are
 

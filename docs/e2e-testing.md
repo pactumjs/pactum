@@ -4,7 +4,7 @@ End-To-End testing is a software testing method that validates entire software f
 
 ## Pre Requisite
 
-* [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/API-Testing)
-* [Integration Testing](https://github.com/ASaiAnudeep/pactum/wiki/Integration-Testing)
+* [API Testing](api-testing)
+* [Integration Testing](integration-testing)
 
 Experimental - TODO

@@ -88,3 +88,12 @@ node server.js
 ```
 
 Behavior to mock server is added through interactions. Learn more about it at [Mock Server](mock-server.md)
+
+----
+
+<a href="#/pactum" >
+  <img src="https://img.shields.io/badge/PREV-Home-orange" alt="Home" align="left" style="display: inline;" />
+</a>
+<a href="#/test-runners" >
+  <img src="https://img.shields.io/badge/NEXT-Test%20Runners-blue" alt="Test Runners" align="right" style="display: inline;" />
+</a>

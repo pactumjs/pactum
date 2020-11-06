@@ -38,13 +38,14 @@
   * [Consumer Testing](consumer-testing)
   * [Provider Verification](provider-verification)
 * [Data Management](data-management)
+* [Matching](matching)
 * [Reporting](reporting)
 
 ## Notes
 
 Inspired from [frisby](https://docs.frisbyjs.com/) testing style & [pact](https://docs.pact.io) interactions.
 
-----------------------------------------------------------------------------------------------------------------
+----
 
 <a href="#/quick-start" >
   <img src="https://img.shields.io/badge/NEXT-Quick%20Start-blue" alt="Quick Start" align="right" style="display: inline;" />

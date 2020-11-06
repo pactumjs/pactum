@@ -12,9 +12,9 @@ It involves testing a service in isolation by
 
 ## Pre Requisite
 
-* [API Testing](#api-testing)
-* [Integration Testing](#integration-testing)
-* [Mock Server](#mock-server)
+* [API Testing](api-testing)
+* [Integration Testing](integration-testing)
+* [Mock Server](mock-server)
 
 ## Example
 
@@ -96,7 +96,7 @@ This looks simple & easy to test. But as the functionality of the application gr
 
 ## Simple Component Tests
 
-**pactum** makes component testing easy & fun as it allows us to control the behavior of the mock server for each & every test case. It works on top of [API Testing](https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing) & [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server). If you haven't read about them, use the above links to learn more about them.
+**pactum** makes component testing easy & fun as it allows us to control the behavior of the mock server for each & every test case. It works on top of [API Testing](api-testing) & [Mock Server](mock-server). If you haven't read about them, use the above links to learn more about them.
 
 Instead of maintaining a separate mock server, pactum comes with it. Interactions can be added to the mock server before the execution of a test case through `useMockInteraction` method. Once the interactions are added, you can build your request & expectations on top of it.
 

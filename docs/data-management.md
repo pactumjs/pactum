@@ -37,7 +37,11 @@ A Data Template is a standard format for a particular resource. Once a template 
 
 Use `stash.addDataTemplate` to add a data template. To use the template in the tests, use `@DATA:TEMPLATE@` as key & the name of the template as value.
 
-```javascript
+<!-- tabs:start -->
+
+#### ** base.spec.js **
+
+```js
 const pactum = require('pactum');
 const stash = pactum.stash;
 
@@ -50,8 +54,14 @@ before(() => {
       "Gender": "male",
       "House": "Castle Black"
     }
-  })
+  });
 });
+```
+
+#### ** users.spec.js **
+
+```javascript
+const pactum = require('pactum');
 
 it('adds a new user', async () => {
   await pactum.spec()
@@ -72,6 +82,8 @@ it('adds a new user', async () => {
     */
 });
 ```
+
+<!-- tabs:end -->
 
 The exact resource is not going to be used across every test. Every test might need specific values. This library supports the overriding of specific values & extending the data template. This allows tests to be customized as much as you'd like when using templates.
 
@@ -102,7 +114,11 @@ it('should not add a user with negative age', async () => {
 
 !> Templates can also reference other templates. *Be cautious not to create circular dependencies*
 
-```javascript
+<!-- tabs:start -->
+
+#### ** base.spec.js **
+
+```js
 const pactum = require('pactum');
 const stash = pactum.stash;
 
@@ -137,6 +153,12 @@ before(() => {
     }
   });
 });
+```
+
+#### ** users.spec.js **
+
+```js
+const pactum = require('pactum');
 
 it('should add a user with address', async () => {
   await pactum.spec()
@@ -173,6 +195,8 @@ it('should add a user with address', async () => {
     */
 });
 ```
+
+<!-- tabs:end -->
 
 ## Data References
 

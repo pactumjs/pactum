@@ -63,9 +63,9 @@ Provider Verification will
 
 ----------------------------------------------------------------------------------------------------------------
 
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Component-Testing" >
+<a href="#/component-testing" >
   <img src="https://img.shields.io/badge/PREV-Component%20Testing-orange" alt="Component Testing" align="left" style="display: inline;" />
 </a>
-<a href="https://github.com/ASaiAnudeep/pactum/wiki/Consumer-Testing" >
+<a href="#/consumer-testing" >
   <img src="https://img.shields.io/badge/NEXT-Consumer%20Testing-blue" alt="Consumer Testing" align="right" style="display: inline;" />
 </a>
