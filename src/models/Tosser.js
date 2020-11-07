@@ -39,8 +39,8 @@ class Tosser {
     await this.getInteractionsFromServer();
     await this.removeInteractionsFromServer();
     this.recordData();
-    this.validate();
     this.storeSpecData();
+    this.validate();
     return this.getOutput();
   }
 
@@ -56,6 +56,7 @@ class Tosser {
     this.request.timeout = this.request.timeout || config.request.timeout;
     setHeaders(this.request);
     setMultiPartFormData(this.request);
+    setFollowRedirects(this.request);
   }
 
   setState() {
@@ -253,6 +254,12 @@ function setMultiPartFormData(request) {
       }
     }
     delete request._multiPartFormData;
+  }
+}
+
+function setFollowRedirects(request) {
+  if (config.request.followRedirects && typeof request.followRedirects === 'undefined') {
+    request.followRedirects = config.request.followRedirects;
   }
 }
 

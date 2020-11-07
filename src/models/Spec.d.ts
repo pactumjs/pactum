@@ -291,6 +291,8 @@ declare class Spec {
    */
   withAuth(username: string, password: string): Spec;
 
+  withFollowRedirects(follow: boolean): Spec;
+
   /**
    * retry request on specific conditions before making assertions
    * @example

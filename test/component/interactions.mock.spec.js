@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const pactum = require('../../src/index');
-const { like, eachLike, term } = pactum.matchers;
+const { like, eachLike } = pactum.matchers;
 
 describe('Mock Interactions - Query', () => {
 
@@ -348,6 +348,128 @@ describe('Mock Interactions - Wait', () => {
       .withQueryParams('name', 'snow')
       .wait(1)
       .expectStatus(200);
+  });
+
+});
+
+describe('Mock Interactions - Follow Redirects', () => {
+
+  it('with Follow Redirects', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/mock/redirect'
+        },
+        willRespondWith: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/actual'
+          }
+        }
+      })
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/mock/actual'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/mock/redirect')
+      .withFollowRedirects(true)
+      .expectStatus(200);
+  });
+
+  it('without Follow Redirects', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/mock/redirect'
+        },
+        willRespondWith: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/actual'
+          }
+        }
+      })
+      .get('http://localhost:9393/mock/redirect')
+      .expectStatus(301);
+  });
+
+  it('with Follow Redirects as false', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/mock/redirect'
+        },
+        willRespondWith: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/actual'
+          }
+        }
+      })
+      .get('http://localhost:9393/mock/redirect')
+      .withFollowRedirects(false)
+      .expectStatus(301);
+  });
+
+  it('with default Follow Redirects', async () => {
+    pactum.request.setDefaultFollowRedirects(true);
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/mock/redirect'
+        },
+        willRespondWith: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/actual'
+          }
+        }
+      })
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/mock/actual'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/mock/redirect')
+      .expectStatus(200);
+  });
+
+  it('with Follow Redirects as false & default as true', async () => {
+    pactum.request.setDefaultFollowRedirects(true);
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/mock/redirect'
+        },
+        willRespondWith: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/actual'
+          }
+        }
+      })
+      .get('http://localhost:9393/mock/redirect')
+      .withFollowRedirects(false)
+      .expectStatus(301);
+  });
+
+
+  afterEach(() => {
+    pactum.request.setDefaultFollowRedirects(false);
   });
 
 });

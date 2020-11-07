@@ -221,6 +221,11 @@ class Spec {
     return this;
   }
 
+  withFollowRedirects(follow) {
+    this._request.followRedirects = follow;
+    return this;
+  }
+
   retry(options) {
     if (!options) {
       throw new PactumRequestError('Invalid retry options');

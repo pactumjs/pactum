@@ -96,6 +96,7 @@ To pass additional parameters to the request, we can chain or use the following 
 | `withRequestTimeout`      | sets request timeout                      |
 | `withCore`                | http request options                      |
 | `withAuth`                | basic auth details                        |
+| `withFollowRedirects`     | sets follow redirect boolean property     |
 | `__setLogLevel`           | sets log level for troubleshooting        |
 | `toss` (optional)         | runs the spec & returns a promise         |
 
@@ -284,8 +285,6 @@ it('some action that will take more time to complete', async () => {
     .expectStatus(201);
 });
 ```
-
-
 
 ## Response Validation
 
@@ -763,6 +762,13 @@ pactum.request.setDefaultHeaders('Authorization', 'Basic xxxxx');
 pactum.request.setDefaultHeaders({ 'content-type': 'application/json'});
 ```
 
+### setDefaultFollowRedirects
+
+Sets default follow redirect option for HTTP requests.
+
+```javascript
+pactum.request.setDefaultFollowRedirects(true);
+```
 
 # NEXT
 
