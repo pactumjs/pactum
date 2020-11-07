@@ -1,6 +1,7 @@
 const phin = require('phin');
 const jqy = require('json-query');
 const config = require('../config');
+const hr = require('../helpers/handler.runner');
 const helper = require('../helpers/helper');
 const processor = require('../helpers/dataProcessor');
 const log = require('../helpers/logger');
@@ -179,10 +180,16 @@ class Tosser {
   }
 
   storeSpecData() {
+    const ctx = { req: this.request, res: this.response };
     for (let i = 0; i < this.stores.length; i++) {
       const store = this.stores[i];
       const specData = {};
-      specData[store.name] = getPathValueFromSpec(store.path, this.spec);
+      const captureHandler = getCaptureHandlerName(store.path);
+      if (captureHandler) {
+        specData[store.name] = hr.capture(captureHandler, ctx);
+      } else {
+        specData[store.name] = getPathValueFromSpec(store.path, this.spec);
+      }
       stash.addDataStore(specData);
     }
   }
@@ -195,18 +202,18 @@ class Tosser {
 
   getOutput() {
     const outputs = [];
+    const ctx = { req: this.request, res: this.response };
     for (let i = 0; i < this.returns.length; i++) {
-      const _handler = this.returns[i];
-      const ctx = { req: this.request, res: this.response };
-      if (typeof _handler === 'function') {
-        outputs.push(_handler(ctx));
+      const _return = this.returns[i];
+      if (typeof _return === 'function') {
+        outputs.push(_return(ctx));
       }
-      if (typeof _handler === 'string') {
-        if (helper.matchesStrategy(_handler, config.strategy.return.handler)) {
-          const _customHandlerFun = handler.getReturnHandler(helper.sliceStrategy(_handler, config.strategy.return.handler));
-          outputs.push(_customHandlerFun(ctx));
+      if (typeof _return === 'string') {
+        const captureHandlerName = getCaptureHandlerName(_return);
+        if (captureHandlerName) {
+          outputs.push(hr.capture(captureHandlerName, ctx));
         } else {
-          outputs.push(getPathValueFromSpec(_handler, this.spec));
+          outputs.push(getPathValueFromSpec(_return, this.spec));
         }
       }
     }
@@ -281,7 +288,12 @@ async function getResponse(req) {
 function recordData(recorder, spec) {
   try {
     let { name, path } = recorder;
-    spec.recorded[name] = getPathValueFromSpec(path, spec);
+    const captureHandler = getCaptureHandlerName(path);
+    if (captureHandler) {
+      spec.recorded[name] = hr.capture(captureHandler, { req: spec._request, res: spec._response });
+    } else {
+      spec.recorded[name] = getPathValueFromSpec(path, spec);
+    }
   } catch (error) {
     log.warn('Unable to record data');
     log.warn(error.toString());
@@ -304,6 +316,12 @@ function getPathValueFromSpec(path, spec) {
     data = spec._response.json;
   }
   return jqy(path, { data }).value;
+}
+
+function getCaptureHandlerName(name) {
+  if (helper.matchesStrategy(name, config.strategy.capture.handler)) {
+    return helper.sliceStrategy(name, config.strategy.capture.handler);
+  }
 }
 
 module.exports = Tosser;

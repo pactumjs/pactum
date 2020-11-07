@@ -78,7 +78,7 @@ export function addRetryHandler(name: string, func: RetryHandlerFunction): void;
 /**
  * adds a custom return handler
  */
-export function addReturnHandler(name: string, func: ReturnHandlerFunction): void;
+export function addCaptureHandler(name: string, func: ReturnHandlerFunction): void;
 
 /**
  * adds a custom state handler

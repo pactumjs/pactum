@@ -12,6 +12,10 @@ const hr = {
     const pi = handler.getPactInteractionHandler(name)({ data });
     if (pi && pi.name) return this.pactInteraction(pi.name, pi.data);
     return pi;
+  },
+
+  capture(name, ctx) {
+    return handler.getCaptureHandler(name)(ctx);
   }
 
 };

@@ -83,18 +83,28 @@ We can also use a custom common handler function to return data & use it across 
 * *Fist Argument*: Name of the handler function used to refer it later in specs.
 * *Second Argument*: A function that receives context object with request & response details. The returned value will be the output of `await pactum.spec()`. The function should be synchronous.
 
-While using the common handlers, the name should be prefixed with `#` and can be customized using `pactum.settings.setReturnHandlerStrategy()`.
+While using the common handlers, the name should be prefixed with `#`. It can be customized using `pactum.settings.setCaptureHandlerStrategy()`.
 
-```javascript
+<!-- tabs:start -->
+
+#### ** base.spec.js **
+
+```js
 const pactum = require('pactum');
 const handler = pactum.handler;
 
 before(() => {
-  handler.addReturnHandler('first post id', (ctx) => {
+  handler.addCaptureHandler('first post id', (ctx) => {
     const res = ctx.res;
     return res.json[0].id;
   });
 });
+```
+
+#### ** other.spec.js **
+
+```js
+const pactum = require('pactum');
 
 it('should return all posts and first post should have comments', async () => {
   const postID = await pactum.spec()
@@ -107,19 +117,24 @@ it('should return all posts and first post should have comments', async () => {
 });
 ```
 
+<!-- tabs:end -->
+
 ### stores
 
 Use `stores` method to save response data under *data management* which can be referenced later in specs. This method accepts two arguments.
 
 * *FirstArgument*: Name used to refer it later in specs.
-* *SecondArgument*: **json-query** that will fetch custom response data & save it against the name.
+* *SecondArgument*: **json-query** that will fetch custom response data or it can be a capture handler.
 
+```js
+handler.addCaptureHandler('GetSecondPost', (ctx) => {
+  return ctx.res.json[1];
+});
 
-```javascript
 await pactum.spec()
   .get('http://jsonplaceholder.typicode.com/posts')
   .stores('FirstPost', '[0]')
-  .stores('SecondPost', '[1]')
+  .stores('SecondPost', '#GetSecondPost')
   .stores('AllPosts', '.');
 
 /*

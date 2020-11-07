@@ -74,7 +74,7 @@ describe('Return Handler', () => {
   it('invalid handler name', () => {
     let err;
     try {
-      handler.addReturnHandler();
+      handler.addCaptureHandler();
     } catch (error) {
       err = error;
     }
@@ -84,7 +84,7 @@ describe('Return Handler', () => {
   it('empty handler name', () => {
     let err;
     try {
-      handler.addReturnHandler('');
+      handler.addCaptureHandler('');
     } catch (error) {
       err = error;
     }
@@ -94,7 +94,7 @@ describe('Return Handler', () => {
   it('invalid handler function', () => {
     let err;
     try {
-      handler.addReturnHandler('hello');
+      handler.addCaptureHandler('hello');
     } catch (error) {
       err = error;
     }
@@ -104,11 +104,11 @@ describe('Return Handler', () => {
   it('get invalid handler function', () => {
     let err;
     try {
-      handler.getReturnHandler('hello');
+      handler.getCaptureHandler('hello');
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals(`Return Handler Not Found - 'hello'`);
+    expect(err.message).equals(`Capture Handler Not Found - 'hello'`);
   });
 
 });

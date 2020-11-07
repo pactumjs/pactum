@@ -43,7 +43,7 @@ const config = {
         includes: '$V'
       }
     },
-    return: {
+    capture: {
       handler: {
         starts: '#'
       }

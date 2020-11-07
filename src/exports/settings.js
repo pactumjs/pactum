@@ -15,8 +15,8 @@ const settings = {
     config.strategy.assert.expression = strategy;
   },
 
-  setReturnHandlerStrategy(strategy) {
-    config.strategy.return.handler = strategy;
+  setCaptureHandlerStrategy(strategy) {
+    config.strategy.capture.handler = strategy;
   },
 
 }

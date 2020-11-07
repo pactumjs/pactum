@@ -4,7 +4,7 @@ const config = require('../config');
 const specHandlers = {};
 const expectHandlers = {};
 const retryHandlers = {};
-const returnHandlers = {};
+const captureHandlers = {};
 const stateHandlers =  {};
 const dataHandlers = {};
 const mockInteractionHandlers = {};
@@ -43,14 +43,14 @@ const handler = {
     throw new PactumHandlerError(`Retry Handler Not Found - '${name}'`);
   },
 
-  addReturnHandler(name, func) {
+  addCaptureHandler(name, func) {
     isValidHandler(name, func);
-    returnHandlers[name] = func;
+    captureHandlers[name] = func;
   },
 
-  getReturnHandler(name) {
-    if (returnHandlers[name]) return returnHandlers[name];
-    throw new PactumHandlerError(`Return Handler Not Found - '${name}'`);
+  getCaptureHandler(name) {
+    if (captureHandlers[name]) return captureHandlers[name];
+    throw new PactumHandlerError(`Capture Handler Not Found - '${name}'`);
   },
 
   addStateHandler(name, func) {
