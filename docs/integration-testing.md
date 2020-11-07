@@ -197,7 +197,6 @@ await pactum.spec()
 });
 ```
 
-
 ## Retry Mechanism
 
 Not all APIs perform simple CRUD operations. Some operations take time & for such scenarios **pactum** allows us to add custom retry handlers that will wait for specific conditions to happen before attempting to make assertions on the response. (*Make sure to update test runners default timeout*) 

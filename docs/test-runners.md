@@ -100,8 +100,8 @@ describe('should have a user with name bolt', () => {
 ----
 
 <a href="#/quick-start" >
-  <img src="https://img.shields.io/badge/NEXT-Quick%20Start-blue" alt="Quick Start" align="left" style="display: inline;" />
+  <img src="https://img.shields.io/badge/NEXT-Quick%20Start-orange" alt="Quick Start" align="left" style="display: inline;" />
 </a>
 <a href="#/api-testing" >
-  <img src="https://img.shields.io/badge/PREV-API%20Testing-orange" alt="API Testing" align="right" style="display: inline;" />
+  <img src="https://img.shields.io/badge/PREV-API%20Testing-blue" alt="API Testing" align="right" style="display: inline;" />
 </a>

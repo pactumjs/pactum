@@ -378,7 +378,7 @@ it('some background process', () => {
 ----
 
 <a href="#/mock-server" >
-  <img src="https://img.shields.io/badge/PREV-Mock%20Server-blue" alt="Mock Server" align="left" style="display: inline;" />
+  <img src="https://img.shields.io/badge/PREV-Mock%20Server-orange" alt="Mock Server" align="left" style="display: inline;" />
 </a>
 <a href="#/contract-testing" >
   <img src="https://img.shields.io/badge/NEXT-Contract%20Testing-blue" alt="Contract Testing" align="right" style="display: inline;" />
