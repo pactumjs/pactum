@@ -542,6 +542,11 @@ declare class Spec {
   wait(milliseconds: number): Spec;
 
   /**
+   * prints request & response
+   */
+  inspect(): Spec;
+
+  /**
    * executes the test case
    */
   toss(): Promise<T>;

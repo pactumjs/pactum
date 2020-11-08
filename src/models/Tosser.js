@@ -35,6 +35,7 @@ class Tosser {
     await this.setState()
     await this.addInteractionsToServer();
     await this.setResponse();
+    this.inspect();
     await this.sleep(this.spec._waitDuration);
     this.setPreviousLogLevel();
     await this.getInteractionsFromServer();
@@ -105,6 +106,13 @@ class Tosser {
     this.spec._response = this.response;
   }
 
+  inspect() {
+    if (this.spec._inspect) {
+      log.warn('Inspecting Request & Response');
+      this.printReqAndRes();
+    }
+  }
+
   setPreviousLogLevel() {
     if (this.previousLogLevel) {
       log.setLevel(this.previousLogLevel);
@@ -150,13 +158,7 @@ class Tosser {
       this.spec.status = 'FAILED';
       this.spec.failure = error.toString();
       rlc.afterSpecReport(this.spec);
-      const res = {
-        statusCode: this.response.statusCode,
-        headers: this.response.headers,
-        body: this.response.json
-      }
-      log.warn('Request', this.request);
-      log.warn('Response', res);
+      this.printReqAndRes();
       throw error;
     }
   }
@@ -177,6 +179,16 @@ class Tosser {
 
   validateResponse() {
     this.expect.validate(this.request, this.response);
+  }
+
+  printReqAndRes() {
+    const res = {
+      statusCode: this.response.statusCode,
+      headers: this.response.headers,
+      body: this.response.json
+    }
+    log.warn('Request', this.request);
+    log.warn('Response', res);
   }
 
   storeSpecData() {
@@ -209,9 +221,9 @@ class Tosser {
         outputs.push(_return(ctx));
       }
       if (typeof _return === 'string') {
-        const captureHandlerName = getCaptureHandlerName(_return);
-        if (captureHandlerName) {
-          outputs.push(hr.capture(captureHandlerName, ctx));
+        const captureHandler = getCaptureHandlerName(_return);
+        if (captureHandler) {
+          outputs.push(hr.capture(captureHandler, ctx));
         } else {
           outputs.push(getPathValueFromSpec(_return, this.spec));
         }

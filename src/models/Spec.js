@@ -358,6 +358,11 @@ class Spec {
     return this;
   }
 
+  inspect() {
+    this._inspect = true;
+    return this;
+  }
+
   async toss() {
     const tosser = new Tosser(this);
     return tosser.toss();
