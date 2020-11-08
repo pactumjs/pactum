@@ -291,6 +291,8 @@ declare class Spec {
    */
   withAuth(username: string, password: string): Spec;
 
+  withFollowRedirects(follow: boolean): Spec;
+
   /**
    * retry request on specific conditions before making assertions
    * @example
@@ -538,6 +540,11 @@ declare class Spec {
    *  .expectStatus(200)
    */
   wait(milliseconds: number): Spec;
+
+  /**
+   * prints request & response
+   */
+  inspect(): Spec;
 
   /**
    * executes the test case

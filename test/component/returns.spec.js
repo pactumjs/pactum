@@ -65,7 +65,7 @@ describe('Returns', () => {
   });
 
   it('return with custom handler function', async () => {
-    pactum.handler.addReturnHandler('GetID', ({ res }) => res.json.id);
+    pactum.handler.addCaptureHandler('GetID', ({ res }) => res.json.id);
     const response = await pactum.spec()
       .useMockInteraction({
         withRequest: {
@@ -83,7 +83,7 @@ describe('Returns', () => {
       .expectStatus(200)
       .returns('#GetID');
     expect(response).equals(1);
-    settings.setReturnHandlerStrategy({ starts: '##' });
+    settings.setCaptureHandlerStrategy({ starts: '##' });
     const response2 = await pactum.spec()
       .useMockInteraction({
         withRequest: {
@@ -104,7 +104,7 @@ describe('Returns', () => {
   });
 
   it('multiple returns', async () => {
-    pactum.handler.addReturnHandler('GetID', ({ res }) => res.json.id);
+    pactum.handler.addCaptureHandler('GetID', ({ res }) => res.json.id);
     const response = await pactum.spec()
       .useMockInteraction({
         withRequest: {
@@ -169,7 +169,7 @@ describe('Returns', () => {
   });
 
   afterEach(() => {
-    settings.setReturnHandlerStrategy({ starts: '#' });
+    settings.setCaptureHandlerStrategy({ starts: '#' });
   });
 
 });

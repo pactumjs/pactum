@@ -38,6 +38,10 @@ const request = {
     config.request.baseUrl = url;
   },
 
+  setDefaultFollowRedirects(follow) {
+    config.request.followRedirects = follow;
+  },
+
   removeDefaultHeader(key) {
     if (!key) {
       throw new PactumRequestError(`Invalid header key provided - ${key}`);

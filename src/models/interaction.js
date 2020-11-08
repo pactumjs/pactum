@@ -26,7 +26,6 @@ class InteractionRequest {
       this.query[prop] = this.query[prop].toString();
     }
     if (request.body && typeof request.body === 'object') {
-      // this.rawBody = JSON.parse(JSON.stringify(request.body));
       helper.setMatchingRules(this.matchingRules, request.body, '$.body');
     }
     this.body = helper.setValueFromMatcher(request.body);

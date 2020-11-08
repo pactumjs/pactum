@@ -73,11 +73,8 @@ Returns: `Promise`<br>
 | `pactBrokerToken`           | bearer token for Pact Broker authentication                                           |
 | `publishVerificationResult` | publish verification result to Broker                                                 |
 
-----------------------------------------------------------------------------------------------------------------
+----
 
 <a href="#/consumer-testing" >
   <img src="https://img.shields.io/badge/PREV-Consumer%20Testing-orange" alt="Consumer Testing" align="left" style="display: inline;" />
-</a>
-<a href="#/mock-server" >
-  <img src="https://img.shields.io/badge/NEXT-Mock%20Server-blue" alt="Mock Server" align="right" style="display: inline;" />
 </a>

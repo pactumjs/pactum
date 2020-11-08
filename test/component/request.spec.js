@@ -18,7 +18,8 @@ describe('Request', () => {
         }
       })
       .get('/users')
-      .expectStatus(200);
+      .expectStatus(200)
+      .inspect();
   });
 
   it('with baseurl override', async () => {

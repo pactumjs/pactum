@@ -20,6 +20,11 @@ export function setDefaultTimeout(timeout: number): void;
 export function setBaseUrl(url: string): void;
 
 /**
+ * sets default value for follow redirects
+ */
+export function setFollowRedirects(follow: boolean): void;
+
+/**
  * removes default header
  */
 export function removeDefaultHeader(key: string): void;

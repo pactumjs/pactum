@@ -53,6 +53,16 @@ describe('Recorder', () => {
       .expectStatus(200);
   });
 
+  it('res header data to recorder using capture handler', async () => {
+    pactum.handler.addCaptureHandler('GetMethod', ({ res }) => res.json.method);
+    await pactum.spec()
+      .useMockInteraction('default get')
+      .get('http://localhost:9393/default/get')
+      .records('Method', '#GetMethod')
+      .records('Path', 'res.body.path')
+      .expectStatus(200);
+  });
+
   after(() => {
     request.getDefaultRecorders().length = 0;
   });

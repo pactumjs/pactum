@@ -1,6 +1,7 @@
 const phin = require('phin');
 const jqy = require('json-query');
 const config = require('../config');
+const hr = require('../helpers/handler.runner');
 const helper = require('../helpers/helper');
 const processor = require('../helpers/dataProcessor');
 const log = require('../helpers/logger');
@@ -34,13 +35,14 @@ class Tosser {
     await this.setState()
     await this.addInteractionsToServer();
     await this.setResponse();
+    this.inspect();
     await this.sleep(this.spec._waitDuration);
     this.setPreviousLogLevel();
     await this.getInteractionsFromServer();
     await this.removeInteractionsFromServer();
     this.recordData();
-    this.validate();
     this.storeSpecData();
+    this.validate();
     return this.getOutput();
   }
 
@@ -56,6 +58,7 @@ class Tosser {
     this.request.timeout = this.request.timeout || config.request.timeout;
     setHeaders(this.request);
     setMultiPartFormData(this.request);
+    setFollowRedirects(this.request);
   }
 
   setState() {
@@ -103,6 +106,13 @@ class Tosser {
     this.spec._response = this.response;
   }
 
+  inspect() {
+    if (this.spec._inspect) {
+      log.warn('Inspecting Request & Response');
+      this.printReqAndRes();
+    }
+  }
+
   setPreviousLogLevel() {
     if (this.previousLogLevel) {
       log.setLevel(this.previousLogLevel);
@@ -148,13 +158,7 @@ class Tosser {
       this.spec.status = 'FAILED';
       this.spec.failure = error.toString();
       rlc.afterSpecReport(this.spec);
-      const res = {
-        statusCode: this.response.statusCode,
-        headers: this.response.headers,
-        body: this.response.json
-      }
-      log.warn('Request', this.request);
-      log.warn('Response', res);
+      this.printReqAndRes();
       throw error;
     }
   }
@@ -177,11 +181,27 @@ class Tosser {
     this.expect.validate(this.request, this.response);
   }
 
+  printReqAndRes() {
+    const res = {
+      statusCode: this.response.statusCode,
+      headers: this.response.headers,
+      body: this.response.json
+    }
+    log.warn('Request', this.request);
+    log.warn('Response', res);
+  }
+
   storeSpecData() {
+    const ctx = { req: this.request, res: this.response };
     for (let i = 0; i < this.stores.length; i++) {
       const store = this.stores[i];
       const specData = {};
-      specData[store.name] = getPathValueFromSpec(store.path, this.spec);
+      const captureHandler = getCaptureHandlerName(store.path);
+      if (captureHandler) {
+        specData[store.name] = hr.capture(captureHandler, ctx);
+      } else {
+        specData[store.name] = getPathValueFromSpec(store.path, this.spec);
+      }
       stash.addDataStore(specData);
     }
   }
@@ -194,18 +214,18 @@ class Tosser {
 
   getOutput() {
     const outputs = [];
+    const ctx = { req: this.request, res: this.response };
     for (let i = 0; i < this.returns.length; i++) {
-      const _handler = this.returns[i];
-      const ctx = { req: this.request, res: this.response };
-      if (typeof _handler === 'function') {
-        outputs.push(_handler(ctx));
+      const _return = this.returns[i];
+      if (typeof _return === 'function') {
+        outputs.push(_return(ctx));
       }
-      if (typeof _handler === 'string') {
-        if (helper.matchesStrategy(_handler, config.strategy.return.handler)) {
-          const _customHandlerFun = handler.getReturnHandler(helper.sliceStrategy(_handler, config.strategy.return.handler));
-          outputs.push(_customHandlerFun(ctx));
+      if (typeof _return === 'string') {
+        const captureHandler = getCaptureHandlerName(_return);
+        if (captureHandler) {
+          outputs.push(hr.capture(captureHandler, ctx));
         } else {
-          outputs.push(getPathValueFromSpec(_handler, this.spec));
+          outputs.push(getPathValueFromSpec(_return, this.spec));
         }
       }
     }
@@ -256,6 +276,12 @@ function setMultiPartFormData(request) {
   }
 }
 
+function setFollowRedirects(request) {
+  if (config.request.followRedirects && typeof request.followRedirects === 'undefined') {
+    request.followRedirects = config.request.followRedirects;
+  }
+}
+
 async function getResponse(req) {
   let res = {};
   const requestStartTime = Date.now();
@@ -274,7 +300,12 @@ async function getResponse(req) {
 function recordData(recorder, spec) {
   try {
     let { name, path } = recorder;
-    spec.recorded[name] = getPathValueFromSpec(path, spec);
+    const captureHandler = getCaptureHandlerName(path);
+    if (captureHandler) {
+      spec.recorded[name] = hr.capture(captureHandler, { req: spec._request, res: spec._response });
+    } else {
+      spec.recorded[name] = getPathValueFromSpec(path, spec);
+    }
   } catch (error) {
     log.warn('Unable to record data');
     log.warn(error.toString());
@@ -297,6 +328,12 @@ function getPathValueFromSpec(path, spec) {
     data = spec._response.json;
   }
   return jqy(path, { data }).value;
+}
+
+function getCaptureHandlerName(name) {
+  if (helper.matchesStrategy(name, config.strategy.capture.handler)) {
+    return helper.sliceStrategy(name, config.strategy.capture.handler);
+  }
 }
 
 module.exports = Tosser;
