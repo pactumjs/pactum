@@ -19,6 +19,26 @@ it('<test-name>', async () => {
 });
 ```
 
+To pass additional parameters to the request, we can chain or use the following methods individually to build our request.
+
+| Method                    | Description                               |
+| ------------------------- | ----------------------------------------- |
+| `withQueryParams`         | request query parameters                  |
+| `withHeaders`             | request headers                           |
+| `withBody`                | request body                              |
+| `withJson`                | request json object                       |
+| `withGraphQLQuery`        | graphQL query                             |
+| `withGraphQLVariables`    | graphQL variables                         |
+| `withForm`                | object to send as form data               |
+| `withMultiPartFormData`   | object to send as multi part form data    |
+| `withRequestTimeout`      | sets request timeout                      |
+| `withCore`                | http request options                      |
+| `withAuth`                | basic auth details                        |
+| `withFollowRedirects`     | sets follow redirect boolean property     |
+| `inspect`                 | prints request & response details         |
+| `__setLogLevel`           | sets log level for troubleshooting        |
+| `toss` (optional)         | runs the spec & returns a promise         |
+
 ### Request Method
 
 The request method indicates the method to be performed on the resource identified by the given Request-URI.
@@ -80,25 +100,6 @@ it('should have a post with id 5', async () => {
 ```
 
 <!-- tabs:end -->
-
-To pass additional parameters to the request, we can chain or use the following methods individually to build our request.
-
-| Method                    | Description                               |
-| ------------------------- | ----------------------------------------- |
-| `withQueryParams`         | request query parameters                  |
-| `withHeaders`             | request headers                           |
-| `withBody`                | request body                              |
-| `withJson`                | request json object                       |
-| `withGraphQLQuery`        | graphQL query                             |
-| `withGraphQLVariables`    | graphQL variables                         |
-| `withForm`                | object to send as form data               |
-| `withMultiPartFormData`   | object to send as multi part form data    |
-| `withRequestTimeout`      | sets request timeout                      |
-| `withCore`                | http request options                      |
-| `withAuth`                | basic auth details                        |
-| `withFollowRedirects`     | sets follow redirect boolean property     |
-| `__setLogLevel`           | sets log level for troubleshooting        |
-| `toss` (optional)         | runs the spec & returns a promise         |
 
 ### Query Params
 
