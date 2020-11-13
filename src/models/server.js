@@ -154,9 +154,9 @@ function sendInteractionFoundResponse(req, res, interaction) {
     res.status(response.status);
     const delay = getDelay(response);
     if (delay > 0) {
-      sendResponseBody(res, response.body);
-    } else {
       setTimeout(() => sendResponseBody(res, response.body), delay);
+    } else {
+      sendResponseBody(res, response.body);
     }
   }
   interaction.callCount += 1;
