@@ -4,16 +4,22 @@ class Fuzz {
 
   constructor() {
     this.swaggerUrl = '';
-    this.batchCount = 10;
+    this.batchSize = 10;
+    this._inspect = false;
   }
 
-  swagger(url) {
+  onSwagger(url) {
     this.swaggerUrl = url;
     return this;
   }
 
-  batch(count) {
-    this.batchCount = count;
+  withBatchSize(size) {
+    this.batchSize = size;
+    return this;
+  }
+
+  inspect() {
+    this._inspect = true;
     return this;
   }
 

@@ -1,3 +1,4 @@
+const expect = require('chai').expect;
 const pactum = require('../../src/index');
 
 describe('Fuzz', () => {
@@ -18,10 +19,10 @@ describe('Fuzz', () => {
               "get": {}
             },
             "/info": {
-              "get": {}
+              "post": {}
             },
             "/version": {
-              "get": {}
+              "put": {}
             }
           }
         }
@@ -31,7 +32,34 @@ describe('Fuzz', () => {
 
   it('swagger', async () => {
     await pactum.fuzz()
-      .swagger('http://localhost:9393/swagger.json');
+      .onSwagger('http://localhost:9393/swagger.json');
+  });
+
+  it('swagger - with batch size & inspect', async () => {
+    await pactum.fuzz()
+      .onSwagger('http://localhost:9393/swagger.json')
+      .withBatchSize(5)
+      .inspect();
+  });
+
+  it('swagger - fail for success status', async () => {
+    pactum.mock.addMockInteraction({
+      withRequest: {
+        method: 'DELETE',
+        path: '/v2/version'
+      },
+      willRespondWith: {
+        status: 200
+      }
+    });
+    let err;
+    try {
+      await pactum.fuzz()
+        .onSwagger('http://localhost:9393/swagger.json');
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined; 
   });
 
   after(() => {

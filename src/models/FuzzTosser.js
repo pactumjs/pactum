@@ -37,25 +37,24 @@ class Tosser {
   }
 
   async sendRequestsAndValidateResponses() {
+    this.printStartMessage();
     let requests = [];
     let promises = [];
     let responses = [];
-    let count = 0;
     for (let i = 0; i < this.requests.length; i++) {
-      count = count + 1;
       const request = this.requests[i];
       request.url = this.baseUrl ? this.baseUrl + request.path : request.path;
+      log.info(`${request.method} ${request.path}`);
       delete request.path;
       this.requests[i] = rp.process(this.requests[i]);
       requests.push(this.requests[i]);
       promises.push(phin(this.requests[i]));
-      if (count / this.fuzz.batchCount === 1) {
+      if (i / this.fuzz.batchSize === 1) {
         responses = responses.concat(await Promise.all(promises));
         this.validate(requests, responses);
         promises = [];
         responses = [];
         requests = [];
-        count = 0;
       }
     }
     responses = responses.concat(await Promise.all(promises));
@@ -64,14 +63,30 @@ class Tosser {
 
   validate(requests, responses) {
     for (let i = 0; i < responses.length; i++) {
-      const response = responses[i];
+      const response = helper.getTrimResponse(responses[i]);
       const status = response.statusCode;
+      if (this.fuzz._inspect) {
+        this.printReqAndRes(requests[i], response);
+      }
       if (status < 400 || status > 499) {
-        log.warn('Request', requests[i]);
-        log.warn('Response', helper.getTrimResponse(response));
+        this.printReqAndRes(requests[i], response);
         throw new Error(`Fuzz Failure | Status Code: ${status}`);
       }
     }
+  }
+
+  printStartMessage() {
+    log.info(`================`);
+    log.info(`Starting Fuzz  `);
+    log.info(`================`);
+    log.info(`Requests   :  ${this.requests.length}`);
+    log.info(`Batch Size :  ${this.fuzz.batchSize}`);
+    log.info(`================\n`);
+  }
+
+  printReqAndRes(request, response) {
+    log.warn('Request', request);
+    log.warn('Response', response);
   }
 
 }
