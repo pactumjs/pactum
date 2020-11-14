@@ -1,4 +1,5 @@
 import * as Spec from './models/Spec';
+import * as Fuzz from './models/Fuzz';
 import * as E2E from './models/E2E';
 
 export * as consumer from './exports/consumer';
@@ -30,6 +31,8 @@ export function spec(ctx?: object): Spec;
  * @param data - custom data
  */
 export function spec(name: string, data?: any): Spec;
+
+export function fuzz(): Fuzz;
 
 export function e2e(name: string): E2E;
 

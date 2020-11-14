@@ -6,6 +6,7 @@ const helper = require('../helpers/helper');
 const processor = require('../helpers/dataProcessor');
 const log = require('../helpers/logger');
 const rlc = require('../helpers/reporter.lifeCycle');
+const requestProcessor = require('../helpers/requestProcessor');
 const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const stash = require('../exports/stash');
@@ -31,7 +32,7 @@ class Tosser {
 
   async toss() {
     this.spec.start = Date.now().toString();
-    this.updateRequest();
+    this.request = requestProcessor.process(this.request);
     await this.setState()
     await this.addInteractionsToServer();
     await this.setResponse();
@@ -44,21 +45,6 @@ class Tosser {
     this.storeSpecData();
     this.validate();
     return this.getOutput();
-  }
-
-  updateRequest() {
-    processor.processMaps();
-    processor.processTemplates();
-    this.request = processor.processData(this.request);
-    const query = helper.getPlainQuery(this.request.qs);
-    if (query) {
-      this.request.url = this.request.url + '?' + query;
-    }
-    setBaseUrl(this.request);
-    this.request.timeout = this.request.timeout || config.request.timeout;
-    setHeaders(this.request);
-    setMultiPartFormData(this.request);
-    setFollowRedirects(this.request);
   }
 
   setState() {
@@ -182,13 +168,8 @@ class Tosser {
   }
 
   printReqAndRes() {
-    const res = {
-      statusCode: this.response.statusCode,
-      headers: this.response.headers,
-      body: this.response.json
-    }
     log.warn('Request', this.request);
-    log.warn('Response', res);
+    log.warn('Response', helper.getTrimResponse(this.response));
   }
 
   storeSpecData() {
@@ -238,48 +219,6 @@ class Tosser {
     }
   }
 
-}
-
-function setBaseUrl(request) {
-  if (config.request.baseUrl && !request.url.startsWith('http')) {
-    request.url = config.request.baseUrl + request.url;
-  }
-}
-
-function setHeaders(request) {
-  if (Object.keys(config.request.headers).length > 0) {
-    if (!request.headers) {
-      request.headers = {};
-    }
-    for (const prop in config.request.headers) {
-      if (prop in request.headers) {
-        continue;
-      } else {
-        request.headers[prop] = config.request.headers[prop];
-      }
-    }
-  }
-}
-
-function setMultiPartFormData(request) {
-  if (request._multiPartFormData) {
-    request.data = request._multiPartFormData.getBuffer();
-    const multiPartHeaders = request._multiPartFormData.getHeaders();
-    if (!request.headers) {
-      request.headers = multiPartHeaders;
-    } else {
-      for (const prop in multiPartHeaders) {
-        request.headers[prop] = multiPartHeaders[prop];
-      }
-    }
-    delete request._multiPartFormData;
-  }
-}
-
-function setFollowRedirects(request) {
-  if (config.request.followRedirects && typeof request.followRedirects === 'undefined') {
-    request.followRedirects = config.request.followRedirects;
-  }
 }
 
 async function getResponse(req) {

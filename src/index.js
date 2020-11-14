@@ -1,4 +1,5 @@
 const Spec = require('./models/Spec');
+const Fuzz = require('./models/Fuzz');
 const E2E = require('./models/E2E');
 
 const helper = require('./helpers/helper');
@@ -31,6 +32,10 @@ const pactum = {
 
   spec(name, data) {
     return new Spec(name, data);
+  },
+
+  fuzz() {
+    return new Fuzz();
   },
 
   e2e(name) {

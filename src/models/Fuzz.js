@@ -22,7 +22,7 @@ class Fuzz {
     return tosser.toss();
   }
 
-  then() {
+  then(resolve, reject) {
     this.toss()
       .then(res => resolve(res))
       .catch(err => reject(err));

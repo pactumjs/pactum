@@ -1,33 +1,52 @@
 const phin = require('phin');
-const core = require('openapi-fuzzer-core');
+const fuzzCore = require('openapi-fuzzer-core');
 const log = require('../helpers/logger');
+const rp = require('../helpers/requestProcessor');
+const helper = require('../helpers/helper');
+
+const BASE_URL_PATTERN = /^https?:\/\/[^\/]+/i;
 
 class Tosser {
 
   constructor(fuzz) {
     this.fuzz = fuzz;
+    this.baseUrl = '';
     this.requests = [];
     this.responses = [];
   }
 
   async toss() {
     const data = await this.getSwaggerJson();
-    this.requests = core.swagger(data);
-    await this.validateResponses();
+    this.requests = fuzzCore.swagger(data);
+    this.setBaseUrl();
+    await this.sendRequestsAndValidateResponses();
   }
 
   async getSwaggerJson() {
-    const response = await phin({ method: 'get', url: this.swaggerUrl, parse: 'json' });
+    const request = rp.process({ method: 'get', url: this.fuzz.swaggerUrl });
+    request.parse = 'json';
+    const response = await phin(request);
     return response.body;
   }
 
-  async validateResponses() {
+  setBaseUrl() {
+    const matches = this.fuzz.swaggerUrl.match(BASE_URL_PATTERN);
+    if (matches) {
+      this.baseUrl = matches[0];
+    }
+  }
+
+  async sendRequestsAndValidateResponses() {
     let requests = [];
     let promises = [];
     let responses = [];
     let count = 0;
     for (let i = 0; i < this.requests.length; i++) {
       count = count + 1;
+      const request = this.requests[i];
+      request.url = this.baseUrl ? this.baseUrl + request.path : request.path;
+      delete request.path;
+      this.requests[i] = rp.process(this.requests[i]);
       requests.push(this.requests[i]);
       promises.push(phin(this.requests[i]));
       if (count / this.fuzz.batchCount === 1) {
@@ -40,7 +59,7 @@ class Tosser {
       }
     }
     responses = responses.concat(await Promise.all(promises));
-    this.validate(responses);
+    this.validate(requests, responses);
   }
 
   validate(requests, responses) {
@@ -49,7 +68,7 @@ class Tosser {
       const status = response.statusCode;
       if (status < 400 || status > 499) {
         log.warn('Request', requests[i]);
-        log.warn('Response', response);
+        log.warn('Response', helper.getTrimResponse(response));
         throw new Error(`Fuzz Failure | Status Code: ${status}`);
       }
     }
