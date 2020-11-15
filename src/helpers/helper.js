@@ -211,6 +211,14 @@ const helper = {
     if (strategy.starts) value = value.slice(strategy.starts.length);
     if (strategy.ends) value = value.slice(0, -(strategy.ends.length));
     return value;
+  },
+
+  getTrimResponse(response) {
+    return {
+      statusCode: response.statusCode,
+      headers: response.headers,
+      body: response.json
+    };
   }
 
 };
