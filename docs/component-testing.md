@@ -103,15 +103,28 @@ Instead of maintaining a separate mock server, pactum comes with it. Interaction
 * Interactions added through `useMockInteraction` method are auto removed from the mock server.
 * If interactions added through `useMockInteraction` method are not exercised, *pactum* will immediately fail the test case.
 
-```javascript
-const pactum = require('pactum');
-const mock = pactum.mock;
+<!-- tabs:start -->
+
+#### ** base.spec.js **
+
+```js
+const { mock } = require('pactum');
 
 before(async () => {
   await mock.start(4000);
 });
 
-it('should buy a product which is in stock', () => {
+after(async () => {
+  await mock.stop();
+});
+```
+
+#### ** orders.spec.js **
+
+```js
+const pactum = require('pactum');
+
+it('should buy a product which is in stock', async () => {
   await pactum.spec()
     .useMockInteraction({
       withRequest: {
@@ -136,7 +149,7 @@ it('should buy a product which is in stock', () => {
     .expectStatus(200);
 });
 
-it('should not buy a product which is out-of-stock', () => {
+it('should not buy a product which is out-of-stock', async () => {
   await pactum.spec()
     .useMockInteraction({
       withRequest: {
@@ -163,9 +176,30 @@ it('should not buy a product which is out-of-stock', () => {
       "message": "product is out-of-stock"
     });
 });
+```
 
-after(async () => {
-  await mock.stop();
+<!-- tabs:end -->
+
+Interaction can also contain expectations.
+
+```js
+it('should not get health', async () => {
+  await pactum.spec()
+    .useMockInteraction({
+      withRequest: {
+        method: 'GET',
+        path: '/api/health'
+      },
+      willRespondWith: {
+        status: 200
+      },
+      expects: {
+        exercised: false,
+        callCount: 0
+      }
+    })
+    .post('/api/orders')
+    .expectStatus(400);
 });
 ```
 
