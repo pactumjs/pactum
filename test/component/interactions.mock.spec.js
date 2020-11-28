@@ -138,6 +138,44 @@ describe('Mock Interactions - Query', () => {
 
 });
 
+describe('Mock Interactions - Path Params', () => {
+
+  it('including single path param', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users/snow'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/api/users/{username}')
+      .withPathParams('username', 'snow')
+      .expectStatus(200);
+  });
+
+  it('including multiple path param', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/project/QA/repo/automation/pr/1'
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/api/project/{project}/repo/{repo}/pr/{pr}')
+      .withPathParams('project', 'QA')
+      .withPathParams('repo', 'automation')
+      .withPathParams({ pr: 1 })
+      .expectStatus(200);
+  });
+
+});
+
 describe('Mock Interactions - Headers', () => {
 
   it('expecting an header', async () => {

@@ -11,13 +11,13 @@ class Tosser {
   constructor(fuzz) {
     this.fuzz = fuzz;
     this.baseUrl = '';
-    this.requests = [];
+    this.specs = [];
     this.responses = [];
   }
 
   async toss() {
     const data = await this.getSwaggerJson();
-    this.requests = fuzzCore.swagger(data);
+    this.specs = fuzzCore.swagger(data);
     this.setBaseUrl();
     await this.sendRequestsAndValidateResponses();
   }
@@ -38,50 +38,50 @@ class Tosser {
 
   async sendRequestsAndValidateResponses() {
     this.printStartMessage();
-    let requests = [];
+    let specs = [];
     let promises = [];
     let responses = [];
-    for (let i = 0; i < this.requests.length; i++) {
-      const request = this.requests[i];
+    for (let i = 0; i < this.specs.length; i++) {
+      const spec = this.specs[i];
+      const request = spec.request;
       request.url = this.baseUrl ? this.baseUrl + request.path : request.path;
-      log.info(`${request.method} ${request.path}`);
-      delete request.path;
-      this.requests[i] = rp.process(this.requests[i]);
-      requests.push(this.requests[i]);
-      promises.push(phin(this.requests[i]));
-      if (i / this.fuzz.batchSize === 1) {
+      log.info(`${spec.name} - ${request.method} ${request.path}`);
+      spec.request = rp.process(request);
+      specs.push(spec);
+      promises.push(phin(spec.request));
+      if ((i + 1) % this.fuzz.batchSize === 0) {
         responses = responses.concat(await Promise.all(promises));
-        this.validate(requests, responses);
+        this.validate(specs, responses);
         promises = [];
         responses = [];
-        requests = [];
+        specs = [];
       }
     }
     responses = responses.concat(await Promise.all(promises));
-    this.validate(requests, responses);
+    this.validate(specs, responses);
   }
 
-  validate(requests, responses) {
+  validate(specs, responses) {
     for (let i = 0; i < responses.length; i++) {
       const response = helper.getTrimResponse(responses[i]);
       const status = response.statusCode;
       if (this.fuzz._inspect) {
-        this.printReqAndRes(requests[i], response);
+        this.printReqAndRes(specs[i].request, response);
       }
       if (status < 400 || status > 499) {
-        this.printReqAndRes(requests[i], response);
+        this.printReqAndRes(specs[i].request, response);
         throw new Error(`Fuzz Failure | Status Code: ${status}`);
       }
     }
   }
 
   printStartMessage() {
-    log.info(`================`);
+    log.info(`===================`);
     log.info(`Starting Fuzz  `);
-    log.info(`================`);
-    log.info(`Requests   :  ${this.requests.length}`);
+    log.info(`===================`);
+    log.info(`Requests   :  ${this.specs.length}`);
     log.info(`Batch Size :  ${this.fuzz.batchSize}`);
-    log.info(`================\n`);
+    log.info(`===================\n`);
   }
 
   printReqAndRes(request, response) {

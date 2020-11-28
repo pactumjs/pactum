@@ -12,7 +12,7 @@ class Spec {
 
   constructor(name, data) {
     this.id = helper.getRandomId();
-    this._name = ''; 
+    this._name = '';
     this.status = 'N/A';
     this.failure = '';
     this.recorded = {};
@@ -43,7 +43,7 @@ class Spec {
   }
 
   name(value) {
-    this._name = value; 
+    this._name = value;
     return this;
   }
 
@@ -111,9 +111,21 @@ class Spec {
     return this;
   }
 
+  withPathParams(key, value) {
+    if (!this._request.pathParams) {
+      this._request.pathParams = {};
+    }
+    if (typeof key === 'string') {
+      this._request.pathParams[key] = value;
+    } else {
+      Object.assign(this._request.pathParams, key);
+    }
+    return this;
+  }
+
   withQueryParams(key, value) {
-    if (!this._request.qs) {
-      this._request.qs = {};
+    if (!this._request.queryParams) {
+      this._request.queryParams = {};
     }
     if (typeof key === 'string') {
       if (!helper.isValidString(key)) {
@@ -122,12 +134,12 @@ class Spec {
       if (value === undefined || value === null) {
         throw new PactumRequestError('`value` is required');
       }
-      this._request.qs[key] = value;
+      this._request.queryParams[key] = value;
     } else {
       if (!helper.isValidObject(key) || Object.keys(key).length === 0) {
         throw new PactumRequestError('`params` are required');
       }
-      Object.assign(this._request.qs, key);
+      Object.assign(this._request.queryParams, key);
     }
     return this;
   }

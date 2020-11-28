@@ -4,6 +4,7 @@ const pactum = require('../../src/index');
 describe('Fuzz', () => {
 
   before(() => {
+    pactum.settings.setLogLevel('ERROR');
     pactum.mock.addMockInteraction({
       withRequest: {
         method: 'GET',
@@ -22,7 +23,32 @@ describe('Fuzz', () => {
               "post": {}
             },
             "/version": {
-              "put": {}
+              "put": {
+                "parameters": [
+                  {
+                    "in": "body",
+                    "schema": {
+                      "$ref": "#/definitions/Version"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "definitions": {
+            "Version": {
+              "type": "object",
+              "properties": {
+                "major": {
+                  "type": "string"
+                },
+                "minor": {
+                  "type": "string"
+                },
+                "patch": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -59,10 +85,11 @@ describe('Fuzz', () => {
     } catch (error) {
       err = error;
     }
-    expect(err).not.undefined; 
+    expect(err).not.undefined;
   });
 
   after(() => {
+    pactum.settings.setLogLevel('INFO');
     pactum.mock.clearInteractions();
   });
 
