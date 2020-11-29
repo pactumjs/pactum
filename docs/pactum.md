@@ -19,9 +19,13 @@
 * Ideal for *component*, *contract*, *integration* & *e2e* testing of APIs
 * Reporting
 
+## Experimental
+
+- E2E Testing
+- Fuzz Testing
+
 ## Road Map
 
-* Fuzz Testing
 * Snapshot Testing
 * More Matchers
 * Visual API Testing
@@ -32,6 +36,7 @@
 * [API Testing](api-testing)
 * [Integration Testing](integration-testing)
 * [E2E Testing](e2e-testing)
+* [Fuzz Testing](fuzz-testing)
 * [Mock Server](mock-server)
 * [Component Testing](component-testing)
 * [Contract Testing](contract-testing)

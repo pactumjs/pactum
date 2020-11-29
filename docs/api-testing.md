@@ -23,7 +23,7 @@ To pass additional parameters to the request, we can chain or use the following 
 
 | Method                    | Description                               |
 | ------------------------- | ----------------------------------------- |
-| `withPathParams`          | request path parameters                  |
+| `withPathParams`          | request path parameters                   |
 | `withQueryParams`         | request query parameters                  |
 | `withHeaders`             | request headers                           |
 | `withBody`                | request body                              |

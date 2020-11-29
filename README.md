@@ -17,6 +17,7 @@
 * Customizable Assertions & Retry Mechanisms.
 * Powerful Mock Server.
 * Ideal for *component*, *contract* & *e2e* testing of APIs.
+* Supports *fuzz* testing.
 
 ## Documentation
 
