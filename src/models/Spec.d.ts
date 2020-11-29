@@ -157,6 +157,17 @@ declare class Spec {
   delete(url: string): Spec;
 
   /**
+   * replaces path params in the request url - /api/users/mike
+   * @example
+   * await pactum
+   *  .get('/api/users/{username}')
+   *  .withPathParams('username', 'mike')
+   *  .expectStatus(200);
+   */
+  withPathParams(key: string, value: any): Spec;
+  withPathParams(params: object): Spec;
+
+  /**
    * adds query params to the request url - /comments?id=1&user=snow&sort=asc
    * @example
    * await pactum

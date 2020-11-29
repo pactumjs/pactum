@@ -21,22 +21,22 @@ const utils = {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Method`);
         continue;
       }
-      const isValidPath = validatePath(req.path, interaction.withRequest.path, interaction.withRequest.matchingRules);
+      const isValidPath = xValidatePath(req, interaction);
       if (!isValidPath) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Path`);
         continue;
       }
-      let isValidQuery = xValidateQuery(req, interaction);
+      const isValidQuery = xValidateQuery(req, interaction);
       if (!isValidQuery) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Query Params`);
         continue;
       }
-      let isValidHeaders = xValidateHeaders(req, interaction);
+      const isValidHeaders = xValidateHeaders(req, interaction);
       if (!isValidHeaders) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Headers`);
         continue;
       }
-      let isValidBody = xValidateBody(req, interaction);
+      const isValidBody = xValidateBody(req, interaction);
       if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
         return interaction;
       }
@@ -47,10 +47,37 @@ const utils = {
 
 };
 
-function validatePath(actual, expected, matchingRules) {
+function xValidatePath(req, interaction) {
+  const { path, pathParams, matchingRules } = interaction.withRequest;
+  const actualPath = req.path;
+  const expectedPath = path;
   const compare = new Compare();
-  const response = compare.jsonMatch(actual, expected, matchingRules, '$.path');
-  return response.equal;
+  if (pathParams) {
+    const actualParts = actualPath.split('/');
+    const expectedParts = expectedPath.split('/');
+    if (actualParts.length !== expectedParts.length) {
+      return false;
+    }
+    const actual = {};
+    const expected = {};
+    for (let i = 0; i < actualParts.length; i++) {
+      if (!actualParts[i]) continue;
+      const actualPart = actualParts[i];
+      const expectedPart = expectedParts[i];
+      if (expectedPart.startsWith('{') && expectedPart.endsWith('}')) {
+        const param = expectedPart.slice(1, -1);
+        expected[param] = pathParams[param];
+        actual[param] = actualPart;
+      } else {
+        if (actualPart !== expectedPart) {
+          return false;
+        }
+      }
+    }
+    return compare.jsonMatch(actual, expected, matchingRules, '$.path').equal;
+  } else {
+    return compare.jsonMatch(actualPath, expectedPath, matchingRules, '$.path').equal;
+  }
 }
 
 function xValidateQuery(req, interaction) {

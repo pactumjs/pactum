@@ -23,6 +23,7 @@ To pass additional parameters to the request, we can chain or use the following 
 
 | Method                    | Description                               |
 | ------------------------- | ----------------------------------------- |
+| `withPathParams`          | request path parameters                   |
 | `withQueryParams`         | request query parameters                  |
 | `withHeaders`             | request headers                           |
 | `withBody`                | request body                              |
@@ -100,6 +101,22 @@ it('should have a post with id 5', async () => {
 ```
 
 <!-- tabs:end -->
+
+### Path Params
+
+Use `withPathParams` to pass path parameters to the request. We can either pass key & value or object as an argument.
+
+```javascript
+it('get random male user from India', async () => {
+  await pactum.spec()
+    .get('/api/project/{project}/repo/{repo}')
+    .withPathParams('project', 'project-name')
+    .withPathParams({
+      'repo': 'repo-name'
+    })
+    .expectStatus(200);
+});
+```
 
 ### Query Params
 

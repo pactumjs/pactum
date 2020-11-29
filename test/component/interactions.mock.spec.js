@@ -138,6 +138,133 @@ describe('Mock Interactions - Query', () => {
 
 });
 
+describe('Mock Interactions - Path Params', () => {
+
+  it('including single path param', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users/{user}',
+          pathParams: {
+            user: 'snow'
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/api/users/{username}')
+      .withPathParams('username', 'snow')
+      .expectStatus(200);
+  });
+
+  it('including multiple path param', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/project/{project}/repo/{repo}/pr/{pr}',
+          pathParams: {
+            project: 'QA',
+            repo: 'automation',
+            pr: '1'
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/api/project/{project}/repo/{repo}/pr/{pr}')
+      .withPathParams('project', 'QA')
+      .withPathParams('repo', 'automation')
+      .withPathParams({ pr: 1 })
+      .expectStatus(200);
+  });
+
+  it('including multiple path param with like matcher', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/project/{project}/repo/{repo}/pr/{pr}',
+          pathParams: {
+            project: 'QA',
+            repo: 'automation',
+            pr: like('10')
+          }
+        },
+        willRespondWith: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/api/project/{project}/repo/{repo}/pr/{pr}')
+      .withPathParams('project', 'QA')
+      .withPathParams('repo', 'automation')
+      .withPathParams({ pr: 1 })
+      .expectStatus(200);
+  });
+
+  it('unequal path parts length', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/project/{project}/repo/{repo}/pr/{pr}',
+            pathParams: {
+              project: 'QA',
+              repo: 'automation',
+              pr: '1'
+            }
+          },
+          willRespondWith: {
+            status: 200
+          }
+        })
+        .get('http://localhost:9393/api/projects/{project}/repo/{repo}')
+        .withPathParams('project', 'QA')
+        .withPathParams('repo', 'automation')
+        .withPathParams({ pr: 1 })
+        .expectStatus(200);
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+  it('unequal path parts', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/project/{project}/repo/{repo}/pr/{pr}',
+            pathParams: {
+              project: 'QA',
+              repo: 'automation',
+              pr: '1'
+            }
+          },
+          willRespondWith: {
+            status: 200
+          }
+        })
+        .get('http://localhost:9393/api/projects/{project}/repo/{repo}/pr/{pr}')
+        .withPathParams('project', 'QA')
+        .withPathParams('repo', 'automation')
+        .withPathParams({ pr: 1 })
+        .expectStatus(200);
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+});
+
 describe('Mock Interactions - Headers', () => {
 
   it('expecting an header', async () => {
@@ -270,27 +397,27 @@ describe('Mock Interactions - Body', () => {
     let err;
     try {
       await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
-          method: 'POST',
-          path: '/mock/body',
-          body: {
-            id: 3,
-            married: false,
-            country: 'True North'
+        .useMockInteraction({
+          withRequest: {
+            method: 'POST',
+            path: '/mock/body',
+            body: {
+              id: 3,
+              married: false,
+              country: 'True North'
+            }
+          },
+          willRespondWith: {
+            status: 200
           }
-        },
-        willRespondWith: {
-          status: 200
-        }
-      })
-      .post('http://localhost:9393/mock/body')
-      .withJson({
-        id: 1,
-        name: 'Jon',
-        married: true
-      })
-      .expectStatus(200);  
+        })
+        .post('http://localhost:9393/mock/body')
+        .withJson({
+          id: 1,
+          name: 'Jon',
+          married: true
+        })
+        .expectStatus(200);
     } catch (error) {
       err = error;
     }
@@ -301,27 +428,27 @@ describe('Mock Interactions - Body', () => {
     let err;
     try {
       await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
-          method: 'POST',
-          path: '/mock/body',
-          body: like({
-            id: 3,
-            married: false,
-            country: 'True North'
-          })
-        },
-        willRespondWith: {
-          status: 200
-        }
-      })
-      .post('http://localhost:9393/mock/body')
-      .withJson({
-        id: 1,
-        name: 'Jon',
-        married: true
-      })
-      .expectStatus(200);  
+        .useMockInteraction({
+          withRequest: {
+            method: 'POST',
+            path: '/mock/body',
+            body: like({
+              id: 3,
+              married: false,
+              country: 'True North'
+            })
+          },
+          willRespondWith: {
+            status: 200
+          }
+        })
+        .post('http://localhost:9393/mock/body')
+        .withJson({
+          id: 1,
+          name: 'Jon',
+          married: true
+        })
+        .expectStatus(200);
     } catch (error) {
       err = error;
     }

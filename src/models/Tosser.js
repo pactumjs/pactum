@@ -3,7 +3,6 @@ const jqy = require('json-query');
 const config = require('../config');
 const hr = require('../helpers/handler.runner');
 const helper = require('../helpers/helper');
-const processor = require('../helpers/dataProcessor');
 const log = require('../helpers/logger');
 const rlc = require('../helpers/reporter.lifeCycle');
 const requestProcessor = require('../helpers/requestProcessor');
@@ -33,7 +32,7 @@ class Tosser {
   async toss() {
     this.spec.start = Date.now().toString();
     this.request = requestProcessor.process(this.request);
-    await this.setState()
+    await this.setState();
     await this.addInteractionsToServer();
     await this.setResponse();
     this.inspect();
@@ -107,8 +106,8 @@ class Tosser {
 
   recordData() {
     const defaultRecorders = request.getDefaultRecorders();
-    defaultRecorders.forEach(recorder => { recordData(recorder, this.spec) });
-    this.recorders.forEach(recorder => { recordData(recorder, this.spec) });
+    defaultRecorders.forEach(recorder => { recordData(recorder, this.spec); });
+    this.recorders.forEach(recorder => { recordData(recorder, this.spec); });
   }
 
   async getInteractionsFromServer() {
@@ -238,7 +237,7 @@ async function getResponse(req) {
 
 function recordData(recorder, spec) {
   try {
-    let { name, path } = recorder;
+    const { name, path } = recorder;
     const captureHandler = getCaptureHandlerName(path);
     if (captureHandler) {
       spec.recorded[name] = hr.capture(captureHandler, { req: spec._request, res: spec._response });
