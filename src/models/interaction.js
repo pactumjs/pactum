@@ -8,6 +8,10 @@ class InteractionRequest {
   constructor(request) {
     this.matchingRules = {};
     this.method = request.method;
+    if (request.pathParams) {
+      helper.setMatchingRules(this.matchingRules, request.pathParams, '$.path');
+      this.pathParams = helper.setValueFromMatcher(request.pathParams);
+    }
     helper.setMatchingRules(this.matchingRules, request.path, '$.path');
     this.path = helper.setValueFromMatcher(request.path);
     if (request.headers && typeof request.headers === 'object') {
@@ -87,7 +91,7 @@ class InteractionResponseDelay {
 }
 
 class InteractionExpectations {
-  
+
   constructor(expects) {
     this.exercised = expects.exercised;
     this.callCount = expects.callCount;

@@ -204,6 +204,7 @@ Posting the below JSON to `/api/users` will return a 404 response. The *id* & *c
 | withRequest                      | request details                 |
 | withRequest.method               | HTTP method                     |
 | withRequest.path                 | api path                        |
+| withRequest.pathParams           | api path params                 |
 | withRequest.headers              | request headers                 |
 | withRequest.query                | query parameters                |
 | withRequest.body                 | request body                    |
@@ -220,6 +221,29 @@ Posting the below JSON to `/api/users` will return a 404 response. The *id* & *c
 | willRespondWith.randomDelay.max  | delay the response by max ms    |
 | willRespondWith.onCall           | response on consecutive calls   |
 | willRespondWith(req, res)        | response with custom function   |
+
+#### Path Params
+
+Example of using path params.
+
+```js
+mock.addMockInteraction({
+  withRequest: {
+    method: 'GET',
+    path: '/api/users/{userId}',
+    pathParams: {
+      userId: '1'
+    }
+  },
+  willRespondWith: {
+    status: 200,
+    body: {
+      id: 1,
+      name: 'Jon'
+    }
+  }
+});
+```
 
 #### Behavior on consecutive calls
 

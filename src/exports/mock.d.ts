@@ -8,6 +8,7 @@ export interface GraphQLRequest {
 export interface InteractionRequest {
   method: RequestMethod;
   path: string;
+  pathParams?: object;
   headers?: object;
   query?: object;
   graphQL?: GraphQLRequest;
