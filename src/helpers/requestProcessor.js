@@ -68,10 +68,6 @@ function setBody(request) {
   if (request.body) {
     request.data = request.body;
   }
-  const bodyType = typeof request.body;
-  if (bodyType === 'number' || bodyType === 'boolean') {
-    request.data = request.body.toString();
-  }
 }
 
 function setMultiPartFormData(request) {

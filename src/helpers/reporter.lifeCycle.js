@@ -16,8 +16,9 @@ const rlc = {
         end: helper.getCurrentTime(),
       };
       data.request = {
+        url: spec._request.url,
         method: spec._request.method,
-        path: spec._request.url,
+        path: spec._request.path,
         headers: spec._request.headers,
         body: spec._request.data
       };
@@ -27,7 +28,7 @@ const rlc = {
           headers: spec._response.headers,
           body: spec._response.json || '',
           responseTime: spec._response.responseTime
-        }
+        };
       }
       data.recorded = spec.recorded;
       data.interactions = spec.interactions;
@@ -45,7 +46,7 @@ const rlc = {
       };
       reporter.afterStep(data);
     }
-    
+
   },
 
   afterTestReport(test) {
@@ -54,11 +55,11 @@ const rlc = {
         id: test.id,
         name: test.name,
         steps: test.steps.map(step => step.id)
-      }
+      };
       reporter.afterTest(data);
     }
   }
 
-}
+};
 
 module.exports = rlc;

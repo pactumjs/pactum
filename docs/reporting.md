@@ -34,6 +34,7 @@ after(() => {
 
 * [pactum-json-reporter](https://www.npmjs.com/package/pactum-json-reporter)
 * [pactum-swagger-coverage](https://www.npmjs.com/package/pactum-swagger-coverage)
+* [pactum-influxdb-reporter](https://www.npmjs.com/package/pactum-influxdb-reporter)
 
 ?> More reporters are on the way
 
