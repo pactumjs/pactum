@@ -11,19 +11,21 @@ const reporter = {
   },
 
   afterSpec(data) {
-    reporters.forEach(rpt => { if (rpt['afterSpec']) rpt.afterSpec(data) });
+    reporters.forEach(rpt => { if (rpt['afterSpec']) rpt.afterSpec(data); });
   },
 
   afterStep(data) {
-    reporters.forEach(rpt => { if (rpt['afterStep']) rpt.afterStep(data) });
+    reporters.forEach(rpt => { if (rpt['afterStep']) rpt.afterStep(data); });
   },
 
   afterTest(data) {
-    reporters.forEach(rpt => { if (rpt['afterTest']) rpt.afterTest(data) });
+    reporters.forEach(rpt => { if (rpt['afterTest']) rpt.afterTest(data); });
   },
 
   async end() {
-    await reporters.forEach(async rpt => await rpt.end());
+    for (let i = 0; i < reporters.length; i++) {
+      await reporters[i].end();
+    }
   }
 
 };
