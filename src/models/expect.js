@@ -22,6 +22,7 @@ class Expect {
     this.jsonSchemaQuery = [];
     this.jsonMatch = [];
     this.jsonMatchQuery = [];
+    this.jsonSnapshot = [];
     this.headers = [];
     this.headerContains = [];
     this.responseTime = null;

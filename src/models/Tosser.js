@@ -88,6 +88,7 @@ class Tosser {
         }
       }
     }
+    delete this.spec._request.data;
     this.spec._response = this.response;
   }
 
@@ -257,7 +258,7 @@ function getPathValueFromSpec(path, spec) {
     data = spec._request.headers;
   } else if (path.startsWith('req.body')) {
     path = path.replace('req.body', '');
-    data = spec._request.data;
+    data = spec._request.body;
   } else if (path.startsWith('res.headers')) {
     path = path.replace('res.headers', '');
     data = spec._response.headers;

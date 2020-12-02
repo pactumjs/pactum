@@ -345,6 +345,12 @@ class Spec {
     return this;
   }
 
+  expectJsonSnapshot(value) {
+    const snapshot = value || this._name;
+    this._expect.jsonSnapshot.push(snapshot);
+    return this;
+  }
+
   expectResponseTime(value) {
     this._expect.responseTime = value;
     return this;
