@@ -619,4 +619,49 @@ describe('Expects', () => {
     expect(err).not.undefined;
   });
 
+  it('json snapshot', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            people: [
+              { name: 'Matt', country: 'NZ' },
+              { name: 'Pete', country: 'AU' },
+              { name: 'Mike', country: 'NZ' }
+            ]
+          }
+        }
+      })
+      .name('new snapshot')
+      .get('http://localhost:9393/api/users')
+      .expectStatus(200)
+      .expectJsonSnapshot();
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            people: [
+              { name: 'Matt', country: 'NZ' },
+              { name: 'Pete', country: 'AU' },
+              { name: 'Mike', country: 'NZ' }
+            ]
+          }
+        }
+      })
+      .name('new snapshot')
+      .get('http://localhost:9393/api/users')
+      .expectStatus(200)
+      .expectJsonSnapshot();
+  });
+
 });

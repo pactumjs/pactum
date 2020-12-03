@@ -1,5 +1,6 @@
 const assert = require('assert');
 const jqy = require('json-query');
+const fs = require('fs');
 
 const log = require('../helpers/logger');
 const Compare = require('../helpers/compare');
@@ -11,6 +12,7 @@ const jmv = require('../plugins/json.match');
 class Expect {
 
   constructor() {
+    this.name = null;
     this.statusCode = null;
     this.body = null;
     this.bodyContains = [];
@@ -43,6 +45,7 @@ class Expect {
     this._validateJsonSchemaQuery(response);
     this._validateJsonMatch(response);
     this._validateJsonMatchQuery(response);
+    this._validateJsonSnapshot(response);
     this._validateResponseTime(response);
     this._validateCustomExpectHandlers(request, response);
   }
@@ -56,7 +59,7 @@ class Expect {
         path: interaction.withRequest.path,
         headers: interaction.withRequest.headers,
         body: interaction.withRequest.body
-      }
+      };
       if (expects.exercised && !interaction.exercised) {
         log.warn('Interaction Not Exercised', intReq);
         this.fail(`Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
@@ -261,6 +264,31 @@ class Expect {
       const errors = jmv.validate(actualValue, expectedValue, rules, jQ.path);
       if (errors) {
         this.fail(errors);
+      }
+    }
+  }
+
+  _validateJsonSnapshot(response) {
+    if (this.jsonSnapshot.length > 0) {
+      if (!this.name) {
+        this.fail('Snapshot name is required');
+      }
+      this.jsonSnapshot = processor.processData(this.jsonSnapshot);
+      const snapshotDir = '.pactum/snapshots';
+      const snapshotFile = `${this.name}.json`;
+      const exist = fs.existsSync(`${snapshotDir}/${snapshotFile}`);
+      if (exist) {
+        const expected = JSON.parse(fs.readFileSync(`${snapshotDir}/${snapshotFile}`));
+        const actual = response.json;
+        for (let i = 0; i < this.jsonSnapshot.length; i++) {
+          const data = this.jsonSnapshot[i];
+          if (!data) {
+            assert.deepStrictEqual(actual, expected);
+          }
+        }
+      } else {
+        fs.mkdirSync(snapshotDir, { recursive: true });
+        fs.writeFileSync(`${snapshotDir}/${snapshotFile}`, JSON.stringify(response.json, null, 2));
       }
     }
   }

@@ -44,6 +44,7 @@ class Spec {
 
   name(value) {
     this._name = value;
+    this._expect.name = value;
     return this;
   }
 
@@ -345,9 +346,8 @@ class Spec {
     return this;
   }
 
-  expectJsonSnapshot(value) {
-    const snapshot = value || this._name;
-    this._expect.jsonSnapshot.push(snapshot);
+  expectJsonSnapshot(matchers) {
+    this._expect.jsonSnapshot.push(matchers);
     return this;
   }
 

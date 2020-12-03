@@ -491,6 +491,8 @@ declare class Spec {
    */
   expectJsonMatchAt(path: string, value: object): Spec;
 
+  expectJsonSnapshot(value: object): Spec;
+
   /**
    * expects request completes within a specified duration (ms)
    */
