@@ -15,7 +15,7 @@ function addDefaultMockHandlers() {
           path: '/default/get'
         }
       }
-    }
+    };
   });
   handler.addMockInteractionHandler('default post', () => {
     return {
@@ -30,7 +30,25 @@ function addDefaultMockHandlers() {
       willRespondWith: {
         status: 200
       }
-    }
+    };
+  });
+  handler.addMockInteractionHandler('get people', () => {
+    return {
+      withRequest: {
+        method: 'GET',
+        path: '/api/people'
+      },
+      willRespondWith: {
+        status: 200,
+        body: {
+          people: [
+            { name: 'Matt', country: 'NZ' },
+            { name: 'Pete', country: 'AU' },
+            { name: 'Mike', country: 'NZ' }
+          ]
+        }
+      }
+    };
   });
 }
 

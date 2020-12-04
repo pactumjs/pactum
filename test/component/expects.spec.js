@@ -1,6 +1,7 @@
 const pactum = require('../../src/index');
 const { like } = pactum.matchers;
 const expect = require('chai').expect;
+const fs = require('fs');
 
 describe('Expects', () => {
 
@@ -8,13 +9,13 @@ describe('Expects', () => {
     const isUser = function (ctx) {
       const user = ctx.res.json;
       expect(user).deep.equals({ id: 1 });
-    }
+    };
     pactum.handler.addExpectHandler('isUser', isUser);
 
     const hasAddress = function ({ res, data }) {
       const address = res.json;
       expect(address.type).equals(data);
-    }
+    };
     pactum.handler.addExpectHandler('hasAddress', hasAddress);
   });
 
@@ -209,7 +210,7 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectBody('Hello World')
+        .expectBody('Hello World');
     } catch (error) {
       err = error;
     }
@@ -221,7 +222,7 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectBodyContains('Hello World')
+        .expectBodyContains('Hello World');
     } catch (error) {
       err = error;
     }
@@ -233,7 +234,7 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectBodyContains(/Hello World/)
+        .expectBodyContains(/Hello World/);
     } catch (error) {
       err = error;
     }
@@ -245,7 +246,7 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectJsonLike({ id: 1 })
+        .expectJsonLike({ id: 1 });
     } catch (error) {
       err = error;
     }
@@ -447,7 +448,7 @@ describe('Expects', () => {
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
       .expectJsonAt('people[country=NZ].name', 'Matt')
-      .expectJsonAt('people[*].name', ['Matt', 'Pete', 'Mike'])
+      .expectJsonAt('people[*].name', ['Matt', 'Pete', 'Mike']);
   });
 
   it('json query - on root array', () => {
@@ -470,7 +471,7 @@ describe('Expects', () => {
       .expectStatus(200)
       .expectJsonAt('[1].country', 'AU')
       .expectJsonAt('[country=NZ].name', 'Matt')
-      .expectJsonAt('[*].name', ['Matt', 'Pete', 'Mike'])
+      .expectJsonAt('[*].name', ['Matt', 'Pete', 'Mike']);
   });
 
   it('json query - on root object - fails', async () => {
@@ -560,7 +561,7 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectResponseTime(-1)
+        .expectResponseTime(-1);
     } catch (error) {
       err = error;
     }
@@ -619,49 +620,211 @@ describe('Expects', () => {
     expect(err).not.undefined;
   });
 
-  it('json snapshot', async () => {
+  it('json snapshot - deep equal', async () => {
+    await pactum.spec()
+      .useMockInteraction('get people')
+      .name('json snapshot - deep equal')
+      .get('http://localhost:9393/api/people')
+      .expectStatus(200)
+      .expectJsonSnapshot();
+    await pactum.spec()
+      .useMockInteraction('get people')
+      .name('json snapshot - deep equal')
+      .get('http://localhost:9393/api/people')
+      .expectStatus(200)
+      .expectJsonSnapshot();
+    fs.unlinkSync(`.pactum/snapshots/json snapshot - deep equal.json`);
+  });
+
+  it('json snapshot - deep equal - fails', async () => {
     await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
-          path: '/api/users'
+          path: '/api/users/1'
         },
         willRespondWith: {
           status: 200,
           body: {
-            people: [
-              { name: 'Matt', country: 'NZ' },
-              { name: 'Pete', country: 'AU' },
-              { name: 'Mike', country: 'NZ' }
-            ]
+            id: 'random-id',
+            name: 'snow'
           }
         }
       })
-      .name('new snapshot')
-      .get('http://localhost:9393/api/users')
+      .name('json snapshot - deep equal')
+      .get('http://localhost:9393/api/users/1')
       .expectStatus(200)
       .expectJsonSnapshot();
+    let err;
+    try {
+      await pactum.spec()
+        .useMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/users/1'
+          },
+          willRespondWith: {
+            status: 200,
+            body: {
+              id: 'random-ids',
+              name: 'snow'
+            }
+          }
+        })
+        .name('json snapshot - deep equal')
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200)
+        .expectJsonSnapshot();
+    } catch (error) {
+      err = error;
+    }
+    fs.unlinkSync(`.pactum/snapshots/json snapshot - deep equal.json`);
+    expect(err).not.undefined;
+  });
+
+  it('json snapshot - with matchers', async () => {
     await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
-          path: '/api/users'
+          path: '/api/users/1'
         },
         willRespondWith: {
           status: 200,
           body: {
-            people: [
-              { name: 'Matt', country: 'NZ' },
-              { name: 'Pete', country: 'AU' },
-              { name: 'Mike', country: 'NZ' }
-            ]
+            id: 'random-id',
+            name: 'snow'
           }
         }
       })
-      .name('new snapshot')
-      .get('http://localhost:9393/api/users')
+      .name('json snapshot - with matchers')
+      .get('http://localhost:9393/api/users/1')
       .expectStatus(200)
-      .expectJsonSnapshot();
+      .expectJsonSnapshot({
+        id: like('id')
+      });
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users/1'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            id: 'random-id',
+            name: 'snow'
+          }
+        }
+      })
+      .name('json snapshot - with matchers')
+      .get('http://localhost:9393/api/users/1')
+      .expectStatus(200)
+      .expectJsonSnapshot({
+        id: like('id')
+      });
+    fs.unlinkSync(`.pactum/snapshots/json snapshot - with matchers.json`);
+  });
+
+  it('json snapshot - with matchers - fails with extra property', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users/1'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            id: 'random-id',
+            name: 'snow'
+          }
+        }
+      })
+      .name('json snapshot - with matchers')
+      .get('http://localhost:9393/api/users/1')
+      .expectStatus(200)
+      .expectJsonSnapshot({
+        id: like('id')
+      });
+    let err;
+    try {
+      await pactum.spec()
+        .useMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/users/1'
+          },
+          willRespondWith: {
+            status: 200,
+            body: {
+              id: 'random-id',
+              name: 'snow',
+              age: 2
+            }
+          }
+        })
+        .name('json snapshot - with matchers')
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200)
+        .expectJsonSnapshot({
+          id: like('id')
+        });
+    } catch (error) {
+      err = error;
+    }
+    fs.unlinkSync(`.pactum/snapshots/json snapshot - with matchers.json`);
+    expect(err).not.undefined;
+  });
+
+  it('json snapshot - with matchers - fails with matcher', async () => {
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users/1'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            id: 'random-id',
+            name: 'snow'
+          }
+        }
+      })
+      .name('json snapshot - with matchers')
+      .get('http://localhost:9393/api/users/1')
+      .expectStatus(200)
+      .expectJsonSnapshot({
+        id: like('id')
+      });
+    let err;
+    try {
+      await pactum.spec()
+        .useMockInteraction({
+          withRequest: {
+            method: 'GET',
+            path: '/api/users/1'
+          },
+          willRespondWith: {
+            status: 200,
+            body: {
+              id: 1,
+              name: 'snow'
+            }
+          }
+        })
+        .name('json snapshot - with matchers')
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200)
+        .expectJsonSnapshot({
+          id: like('id')
+        });
+    } catch (error) {
+      err = error;
+    }
+    fs.unlinkSync(`.pactum/snapshots/json snapshot - with matchers.json`);
+    expect(err).not.undefined;
   });
 
 });

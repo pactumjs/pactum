@@ -1,4 +1,4 @@
-# **pactum** <small>2.0.11</small>
+# **pactum** <small>2.0.15</small>
 
 > REST API Testing Tool for all levels in a **Test Pyramid**
 

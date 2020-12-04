@@ -274,21 +274,27 @@ class Expect {
         this.fail('Snapshot name is required');
       }
       this.jsonSnapshot = processor.processData(this.jsonSnapshot);
-      const snapshotDir = '.pactum/snapshots';
-      const snapshotFile = `${this.name}.json`;
-      const exist = fs.existsSync(`${snapshotDir}/${snapshotFile}`);
-      if (exist) {
-        const expected = JSON.parse(fs.readFileSync(`${snapshotDir}/${snapshotFile}`));
-        const actual = response.json;
-        for (let i = 0; i < this.jsonSnapshot.length; i++) {
-          const data = this.jsonSnapshot[i];
-          if (!data) {
-            assert.deepStrictEqual(actual, expected);
+      const expected = getSnapshotFile(this.name, response);
+      const actual = response.json;
+      const rules = {};
+      for (let i = 0; i < this.jsonSnapshot.length; i++) {
+        const data = this.jsonSnapshot[i];
+        if (data) {
+          Object.assign(rules, jmv.getMatchingRules(data, '$.body'));
+        }
+      }
+      if (Object.keys(rules).length > 0) {
+        let errors = jmv.validate(actual, expected, rules, '$.body');
+        if (errors) {
+          this.fail(errors.replace('$.body', '$'));
+        } else {
+          errors = jmv.validate(expected, actual, rules, '$.body');
+          if (errors) {
+            this.fail(errors.replace('$.body', '$'));
           }
         }
       } else {
-        fs.mkdirSync(snapshotDir, { recursive: true });
-        fs.writeFileSync(`${snapshotDir}/${snapshotFile}`, JSON.stringify(response.json, null, 2));
+        assert.deepStrictEqual(actual, expected);
       }
     }
   }
@@ -319,6 +325,21 @@ class Expect {
     assert.fail(error);
   }
 
+}
+
+function getSnapshotFile(name, response) {
+  const snapshotDir = '.pactum/snapshots';
+  if (!fs.existsSync(snapshotDir)) {
+    fs.mkdirSync(snapshotDir, { recursive: true });
+  }
+  const snapshotFile = `${name}.json`;
+  const exist = fs.existsSync(`${snapshotDir}/${snapshotFile}`);
+  if (exist) {
+    return JSON.parse(fs.readFileSync(`${snapshotDir}/${snapshotFile}`));
+  } else {
+    fs.writeFileSync(`${snapshotDir}/${snapshotFile}`, JSON.stringify(response.json, null, 2));
+    return response.json;
+  }
 }
 
 module.exports = Expect;
