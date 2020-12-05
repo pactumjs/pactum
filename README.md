@@ -455,9 +455,3 @@ Learn more about **pactum** as a provider verifier at [Provider Verification](ht
 # Notes
 
 Inspired from [frisby](https://docs.frisbyjs.com/) testing style & [pact](https://docs.pact.io) interactions.
-
-----------------------------------------------------------------------------------------------------------------
-
-<a href="https://asaianudeep.github.io/pactum/#/api-testing" >
-  <img src="https://img.shields.io/badge/NEXT-API%20Testing-blue" alt="API Testing" align="right" style="display: inline;" />
-</a>

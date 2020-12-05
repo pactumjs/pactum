@@ -326,6 +326,7 @@ Expectations helps us to assert the response received from the server.
 | `expectJsonSchemaAt`    | check json schema using **json-query**    |
 | `expectJsonMatch`       | check json to match                       |
 | `expectJsonMatchAt`     | check json to match using **json-query**  |
+| `expectJsonSnapshot`    | check json to match with a snapshot       |
 | `expectResponseTime`    | check response time                       |
 | `wait`                  | wait before performing validation         |
 
@@ -646,6 +647,67 @@ it('get people', async () => {
     });
 });
 ```
+
+#### expectJsonSnapshot
+
+Snapshot testing is a type of **output comparison** which will be very useful whenever we want to make sure our API does not change unexpectedly.
+
+A typical snapshot test in pactum will fetch the api response, then compares it to a reference snapshot file stored alongside the test. The test will fail if the two snapshots do not match: either the change is unexpected, or the reference snapshot needs to be updated to the new version of the API response.
+
+If you are running the test for the first time, pactum will save the api response body at `./pactum/snapshots` directory. For the next test runs, pactum will compare the actual response with the local reference file. 
+
+A snapshot needs a name & it can be defined through `pactum.spec().name("<some name>")`.
+
+!> It is mandatory to commit the snapshot files to the version control system. 
+
+```js
+it('get people', async () => {
+  const response = await pactum.spec()
+    .name('GET_People')
+    .get('https://some-api/people')
+    .expectStatus(200)
+    .expectJsonSnapshot();
+});
+```
+
+There are high chances that our server will return response containing dynamic data like `ids` or `dates`. Not to fail the snapshot at every run, pactum provides matchers for any property in the JSON. See [Matching](matching) for more usage details.
+
+```js
+const { like } = pactum.matchers;
+
+it('get user mark', async () => {
+  const response = await pactum.spec()
+    .name('GET_User_Mark')
+    .get('https://some-api/user/{username}')
+    .withPathParams('username', 'Mark')
+    .expectStatus(200)
+    .expectJsonSnapshot({
+      id: like(123)
+    });
+});
+```
+
+When there is an intentional change in the API response, our snapshot test fails because the snapshot for our updated API no longer matches the snapshot artifact for this test case. To resolve this, we will need to update our snapshot artifacts. Use `updateSnapshot` method in the test case & run the test to update the snapshot.
+
+!> Remove `updateSnapshot` method from the test case after the snapshot is updated.
+
+```js
+const { like } = pactum.matchers;
+
+it('get user mark', async () => {
+  const response = await pactum.spec()
+    .name('GET_User_Mark')
+    .get('https://some-api/user/{username}')
+    .withPathParams('username', 'Mark')
+    .expectStatus(200)
+    .expectJsonSnapshot({
+      id: like(123)
+    })
+    .updateSnapshot();
+});
+```
+
+To change file location of snapshots, use `settings.setSnapshotDirectoryPath` method.
 
 ### Custom Validations
 

@@ -1,8 +1,9 @@
 const fs = require('fs');
+const config = require('../config');
 
 function getSnapshotDirAndName(name) {
   return {
-    snapshotDir: '.pactum/snapshots',
+    snapshotDir: config.snapshot.dir,
     snapshotFile: `${name}.json`
   };
 }

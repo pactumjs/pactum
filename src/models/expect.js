@@ -275,6 +275,7 @@ class Expect {
         this.fail('Snapshot name is required');
       }
       if (this.updateSnapshot) {
+        log.warn(`Update snapshot is enabled for "${this.name}"`);
         file.saveSnapshot(this.name, response.json);
       }
       this.jsonSnapshot = processor.processData(this.jsonSnapshot);
