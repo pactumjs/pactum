@@ -504,6 +504,11 @@ declare class Spec {
    *  });
    */
   expectJsonSnapshot(value?: object): Spec;
+  
+  /**
+   * updates the reference snapshot file
+   */
+  updateSnapshot(): Spec;
 
   /**
    * expects request completes within a specified duration (ms)

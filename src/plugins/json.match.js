@@ -18,6 +18,6 @@ const jmv = {
     return compare.jsonMatch(actual, expected, rules, path).message;
   }
 
-}
+};
 
 module.exports = jmv;

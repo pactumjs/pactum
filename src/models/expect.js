@@ -1,7 +1,7 @@
 const assert = require('assert');
 const jqy = require('json-query');
-const fs = require('fs');
 
+const file = require('../helpers/file.utils');
 const log = require('../helpers/logger');
 const Compare = require('../helpers/compare');
 const processor = require('../helpers/dataProcessor');
@@ -13,6 +13,7 @@ class Expect {
 
   constructor() {
     this.name = null;
+    this.updateSnapshot = false;
     this.statusCode = null;
     this.body = null;
     this.bodyContains = [];
@@ -273,8 +274,11 @@ class Expect {
       if (!this.name) {
         this.fail('Snapshot name is required');
       }
+      if (this.updateSnapshot) {
+        file.saveSnapshot(this.name, response.json);
+      }
       this.jsonSnapshot = processor.processData(this.jsonSnapshot);
-      const expected = getSnapshotFile(this.name, response);
+      const expected = file.getSnapshotFile(this.name, response.json);
       const actual = response.json;
       const rules = {};
       for (let i = 0; i < this.jsonSnapshot.length; i++) {
@@ -325,21 +329,6 @@ class Expect {
     assert.fail(error);
   }
 
-}
-
-function getSnapshotFile(name, response) {
-  const snapshotDir = '.pactum/snapshots';
-  if (!fs.existsSync(snapshotDir)) {
-    fs.mkdirSync(snapshotDir, { recursive: true });
-  }
-  const snapshotFile = `${name}.json`;
-  const exist = fs.existsSync(`${snapshotDir}/${snapshotFile}`);
-  if (exist) {
-    return JSON.parse(fs.readFileSync(`${snapshotDir}/${snapshotFile}`));
-  } else {
-    fs.writeFileSync(`${snapshotDir}/${snapshotFile}`, JSON.stringify(response.json, null, 2));
-    return response.json;
-  }
 }
 
 module.exports = Expect;

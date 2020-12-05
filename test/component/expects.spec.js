@@ -684,6 +684,26 @@ describe('Expects', () => {
 
   it('json snapshot - with matchers', async () => {
     await pactum.spec()
+    .useMockInteraction('get user with id 1')
+      .name('json snapshot - with matchers')
+      .get('http://localhost:9393/api/users/1')
+      .expectStatus(200)
+      .expectJsonSnapshot({
+        id: like(1)
+      });
+    await pactum.spec()
+    .useMockInteraction('get user with id 1')
+      .name('json snapshot - with matchers')
+      .get('http://localhost:9393/api/users/1')
+      .expectStatus(200)
+      .expectJsonSnapshot({
+        id: like(1)
+      });
+    fs.unlinkSync(`.pactum/snapshots/json snapshot - with matchers.json`);
+  });
+
+  it('json snapshot - with multiple matchers', async () => {
+    await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
@@ -693,15 +713,20 @@ describe('Expects', () => {
           status: 200,
           body: {
             id: 'random-id',
-            name: 'snow'
+            name: 'snow',
+            age: 12,
+            createdAt: '2020-10-10'
           }
         }
       })
-      .name('json snapshot - with matchers')
+      .name('json snapshot - with multiple matchers')
       .get('http://localhost:9393/api/users/1')
       .expectStatus(200)
       .expectJsonSnapshot({
         id: like('id')
+      })
+      .expectJsonSnapshot({
+        createdAt: like('2020-02-02')
       });
     await pactum.spec()
       .useMockInteraction({
@@ -713,17 +738,20 @@ describe('Expects', () => {
           status: 200,
           body: {
             id: 'random-id',
-            name: 'snow'
+            name: 'snow',
+            age: 12,
+            createdAt: '2020-10-10'
           }
         }
       })
-      .name('json snapshot - with matchers')
+      .name('json snapshot - with multiple matchers')
       .get('http://localhost:9393/api/users/1')
       .expectStatus(200)
       .expectJsonSnapshot({
-        id: like('id')
+        id: like('id'),
+        createdAt: like('2020-02-02')
       });
-    fs.unlinkSync(`.pactum/snapshots/json snapshot - with matchers.json`);
+    fs.unlinkSync(`.pactum/snapshots/json snapshot - with multiple matchers.json`);
   });
 
   it('json snapshot - with matchers - fails with extra property', async () => {
@@ -801,19 +829,7 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
-            method: 'GET',
-            path: '/api/users/1'
-          },
-          willRespondWith: {
-            status: 200,
-            body: {
-              id: 1,
-              name: 'snow'
-            }
-          }
-        })
+        .useMockInteraction('get user with id 1')
         .name('json snapshot - with matchers')
         .get('http://localhost:9393/api/users/1')
         .expectStatus(200)
@@ -825,6 +841,74 @@ describe('Expects', () => {
     }
     fs.unlinkSync(`.pactum/snapshots/json snapshot - with matchers.json`);
     expect(err).not.undefined;
+  });
+
+  it('json snapshot - with matchers - fails with matcher - update snapshot', async () => {
+    let err1, err2;
+    await pactum.spec()
+      .useMockInteraction({
+        withRequest: {
+          method: 'GET',
+          path: '/api/users/1'
+        },
+        willRespondWith: {
+          status: 200,
+          body: {
+            id: 'random-id',
+            name: 'snow'
+          }
+        }
+      })
+      .name('json snapshot - with matchers')
+      .get('http://localhost:9393/api/users/1')
+      .expectStatus(200)
+      .expectJsonSnapshot({
+        id: like('id')
+      });
+    try {
+      await pactum.spec()
+        .useMockInteraction('get user with id 1')
+        .name('json snapshot - with matchers')
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200)
+        .expectJsonSnapshot({
+          id: like('id')
+        });
+    } catch (error) {
+      err1 = error;
+    }
+    try {
+      await pactum.spec()
+        .useMockInteraction('get user with id 1')
+        .name('json snapshot - with matchers')
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200)
+        .expectJsonSnapshot({
+          id: like(1)
+        });
+    } catch (error) {
+      err2 = error;
+    }
+    await pactum.spec()
+      .useMockInteraction('get user with id 1')
+      .name('json snapshot - with matchers')
+      .get('http://localhost:9393/api/users/1')
+      .expectStatus(200)
+      .expectJsonSnapshot({
+        id: like(1)
+      })
+      .updateSnapshot();
+    await pactum.spec()
+      .useMockInteraction('get user with id 1')
+      .name('json snapshot - with matchers')
+      .get('http://localhost:9393/api/users/1')
+      .expectStatus(200)
+      .expectJsonSnapshot({
+        id: like(1)
+      });
+    fs.unlinkSync(`.pactum/snapshots/json snapshot - with matchers.json`);
+    expect(err1).not.undefined;
+    expect(err2).not.undefined;
   });
 
 });

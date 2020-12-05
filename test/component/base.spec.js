@@ -50,6 +50,21 @@ function addDefaultMockHandlers() {
       }
     };
   });
+  handler.addMockInteractionHandler('get user with id 1', () => {
+    return {
+      withRequest: {
+        method: 'GET',
+        path: '/api/users/1'
+      },
+      willRespondWith: {
+        status: 200,
+        body: {
+          id: 1,
+          name: 'snow'
+        }
+      }
+    };
+  });
 }
 
 before(async () => {

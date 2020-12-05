@@ -14,7 +14,6 @@ class E2E {
       this.name = options.name;
       this.params = options.params;
     }
-    
     this.steps = [];
   }
 

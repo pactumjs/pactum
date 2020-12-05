@@ -351,6 +351,11 @@ class Spec {
     return this;
   }
 
+  updateSnapshot() {
+    this._expect.updateSnapshot = true;
+    return this;
+  }
+
   expectResponseTime(value) {
     this._expect.responseTime = value;
     return this;
