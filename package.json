@@ -69,7 +69,7 @@
     "deep-override": "^1.0.1",
     "form-data": "^3.0.0",
     "json-query": "^2.2.2",
-    "openapi-fuzzer-core": "^1.0.3",
+    "openapi-fuzzer-core": "^1.0.5",
     "parse-graphql": "^1.0.0",
     "phin": "^3.4.1",
     "polka": "^0.5.2"

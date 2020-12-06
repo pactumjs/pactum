@@ -23,10 +23,10 @@
 
 - E2E Testing
 - Fuzz Testing
+- Snapshot Testing
 
 ## Road Map
 
-* Snapshot Testing
 * More Matchers
 * Visual API Testing
 
