@@ -19,6 +19,10 @@ const settings = {
     config.strategy.capture.handler = strategy;
   },
 
-}
+  setSnapshotDirectoryPath(path) {
+    config.snapshot.dir = path;
+  }
+
+};
 
 module.exports = settings;

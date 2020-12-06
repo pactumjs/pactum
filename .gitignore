@@ -2,6 +2,7 @@ node_modules
 .vscode
 .nyc_output
 .eslintrc.json
+.pactum/
 pacts/
 coverage/
 reports/

@@ -27,8 +27,7 @@ function setBaseUrl(request) {
     request.url = config.request.baseUrl + request.url;
   }
   const _url = url.parse(request.url);
-  request.path = _url.pathname;
-  request.baseUrl = `${_url.protocol}//${_url.host}`;
+  request.path = unescape(_url.pathname);
 }
 
 function setPathParams(request) {

@@ -10,18 +10,15 @@
 
 #### *Why pactum?*
 
-* Lightweight.
-* Clear & Comprehensive Testing Style.
-* Works with **cucumber**, **mocha**, **jest**.
-* Elegant Data Management.
-* Customizable Assertions & Retry Mechanisms.
-* Powerful Mock Server.
-* Ideal for *component*, *contract* & *e2e* testing of APIs.
-* Supports *fuzz* testing.
+- Lightweight.
+- Simple & Powerful.
+- Extendable & Customizable.
+- Clear & Comprehensive Testing Style.
+- Component, Contract & E2E testing of APIs.
 
 ## Documentation
 
-This readme offers an introduction to the library. For more information visit [pactum](https://asaianudeep.github.io/pactum)
+This readme offers an basic introduction to the library. Head over to the full [documentation](https://asaianudeep.github.io/pactum) for getting started.
 
 
 ## Installation
@@ -455,9 +452,3 @@ Learn more about **pactum** as a provider verifier at [Provider Verification](ht
 # Notes
 
 Inspired from [frisby](https://docs.frisbyjs.com/) testing style & [pact](https://docs.pact.io) interactions.
-
-----------------------------------------------------------------------------------------------------------------
-
-<a href="https://asaianudeep.github.io/pactum/#/api-testing" >
-  <img src="https://img.shields.io/badge/NEXT-API%20Testing-blue" alt="API Testing" align="right" style="display: inline;" />
-</a>

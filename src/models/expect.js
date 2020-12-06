@@ -1,6 +1,7 @@
 const assert = require('assert');
 const jqy = require('json-query');
 
+const file = require('../helpers/file.utils');
 const log = require('../helpers/logger');
 const Compare = require('../helpers/compare');
 const processor = require('../helpers/dataProcessor');
@@ -11,6 +12,8 @@ const jmv = require('../plugins/json.match');
 class Expect {
 
   constructor() {
+    this.name = null;
+    this.updateSnapshot = false;
     this.statusCode = null;
     this.body = null;
     this.bodyContains = [];
@@ -22,6 +25,7 @@ class Expect {
     this.jsonSchemaQuery = [];
     this.jsonMatch = [];
     this.jsonMatchQuery = [];
+    this.jsonSnapshot = [];
     this.headers = [];
     this.headerContains = [];
     this.responseTime = null;
@@ -42,6 +46,7 @@ class Expect {
     this._validateJsonSchemaQuery(response);
     this._validateJsonMatch(response);
     this._validateJsonMatchQuery(response);
+    this._validateJsonSnapshot(response);
     this._validateResponseTime(response);
     this._validateCustomExpectHandlers(request, response);
   }
@@ -55,7 +60,7 @@ class Expect {
         path: interaction.withRequest.path,
         headers: interaction.withRequest.headers,
         body: interaction.withRequest.body
-      }
+      };
       if (expects.exercised && !interaction.exercised) {
         log.warn('Interaction Not Exercised', intReq);
         this.fail(`Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
@@ -260,6 +265,41 @@ class Expect {
       const errors = jmv.validate(actualValue, expectedValue, rules, jQ.path);
       if (errors) {
         this.fail(errors);
+      }
+    }
+  }
+
+  _validateJsonSnapshot(response) {
+    if (this.jsonSnapshot.length > 0) {
+      if (!this.name) {
+        this.fail('Snapshot name is required');
+      }
+      if (this.updateSnapshot) {
+        log.warn(`Update snapshot is enabled for "${this.name}"`);
+        file.saveSnapshot(this.name, response.json);
+      }
+      this.jsonSnapshot = processor.processData(this.jsonSnapshot);
+      const expected = file.getSnapshotFile(this.name, response.json);
+      const actual = response.json;
+      const rules = {};
+      for (let i = 0; i < this.jsonSnapshot.length; i++) {
+        const data = this.jsonSnapshot[i];
+        if (data) {
+          Object.assign(rules, jmv.getMatchingRules(data, '$.body'));
+        }
+      }
+      if (Object.keys(rules).length > 0) {
+        let errors = jmv.validate(actual, expected, rules, '$.body');
+        if (errors) {
+          this.fail(errors.replace('$.body', '$'));
+        } else {
+          errors = jmv.validate(expected, actual, rules, '$.body');
+          if (errors) {
+            this.fail(errors.replace('$.body', '$'));
+          }
+        }
+      } else {
+        assert.deepStrictEqual(actual, expected);
       }
     }
   }

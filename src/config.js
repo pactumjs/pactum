@@ -48,6 +48,9 @@ const config = {
         starts: '#'
       }
     }
+  },
+  snapshot: {
+    dir: '.pactum/snapshots'
   }
 };
 

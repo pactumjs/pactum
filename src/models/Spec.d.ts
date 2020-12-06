@@ -492,6 +492,25 @@ declare class Spec {
   expectJsonMatchAt(path: string, value: object): Spec;
 
   /**
+   * expects the json to match with stored snapshots
+   * @example
+   * const { like } = pactum.matchers;
+   * 
+   * await pactum
+   *  .get('/api/users')
+   *  .expectJsonSnapshot({
+   *    id: like(1),
+   *    name: 'jon'
+   *  });
+   */
+  expectJsonSnapshot(value?: object): Spec;
+  
+  /**
+   * updates the reference snapshot file
+   */
+  updateSnapshot(): Spec;
+
+  /**
    * expects request completes within a specified duration (ms)
    */
   expectResponseTime(value: number): Spec;

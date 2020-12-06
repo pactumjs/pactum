@@ -44,6 +44,7 @@ class Spec {
 
   name(value) {
     this._name = value;
+    this._expect.name = value;
     return this;
   }
 
@@ -342,6 +343,16 @@ class Spec {
 
   expectJsonMatchAt(path, value) {
     this._expect.jsonMatchQuery.push({ path, value });
+    return this;
+  }
+
+  expectJsonSnapshot(matchers) {
+    this._expect.jsonSnapshot.push(matchers);
+    return this;
+  }
+
+  updateSnapshot() {
+    this._expect.updateSnapshot = true;
     return this;
   }
 
