@@ -34,6 +34,12 @@ const pactum = {
     return new Spec(name, data);
   },
 
+  flow(name) {
+    const spec = new Spec();
+    spec.flow = name;
+    return spec;
+  },
+
   fuzz() {
     return new Fuzz();
   },

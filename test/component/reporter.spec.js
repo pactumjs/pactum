@@ -3,11 +3,11 @@ const pactum = require('../../src/index');
 const reporter = pactum.reporter;
 
 const jr = {
-  afterSpec() {},
-  afterStep() {},
-  afterTest() {},
-  end() {}
-}
+  afterSpec() { },
+  afterStep() { },
+  afterTest() { },
+  end() { }
+};
 
 describe('Reporter', () => {
 
@@ -41,7 +41,7 @@ describe('Reporter', () => {
 
   describe('E2E', () => {
     this.test = pactum.e2e('e2e test');
-    
+
     it('one step', () => {
       this.test.step('one step')
         .spec()
@@ -49,7 +49,7 @@ describe('Reporter', () => {
         .get('http://localhost:9393/default/get')
         .expectStatus(200);
     });
-    
+
     it('cleanup', async () => {
       await this.test.cleanup();
     });

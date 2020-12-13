@@ -47,7 +47,10 @@ export interface InteractionExpectations {
 // TODO - accept function - (req, res)
 export interface MockInteraction {
   id?: string;
+  /** name of the provider */
   provider?: string;
+  /** flow of the provider */
+  flow?: string;
   withRequest: InteractionRequest;
   willRespondWith: MockInteractionResponse;
   expects?: InteractionExpectations;

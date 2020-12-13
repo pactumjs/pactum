@@ -12,6 +12,7 @@ class Spec {
 
   constructor(name, data) {
     this.id = helper.getRandomId();
+    this.flow = '';
     this._name = '';
     this.status = 'N/A';
     this.failure = '';

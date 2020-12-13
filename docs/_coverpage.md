@@ -1,6 +1,6 @@
-# **pactum** <small>2.0.15</small>
+# <span style="letter-spacing: 2px;">**PACTUM**</span><span style="font-weight: bold; color: yellow; background-color: black; padding-left: 10px; padding-right: 10px">JS<span> <small style="margin-left: 15px">2.0.16</small>
 
-> REST API Testing Tool for all levels in a **Test Pyramid**
+> Free & Open Source REST API Testing Tool for all levels in a **Test Pyramid**
 
 - 🐦 Lightweight
 - 🚀 Simple & Powerful

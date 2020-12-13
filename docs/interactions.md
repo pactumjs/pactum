@@ -35,6 +35,7 @@ Mock Interaction will have the following properties.
 | ------------------------------  | ----------  | --------------------------      |
 | id                              | string      | id of the interaction           |
 | provider                        | string      | name of the provider            |
+| flow                            | string      | name of the provider flow       |
 | withRequest                     | **object**  | request details                 |
 | withRequest.method              | **string**  | HTTP method                     |
 | withRequest.path                | **string**  | api path                        |
