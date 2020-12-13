@@ -32,6 +32,12 @@ export function spec(ctx?: object): Spec;
  */
 export function spec(name: string, data?: any): Spec;
 
+/**
+ * returns an instance of spec
+ * @param name - unique pactum flow name
+ */
+export function flow(name: string): Spec;
+
 export function fuzz(): Fuzz;
 
 export function e2e(name: string): E2E;

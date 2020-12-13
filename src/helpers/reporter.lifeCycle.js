@@ -7,6 +7,7 @@ const rlc = {
     if (reporter.get().length > 0) {
       const data = {};
       data.id = spec.id;
+      data.flow = spec.flow;
       data.info = {
         id: spec.id,
         name: spec._name,

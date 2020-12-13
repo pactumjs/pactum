@@ -65,6 +65,23 @@ function addDefaultMockHandlers() {
       }
     };
   });
+  handler.addMockInteractionHandler('default flow get', () => {
+    return {
+      provider: 'some-provider',
+      flow: 'get default',
+      withRequest: {
+        method: 'GET',
+        path: '/default/get'
+      },
+      willRespondWith: {
+        status: 200,
+        body: {
+          method: 'GET',
+          path: '/default/get'
+        }
+      }
+    };
+  });
 }
 
 before(async () => {

@@ -107,12 +107,15 @@ class Interaction {
     raw = processor.processData(raw);
     this.setDefaults(raw, mock);
     validator.validateInteraction(raw, mock);
-    const { id, consumer, provider, state, uponReceiving, withRequest, willRespondWith, expects } = raw;
+    const { id, consumer, provider, flow, state, uponReceiving, withRequest, willRespondWith, expects } = raw;
     this.id = id || helper.getRandomId();
     this.callCount = 0;
     this.exercised = false;
     this.calls = [];
     this.mock = mock;
+    if (flow) {
+      this.flow = flow;
+    }
     this.consumer = consumer || config.pact.consumer;
     this.provider = provider;
     this.state = state;
