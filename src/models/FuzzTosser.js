@@ -3,6 +3,7 @@ const fuzzCore = require('openapi-fuzzer-core');
 const log = require('../helpers/logger');
 const rp = require('../helpers/requestProcessor');
 const helper = require('../helpers/helper');
+const mock = require('../exports/mock');
 
 const BASE_URL_PATTERN = /^https?:\/\/[^\/]+/i;
 
@@ -11,15 +12,23 @@ class Tosser {
   constructor(fuzz) {
     this.fuzz = fuzz;
     this.baseUrl = '';
+    this.mockIds = [];
     this.specs = [];
     this.responses = [];
   }
 
   async toss() {
-    const data = await this.getSwaggerJson();
-    this.specs = fuzzCore.swagger(data);
-    this.setBaseUrl();
-    await this.sendRequestsAndValidateResponses();
+    try {
+      const data = await this.getSwaggerJson();
+      this.specs = fuzzCore.swagger(data);
+      this.setBaseUrl();
+      await this.addInteractionsToServer();
+      await this.sendRequestsAndValidateResponses();
+      await this.removeInteractionsFromServer();
+    } catch (error) {
+      await this.removeInteractionsFromServer();
+      throw error;
+    }
   }
 
   async getSwaggerJson() {
@@ -36,6 +45,21 @@ class Tosser {
     }
   }
 
+  async addInteractionsToServer() {
+    const mockIdPromises = [];
+    for (let i = 0; i < this.fuzz.mockInteractions.length; i++) {
+      const raw = this.fuzz.mockInteractions[i];
+      mockIdPromises.push(mock.addMockInteraction(raw.interaction, raw.data));
+    }
+    this.mockIds = this.mockIds.concat(await Promise.all(mockIdPromises));
+  }
+
+  async removeInteractionsFromServer() {
+    if (this.mockIds.length > 0) {
+      await mock.removeInteraction(this.mockIds);
+    }
+  }
+
   async sendRequestsAndValidateResponses() {
     this.printStartMessage();
     let specs = [];
@@ -46,6 +70,7 @@ class Tosser {
       const request = spec.request;
       request.url = this.baseUrl ? this.baseUrl + request.path : request.path;
       log.info(`${spec.name} - ${request.method} ${request.path}`);
+      request.headers = this.fuzz.headers;
       spec.request = rp.process(request);
       specs.push(spec);
       promises.push(phin(spec.request));
@@ -63,14 +88,15 @@ class Tosser {
 
   validate(specs, responses) {
     for (let i = 0; i < responses.length; i++) {
+      const spec = specs[i];
       const response = helper.getTrimResponse(responses[i]);
       const status = response.statusCode;
       if (this.fuzz._inspect) {
-        this.printReqAndRes(specs[i].request, response);
+        this.printReqAndRes(spec.request, response);
       }
-      if (status < 400 || status > 499) {
-        this.printReqAndRes(specs[i].request, response);
-        throw new Error(`Fuzz Failure | Status Code: ${status}`);
+      if (!spec.expect.status.includes(status)) {
+        this.printReqAndRes(spec.request, response);
+        throw new Error(`Fuzz Failure | Status Code: ${status} | Expected Status Code: ${spec.expect.status.toString()}`);
       }
     }
   }
