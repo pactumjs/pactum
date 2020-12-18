@@ -494,7 +494,7 @@ Allows matching of request/response with a set of matchers. See [Matching](#matc
 
 Matchers can be applied to
 
-* Path (*supports only regex*)
+* Path
 * Query Params
 * Headers
 * Body (*JSON*)
@@ -511,7 +511,7 @@ Often, you will not care what the exact value is at a particular path is, you ju
 Type matching for primitive data types - *string*/*number*/*boolean*
 
 ```javascript
-const { like } = pactum.matchers;
+const { like } = require('pactum-matchers');
 const interaction = {
   withRequest: {
     method: 'GET',
@@ -536,7 +536,7 @@ const interaction = {
 Type matching for objects in **pactum** deviates from in **pact.io** when matching nested objects.
 
 ```javascript
-const { like } = pactum.matchers;
+const { like } = require('pactum-matchers');
 const interaction = {
   withRequest: {
     method: 'POST',
@@ -557,7 +557,7 @@ const interaction = {
 
 ```javascript
 // matching doesn't expand to nested objects
-const { like } = pactum.matchers;
+const { like } = require('pactum-matchers');
 const interaction = {
   withRequest: {
     method: 'GET',
@@ -584,7 +584,7 @@ const interaction = {
 
 ```javascript
 // to match nested objects with type, we need apply 'like()' explicitly to nested objects
-const { like } = pactum.matchers;
+const { like } = require('pactum-matchers');
 const interaction = {
   withRequest: {
     method: 'POST',
@@ -619,7 +619,7 @@ const interaction = {
 *eachLike* is similar to *like* but applies to arrays.
 
 ```javascript
-const { eachLike } = pactum.matchers;
+const { eachLike } = require('pactum-matchers');
 const interaction = {
   withRequest: {
     method: 'GET',
@@ -654,20 +654,17 @@ What you need is a way to say "I expect something matching this regular expressi
 
 #### regex
 
-`regex` has two flavors. One accepts a string & the other accepts an object as param. For *mock interactions* use the regex method which accepts string & for *pact interactions* use the regex method which accepts object.
+`regex` accepts a value and a matcher as arguments.
 
 ```javascript
-const { regex } = pactum.matchers;
+const { regex } = require('pactum-matchers');
 const interaction = {
   withRequest: {
     method: 'POST',
-    path: regex('/api/projects/\\d+'),
+    path: '/api/projects/12',
     body: {
       name: 'Jon'
-      birthDate: regex({
-        generate: '03/05/2020',
-        matcher: /\d{2}\/\d{2}\/\d{4}/
-      })
+      birthDate: regex('03/05/2020', /\d{2}\/\d{2}\/\d{4}/)
     }
   },
   willRespondWith: {

@@ -465,7 +465,7 @@ declare class Spec {
   /**
    * expects the json to match with value
    * @example
-   * const { like } = pactum.matchers;
+   * const { like } = require('pactum-matchers');
    * 
    * await pactum.spec()
    *  .get('/api/users')
@@ -480,7 +480,7 @@ declare class Spec {
    * expects the json at path to match with value
    * @see https://www.npmjs.com/package/json-query
    * @example
-   * const { like } = pactum.matchers;
+   * const { like } = require('pactum-matchers');
    * 
    * await pactum.spec()
    *  .get('/api/users')
@@ -494,7 +494,7 @@ declare class Spec {
   /**
    * expects the json to match with stored snapshots
    * @example
-   * const { like } = pactum.matchers;
+   * const { like } = require('pactum-matchers');
    * 
    * await pactum.spec()
    *  .get('/api/users')
