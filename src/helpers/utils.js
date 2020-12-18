@@ -1,5 +1,5 @@
+const { compare } = require('pactum-matchers').utils;
 const graphQL = require('./graphQL');
-const Compare = require('./compare');
 
 const log = require('./logger');
 
@@ -51,7 +51,6 @@ function xValidatePath(req, interaction) {
   const { path, pathParams, matchingRules } = interaction.withRequest;
   const actualPath = req.path;
   const expectedPath = path;
-  const compare = new Compare();
   if (pathParams) {
     const actualParts = actualPath.split('/');
     const expectedParts = expectedPath.split('/');
@@ -74,9 +73,9 @@ function xValidatePath(req, interaction) {
         }
       }
     }
-    return compare.jsonMatch(actual, expected, matchingRules, '$.path').equal;
+    return compare(actual, expected, matchingRules, '$.path').equal;
   } else {
-    return compare.jsonMatch(actualPath, expectedPath, matchingRules, '$.path').equal;
+    return compare(actualPath, expectedPath, matchingRules, '$.path').equal;
   }
 }
 
@@ -93,8 +92,7 @@ function xValidateQuery(req, interaction) {
 }
 
 function validateQuery(actual, expected, matchingRules, mock) {
-  const compare = new Compare();
-  const response = compare.jsonMatch(actual, expected, matchingRules, '$.query');
+  const response = compare(actual, expected, matchingRules, '$.query');
   if (response.equal && !mock) {
     for (const prop in actual) {
       if (!Object.prototype.hasOwnProperty.call(expected, prop)) {
@@ -126,8 +124,7 @@ function validateHeaders(actual, expected, matchingRules) {
   for (const prop in expected) {
     lowerCaseExpected[prop.toLowerCase()] = expected[prop];
   }
-  const compare = new Compare();
-  const response = compare.jsonMatch(lowerCaseActual, lowerCaseExpected, matchingRules, '$.headers');
+  const response = compare(lowerCaseActual, lowerCaseExpected, matchingRules, '$.headers');
   return response.equal;
 }
 
@@ -152,10 +149,9 @@ function xValidateBody(req, interaction) {
 }
 
 function validateBody(actual, expected, matchingRules, mock) {
-  const compare = new Compare();
-  const response = compare.jsonMatch(actual, expected, matchingRules, '$.body');
+  const response = compare(actual, expected, matchingRules, '$.body');
   if (response.equal && !mock) {
-    return compare.jsonMatch(expected, actual, matchingRules, '$.body').equal;
+    return compare(expected, actual, matchingRules, '$.body').equal;
   } else {
     return response.equal;
   }

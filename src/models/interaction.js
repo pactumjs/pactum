@@ -1,3 +1,4 @@
+const { setMatchingRules, getValue } = require('pactum-matchers').utils;
 const helper = require('../helpers/helper');
 const processor = require('../helpers/dataProcessor');
 const validator = require('../helpers/interactionValidator');
@@ -9,30 +10,30 @@ class InteractionRequest {
     this.matchingRules = {};
     this.method = request.method;
     if (request.pathParams) {
-      helper.setMatchingRules(this.matchingRules, request.pathParams, '$.path');
-      this.pathParams = helper.setValueFromMatcher(request.pathParams);
+      setMatchingRules(this.matchingRules, request.pathParams, '$.path');
+      this.pathParams = getValue(request.pathParams);
     }
-    helper.setMatchingRules(this.matchingRules, request.path, '$.path');
-    this.path = helper.setValueFromMatcher(request.path);
+    setMatchingRules(this.matchingRules, request.path, '$.path');
+    this.path = getValue(request.path);
     if (request.headers && typeof request.headers === 'object') {
       const rawLowerCaseHeaders = {};
       for (const prop in request.headers) {
         rawLowerCaseHeaders[prop.toLowerCase()] = request.headers[prop];
       }
-      helper.setMatchingRules(this.matchingRules, rawLowerCaseHeaders, '$.headers');
+      setMatchingRules(this.matchingRules, rawLowerCaseHeaders, '$.headers');
     }
-    this.headers = helper.setValueFromMatcher(request.headers);
+    this.headers = getValue(request.headers);
     if (request.query && typeof request.query === 'object') {
-      helper.setMatchingRules(this.matchingRules, request.query, '$.query');
+      setMatchingRules(this.matchingRules, request.query, '$.query');
     }
-    this.query = helper.setValueFromMatcher(request.query);
+    this.query = getValue(request.query);
     for (const prop in this.query) {
       this.query[prop] = this.query[prop].toString();
     }
     if (request.body && typeof request.body === 'object') {
-      helper.setMatchingRules(this.matchingRules, request.body, '$.body');
+      setMatchingRules(this.matchingRules, request.body, '$.body');
     }
-    this.body = helper.setValueFromMatcher(request.body);
+    this.body = getValue(request.body);
     if (request.graphQL) {
       this.graphQL = new InteractionRequestGraphQL(request.graphQL);
       this.body = {
@@ -58,10 +59,10 @@ class InteractionResponse {
   constructor(response) {
     this.matchingRules = {};
     this.status = response.status;
-    helper.setMatchingRules(this.matchingRules, response.headers, '$.headers');
-    this.headers = helper.setValueFromMatcher(response.headers);
-    helper.setMatchingRules(this.matchingRules, response.body, '$.body');
-    this.body = helper.setValueFromMatcher(response.body);
+    setMatchingRules(this.matchingRules, response.headers, '$.headers');
+    this.headers = getValue(response.headers);
+    setMatchingRules(this.matchingRules, response.body, '$.body');
+    this.body = getValue(response.body);
     if (response.fixedDelay) {
       this.delay = new InteractionResponseDelay('FIXED', response.fixedDelay);
     } else if (response.randomDelay) {

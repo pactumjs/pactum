@@ -1,3 +1,4 @@
+const { like } = require('pactum-matchers');
 const pactum = require('../../src/index');
 const handler = pactum.handler;
 const expect = pactum.expect;
@@ -26,10 +27,6 @@ describe('Chai Like Assertions', () => {
           name: 'snow'
         }
       }
-      // get: '/api/users',
-      // return: {
-      //   name: 'snow'
-      // }
     });
   });
 
@@ -68,11 +65,11 @@ describe('Chai Like Assertions', () => {
   });
 
   it('should return a match', async () => {
-    expect(response).to.have.jsonMatch(pactum.matchers.like({ name: 'snow'}));
+    expect(response).to.have.jsonMatch(like({ name: 'snow'}));
   });
 
   it('should return a match at', async () => {
-    expect(response).to.have.jsonMatchAt('.', pactum.matchers.like({ name: 'snow'}));
+    expect(response).to.have.jsonMatchAt('.', like({ name: 'snow'}));
   });
 
   it('should return a response within 500 ms', async () => {

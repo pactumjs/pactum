@@ -69,7 +69,7 @@ class Have {
   }
 
   jsonMatchAt(path, value) {
-    this.expect.jsonMatchQuery.push(value);
+    this.expect.jsonMatchQuery.push({ path, value });
     this._validate();
   }
 

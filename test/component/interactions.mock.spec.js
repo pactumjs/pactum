@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const pactum = require('../../src/index');
-const { like, eachLike } = pactum.matchers;
+const { like, eachLike } = require('pactum-matchers');
 
 describe('Mock Interactions - Query', () => {
 

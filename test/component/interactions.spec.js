@@ -1,7 +1,5 @@
+const { like, eachLike, regex } = require('pactum-matchers');
 const pactum = require('../../src/index');
-const { like, term } = pactum.matchers;
-const { eachLike } = require('../../src/exports/matcher');
-const handler = pactum.handler;
 
 describe('Mock', () => {
 
@@ -724,7 +722,7 @@ describe('Pact - matchers', () => {
           body: {
             id: like(1),
             name: like('fake'),
-            gender: term({ matcher: /F|M/, generate: 'M' }),
+            gender: regex('M', /F|M/),
             married: like(true),
             favorite: {
               books: eachLike('Harry Porter')
@@ -839,7 +837,7 @@ describe('Pact - VALID', () => {
           body: {
             id: like(1),
             name: like('fake'),
-            gender: term({ matcher: 'F|M', generate: 'M' }),
+            gender: regex('M', 'F|M'),
             married: like(true),
             favorite: {
               books: eachLike('Harry Porter')

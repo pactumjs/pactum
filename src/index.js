@@ -10,7 +10,6 @@ const request = require('./exports/request');
 const provider = require('./exports/provider');
 const settings = require('./exports/settings');
 const handler = require('./exports/handler');
-const matchers = require('./exports/matcher');
 const state = require('./exports/state');
 const stash = require('./exports/stash');
 const expect = require('./exports/expect');
@@ -19,7 +18,6 @@ const reporter = require('./exports/reporter');
 const pactum = {
 
   mock,
-  matchers,
   consumer,
   request,
   provider,

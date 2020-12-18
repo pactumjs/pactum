@@ -1,21 +1,19 @@
-const helper = require('../helpers/helper');
-const Compare = require('../helpers/compare');
+const { utils } = require('pactum-matchers');
 
 const jmv = {
 
   getMatchingRules(data, path, rules) {
     const _rules = rules || {};
-    helper.setMatchingRules(_rules, data, path);
+    utils.setMatchingRules(_rules, data, path);
     return _rules;
   },
 
   getRawValue(data) {
-    return helper.setValueFromMatcher(data);
+    return utils.getValue(data);
   },
 
-  validate(actual, expected, rules, path) {
-    const compare = new Compare();
-    return compare.jsonMatch(actual, expected, rules, path).message;
+  validate(actual, expected, rules, path, strict) {
+    return utils.compare(actual, expected, rules, path, strict).message;
   }
 
 };

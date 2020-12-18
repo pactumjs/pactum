@@ -70,6 +70,7 @@
     "form-data": "^3.0.0",
     "json-query": "^2.2.2",
     "openapi-fuzzer-core": "^1.0.6",
+    "pactum-matchers": "^1.0.0",
     "parse-graphql": "^1.0.0",
     "phin": "^3.4.1",
     "polka": "^0.5.2"
