@@ -1,8 +1,8 @@
 const expect = require('chai').expect;
 const sandbox = require('sinon').createSandbox();
+const { like, regex } = require('pactum-matchers');
 
 const Interaction = require('../../src/models/interaction');
-const matcher = require('../../src/exports/matcher');
 const helper = require('../../src/helpers/helper');
 const config = require('../../src/config');
 
@@ -144,8 +144,8 @@ describe('Interaction - Mock', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: matcher.like(1),
-          name: matcher.regex({ generate: 'Jon', matcher: '/\w+/g' })
+          id: like(1),
+          name: regex('Jon', '/\w+/g')
         }
       },
       willRespondWith: {
@@ -284,8 +284,8 @@ describe('Interaction - Mock', () => {
         method: 'GET',
         path: '/api/projects/1',
         body: {
-          id: matcher.like(1),
-          name: matcher.regex({ generate: 'Jon', matcher: '/\w+/g' })
+          id: like(1),
+          name: regex('Jon', '/\w+/g')
         }
       },
       willRespondWith: {

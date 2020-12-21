@@ -21,7 +21,7 @@ declare class Spec {
   /**
    * sets a custom name for the spec
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .name('Get Users From The System')
    *  .get('/api/users')
    *  .expectStatus(200);
@@ -31,7 +31,7 @@ declare class Spec {
   /**
    * runs the specified state handler
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .setState('there are users in the system')
    *  .get('/api/users')
    *  .expectStatus(200);
@@ -41,7 +41,7 @@ declare class Spec {
   /**
    * adds a mock interaction to the server & auto removed after execution
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .useMockInteraction({
    *    withRequest: {
    *      method: 'GET',
@@ -64,7 +64,7 @@ declare class Spec {
   /** 
    * adds a pact interaction to the server & auto removed after execution
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .usePactInteraction({
    *    provider: 'project-provider',
    *    state: 'when there is a project with id 1',
@@ -90,7 +90,7 @@ declare class Spec {
   /**
    * The GET method requests a representation of the specified resource.
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('https://jsonplaceholder.typicode.com/posts')
    *  .withQueryParam('postId', 1)
    *  .expectStatus(200)
@@ -109,7 +109,7 @@ declare class Spec {
   /**
    * The PATCH method is used to apply partial modifications to a resource.
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .patch('https://jsonplaceholder.typicode.com/posts/1')
    *  .withJson({
    *    title: 'foo'
@@ -121,7 +121,7 @@ declare class Spec {
   /**
    * The POST method is used to submit an entity to the specified resource, often causing a change in state or side effects on the server.
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .post('https://jsonplaceholder.typicode.com/posts')
    *  .withJson({
    *    title: 'foo',
@@ -135,7 +135,7 @@ declare class Spec {
   /**
    * The PUT method replaces all current representations of the target resource with the request payload.
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .put('https://jsonplaceholder.typicode.com/posts/1')
    *  .withJson({
    *    id: 1,
@@ -150,7 +150,7 @@ declare class Spec {
   /**
    * The DELETE method deletes the specified resource.
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .delete('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectStatus(200);
    */
@@ -159,7 +159,7 @@ declare class Spec {
   /**
    * replaces path params in the request url - /api/users/mike
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('/api/users/{username}')
    *  .withPathParams('username', 'mike')
    *  .expectStatus(200);
@@ -170,7 +170,7 @@ declare class Spec {
   /**
    * adds query params to the request url - /comments?id=1&user=snow&sort=asc
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('/api/users')
    *  .withQueryParams('sort', 'asc')
    *  .withQueryParams({ 'id': '1', 'user': 'snow' })
@@ -182,7 +182,7 @@ declare class Spec {
   /**
    * appends graphQL query to the request body
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .post('http://www.graph.com/graphql')
    *  .withGraphQLQuery(`{ hello }`)
    *  .expectStatus(200);
@@ -192,7 +192,7 @@ declare class Spec {
   /**
    * appends graphQL variables to the request body
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .post('http://www.graph.com/graphql')
    *  .withGraphQLQuery(`
    *    hero(episode: $episode) {
@@ -209,7 +209,7 @@ declare class Spec {
   /**
    * attaches json object to the request body
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .post('https://jsonplaceholder.typicode.com/posts')
    *  .withJson({
    *    title: 'foo',
@@ -223,7 +223,7 @@ declare class Spec {
   /**
    * attaches headers to the request
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('/api/posts')
    *  .withHeaders('Authorization', 'Basic xxx')
    *  .withHeaders({
@@ -237,7 +237,7 @@ declare class Spec {
   /**
    * attaches body to the request
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .post('https://jsonplaceholder.typicode.com/posts')
    *  .withBody(JSON.stringify({
    *    title: 'foo',
@@ -249,7 +249,7 @@ declare class Spec {
   /**
    * attaches form data to the request with header - "application/x-www-form-urlencoded"
    * @example
-   * await pactum
+   * await pactum.spec()
    *   .post('https://jsonplaceholder.typicode.com/posts')
    *   .withForm({
    *     'user': 'drake'
@@ -264,7 +264,7 @@ declare class Spec {
    * @example
    * const form = new pactum.request.FormData();
    * form.append('my_file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' });
-   * await pactum
+   * await pactum.spec()
    *  .post('https://jsonplaceholder.typicode.com/upload')
    *  .withMultiPartFormData(form)
    *  .expectStatus(200);
@@ -275,7 +275,7 @@ declare class Spec {
    * attaches multi part form data to the request with header - "multipart/form-data"
    * @see https://www.npmjs.com/package/form-data
    * @example
-   *  await pactum
+   *  await pactum.spec()
    *   .post('https://jsonplaceholder.typicode.com/upload')
    *   .withMultiPartFormData('file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' })
    *   .withMultiPartFormData('user', 'drake')
@@ -288,7 +288,7 @@ declare class Spec {
    * @see https://nodejs.org/api/http.html#http_http_request_url_options_callback
    * 
    * @example
-   * await pactum.spec()
+   * await pactum.spec().spec()
    *  .get('some-url')
    *  .withCore({
    *    agent: myAgent
@@ -307,7 +307,7 @@ declare class Spec {
   /**
    * retry request on specific conditions before making assertions
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('/some/url)
    *  .retry({
    *     strategy: (req, res) => res.statusCode !== 200
@@ -333,7 +333,7 @@ declare class Spec {
    *   const json = res.json;
    *   assert.strictEqual(json.type, data);
    * });
-   * await pactum
+   * await pactum.spec()
    *  .get('https://jsonplaceholder.typicode.com/users/1')
    *  .expect('isUser')
    *  .expect('hasAddress', 'home');
@@ -343,7 +343,7 @@ declare class Spec {
   /**
    * runs specified custom expect handler
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('https://jsonplaceholder.typicode.com/users/1')
    *  .expect('isUser')
    *  .expect((req, res, data) => { -- assertion code -- });
@@ -353,7 +353,7 @@ declare class Spec {
   /**
    * expects a status code on the response
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .delete('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectStatus(200);
    */
@@ -362,7 +362,7 @@ declare class Spec {
   /**
    * expects a header on the response
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectHeader('content-type', 'application/json; charset=utf-8')
    *  .expectHeader('connection', /\w+/);
@@ -372,7 +372,7 @@ declare class Spec {
   /**
    * expects a header in the response
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('https://jsonplaceholder.typicode.com/comments')
    *  .expectHeaderContains('content-type', 'application/json');
    */
@@ -385,7 +385,7 @@ declare class Spec {
   /**
    * expects a exact json object in the response
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectJson({
    *    userId: 1,
@@ -397,7 +397,7 @@ declare class Spec {
   /**
    * expects a partial json object in the response
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('https://jsonplaceholder.typicode.com/comments')
    *  .expectJsonLike([{
    *    postId: 1,
@@ -411,7 +411,7 @@ declare class Spec {
    * expects the response to match with json schema
    * @see https://json-schema.org/learn/
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('https://jsonplaceholder.typicode.com/posts/1')
    *  .expectJsonSchema({
    *    "properties": {
@@ -428,7 +428,7 @@ declare class Spec {
    * expects the json at path equals to the value
    * @see https://www.npmjs.com/package/json-query
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('some-url')
    *  .expectJsonAt('[0].name', 'Matt')
    *  .expectJsonAt('[*].name', ['Matt', 'Pet', 'Don']);
@@ -439,7 +439,7 @@ declare class Spec {
    * expects the json at path to be like the value (uses expectJsonLike internally)
    * @see https://www.npmjs.com/package/json-query
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('some-url')
    *  .expectJsonLikeAt('[*].name', ['Matt', 'Pet', 'Don']);
    */
@@ -449,7 +449,7 @@ declare class Spec {
    * expects the response to match with json schema
    * @see https://json-schema.org/learn/
    * @example
-   * await pactum
+   * await pactum.spec()
    *  .get('/api/users/1')
    *  .expectJsonSchemaAt('user.address', {
    *    "type": "object",
@@ -465,9 +465,9 @@ declare class Spec {
   /**
    * expects the json to match with value
    * @example
-   * const { like } = pactum.matchers;
+   * const { like } = require('pactum-matchers');
    * 
-   * await pactum
+   * await pactum.spec()
    *  .get('/api/users')
    *  .expectJsonMatch({
    *    id: like(1),
@@ -480,9 +480,9 @@ declare class Spec {
    * expects the json at path to match with value
    * @see https://www.npmjs.com/package/json-query
    * @example
-   * const { like } = pactum.matchers;
+   * const { like } = require('pactum-matchers');
    * 
-   * await pactum
+   * await pactum.spec()
    *  .get('/api/users')
    *  .expectJsonMatchAt('people[0]', {
    *    id: like(1),
@@ -494,9 +494,9 @@ declare class Spec {
   /**
    * expects the json to match with stored snapshots
    * @example
-   * const { like } = pactum.matchers;
+   * const { like } = require('pactum-matchers');
    * 
-   * await pactum
+   * await pactum.spec()
    *  .get('/api/users')
    *  .expectJsonSnapshot({
    *    id: like(1),
@@ -523,7 +523,7 @@ declare class Spec {
   /**
    * returns custom response from json response using custom handler
    * @example
-   * const id = await pactum
+   * const id = await pactum.spec()
    *  .get('some-url')
    *  .expectStatus(200)
    *  .returns('GetUserId');
@@ -533,7 +533,7 @@ declare class Spec {
   /**
    * returns custom response from json response using json-query
    * @example
-   * const id = await pactum
+   * const id = await pactum.spec()
    *  .get('some-url')
    *  .expectStatus(200)
    *  .returns('user.id') // json query
@@ -545,7 +545,7 @@ declare class Spec {
   /**
    * returns custom response from json response using custom function
    * @example
-   * const resp = await pactum
+   * const resp = await pactum.spec()
    *  .get('some-url')
    *  .expectStatus(200)
    *  .returns('[0].name')

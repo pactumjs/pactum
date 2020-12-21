@@ -1,5 +1,5 @@
+const { like, eachLike } = require('pactum-matchers');
 const pactum = require('../../src/index');
-const { like } = pactum.matchers;
 const expect = require('chai').expect;
 const fs = require('fs');
 
@@ -314,7 +314,7 @@ describe('Expects', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals(`Json doesn't have type "object" at "$" but found "string"`);
+    expect(err.message).equals(`Json doesn't have type 'object' at '$' but found 'string'`);
   });
 
   it('network error', async () => {
@@ -588,7 +588,7 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .expectJsonMatchAt('people[*].name', pactum.matchers.eachLike('Matt'));
+      .expectJsonMatchAt('people[*].name', eachLike('Matt'));
   });
 
   it('json match at - fails', async () => {
@@ -613,7 +613,7 @@ describe('Expects', () => {
         })
         .get('http://localhost:9393/api/users')
         .expectStatus(200)
-        .expectJsonMatchAt('people[*].name', pactum.matchers.eachLike(12));
+        .expectJsonMatchAt('people[*].name', eachLike(12));
     } catch (error) {
       err = error;
     }

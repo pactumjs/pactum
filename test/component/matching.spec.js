@@ -1,5 +1,5 @@
 const pactum = require('../../src/index');
-const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers;
+const { like, regex, eachLike, includes } = require('pactum-matchers');
 
 describe('Request Matchers', () => {
 
@@ -34,37 +34,6 @@ describe('Request Matchers', () => {
       .toss();
   });
 
-  it('GET - one interaction - somethingLike', async () => {
-    await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1',
-          query: {
-            date: somethingLike('08/04/2020')
-          }
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'fake'
-          }
-        }
-      })
-      .get('http://localhost:9393/api/projects/1')
-      .withQueryParams('date', '12/00/9632')
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'fake'
-      })
-      .toss();
-  });
-
   it('GET - one interaction - regex instance', async () => {
     await pactum.spec()
       .useMockInteraction({
@@ -72,7 +41,7 @@ describe('Request Matchers', () => {
           method: 'GET',
           path: '/api/projects/1',
           query: {
-            date: regex({ generate: '08/04/2020', matcher: /\w+/g })
+            date: regex('08/04/2020', /\w+/g)
           }
         },
         willRespondWith: {
@@ -103,7 +72,7 @@ describe('Request Matchers', () => {
           method: 'GET',
           path: '/api/projects/1',
           query: {
-            date: regex({ generate: '08/04/2020', matcher: "\\w+" })
+            date: regex('08/04/2020', "\\w+")
           }
         },
         willRespondWith: {
@@ -134,7 +103,7 @@ describe('Request Matchers', () => {
           method: 'GET',
           path: '/api/projects/1',
           query: {
-            date: regex(/^\d{4}-\d{2}-\d{2}$/)
+            date: regex('2020-12-12', /^\d{4}-\d{2}-\d{2}$/)
           }
         },
         willRespondWith: {
@@ -158,14 +127,14 @@ describe('Request Matchers', () => {
       .toss();
   });
 
-  it('POST - one interaction - term instance', async () => {
+  it('POST - one interaction - regex instance', async () => {
     await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'POST',
           path: '/api/projects/1',
           body: {
-            id: term({ generate: 123, matcher: /\d+/ }),
+            id: regex(123, /\d+/),
             name: 'Bark'
           }
         },
@@ -182,14 +151,14 @@ describe('Request Matchers', () => {
       .toss();
   });
 
-  it('POST - one interaction - term string', async () => {
+  it('POST - one interaction - regex string', async () => {
     await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
           body: {
-            id: term({ generate: 123, matcher: "\\d+" }),
+            id: regex(123, "\\d+"),
             name: 'Bark'
           }
         },
@@ -220,7 +189,7 @@ describe('Request Matchers', () => {
           method: 'POST',
           path: '/api/projects/1',
           body: eachLike({
-            id: term({ generate: 123, matcher: /\d+/ }),
+            id: regex(123, /\d+/),
             name: 'Bark'
           })
         },
@@ -237,17 +206,17 @@ describe('Request Matchers', () => {
       .toss();
   });
 
-  it('GET - one interaction - contains', async () => {
+  it('GET - one interaction - includes', async () => {
     await pactum.spec()
       .useMockInteraction({
         withRequest: {
           method: 'GET',
           path: '/api/projects/1',
           query: {
-            date: contains('2020')
+            date: includes('2020')
           },
           headers: {
-            'x-Request-Id': contains('PutItem')
+            'x-Request-Id': includes('PutItem')
           }
         },
         willRespondWith: {
@@ -329,87 +298,6 @@ describe('Request Matchers', () => {
       })
       .get('http://localhost:9393/api/projects/1')
       .withHeaders({'date': '12/00/9632', 'place': 'hyd'})
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'fake'
-      })
-      .toss();
-  });
-
-  it('GET - one interaction - path regex object', async () => {
-    await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: regex({ generate: '/api/projects/1', matcher: /\/api\/projects\/\d+/g })
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'fake'
-          }
-        }
-      })
-      .get('http://localhost:9393/api/projects/3244')
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'fake'
-      })
-      .toss();
-  });
-
-  it('GET - one interaction - path regex matcher instance', async () => {
-    await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: regex(/\/api\/projects\/\d+/)
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'fake'
-          }
-        }
-      })
-      .get('http://localhost:9393/api/projects/3244')
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'fake'
-      })
-      .toss();
-  });
-
-  it('GET - one interaction - path regex matcher string', async () => {
-    await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: regex('/api/projects/\\d+')
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'fake'
-          }
-        }
-      })
-      .get('http://localhost:9393/api/projects/3244')
       .expectStatus(200)
       .expectJsonLike({
         id: 1,

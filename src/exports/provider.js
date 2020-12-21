@@ -1,7 +1,7 @@
 const phin = require('phin');
 const fs = require('fs');
+const { compare } = require('pactum-matchers').utils;
 const helper = require('../helpers/helper');
-const Compare = require('../helpers/compare');
 const log = require('../helpers/logger');
 const { gray, green, red } = require('../helpers/colors');
 const { PactumConfigurationError } = require('../helpers/errors');
@@ -233,8 +233,7 @@ class Provider {
       if (!matchingRules) {
         matchingRules = {};
       }
-      const compare = new Compare();
-      return compare.jsonMatch(actual.headers, expected.headers, matchingRules, '$.headers');
+      return compare(actual.headers, expected.headers, matchingRules, '$.headers');
     }
     return {
       equal: true
@@ -248,8 +247,7 @@ class Provider {
       if (!matchingRules) {
         matchingRules = {};
       }
-      const compare = new Compare();
-      return compare.jsonMatch(actualBody, expected.body, matchingRules, '$.body');
+      return compare(actualBody, expected.body, matchingRules, '$.body');
     }
     return {
       equal: true

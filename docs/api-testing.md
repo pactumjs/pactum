@@ -617,7 +617,7 @@ it('get people', async () => {
 Allows validation of JSON with a set of matchers. See [Matching](matching) for more usage details.
 
 ```javascript
-const { like } = pactum.matchers;
+const { like } = require('pactum-matchers');
 
 it('get people', async () => {
   const response = await pactum.spec()
@@ -635,7 +635,7 @@ it('get people', async () => {
 Allows validation of specific part in a JSON with a set of matchers. See [Matching](matching) for more usage details. See [json-query](https://www.npmjs.com/package/json-query) for more usage details.
 
 ```javascript
-const { like } = pactum.matchers;
+const { like } = require('pactum-matchers');
 
 it('get people', async () => {
   const response = await pactum.spec()
@@ -673,7 +673,7 @@ it('get people', async () => {
 There are high chances that our server will return response containing dynamic data like `ids` or `dates`. Not to fail the snapshot at every run, pactum provides matchers for any property in the JSON. See [Matching](matching) for more usage details.
 
 ```js
-const { like } = pactum.matchers;
+const { like } = require('pactum-matchers');
 
 it('get user mark', async () => {
   const response = await pactum.spec()
@@ -692,7 +692,7 @@ When there is an intentional change in the API response, our snapshot test fails
 !> Remove `updateSnapshot` method from the test case after the snapshot is updated.
 
 ```js
-const { like } = pactum.matchers;
+const { like } = require('pactum-matchers');
 
 it('get user mark', async () => {
   const response = await pactum.spec()

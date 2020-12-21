@@ -15,10 +15,12 @@ In real world applications, sometimes it is hard to match an expected request/re
 
 It supports following matchers
 
-* `like` or `somethingLike` - matches with the type
+* `like` - matches with the type
 * `eachLike` - matches all the elements in the array with the specified type
-* `regex` or `term` - matches with the regular expression
-* `contains` - checks if actual value contains a specified value in it
+* `regex` - matches with the regular expression
+* `includes` - checks if actual value includes a specified value in it
+* `oneOf` - checks if actual value is one of the expected value
+* `expression` - checks if actual value is satisfies the expected expression
 
 Matchers are applied on JSON
   
@@ -30,7 +32,7 @@ Matchers are applied on JSON
 
 Often, you will not care what the exact value is at a particular path is, you just care that a value is present and that it is of the expected type.
 
-* `like` or `somethingLike`
+* `like`
 * `eachLike`
 
 ### like
@@ -188,7 +190,7 @@ const exp3 = {
 *eachLike* is similar to *like* but applies to arrays.
 
 ```javascript
-const { eachLike } = pactum.matchers;
+const { eachLike } = require('pactum-matchers');
 
 // matches if it is an array 
 // & each item in the array is an object
@@ -255,7 +257,7 @@ What you need is a way to say "I expect something matching this regular expressi
 ### regex
 
 ```javascript
-const { regex } = pactum.matchers;
+const { regex } = require('pactum-matchers');
 const actual = {
   name: 'Jon'
   birthDate: regex(/\d{2}\/\d{2}\/\d{4}/)

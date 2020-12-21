@@ -1,6 +1,5 @@
 const expect = require('chai').expect;
 const pactum = require('../../src/index');
-const { like, eachLike, term } = pactum.matchers;
 
 describe('Pact Interactions - Query', () => {
 

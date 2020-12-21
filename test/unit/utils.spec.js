@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
+const { like, regex } = require('pactum-matchers');
 
 const Interaction = require('../../src/models/interaction');
-const matcher = require('../../src/exports/matcher');
 const utils = require('../../src/helpers/utils');
 
 describe('getMatchingInteraction', () => {
@@ -275,8 +275,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: matcher.like('1'),
-          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: like('1'),
+          name: regex('Fake', '\\w+'),
           married: 'true'
         }
       },
@@ -312,8 +312,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: matcher.like('1'),
-          name: matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
+          id: like('1'),
+          name: regex('Fake', '/Fake/g'),
           married: 'true'
         }
       },
@@ -349,8 +349,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: matcher.like('1'),
-          name: matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
+          id: like('1'),
+          name: regex('Fake', '/Fake/g'),
           married: 'true'
         }
       },
@@ -503,8 +503,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         body: {
-          id: matcher.like('1'),
-          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: like('1'),
+          name:  regex('Fake', '\\w+'),
           married: 'true'
         }
       },
@@ -541,8 +541,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         body: {
-          id: matcher.like('1'),
-          name: matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
+          id: like('1'),
+          name: regex('Fake', '/Fake/g'),
           married: 'true'
         }
       },
@@ -579,8 +579,8 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         body: {
-          id: matcher.like('1'),
-          name: matcher.regex({ generate: 'Fake', matcher: '/Fake/g' }),
+          id: like('1'),
+          name: regex('Fake', '/Fake/g'),
           married: 'true'
         }
       },
@@ -616,13 +616,13 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: matcher.like('1'),
-          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: like('1'),
+          name: regex('Fake', '\\w+'),
           married: 'true'
         },
         body: {
-          id: matcher.like('1'),
-          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: like('1'),
+          name: regex('Fake', '\\w+'),
           married: 'true'
         }
       },
@@ -663,12 +663,12 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: matcher.like('1'),
-          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: like('1'),
+          name: regex('Fake', '\\w+'),
           married: 'true'
         },
         body: {
-          id: matcher.like('1'),
+          id: like('1'),
           married: 'true'
         }
       },
@@ -709,12 +709,12 @@ describe('getMatchingInteraction', () => {
         method: 'GET',
         path: '/api/projects/1',
         query: {
-          id: matcher.like('1'),
-          name: matcher.regex({ generate: 'Fake', matcher: '\\w+' }),
+          id: like('1'),
+          name: regex('Fake', '\\w+'),
           married: 'true'
         },
         body: {
-          id: matcher.like('1'),
+          id: like('1'),
           married: 'false'
         }
       },

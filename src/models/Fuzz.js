@@ -4,12 +4,28 @@ class Fuzz {
 
   constructor() {
     this.swaggerUrl = '';
+    this.headers = {};
+    this.mockInteractions = [];
     this.batchSize = 10;
     this._inspect = false;
   }
 
   onSwagger(url) {
     this.swaggerUrl = url;
+    return this;
+  }
+
+  withHeaders(key, value) {
+    if (typeof key === 'string') {
+      this.headers[key] = value;
+    } else {
+      Object.assign(this.headers, key);
+    }
+    return this;
+  }
+
+  useMockInteraction(interaction, data) {
+    this.mockInteractions.push({ interaction, data });
     return this;
   }
 

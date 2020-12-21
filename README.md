@@ -286,14 +286,14 @@ Running **pactum** as a standalone *mock server*.
 
 ```javascript
 const pactum = require('pactum');
-const { regex } = pactum.matchers;
+const { regex } = require('pactum-matchers');
 
 pactum.mock.addMockInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/projects',
     query: {
-      date: regex(/^\d{4}-\d{2}-\d{2}$/)
+      date: regex('2020-12-12', /^\d{4}-\d{2}-\d{2}$/)
     }
   },
   willRespondWith: {
