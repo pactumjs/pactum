@@ -1,4 +1,4 @@
-# <span style="letter-spacing: 2px;">**PACTUM**</span><span style="font-weight: bold; color: yellow; background-color: black; padding-left: 10px; padding-right: 10px">JS<span> <small style="margin-left: 15px">2.0.17</small>
+# <span style="letter-spacing: 2px;">**PACTUM**</span><span style="font-weight: bold; color: yellow; background-color: black; padding-left: 10px; padding-right: 10px">JS<span> <small style="margin-left: 15px">3.0.1</small>
 
 > Free & Open Source REST API Testing Tool for all levels in a **Test Pyramid**
 
