@@ -231,7 +231,7 @@ it('should not buy a product which is out-of-stock', () => {
 
 There are high chances that you wanted to use the same interaction in multiple occasions. To reuse interactions, you can create separate *js* files to hold interactions & import them in your spec file. This is one way to solve the issue. But there is a better way through *mock handlers*.
 
-Mock handlers help us to reuse interactions across tests. Use `handler.addMockInteractionHandler` function to temporarily store an interaction & later use it in test cases.
+Mock handlers help us to reuse interactions across tests. Use `handler.addInteractionHandler` function to temporarily store an interaction & later use it in test cases.
 
 It accepts two arguments
 
@@ -244,7 +244,7 @@ While using a mock handler, you can pass custom data into it to change the behav
 const handler = pactum.handler;
 
 before(async () => {
-  handler.addMockInteractionHandler('get product', (ctx) => {
+  handler.addInteractionHandler('get product', (ctx) => {
     return {
       withRequest: {
         method: 'GET',
@@ -295,13 +295,13 @@ Not all endpoints will perform CRUD operations. Some endpoints will perform some
 
 This library helps to validate whether interactions are exercised or not in the background. We can also validate the number of times the interaction is exercised.
 
-Use `mock.addMockInteraction` to add a interaction to the server & later use `mock.getInteraction` to get interaction details & perform validations on it.
+Use `mock.addInteraction` to add a interaction to the server & later use `mock.getInteraction` to get interaction details & perform validations on it.
 
 Lets look at an example
 
 ```javascript
 it('some background process', () => {
-  const id = mock.addMockInteraction('get product');
+  const id = mock.addInteraction('get product');
   await pactum.spec()
     .post('/api/process')
     .expectStatus(202);
@@ -337,7 +337,7 @@ const pactum = require('pactum');
 const mock = pactum.mock;
 const handler = pactum.handler;
 
-handler.addMockInteractionHandler('get product', (ctx) => {
+handler.addInteractionHandler('get product', (ctx) => {
   return {
     withRequest: {
       method: 'GET',
@@ -395,7 +395,7 @@ it('should not buy a product which is out-of-stock', () => {
 });
 
 it('some background process', () => {
-  const id = await mock.addMockInteraction('get product');
+  const id = await mock.addInteraction('get product');
   await pactum.spec()
     .post('/api/process')
     .expectStatus(202);

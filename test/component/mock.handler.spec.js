@@ -4,46 +4,46 @@ const handler = pactum.handler;
 describe('Mock Interactions - Handler', () => {
 
   before(() => {
-    handler.addMockInteractionHandler('get projects', () => {
+    handler.addInteractionHandler('get projects', () => {
       return {
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/api/projects'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       }
     });
-    handler.addMockInteractionHandler('get project', (ctx) => {
+    handler.addInteractionHandler('get project', (ctx) => {
       return {
-        withRequest: {
+        request: {
           method: 'GET',
           path: `/api/projects/${ctx.data}`
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       }
     });
-    handler.addMockInteractionHandler('get parent', (ctx) => {
+    handler.addInteractionHandler('get parent', (ctx) => {
       return {
-        withRequest: {
+        request: {
           method: 'GET',
           path: `/api/parent/${ctx.data}`
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       }
     });
-    handler.addMockInteractionHandler('get child', (ctx) => {
+    handler.addInteractionHandler('get child', (ctx) => {
       return {
         name: 'get parent',
         data: ctx.data || 'child'
       }
     });
-    handler.addMockInteractionHandler('get sub child', () => {
+    handler.addInteractionHandler('get sub child', () => {
       return {
         name: 'get child',
         data: 'child/sub'
@@ -53,28 +53,28 @@ describe('Mock Interactions - Handler', () => {
 
   it('GET - with handler name', async () => {
     await pactum.spec()
-      .useMockInteraction('get projects')
+      .useInteraction('get projects')
       .get('http://localhost:9393/api/projects')
       .expectStatus(200);
   });
 
   it('GET - handler name & custom data', async () => {
     await pactum.spec()
-      .useMockInteraction('get project', 1)
+      .useInteraction('get project', 1)
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200);
   });
 
   it('GET - child handler', async () => {
     await pactum.spec()
-      .useMockInteraction('get child')
+      .useInteraction('get child')
       .get('http://localhost:9393/api/parent/child')
       .expectStatus(200);
   });
 
   it('GET - sub child handler', async () => {
     await pactum.spec()
-      .useMockInteraction('get sub child')
+      .useInteraction('get sub child')
       .get('http://localhost:9393/api/parent/child/sub')
       .expectStatus(200);
   });

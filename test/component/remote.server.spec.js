@@ -4,46 +4,43 @@ const { expect } = require('chai');
 const mock = pactum.mock;
 const handler = pactum.handler;
 
-describe('Remote Server - use with spec', () => {
+xdescribe('Remote Server - use with spec', () => {
 
   before(() => {
     mock.useRemoteServer('http://localhost:9393');
-    handler.addMockInteractionHandler('mock remote handler', (ctx) => {
+    handler.addInteractionHandler('mock remote handler', (ctx) => {
       return {
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/remote/mock/handler'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: ctx.data
         }
       }
     });
-    handler.addPactInteractionHandler('pact remote handler', () => {
+    handler.addInteractionHandler('pact remote handler', () => {
       return {
-        provider: 'remote-provider',
-        state: 'remote-state',
-        uponReceiving: 'remote-desc',
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/remote'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
-      }
+      };
     });
   });
 
-  it('useMockInteraction', async () => {
+  it('useInteraction', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/remote'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -54,14 +51,14 @@ describe('Remote Server - use with spec', () => {
       .expectStatus(404)
   });
 
-  it('useMockInteraction - handler', async () => {
+  it('useInteraction - handler', async () => {
     await pactum.spec()
-      .useMockInteraction('mock remote handler', 'hello remote')
+      .useInteraction('mock remote handler', 'hello remote')
       .get('http://localhost:9393/remote/mock/handler')
       .expectStatus(200)
       .expectBody('hello remote');
     await pactum.spec()
-      .useMockInteraction('mock remote handler', 'hello remote')
+      .useInteraction('mock remote handler', 'hello remote')
       .get('http://localhost:9393/remote/mock/handler')
       .expectStatus(200)
       .expectBody('hello remote');
@@ -70,11 +67,11 @@ describe('Remote Server - use with spec', () => {
       .expectStatus(404)
   });
 
-  it('useMockInteraction - handler not found', async () => {
+  it('useInteraction - handler not found', async () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction('random mock remote handler', 'hello remote')
+        .useInteraction('random mock remote handler', 'hello remote')
         .get('http://localhost:9393/remote/mock/handler')
         .expectStatus(200)
         .expectBody('hello remote');
@@ -84,17 +81,17 @@ describe('Remote Server - use with spec', () => {
     expect(err.message).contains(`Mock Interaction Handler Not Found - 'random mock remote handler'`);
   });
 
-  it('usePactInteraction', async () => {
+  it('useInteraction', async () => {
     await pactum.spec()
-      .usePactInteraction({
+      .useInteraction({
         provider: 'remote-provider',
         state: 'remote-state',
         uponReceiving: 'remote-desc',
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/remote'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -105,9 +102,9 @@ describe('Remote Server - use with spec', () => {
       .expectStatus(404)
   });
 
-  it('usePactInteraction - handler', async () => {
+  it('useInteraction - handler', async () => {
     await pactum.spec()
-      .usePactInteraction('pact remote handler', 'hello remote')
+      .useInteraction('pact remote handler', 'hello remote')
       .get('http://localhost:9393/remote')
       .expectStatus(200);
     await pactum.spec()
@@ -122,18 +119,18 @@ describe('Remote Server - use with spec', () => {
 
 });
 
-describe('Remote Server - before and after spec', () => {
+xdescribe('Remote Server - before and after spec', () => {
 
   before(() => {
     mock.useRemoteServer('http://localhost:9393');
-    handler.addMockInteractionHandler('mock remote handler', () => {
+    handler.addInteractionHandler('mock remote handler', () => {
       return {
         id: 'id2',
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/remote/mock/handler'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       }
@@ -141,13 +138,13 @@ describe('Remote Server - before and after spec', () => {
   });
 
   it('add mock interaction & get', async () => {
-    const id = await mock.addMockInteraction({
+    const id = await mock.addInteraction({
       id: 'id',
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/remote/get'
       },
-      willRespondWith: {
+      response: {
         status: 200
       }
     });
@@ -157,8 +154,8 @@ describe('Remote Server - before and after spec', () => {
       id: 'id',
       "consumer": "consumer",
       "mock": true,
-      withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
-      willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+      request: { method: 'GET', path: '/remote/get', "matchingRules": {} },
+      response: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
       callCount: 0,
       "calls": [],
       "exercised": false,
@@ -167,24 +164,24 @@ describe('Remote Server - before and after spec', () => {
   });
 
   it('add mock interactions & get them', async () => {
-    const ids = await mock.addMockInteraction([
+    const ids = await mock.addInteraction([
       {
         id: 'id1',
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/remote/get'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       },
       {
         id: 'id2',
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/remote/get'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       }
@@ -196,8 +193,8 @@ describe('Remote Server - before and after spec', () => {
         id: 'id1',
         "consumer": "consumer",
         "mock": true,
-        withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
-        willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        request: { method: 'GET', path: '/remote/get', "matchingRules": {} },
+        response: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
         callCount: 0,
       "calls": [],
         "exercised": false,
@@ -207,8 +204,8 @@ describe('Remote Server - before and after spec', () => {
         id: 'id2',
         "consumer": "consumer",
         "mock": true,
-        withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
-        willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        request: { method: 'GET', path: '/remote/get', "matchingRules": {} },
+        response: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
         callCount: 0,
       "calls": [],
         "exercised": false,
@@ -218,14 +215,14 @@ describe('Remote Server - before and after spec', () => {
   });
 
   it('add mock interactions with a handler & get them', async () => {
-    const ids = await mock.addMockInteraction([
+    const ids = await mock.addInteraction([
       {
         id: 'id1',
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/remote/get'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       },
@@ -238,8 +235,8 @@ describe('Remote Server - before and after spec', () => {
         id: 'id1',
         "consumer": "consumer",
         "mock": true,
-        withRequest: { method: 'GET', path: '/remote/get', "matchingRules": {} },
-        willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        request: { method: 'GET', path: '/remote/get', "matchingRules": {} },
+        response: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
         callCount: 0,
       "calls": [],
         "exercised": false,
@@ -249,8 +246,8 @@ describe('Remote Server - before and after spec', () => {
         id: 'id2',
         "consumer": "consumer",
         "mock": true,
-        withRequest: { method: 'GET', path: '/remote/mock/handler', "matchingRules": {} },
-        willRespondWith: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        request: { method: 'GET', path: '/remote/mock/handler', "matchingRules": {} },
+        response: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
         callCount: 0,
       "calls": [],
         "exercised": false,

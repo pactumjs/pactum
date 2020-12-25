@@ -5,13 +5,13 @@ const handler = pactum.handler;
 describe('E2E', () => {
 
   before(() => {
-    handler.addMockInteractionHandler('get user', () => {
+    handler.addInteractionHandler('get user', () => {
       return {
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/api/users/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -19,43 +19,43 @@ describe('E2E', () => {
         }
       }
     });
-    handler.addMockInteractionHandler('save user', () => {
+    handler.addInteractionHandler('save user', () => {
       return {
-        withRequest: {
+        request: {
           method: 'POST',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       }
     });
-    handler.addMockInteractionHandler('delete user', () => {
+    handler.addInteractionHandler('delete user', () => {
       return {
-        withRequest: {
+        request: {
           method: 'DELETE',
           path: '/api/users/1'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       }
     });
     handler.addSpecHandler('User.AddUser', (ctx) => {
       const spec = ctx.spec;
-      spec.useMockInteraction('save user');
+      spec.useInteraction('save user');
       spec.post('http://localhost:9393/api/users');
       spec.expectStatus(200);
     });
     handler.addSpecHandler('User.DeleteUser', (ctx) => {
       const spec = ctx.spec;
-      spec.useMockInteraction('delete user');
+      spec.useInteraction('delete user');
       spec.delete('http://localhost:9393/api/users/1');
       spec.expectStatus(200);
     });
     handler.addSpecHandler('User.GetUser', (ctx) => {
       const spec = ctx.spec;
-      spec.useMockInteraction('get user');
+      spec.useInteraction('get user');
       spec.get('http://localhost:9393/api/users/1');
       spec.expectStatus(200);
     });
@@ -70,11 +70,11 @@ describe('E2E', () => {
     it('save user', async () => {
       await this.e2e.step('Save User')
         .spec()
-        .useMockInteraction('save user')
+        .useInteraction('save user')
         .post('http://localhost:9393/api/users')
         .expectStatus(200)
         .clean()
-        .useMockInteraction('delete user')
+        .useInteraction('delete user')
         .delete('http://localhost:9393/api/users/1')
         .expectStatus(200);
     });
@@ -82,7 +82,7 @@ describe('E2E', () => {
     it('get user', async () => {
       await this.e2e.step('Get User')
         .spec()
-        .useMockInteraction('get user')
+        .useInteraction('get user')
         .get('http://localhost:9393/api/users/1')
         .expectStatus(200);
     });
@@ -104,11 +104,11 @@ describe('E2E', () => {
       try {
         await this.e2e.step('Save User')
           .spec()
-          .useMockInteraction('save user')
+          .useInteraction('save user')
           .post('http://localhost:9393/api/users')
           .expectStatus(400)
           .clean()
-          .useMockInteraction('delete user')
+          .useInteraction('delete user')
           .delete('http://localhost:9393/api/users/1')
           .expectStatus(200);
       } catch (error) {
@@ -120,7 +120,7 @@ describe('E2E', () => {
     it('should skip this `e2e.step`', async () => {
       await this.e2e.step('Get User')
         .spec()
-        .useMockInteraction('get user')
+        .useInteraction('get user')
         .get('http://localhost:9393/api/users/1')
         .expectStatus(400);
     });
@@ -140,11 +140,11 @@ describe('E2E', () => {
     it('save user one', async () => {
       await this.e2e.step('Save User One')
         .spec()
-        .useMockInteraction('save user')
+        .useInteraction('save user')
         .post('http://localhost:9393/api/users')
         .expectStatus(200)
         .clean()
-        .useMockInteraction('delete user')
+        .useInteraction('delete user')
         .delete('http://localhost:9393/api/users/1')
         .expectStatus(200);
     });
@@ -152,11 +152,11 @@ describe('E2E', () => {
     it('save user two', async () => {
       await this.e2e.step('Save User One')
         .spec()
-        .useMockInteraction('save user')
+        .useInteraction('save user')
         .post('http://localhost:9393/api/users')
         .expectStatus(200)
         .clean()
-        .useMockInteraction('delete user')
+        .useInteraction('delete user')
         .delete('http://localhost:9393/api/users/1')
         .expectStatus(400);
     });
@@ -164,7 +164,7 @@ describe('E2E', () => {
     it('get user', async () => {
       await this.e2e.step('Get User')
         .spec()
-        .useMockInteraction('get user')
+        .useInteraction('get user')
         .get('http://localhost:9393/api/users/1')
         .expectStatus(200);
     });
@@ -190,11 +190,11 @@ describe('E2E', () => {
     it('save user one', async () => {
       await this.e2e.step('Save User One')
         .spec()
-        .useMockInteraction('save user')
+        .useInteraction('save user')
         .post('http://localhost:9393/api/users')
         .expectStatus(200)
         .clean()
-        .useMockInteraction('delete user')
+        .useInteraction('delete user')
         .delete('http://localhost:9393/api/users/1')
         .expectStatus(400);
     });
@@ -202,11 +202,11 @@ describe('E2E', () => {
     it('save user two', async () => {
       await this.e2e.step('Save User Two')
         .spec()
-        .useMockInteraction('save user')
+        .useInteraction('save user')
         .post('http://localhost:9393/api/users')
         .expectStatus(200)
         .clean()
-        .useMockInteraction('delete user')
+        .useInteraction('delete user')
         .delete('http://localhost:9393/api/users/1')
         .expectStatus(400);
     });
@@ -214,7 +214,7 @@ describe('E2E', () => {
     it('get user', async () => {
       await this.e2e.step('Get User')
         .spec()
-        .useMockInteraction('get user')
+        .useInteraction('get user')
         .get('http://localhost:9393/api/users/1')
         .expectStatus(200);
     });

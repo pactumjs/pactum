@@ -19,7 +19,7 @@ describe('Reporter', () => {
 
     it('passed', () => {
       return pactum.spec()
-        .useMockInteraction('default get')
+        .useInteraction('default get')
         .get('http://localhost:9393/default/get')
         .expectStatus(200);
     });
@@ -28,7 +28,7 @@ describe('Reporter', () => {
       let err;
       try {
         await pactum.spec()
-          .useMockInteraction('default get')
+          .useInteraction('default get')
           .get('http://localhost:9393/ohh')
           .expectStatus(200);
       } catch (error) {
@@ -45,7 +45,7 @@ describe('Reporter', () => {
     it('one step', () => {
       this.test.step('one step')
         .spec()
-        .useMockInteraction('default get')
+        .useInteraction('default get')
         .get('http://localhost:9393/default/get')
         .expectStatus(200);
     });

@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const { like, regex } = require('pactum-matchers');
 
-const Interaction = require('../../src/models/interaction');
+const Interaction = require('../../src/models/Interaction.model');
 const utils = require('../../src/helpers/utils');
 
 describe('getMatchingInteraction', () => {
@@ -12,11 +12,11 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -27,7 +27,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -40,11 +40,11 @@ describe('getMatchingInteraction', () => {
 
   it('single - not matching by method', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -55,7 +55,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'POST',
@@ -68,11 +68,11 @@ describe('getMatchingInteraction', () => {
 
   it('single - not matching by path', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -83,7 +83,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -96,12 +96,12 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching - empty query', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {}
+        queryParams: {}
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -112,7 +112,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -125,16 +125,16 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching - with query', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: '1',
           name: 'Fake',
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -145,7 +145,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -162,15 +162,16 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching by extra property in actual query', () => {
     const rawInteraction = {
-      withRequest: {
+      strict: false,
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: '1',
           name: 'Fake'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -181,7 +182,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -198,16 +199,16 @@ describe('getMatchingInteraction', () => {
 
   it('single - not matching by extra property in expected query', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: '1',
           name: 'Fake',
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -218,7 +219,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -234,16 +235,16 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching - with query & diff data types', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: '1',
           name: 'Fake',
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -254,7 +255,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -271,16 +272,16 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching - with query & matching rules', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: like('1'),
           name: regex('Fake', '\\w+'),
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -291,7 +292,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -308,16 +309,16 @@ describe('getMatchingInteraction', () => {
 
   it('single - not matching - with query & matching rules', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: like('1'),
           name: regex('Fake', '/Fake/g'),
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -328,7 +329,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -345,16 +346,16 @@ describe('getMatchingInteraction', () => {
 
   it('single - not matching - with query matching rule not exercised', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: like('1'),
           name: regex('Fake', '/Fake/g'),
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -365,7 +366,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -381,7 +382,7 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching - with body', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
         body: {
@@ -391,7 +392,7 @@ describe('getMatchingInteraction', () => {
           scores: null
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -402,7 +403,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -421,7 +422,8 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching by extra property in actual body - mock', () => {
     const rawInteraction = {
-      withRequest: {
+      strict: false,
+      request: {
         method: 'GET',
         path: '/api/projects/1',
         body: {
@@ -430,7 +432,7 @@ describe('getMatchingInteraction', () => {
           married: true
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -441,7 +443,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -460,7 +462,7 @@ describe('getMatchingInteraction', () => {
 
   it('single - not matching by extra property in expected body', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
         body: {
@@ -470,7 +472,7 @@ describe('getMatchingInteraction', () => {
           scores: null
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -481,7 +483,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -499,7 +501,7 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching - with body & matching rules', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
         body: {
@@ -508,7 +510,7 @@ describe('getMatchingInteraction', () => {
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -519,7 +521,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -537,7 +539,7 @@ describe('getMatchingInteraction', () => {
 
   it('single - not matching - with body & matching rules', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
         body: {
@@ -546,7 +548,7 @@ describe('getMatchingInteraction', () => {
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -557,7 +559,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -575,7 +577,7 @@ describe('getMatchingInteraction', () => {
 
   it('single - not matching - with body matching rule not exercised', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
         body: {
@@ -584,7 +586,7 @@ describe('getMatchingInteraction', () => {
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -595,7 +597,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -612,10 +614,11 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching - with body, query & matching rules', () => {
     const rawInteraction = {
-      withRequest: {
+      strict: false,
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: like('1'),
           name: regex('Fake', '\\w+'),
           married: 'true'
@@ -626,7 +629,7 @@ describe('getMatchingInteraction', () => {
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -637,7 +640,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -659,10 +662,11 @@ describe('getMatchingInteraction', () => {
 
   it('single - matching - with body, query & matching rules', () => {
     const rawInteraction = {
-      withRequest: {
+      strict: false,
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: like('1'),
           name: regex('Fake', '\\w+'),
           married: 'true'
@@ -672,7 +676,7 @@ describe('getMatchingInteraction', () => {
           married: 'true'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -683,7 +687,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',
@@ -705,10 +709,10 @@ describe('getMatchingInteraction', () => {
 
   it('single - not matching - with body, query & matching rules', () => {
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: like('1'),
           name: regex('Fake', '\\w+'),
           married: 'true'
@@ -718,7 +722,7 @@ describe('getMatchingInteraction', () => {
           married: 'false'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -729,7 +733,7 @@ describe('getMatchingInteraction', () => {
         }
       }
     };
-    const interaction = new Interaction(rawInteraction, true);
+    const interaction = new Interaction(rawInteraction);
     this.interactionsMap.set(interaction.id, interaction);
     const request = {
       method: 'GET',

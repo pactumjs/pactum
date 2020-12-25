@@ -6,12 +6,12 @@ describe('Returns', () => {
 
   it('default return value', async () => {
     const response = await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -26,12 +26,12 @@ describe('Returns', () => {
 
   it('custom return function', async () => {
     const response = await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -46,12 +46,12 @@ describe('Returns', () => {
 
   it('return with json query', async () => {
     const response = await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -67,12 +67,12 @@ describe('Returns', () => {
   it('return with custom handler function', async () => {
     pactum.handler.addCaptureHandler('GetID', ({ res }) => res.json.id);
     const response = await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -85,12 +85,12 @@ describe('Returns', () => {
     expect(response).equals(1);
     settings.setCaptureHandlerStrategy({ starts: '##' });
     const response2 = await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -106,12 +106,12 @@ describe('Returns', () => {
   it('multiple returns', async () => {
     pactum.handler.addCaptureHandler('GetID', ({ res }) => res.json.id);
     const response = await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -127,12 +127,12 @@ describe('Returns', () => {
 
   it('return response headers', async () => {
     const response = await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -147,7 +147,7 @@ describe('Returns', () => {
 
   it('return request headers', async () => {
     const response = await pactum.spec()
-      .useMockInteraction('default get')
+      .useInteraction('default get')
       .get('http://localhost:9393/default/get')
       .withHeaders('trace-id', 'xyz')
       .expectStatus(200)
@@ -157,7 +157,7 @@ describe('Returns', () => {
 
   it('return request body', async () => {
     const response = await pactum.spec()
-      .useMockInteraction('default post')
+      .useInteraction('default post')
       .post('http://localhost:9393/default/post')
       .withBody({
         method: 'POST',

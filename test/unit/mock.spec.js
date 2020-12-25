@@ -16,8 +16,8 @@ describe('Mock', () => {
   beforeEach(() => {
     this.serverStartStub = sandbox.stub(Server.prototype, 'start');
     this.serverStopStub = sandbox.stub(Server.prototype, 'stop');
-    this.serverAddMockInteractionStub = sandbox.stub(Server.prototype, 'addMockInteraction');
-    this.serverAddPactInteractionStub = sandbox.stub(Server.prototype, 'addPactInteraction');
+    this.serverAddInteractionStub = sandbox.stub(Server.prototype, 'addInteraction');
+    // this.serverAddPactInteractionStub = sandbox.stub(Server.prototype, 'addPactInteraction');
     this.serverRemoveInteractionStub = sandbox.stub(Server.prototype, 'removeInteraction');
     this.helperGetRandomIdStub = sandbox.stub(helper, 'getRandomId');
   });
@@ -41,14 +41,14 @@ describe('Mock', () => {
     expect(this.serverStopStub.callCount).equals(1, 'should stop the server');
   });
 
-  it('addMockInteraction - valid', () => {
+  it('addInteraction - valid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -59,47 +59,15 @@ describe('Mock', () => {
         }
       }
     };
-    const id = mock.addMockInteraction(rawInteraction);
+    const id = mock.addInteraction(rawInteraction);
     expect(id).to.equals('random');
-    expect(this.serverAddMockInteractionStub.callCount).equals(1, 'should add a default mock interaction');
+    expect(this.serverAddInteractionStub.callCount).equals(1, 'should add a default mock interaction');
   });
 
-  it('addMockInteraction - invalid', () => {
+  it('addInteraction - invalid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteraction = {};
-    expect(() => { mock.addMockInteraction(rawInteraction); }).throws('`withRequest` is required');
-  });
-
-  it('addPactInteraction - valid', () => {
-    this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {
-      provider: 'pro',
-      state: 'a state',
-      uponReceiving: 'description',
-      withRequest: {
-        method: 'GET',
-        path: '/api/projects/1'
-      },
-      willRespondWith: {
-        status: 200,
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: {
-          id: 1,
-          name: 'fake'
-        }
-      }
-    };
-    const id = mock.addPactInteraction(rawInteraction);
-    expect(id).to.equals('random');
-    expect(this.serverAddPactInteractionStub.callCount).equals(1, 'should add a default pact interaction');
-  });
-
-  it('addPactInteraction - invalid', () => {
-    this.helperGetRandomIdStub.returns('random');
-    const rawInteraction = {};
-    expect(() => { mock.addPactInteraction(rawInteraction); }).throws('`provider` is required');
+    expect(() => { mock.addInteraction(rawInteraction); }).throws('`request` is required');
   });
 
   it('removeInteraction', () => {
@@ -108,14 +76,14 @@ describe('Mock', () => {
     expect(this.serverRemoveInteractionStub.args[0]).deep.equals(['id']);
   });
 
-  it('addMockInteraction - array - valid', () => {
+  it('addInteraction - array - valid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteractions = [{
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -126,20 +94,20 @@ describe('Mock', () => {
         }
       }
     }];
-    const id = mock.addMockInteraction(rawInteractions);
+    const id = mock.addInteraction(rawInteractions);
     expect(id).to.deep.equals(['random']);
-    expect(this.serverAddMockInteractionStub.callCount).equals(1, 'should add a default mock interaction');
+    expect(this.serverAddInteractionStub.callCount).equals(1, 'should add a default mock interaction');
   });
 
-  it('addMockInteraction - array of multiple items - valid', () => {
+  it('addInteraction - array of multiple items - valid', () => {
     this.helperGetRandomIdStub.returns('random');
     const rawInteractions = [
       {
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -151,11 +119,11 @@ describe('Mock', () => {
         }
       },
       {
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/api/projects/2'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -167,82 +135,9 @@ describe('Mock', () => {
         }
       }
     ];
-    const id = mock.addMockInteraction(rawInteractions);
+    const id = mock.addInteraction(rawInteractions);
     expect(id).to.deep.equals(['random', 'random']);
-    expect(this.serverAddMockInteractionStub.callCount).equals(2, 'should add two default mock interactions');
-  });
-
-  it('addPactInteractions - array with single item - valid', () => {
-    this.helperGetRandomIdStub.returns('random');
-    const rawInteractions = [{
-      provider: 'pro',
-      state: 'a state',
-      uponReceiving: 'description',
-      withRequest: {
-        method: 'GET',
-        path: '/api/projects/1'
-      },
-      willRespondWith: {
-        status: 200,
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: {
-          id: 1,
-          name: 'fake'
-        }
-      }
-    }];
-    const id = mock.addPactInteraction(rawInteractions);
-    expect(id).to.deep.equals(['random']);
-    expect(this.serverAddPactInteractionStub.callCount).equals(1, 'should add a default pact interaction');
-  });
-
-  it('addPactInteractions - array with multiple items - valid', () => {
-    this.helperGetRandomIdStub.returns('random');
-    const rawInteractions = [
-      {
-        provider: 'pro',
-        state: 'a state',
-        uponReceiving: 'description',
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1'
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'fake'
-          }
-        }
-      },
-      {
-        provider: 'pro',
-        state: 'a state',
-        uponReceiving: 'description',
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/2'
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'bake'
-          }
-        }
-      }
-    ];
-    const id = mock.addPactInteraction(rawInteractions);
-    expect(id).to.deep.equals(['random', 'random']);
-    expect(this.serverAddPactInteractionStub.callCount).equals(2, 'should add two default pact interactions');
+    expect(this.serverAddInteractionStub.callCount).equals(2, 'should add two default mock interactions');
   });
 
   afterEach(() => {

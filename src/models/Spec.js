@@ -25,8 +25,6 @@ class Spec {
     this._expect = new Expect();
     this._state = new State();
     this.previousLogLevel = null;
-    this.mockInteractions = [];
-    this.pactInteractions = [];
     this.interactions = [];
     this._waitDuration = null;
     this._init(name, data);
@@ -61,13 +59,8 @@ class Spec {
     return this;
   }
 
-  useMockInteraction(interaction, data) {
-    this.mockInteractions.push({ interaction, data });
-    return this;
-  }
-
-  usePactInteraction(interaction, data) {
-    this.pactInteractions.push({ interaction, data });
+  useInteraction(interaction, data) {
+    this.interactions.push({ interaction, data });
     return this;
   }
 

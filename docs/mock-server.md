@@ -69,19 +69,19 @@ We have two kinds of interactions. They are
 
 ### Mock Interactions
 
-The simplest way to add behavior to the mock server is through mock interactions. Use `addMockInteraction` to add a mock interaction to the server. It has `withRequest` & `willRespondWith` objects to handle a request. When the mock server receives a request, it will match the request with interactions `withRequest` properties. If the request matches, the mock server will respond with details in `willRespondWith` object.
+The simplest way to add behavior to the mock server is through mock interactions. Use `addInteraction` to add a mock interaction to the server. It has `withRequest` & `willRespondWith` objects to handle a request. When the mock server receives a request, it will match the request with interactions `withRequest` properties. If the request matches, the mock server will respond with details in `willRespondWith` object.
 
 Matching:
 
 * Performs *exact match* on received HTTP Method & Path.
 * Performs *loose match* on received query params, headers & JSON body.
 
-`addMockInteraction` returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
+`addInteraction` returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
 
 ```javascript
 const mock = require('pactum').mock;
 
-mock.addMockInteraction({
+mock.addInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/users/1'
@@ -108,7 +108,7 @@ Note on how the mock server performs an exact match on HTTP method & path. If a 
 To further distinguish the responses, let's add two mock interactions with query params
 
 ```javascript
-mock.addMockInteraction({
+mock.addInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/users',
@@ -125,7 +125,7 @@ mock.addMockInteraction({
   }
 });
 
-mock.addMockInteraction({
+mock.addInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/users',
@@ -156,7 +156,7 @@ When query params are mentioned in the interaction, the received request is matc
 Let's look at an example
 
 ```javascript
-mock.addMockInteraction({
+mock.addInteraction({
   withRequest: {
     method: 'POST',
     path: '/api/users',
@@ -227,7 +227,7 @@ Posting the below JSON to `/api/users` will return a 404 response. The *id* & *c
 Example of using path params.
 
 ```js
-mock.addMockInteraction({
+mock.addInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/users/{userId}',
@@ -250,7 +250,7 @@ mock.addMockInteraction({
 `onCall` defines the behavior of the interaction on the *nth* call. Useful for testing sequential interactions.
 
 ```javascript
-mock.addMockInteraction({
+mock.addInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/health'
@@ -293,7 +293,7 @@ willRespondWith : {
 `fixedDelay` & `randomDelay` adds delay to the response. The following interaction will send a response after *1000 ms*.
 
 ```javascript
-mock.addMockInteraction({
+mock.addInteraction({
   withRequest: {
     method: 'POST',
     path: '/api/users',
@@ -369,7 +369,7 @@ mock.addPactInteraction({
 
 ### Handlers
 
-Interaction handlers help us to reuse same kind of interactions with modifications. Use `handler.addMockInteractionHandler` or `handler.addPactInteractionHandler` functions to temporarily store interactions & later use the handler name to add them to the mock server.
+Interaction handlers help us to reuse same kind of interactions with modifications. Use `handler.addInteractionHandler` or `handler.addPactInteractionHandler` functions to temporarily store interactions & later use the handler name to add them to the mock server.
 
 It accepts two arguments
 
@@ -380,7 +380,7 @@ It accepts two arguments
 const mock = pactum.mock;
 const handler = pactum.handler;
 
-handler.addMockInteractionHandler('get product', (ctx) => {
+handler.addInteractionHandler('get product', (ctx) => {
   return {
     withRequest: {
       method: 'GET',
@@ -398,8 +398,8 @@ handler.addMockInteractionHandler('get product', (ctx) => {
   }    
 });
 
-mock.addMockInteraction('get product', { product: 'iPhone', inStock: true });
-mock.addMockInteraction('get product', { product: 'iPhone', inStock: false });
+mock.addInteraction('get product', { product: 'iPhone', inStock: true });
+mock.addInteraction('get product', { product: 'iPhone', inStock: false });
 
 mock.start(3000);
 ```
@@ -410,7 +410,7 @@ Interaction handlers can refer other interaction handlers to make them more reus
 const mock = pactum.mock;
 const handler = pactum.handler;
 
-handler.addMockInteractionHandler('get product', (ctx) => {
+handler.addInteractionHandler('get product', (ctx) => {
   return {
     withRequest: {
       method: 'GET',
@@ -428,16 +428,16 @@ handler.addMockInteractionHandler('get product', (ctx) => {
   }    
 });
 
-handler.addMockInteractionHandler('get product in stock', () => {
+handler.addInteractionHandler('get product in stock', () => {
   return { name: 'get product', data: { product: 'iPhone', inStock: true } };   
 });
 
-handler.addMockInteractionHandler('get product out of stock', () => {
+handler.addInteractionHandler('get product out of stock', () => {
   return { name: 'get product', data: { product: 'iPhone', inStock: false } };   
 });
 
-mock.addMockInteraction('get product in stock');
-mock.addMockInteraction('get product out of stock');
+mock.addInteraction('get product in stock');
+mock.addInteraction('get product out of stock');
 
 mock.start(3000);
 ```
@@ -461,7 +461,7 @@ stash.addDataTemplate({
   }
 });
 
-mock.addMockInteraction({
+mock.addInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/users'
@@ -882,7 +882,7 @@ const pactum = require('pactum');
 const mock = pactum.mock;
 const handler = pactum.handler;
 
-handler.addMockInteractionHandler('get user with', (ctx) => {
+handler.addInteractionHandler('get user with', (ctx) => {
   const user = db.getUser(ctx.data.id);
   return {
     withRequest: {

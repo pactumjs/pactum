@@ -16,12 +16,12 @@ describe('Chai Like Assertions', () => {
   });
 
   it('Given a user with name snow', () => {
-    spec.useMockInteraction({
-      withRequest: {
+    spec.useInteraction({
+      request: {
         method: 'GET',
         path: '/api/users'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           name: 'snow'

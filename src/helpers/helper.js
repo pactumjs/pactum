@@ -50,46 +50,6 @@ const helper = {
   },
 
   /**
-   * returns set of all pact files
-   * @param {string[]} pactFilesOrDirs - array of pact files & directories
-   */
-  getLocalPactFiles(pactFilesOrDirs) {
-    const filePaths = new Set();
-    for (let i = 0; i < pactFilesOrDirs.length; i++) {
-      const pactFileOrDir = pactFilesOrDirs[i];
-      const stats = fs.lstatSync(pactFileOrDir);
-      if (stats.isDirectory()) {
-        const items = fs.readdirSync(pactFileOrDir);
-        for (let j = 0; j < items.length; j++) {
-          const item = items[j];
-          const itemPath = path.join(pactFileOrDir, item);
-          const childItemStats = fs.lstatSync(itemPath);
-          if (childItemStats.isFile()) {
-            const ext = path.extname(itemPath);
-            if (ext === '.json') {
-              filePaths.add(itemPath);
-            } else {
-              log.warn(`Invalid file type - ${ext} provided in pactFilesOrDirs: ${itemPath}`);
-            }
-          } else {
-            log.warn(`Invalid file provided in pactFilesOrDirs: ${itemPath}`);
-          }
-        }
-      } else if (stats.isFile()) {
-        const ext = path.extname(pactFileOrDir);
-        if (ext === '.json') {
-          filePaths.add(pactFileOrDir);
-        } else {
-          log.warn(`Invalid file type - ${ext} provided in pactFilesOrDirs: ${pactFileOrDir}`);
-        }
-      } else {
-        log.warn(`Invalid file provided in pactFilesOrDirs: ${pactFileOrDir}`);
-      }
-    }
-    return filePaths;
-  },
-
-  /**
    * returns stringified object with 2 spaces
    * @param {object} obj - object
    */

@@ -16,27 +16,27 @@ const utils = {
       const interactionId = ids[i];
       log.debug(`Comparing interaction with id ${interactionId}`);
       const interaction = interactions.get(interactionId);
-      const isValidMethod = (interaction.withRequest.method === req.method);
+      const isValidMethod = (interaction.request.method === req.method);
       if (!isValidMethod) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Method`);
         continue;
       }
-      const isValidPath = xValidatePath(req, interaction);
+      const isValidPath = validatePath(req, interaction);
       if (!isValidPath) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Path`);
         continue;
       }
-      const isValidQuery = xValidateQuery(req, interaction);
+      const isValidQuery = validateQuery(req, interaction);
       if (!isValidQuery) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Query Params`);
         continue;
       }
-      const isValidHeaders = xValidateHeaders(req, interaction);
+      const isValidHeaders = validateHeaders(req, interaction);
       if (!isValidHeaders) {
         log.debug(`Interaction with id ${interactionId} failed to match - HTTP Headers`);
         continue;
       }
-      const isValidBody = xValidateBody(req, interaction);
+      const isValidBody = validateBody(req, interaction);
       if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
         return interaction;
       }
@@ -47,8 +47,8 @@ const utils = {
 
 };
 
-function xValidatePath(req, interaction) {
-  const { path, pathParams, matchingRules } = interaction.withRequest;
+function validatePath(req, interaction) {
+  const { path, pathParams, matchingRules } = interaction.request;
   const actualPath = req.path;
   const expectedPath = path;
   if (pathParams) {
@@ -79,82 +79,43 @@ function xValidatePath(req, interaction) {
   }
 }
 
-function xValidateQuery(req, interaction) {
-  const { mock, withRequest } = interaction;
-  if (mock) {
-    if (withRequest.query) {
-      return validateQuery(req.query, withRequest.query, withRequest.matchingRules, mock);
-    }
-  } else if (Object.keys(req.query).length > 0 || withRequest.query) {
-    return validateQuery(req.query, withRequest.query, withRequest.matchingRules, mock);
-  }
-  return true;
+function validateQuery(req, interaction) {
+  const { strict, request } = interaction;
+  return compare(req.query, request.queryParams, request.matchingRules, '$.query', strict).equal;
 }
 
-function validateQuery(actual, expected, matchingRules, mock) {
-  const response = compare(actual, expected, matchingRules, '$.query');
-  if (response.equal && !mock) {
-    for (const prop in actual) {
-      if (!Object.prototype.hasOwnProperty.call(expected, prop)) {
-        log.debug(`Query param not found - ${prop}`);
-        return false;
-      }
+function validateHeaders(req, interaction) {
+  const { request } = interaction;
+  if (request.headers) {
+    const lowerCaseActual = {};
+    for (const prop in req.headers) {
+      lowerCaseActual[prop.toLowerCase()] = req.headers[prop];
     }
-    return true;
-  } else {
+    const lowerCaseExpected = {};
+    for (const prop in request.headers) {
+      lowerCaseExpected[prop.toLowerCase()] = request.headers[prop];
+    }
+    const response = compare(lowerCaseActual, lowerCaseExpected, request.matchingRules, '$.headers');
     return response.equal;
   }
-}
-
-function xValidateHeaders(req, interaction) {
-  const { withRequest } = interaction;
-  if (withRequest.headers) {
-    return validateHeaders(req.headers, withRequest.headers, withRequest.matchingRules);
-  }
   return true;
 }
 
-function validateHeaders(actual, expected, matchingRules) {
-  // covert props of header to lower case : Content-Type -> content-type
-  const lowerCaseActual = {};
-  for (const prop in actual) {
-    lowerCaseActual[prop.toLowerCase()] = actual[prop];
+function validateBody(req, interaction) {
+  const { strict, request } = interaction;
+  if (request.graphQL) {
+    return graphQL.compare(req.body, request.body);
   }
-  const lowerCaseExpected = {};
-  for (const prop in expected) {
-    lowerCaseExpected[prop.toLowerCase()] = expected[prop];
-  }
-  const response = compare(lowerCaseActual, lowerCaseExpected, matchingRules, '$.headers');
-  return response.equal;
-}
-
-function xValidateBody(req, interaction) {
-  const { mock, withRequest } = interaction;
-  if (mock) {
-    if (withRequest.graphQL) {
-      return graphQL.compare(req.body, withRequest.body);
-    }
-    if (withRequest.body) {
-      return validateBody(req.body, withRequest.body, withRequest.matchingRules, mock);
+  if (strict) {
+    if (req.body || request.body) {
+      return compare(req.body, request.body, request.matchingRules, '$.body', strict).equal;
     }
   } else {
-    if (withRequest.graphQL) {
-      return graphQL.compare(req.body, withRequest.body);
-    }
-    if (req.body || withRequest.body) {
-      return validateBody(req.body, withRequest.body, withRequest.matchingRules, mock);
+    if (request.body) {
+      return compare(req.body, request.body, request.matchingRules, '$.body', strict).equal;
     }
   }
   return true;
-}
-
-function validateBody(actual, expected, matchingRules, mock) {
-  const response = compare(actual, expected, matchingRules, '$.body');
-  if (response.equal && !mock) {
-    return compare(expected, actual, matchingRules, '$.body').equal;
-  } else {
-    return response.equal;
-  }
 }
 
 module.exports = utils;

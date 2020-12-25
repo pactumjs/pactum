@@ -47,9 +47,9 @@ class Tosser {
 
   async addInteractionsToServer() {
     const mockIdPromises = [];
-    for (let i = 0; i < this.fuzz.mockInteractions.length; i++) {
-      const raw = this.fuzz.mockInteractions[i];
-      mockIdPromises.push(mock.addMockInteraction(raw.interaction, raw.data));
+    for (let i = 0; i < this.fuzz.interactions.length; i++) {
+      const raw = this.fuzz.interactions[i];
+      mockIdPromises.push(mock.addInteraction(raw.interaction, raw.data));
     }
     this.mockIds = this.mockIds.concat(await Promise.all(mockIdPromises));
   }

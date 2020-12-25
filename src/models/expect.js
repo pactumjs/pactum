@@ -56,22 +56,22 @@ class Expect {
       const interaction = interactions[i];
       const expects = interaction.expects;
       const intReq = {
-        method: interaction.withRequest.method,
-        path: interaction.withRequest.path,
-        headers: interaction.withRequest.headers,
-        body: interaction.withRequest.body
+        method: interaction.request.method,
+        path: interaction.request.path,
+        headers: interaction.request.headers,
+        body: interaction.request.body
       };
       if (expects.exercised && !interaction.exercised) {
         log.warn('Interaction Not Exercised', intReq);
-        this.fail(`Interaction not exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+        this.fail(`Interaction not exercised: ${interaction.request.method} - ${interaction.request.path}`);
       }
       if (!expects.exercised && interaction.exercised) {
         log.warn('Interaction got Exercised', intReq);
-        this.fail(`Interaction exercised: ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+        this.fail(`Interaction exercised: ${interaction.request.method} - ${interaction.request.path}`);
       }
       if (typeof expects.callCount !== 'undefined') {
         if (expects.callCount !== interaction.callCount) {
-          this.fail(`Interaction call count ${interaction.callCount} !== ${expects.callCount} for ${interaction.withRequest.method} - ${interaction.withRequest.path}`);
+          this.fail(`Interaction call count ${interaction.callCount} !== ${expects.callCount} for ${interaction.request.method} - ${interaction.request.path}`);
         }
       }
     }

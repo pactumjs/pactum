@@ -7,8 +7,7 @@ const retryHandlers = {};
 const captureHandlers = {};
 const stateHandlers =  {};
 const dataHandlers = {};
-const mockInteractionHandlers = {};
-const pactInteractionHandlers = {};
+const interactionHandlers = {};
 const assertHandlers = {};
 
 const handler = {
@@ -74,24 +73,14 @@ const handler = {
     throw new PactumHandlerError(`Data Handler Not Found - '${name}'`);
   },
 
-  addMockInteractionHandler(name, func) {
+  addInteractionHandler(name, func) {
     isValidHandler(name, func);
-    mockInteractionHandlers[name] = func;
+    interactionHandlers[name] = func;
   },
 
-  getMockInteractionHandler(name) {
-    if (mockInteractionHandlers[name]) return mockInteractionHandlers[name];
-    throw new PactumHandlerError(`Mock Interaction Handler Not Found - '${name}'`);
-  },
-
-  addPactInteractionHandler(name, func) {
-    isValidHandler(name, func);
-    pactInteractionHandlers[name] = func;
-  },
-
-  getPactInteractionHandler(name) {
-    if (pactInteractionHandlers[name]) return pactInteractionHandlers[name];
-    throw new PactumHandlerError(`Pact Interaction Handler Not Found - '${name}'`);
+  getInteractionHandler(name) {
+    if (interactionHandlers[name]) return interactionHandlers[name];
+    throw new PactumHandlerError(`Interaction Handler Not Found - '${name}'`);
   },
 
   addAssertHandler(name, func) {
@@ -104,7 +93,7 @@ const handler = {
     throw new PactumHandlerError(`Assert Handler Not Found - '${name}'`);
   }
 
-}
+};
 
 function isValidHandler(name, func) {
   if (typeof name !== 'string' || name === '') {

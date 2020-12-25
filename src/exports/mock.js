@@ -1,4 +1,4 @@
-const Interaction = require('../models/interaction');
+const Interaction = require('../models/Interaction.model');
 const Server = require('../models/server');
 const { PactumConfigurationError } = require('../helpers/errors');
 const hr = require('../helpers/handler.runner');
@@ -28,45 +28,23 @@ const mock = {
     config.mock.port = port;
   },
 
-  addMockInteraction(interactions, data) {
+  addInteraction(interactions, data) {
     let alone = false;
     if (!Array.isArray(interactions)) {
       alone = true;
       interactions = [interactions];
     }
     if (config.mock.remote) {
-      return remote.addMockInteraction(interactions, data, alone);
+      return remote.addInteraction(interactions, data, alone);
     }
     const ids = [];
     for (let i = 0; i < interactions.length; i++) {
       let raw = interactions[i];
       if (typeof raw === 'string') {
-        raw = hr.mockInteraction(raw, data);
+        raw = hr.interaction(raw, data);
       }
       const interaction = new Interaction(raw, true);
-      this._server.addMockInteraction(interaction.id, interaction);
-      ids.push(interaction.id);
-    }
-    return alone ? ids[0] : ids;
-  },
-
-  addPactInteraction(interactions, data) {
-    let alone = false;
-    if (!Array.isArray(interactions)) {
-      alone = true;
-      interactions = [interactions];
-    }
-    if (config.mock.remote) {
-      return remote.addPactInteraction(interactions, data, alone);
-    }
-    const ids = [];
-    for (let i = 0; i < interactions.length; i++) {
-      let raw = interactions[i];
-      if (typeof raw === 'string') {
-        raw = hr.pactInteraction(raw, data);
-      }
-      const interaction = new Interaction(raw, false);
-      this._server.addPactInteraction(interaction.id, interaction);
+      this._server.addInteraction(interaction.id, interaction);
       ids.push(interaction.id);
     }
     return alone ? ids[0] : ids;
@@ -103,13 +81,13 @@ const mock = {
     if (config.mock.remote) {
       return remote.clearInteractions();
     }
-    this._server.clearAllInteractions();
+    this._server.clearInteractions();
   },
 
   useRemoteServer(url) {
     config.mock.remote = url;
   }
 
-}
+};
 
 module.exports = mock;

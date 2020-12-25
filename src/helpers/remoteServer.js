@@ -4,13 +4,13 @@ const config = require('../config');
 
 const remote = {
 
-  addMockInteraction(interactions, data, alone) {
-    return addInteractions(interactions, data, 'api/pactum/mockInteractions', 'MOCK', alone);
+  addInteraction(interactions, data, alone) {
+    return addInteractions(interactions, data, 'api/pactum/interactions', alone);
   },
 
-  addPactInteraction(interactions, data, alone) {
-    return addInteractions(interactions, data, 'api/pactum/pactInteractions', 'PACT', alone);
-  },
+  // addPactInteraction(interactions, data, alone) {
+  //   return addInteractions(interactions, data, 'api/pactum/pactInteractions', 'PACT', alone);
+  // },
 
   async getInteraction(ids, alone) {
     let interactions = await Promise.all([

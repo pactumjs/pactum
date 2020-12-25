@@ -22,12 +22,12 @@ describe('Expects', () => {
   it('custom expect handler', async () => {
 
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -41,12 +41,12 @@ describe('Expects', () => {
 
   it('ad hoc expect handler', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -76,12 +76,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api/address/1'
           },
-          willRespondWith: {
+          response: {
             status: 200,
             body: {
               type: 'WORK'
@@ -100,12 +100,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api/users/1'
           },
-          willRespondWith: {
+          response: {
             status: 200,
             body: {
               id: 1
@@ -257,12 +257,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api/users/1'
           },
-          willRespondWith: {
+          response: {
             status: 200,
             body: {
               id: 1
@@ -283,12 +283,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api/users/1'
           },
-          willRespondWith: {
+          response: {
             status: 200,
             body: {
               id: 1
@@ -335,12 +335,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api'
           },
-          willRespondWith: {
+          response: {
             status: 200
           }
         })
@@ -356,8 +356,8 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'POST',
             path: '/api',
             headers: {
@@ -367,7 +367,7 @@ describe('Expects', () => {
               id: like(1)
             }
           },
-          willRespondWith: {
+          response: {
             status: 200
           }
         })
@@ -383,12 +383,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api'
           },
-          willRespondWith: {
+          response: {
             status: 200
           },
           expects: {
@@ -407,12 +407,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api'
           },
-          willRespondWith: {
+          response: {
             status: 200
           },
           expects: {
@@ -429,12 +429,12 @@ describe('Expects', () => {
 
   it('json query - on root object', () => {
     return pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             people: [
@@ -453,12 +453,12 @@ describe('Expects', () => {
 
   it('json query - on root array', () => {
     return pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: [
             { name: 'Matt', country: 'NZ' },
@@ -478,12 +478,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api/users'
           },
-          willRespondWith: {
+          response: {
             status: 200,
             body: {
               people: [
@@ -506,12 +506,12 @@ describe('Expects', () => {
 
   it('json query like - on root object', () => {
     return pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             people: [
@@ -531,12 +531,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api/users'
           },
-          willRespondWith: {
+          response: {
             status: 200,
             body: {
               people: [
@@ -570,12 +570,12 @@ describe('Expects', () => {
 
   it('json match at', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             people: [
@@ -595,12 +595,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api/users'
           },
-          willRespondWith: {
+          response: {
             status: 200,
             body: {
               people: [
@@ -622,13 +622,13 @@ describe('Expects', () => {
 
   it('json snapshot - deep equal', async () => {
     await pactum.spec()
-      .useMockInteraction('get people')
+      .useInteraction('get people')
       .name('json snapshot - deep equal')
       .get('http://localhost:9393/api/people')
       .expectStatus(200)
       .expectJsonSnapshot();
     await pactum.spec()
-      .useMockInteraction('get people')
+      .useInteraction('get people')
       .name('json snapshot - deep equal')
       .get('http://localhost:9393/api/people')
       .expectStatus(200)
@@ -638,12 +638,12 @@ describe('Expects', () => {
 
   it('json snapshot - deep equal - fails', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 'random-id',
@@ -658,12 +658,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api/users/1'
           },
-          willRespondWith: {
+          response: {
             status: 200,
             body: {
               id: 'random-ids',
@@ -684,7 +684,7 @@ describe('Expects', () => {
 
   it('json snapshot - with matchers', async () => {
     await pactum.spec()
-    .useMockInteraction('get user with id 1')
+    .useInteraction('get user with id 1')
       .name('json snapshot - with matchers')
       .get('http://localhost:9393/api/users/1')
       .expectStatus(200)
@@ -692,7 +692,7 @@ describe('Expects', () => {
         id: like(1)
       });
     await pactum.spec()
-    .useMockInteraction('get user with id 1')
+    .useInteraction('get user with id 1')
       .name('json snapshot - with matchers')
       .get('http://localhost:9393/api/users/1')
       .expectStatus(200)
@@ -704,12 +704,12 @@ describe('Expects', () => {
 
   it('json snapshot - with multiple matchers', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 'random-id',
@@ -729,12 +729,12 @@ describe('Expects', () => {
         createdAt: like('2020-02-02')
       });
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 'random-id',
@@ -756,12 +756,12 @@ describe('Expects', () => {
 
   it('json snapshot - with matchers - fails with extra property', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 'random-id',
@@ -778,12 +778,12 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api/users/1'
           },
-          willRespondWith: {
+          response: {
             status: 200,
             body: {
               id: 'random-id',
@@ -807,12 +807,12 @@ describe('Expects', () => {
 
   it('json snapshot - with matchers - fails with matcher', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 'random-id',
@@ -829,7 +829,7 @@ describe('Expects', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction('get user with id 1')
+        .useInteraction('get user with id 1')
         .name('json snapshot - with matchers')
         .get('http://localhost:9393/api/users/1')
         .expectStatus(200)
@@ -846,12 +846,12 @@ describe('Expects', () => {
   it('json snapshot - with matchers - fails with matcher - update snapshot', async () => {
     let err1, err2;
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 'random-id',
@@ -867,7 +867,7 @@ describe('Expects', () => {
       });
     try {
       await pactum.spec()
-        .useMockInteraction('get user with id 1')
+        .useInteraction('get user with id 1')
         .name('json snapshot - with matchers')
         .get('http://localhost:9393/api/users/1')
         .expectStatus(200)
@@ -879,7 +879,7 @@ describe('Expects', () => {
     }
     try {
       await pactum.spec()
-        .useMockInteraction('get user with id 1')
+        .useInteraction('get user with id 1')
         .name('json snapshot - with matchers')
         .get('http://localhost:9393/api/users/1')
         .expectStatus(200)
@@ -890,7 +890,7 @@ describe('Expects', () => {
       err2 = error;
     }
     await pactum.spec()
-      .useMockInteraction('get user with id 1')
+      .useInteraction('get user with id 1')
       .name('json snapshot - with matchers')
       .get('http://localhost:9393/api/users/1')
       .expectStatus(200)
@@ -899,7 +899,7 @@ describe('Expects', () => {
       })
       .updateSnapshot();
     await pactum.spec()
-      .useMockInteraction('get user with id 1')
+      .useInteraction('get user with id 1')
       .name('json snapshot - with matchers')
       .get('http://localhost:9393/api/users/1')
       .expectStatus(200)

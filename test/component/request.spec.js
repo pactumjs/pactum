@@ -1,19 +1,18 @@
 const pactum = require('../../src/index');
 const request = pactum.request;
 const config = require('../../src/config');
-const expect = require('chai').expect;
 
 describe('Request', () => {
 
   it('with baseurl', async () => {
     request.setBaseUrl('http://localhost:9393');
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/users'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -25,12 +24,12 @@ describe('Request', () => {
   it('with baseurl override', async () => {
     request.setBaseUrl('http://localhost:9392');
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/users'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -42,15 +41,15 @@ describe('Request', () => {
     request.setBaseUrl('http://localhost:9393');
     request.setDefaultHeaders('x', 'a');
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/users',
           headers: {
             'x': 'a'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -62,15 +61,15 @@ describe('Request', () => {
     request.setBaseUrl('http://localhost:9393');
     request.setDefaultHeaders('x', 'a');
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/users',
           headers: {
             'x': ''
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -83,15 +82,15 @@ describe('Request', () => {
     request.setBaseUrl('http://localhost:9393');
     request.setDefaultHeaders('x', 'a');
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/users',
           headers: {
             'x': 'b'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })

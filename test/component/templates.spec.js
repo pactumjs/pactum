@@ -37,8 +37,8 @@ describe('Templates & Maps', () => {
 
   it('new user with pure template', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/users',
           body: {
@@ -48,7 +48,7 @@ describe('Templates & Maps', () => {
             Addresses: []
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -61,8 +61,8 @@ describe('Templates & Maps', () => {
 
   it('new user with pure - override existing property', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/users',
           body: {
@@ -72,7 +72,7 @@ describe('Templates & Maps', () => {
             Addresses: []
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -88,8 +88,8 @@ describe('Templates & Maps', () => {
 
   it('new user with pure - override existing property with template & map', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/users',
           body: {
@@ -105,7 +105,7 @@ describe('Templates & Maps', () => {
             ]
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -126,8 +126,8 @@ describe('Templates & Maps', () => {
 
   it('new user with pure - nested override', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/users',
           body: {
@@ -142,7 +142,7 @@ describe('Templates & Maps', () => {
             ]
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -165,11 +165,11 @@ describe('Templates & Maps', () => {
 
   it('data ref in query & headers', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users',
-          query: {
+          queryParams: {
             age: 0,
             mass: 10
           },
@@ -177,7 +177,7 @@ describe('Templates & Maps', () => {
             'Authorization': 'Basic xyz'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -190,15 +190,15 @@ describe('Templates & Maps', () => {
 
   it('mock using data reference in query & headers', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/users',
-          query: {
+          queryParams: {
             name: '$M{User.FirstName}'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'Authorization': '$F{GetAuthToken}'
@@ -221,8 +221,8 @@ describe('Templates & Maps', () => {
 
   it('post new army from a template in fs', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/army',
           body: {
@@ -232,7 +232,7 @@ describe('Templates & Maps', () => {
             "Cavalry": "$M{Unknown}"
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -248,12 +248,12 @@ describe('Templates & Maps', () => {
 
   it('expect schema from a template in fs', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/army'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             "Name": "Golden Army",

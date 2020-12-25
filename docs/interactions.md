@@ -13,7 +13,7 @@ Interactions can be added or removed from the mock server in the following ways.
 
 * When using pactum as a **testing tool**
   * `pactum.addPactInteraction({ })` - auto removed after the test case execution
-  * `pactum.addMockInteraction({ })` - auto removed after the test case execution
+  * `pactum.addInteraction({ })` - auto removed after the test case execution
 * When using pactum as a **testing tool** or **mock server**
   * `pactum.mock.addDefaultMockInteraction({ })`
   * `pactum.mock.addDefaultPactInteraction({ })`
@@ -63,12 +63,12 @@ The response of a mock interaction can be controlled in three forms:
 2. Custom Function
 3. Dynamic Object
 
-#### pactum.addMockInteraction
+#### pactum.addInteraction
 Type: `Function`<br>
 
 ```javascript
 // Static Object
-pactum.addMockInteraction({
+pactum.addInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/currency/INR'
@@ -86,7 +86,7 @@ pactum.addMockInteraction({
 });
 
 // Custom Function
-pactum.addMockInteraction({
+pactum.addInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/currency/INR'
@@ -392,7 +392,7 @@ const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers
 
 it('Matchers - Path & Query', () => {
   return pactum
-    .addMockInteraction({
+    .addInteraction({
       withRequest: {
         method: 'GET',
         // Matches path with value in matcher. Value inside generate is used in contract testing.
@@ -415,7 +415,7 @@ it('Matchers - Path & Query', () => {
 
 it('Matchers - Body', () => {
   return pactum
-    .addMockInteraction({
+    .addInteraction({
       withRequest: {
         method: 'POST',
         path: '/api/person',
@@ -461,7 +461,7 @@ const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers
 
 it('Matchers - Body', () => {
   return pactum
-    .addMockInteraction({
+    .addInteraction({
       withRequest: {
         method: 'POST',
         path: '/api/person'

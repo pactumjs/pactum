@@ -213,7 +213,7 @@ If anyone of the interaction is not exercised, the test will fail. At the end of
 await pactum
   .addPactInteraction(`GET_PRODUCT_DETAILS_WITH_ID_1`)
   .addPactInteraction(`POST_AUDIT_DETAILS`)
-  .addMockInteraction(`GET_DELIVERY_DETAILS`)
+  .addInteraction(`GET_DELIVERY_DETAILS`)
   .get('http://localhost:3000/api/orders/1')
   .expectStatus(200)
   .expectJson({

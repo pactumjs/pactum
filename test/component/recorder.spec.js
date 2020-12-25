@@ -12,14 +12,14 @@ describe('Default Recorder', () => {
 
   it('res header data to recorder', async () => {
     await pactum.spec()
-      .useMockInteraction('default get')
+      .useInteraction('default get')
       .get('http://localhost:9393/default/get')
       .expectStatus(200);
   });
 
   it('req header & res body to recorder', async () => {
     await pactum.spec()
-      .useMockInteraction('default get')
+      .useInteraction('default get')
       .get('http://localhost:9393/default/get')
       .withHeaders('x-trace-id', 'id')
       .expectStatus(200);
@@ -27,7 +27,7 @@ describe('Default Recorder', () => {
 
   it('req body data to recorder', async () => {
     await pactum.spec()
-      .useMockInteraction('default post')
+      .useInteraction('default post')
       .post('http://localhost:9393/default/post')
       .withJson({
         method: 'POST',
@@ -46,7 +46,7 @@ describe('Recorder', () => {
 
   it('res header data to recorder', async () => {
     await pactum.spec()
-      .useMockInteraction('default get')
+      .useInteraction('default get')
       .get('http://localhost:9393/default/get')
       .records('Method', 'method')
       .records('Path', 'res.body.path')
@@ -56,7 +56,7 @@ describe('Recorder', () => {
   it('res header data to recorder using capture handler', async () => {
     pactum.handler.addCaptureHandler('GetMethod', ({ res }) => res.json.method);
     await pactum.spec()
-      .useMockInteraction('default get')
+      .useInteraction('default get')
       .get('http://localhost:9393/default/get')
       .records('Method', '#GetMethod')
       .records('Path', 'res.body.path')

@@ -6,12 +6,12 @@ describe('Fuzz', () => {
 
   before(() => {
     pactum.settings.setLogLevel('ERROR');
-    mock.addMockInteraction({
-      withRequest: {
+    mock.addInteraction({
+      request: {
         method: 'GET',
         path: '/swagger.json'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           "swagger": "2.0",
@@ -55,65 +55,68 @@ describe('Fuzz', () => {
         }
       }
     });
-    handler.addMockInteractionHandler('root invalid path', (ctx) => {
+    handler.addInteractionHandler('root invalid path', (ctx) => {
       return {
-        withRequest: {
+        strict: false,
+        request: {
           method: ctx.data,
           path: '/ROOT/INVALID/PATH'
         },
-        willRespondWith: {
+        response: {
           status: 404
         }
       };
     });
-    handler.addMockInteractionHandler('invalid path', (ctx) => {
+    handler.addInteractionHandler('invalid path', (ctx) => {
       return {
-        withRequest: {
+        strict: false,
+        request: {
           method: ctx.data.method,
           path: ctx.data.path
         },
-        willRespondWith: {
+        response: {
           status: 404
         }
       };
     });
-    handler.addMockInteractionHandler('invalid method', (ctx) => {
+    handler.addInteractionHandler('invalid method', (ctx) => {
       return {
-        withRequest: {
+        request: {
           method: ctx.data.method,
           path: ctx.data.path
         },
-        willRespondWith: {
+        response: {
           status: 405
         }
       };
     });
-    mock.addMockInteraction('root invalid path', 'GET');
-    mock.addMockInteraction('root invalid path', 'POST');
-    mock.addMockInteraction('root invalid path', 'DELETE');
-    mock.addMockInteraction('root invalid path', 'PUT');
-    mock.addMockInteraction('root invalid path', 'PATCH');
-    mock.addMockInteraction('invalid path', { method: 'GET', path: '/v2/health/INVALID/PATH' });
-    mock.addMockInteraction('invalid path', { method: 'POST', path: '/v2/info/INVALID/PATH' });
-    mock.addMockInteraction('invalid path', { method: 'PUT', path: '/v2/version/INVALID/PATH' });
-    mock.addMockInteraction('invalid method', { method: 'POST', path: '/v2/health' });
-    mock.addMockInteraction('invalid method', { method: 'PUT', path: '/v2/health' });
-    mock.addMockInteraction('invalid method', { method: 'PATCH', path: '/v2/health' });
-    mock.addMockInteraction('invalid method', { method: 'DELETE', path: '/v2/health' });
-    mock.addMockInteraction('invalid method', { method: 'GET', path: '/v2/info' });
-    mock.addMockInteraction('invalid method', { method: 'PUT', path: '/v2/info' });
-    mock.addMockInteraction('invalid method', { method: 'PATCH', path: '/v2/info' });
-    mock.addMockInteraction('invalid method', { method: 'DELETE', path: '/v2/info' });
-    mock.addMockInteraction('invalid method', { method: 'GET', path: '/v2/version' });
-    mock.addMockInteraction('invalid method', { method: 'POST', path: '/v2/version' });
-    mock.addMockInteraction('invalid method', { method: 'PATCH', path: '/v2/version' });
-    mock.addMockInteraction('invalid method', { method: 'DELETE', path: '/v2/version' });
-    mock.addMockInteraction({
-      withRequest: {
+    mock.addInteraction('root invalid path', 'GET');
+    mock.addInteraction('root invalid path', 'POST');
+    mock.addInteraction('root invalid path', 'DELETE');
+    mock.addInteraction('root invalid path', 'PUT');
+    mock.addInteraction('root invalid path', 'PATCH');
+    mock.addInteraction('invalid path', { method: 'GET', path: '/v2/health/INVALID/PATH' });
+    mock.addInteraction('invalid path', { method: 'POST', path: '/v2/info/INVALID/PATH' });
+    mock.addInteraction('invalid path', { method: 'PUT', path: '/v2/version/INVALID/PATH' });
+    mock.addInteraction('invalid method', { method: 'POST', path: '/v2/health' });
+    mock.addInteraction('invalid method', { method: 'PUT', path: '/v2/health' });
+    mock.addInteraction('invalid method', { method: 'PATCH', path: '/v2/health' });
+    mock.addInteraction('invalid method', { method: 'DELETE', path: '/v2/health' });
+    mock.addInteraction('invalid method', { method: 'GET', path: '/v2/info' });
+    mock.addInteraction('invalid method', { method: 'PUT', path: '/v2/info' });
+    mock.addInteraction('invalid method', { method: 'PATCH', path: '/v2/info' });
+    mock.addInteraction('invalid method', { method: 'DELETE', path: '/v2/info' });
+    mock.addInteraction('invalid method', { method: 'GET', path: '/v2/version' });
+    mock.addInteraction('invalid method', { method: 'POST', path: '/v2/version' });
+    mock.addInteraction('invalid method', { method: 'PATCH', path: '/v2/version' });
+    mock.addInteraction('invalid method', { method: 'DELETE', path: '/v2/version' });
+    mock.addInteraction({
+      strict: false,
+      request: {
         method: 'PUT',
         path: '/v2/version'
       },
-      willRespondWith: {
+      response: {
         status: 400
       }
     });
@@ -135,12 +138,12 @@ describe('Fuzz', () => {
     let err;
     try {
       await pactum.fuzz()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'DELETE',
             path: '/v2/version'
           },
-          willRespondWith: {
+          response: {
             status: 200
           }
         })

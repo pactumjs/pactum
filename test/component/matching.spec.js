@@ -5,15 +5,15 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - like', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
-          query: {
+          queryParams: {
             date: like('08/04/2020')
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -36,15 +36,15 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - regex instance', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
-          query: {
+          queryParams: {
             date: regex('08/04/2020', /\w+/g)
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -67,15 +67,15 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - regex string', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
-          query: {
+          queryParams: {
             date: regex('08/04/2020', "\\w+")
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -98,15 +98,15 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - query regex date', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
-          query: {
+          queryParams: {
             date: regex('2020-12-12', /^\d{4}-\d{2}-\d{2}$/)
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -129,8 +129,8 @@ describe('Request Matchers', () => {
 
   it('POST - one interaction - regex instance', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/projects/1',
           body: {
@@ -138,7 +138,7 @@ describe('Request Matchers', () => {
             name: 'Bark'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -153,8 +153,8 @@ describe('Request Matchers', () => {
 
   it('POST - one interaction - regex string', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
           body: {
@@ -162,7 +162,7 @@ describe('Request Matchers', () => {
             name: 'Bark'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -184,8 +184,8 @@ describe('Request Matchers', () => {
 
   it('POST - one interaction - each like', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/projects/1',
           body: eachLike({
@@ -193,7 +193,7 @@ describe('Request Matchers', () => {
             name: 'Bark'
           })
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -208,18 +208,18 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - includes', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
-          query: {
+          queryParams: {
             date: includes('2020')
           },
           headers: {
             'x-Request-Id': includes('PutItem')
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -245,15 +245,15 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - headers like', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
           headers: {
             date: like('08/04/2020')
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -276,8 +276,8 @@ describe('Request Matchers', () => {
 
   it('GET - one interaction - multiple headers like', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
           headers: {
@@ -285,7 +285,7 @@ describe('Request Matchers', () => {
             place: 'hyd'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'

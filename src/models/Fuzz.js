@@ -5,7 +5,7 @@ class Fuzz {
   constructor() {
     this.swaggerUrl = '';
     this.headers = {};
-    this.mockInteractions = [];
+    this.interactions = [];
     this.batchSize = 10;
     this._inspect = false;
   }
@@ -24,8 +24,8 @@ class Fuzz {
     return this;
   }
 
-  useMockInteraction(interaction, data) {
-    this.mockInteractions.push({ interaction, data });
+  useInteraction(interaction, data) {
+    this.interactions.push({ interaction, data });
     return this;
   }
 

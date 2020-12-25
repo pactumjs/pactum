@@ -1,5 +1,5 @@
 import * as Spec from '../models/Spec';
-import { MockInteraction, PactInteraction } from './mock';
+import { Interaction } from './mock';
 import { IncomingMessage } from 'http';
 
 interface Request {
@@ -56,8 +56,7 @@ export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
 export type ReturnHandlerFunction = (ctx: RequestResponseContext) => any;
 export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
 export type DataHandlerFunction = (ctx: DataHandlerContext) => any;
-export type MockInteractionHandlerFunction = (ctx: InteractionContext) => MockInteraction | ParentHandler;
-export type PactInteractionHandlerFunction = (ctx: InteractionContext) => PactInteraction | ParentHandler;
+export type InteractionHandlerFunction = (ctx: InteractionContext) => Interaction | ParentHandler;
 export type AssertHandlerFunction = (ctx: AssertionContext) => boolean;
 
 /**
@@ -91,14 +90,9 @@ export function addStateHandler(name: string, func: StateHandlerFunction): void;
 export function addDataFunHandler(name: string, func: DataHandlerFunction): void;
 
 /**
- * adds a custom mock interaction handler
+ * adds a custom interaction handler
  */
-export function addMockInteractionHandler(name: string, func: MockInteractionHandlerFunction): void;
-
-/**
- * adds a custom pact interaction handler
- */
-export function addPactInteractionHandler(name: string, func: PactInteractionHandlerFunction): void;
+export function addInteractionHandler(name: string, func: InteractionHandlerFunction): void;
 
 /**
  * adds a custom assert handler
