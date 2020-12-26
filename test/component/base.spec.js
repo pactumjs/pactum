@@ -2,13 +2,13 @@ const pactum = require('../../src/index');
 const handler = pactum.handler;
 
 function addDefaultMockHandlers() {
-  handler.addMockInteractionHandler('default get', () => {
+  handler.addInteractionHandler('default get', () => {
     return {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/default/get'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           method: 'GET',
@@ -17,9 +17,9 @@ function addDefaultMockHandlers() {
       }
     };
   });
-  handler.addMockInteractionHandler('default post', () => {
+  handler.addInteractionHandler('default post', () => {
     return {
-      withRequest: {
+      request: {
         method: 'POST',
         path: '/default/post',
         body: {
@@ -27,18 +27,18 @@ function addDefaultMockHandlers() {
           path: '/default/post'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200
       }
     };
   });
-  handler.addMockInteractionHandler('get people', () => {
+  handler.addInteractionHandler('get people', () => {
     return {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/people'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           people: [
@@ -50,13 +50,13 @@ function addDefaultMockHandlers() {
       }
     };
   });
-  handler.addMockInteractionHandler('get user with id 1', () => {
+  handler.addInteractionHandler('get user with id 1', () => {
     return {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/users/1'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           id: 1,
@@ -65,15 +65,15 @@ function addDefaultMockHandlers() {
       }
     };
   });
-  handler.addMockInteractionHandler('default flow get', () => {
+  handler.addInteractionHandler('default flow get', () => {
     return {
       provider: 'some-provider',
       flow: 'get default',
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/default/get'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           method: 'GET',
@@ -85,12 +85,10 @@ function addDefaultMockHandlers() {
 }
 
 before(async () => {
-  pactum.consumer.setConsumerName('consumer');
   addDefaultMockHandlers();
   await pactum.mock.start();
 });
 
 after(async () => {
   await pactum.mock.stop();
-  pactum.consumer.save();
 });

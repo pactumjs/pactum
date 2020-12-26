@@ -21,12 +21,10 @@ class Tosser {
     this.stores = spec._stores;
     this.returns = spec._returns;
     this.recorders = spec._recorders;
-    this.mockInteractions = spec.mockInteractions;
-    this.pactInteractions = spec.pactInteractions;
+    this.interactions = spec.interactions;
     this.previousLogLevel = spec.previousLogLevel;
     this.response = {};
     this.mockIds = [];
-    this.pactIds = [];
   }
 
   async toss() {
@@ -52,17 +50,11 @@ class Tosser {
 
   async addInteractionsToServer() {
     const mockIdPromises = [];
-    const pactIdPromises = [];
-    for (let i = 0; i < this.mockInteractions.length; i++) {
-      const raw = this.mockInteractions[i];
-      mockIdPromises.push(mock.addMockInteraction(raw.interaction, raw.data));
-    }
-    for (let i = 0; i < this.pactInteractions.length; i++) {
-      const raw = this.pactInteractions[i];
-      pactIdPromises.push(mock.addPactInteraction(raw.interaction, raw.data));
+    for (let i = 0; i < this.interactions.length; i++) {
+      const raw = this.interactions[i];
+      mockIdPromises.push(mock.addInteraction(raw.interaction, raw.data));
     }
     this.mockIds = this.mockIds.concat(await Promise.all(mockIdPromises));
-    this.pactIds = this.pactIds.concat(await Promise.all(pactIdPromises));
   }
 
   async setResponse() {
@@ -113,23 +105,14 @@ class Tosser {
 
   async getInteractionsFromServer() {
     if (this.mockIds.length > 0) {
-      this.mockInteractions.length = 0;
-      this.mockInteractions = this.mockInteractions.concat(await mock.getInteraction(this.mockIds));
-      this.spec.interactions = this.spec.interactions.concat(this.mockInteractions.filter(interaction => interaction.expects.exercised));
-    }
-    if (this.pactIds.length > 0) {
-      this.pactInteractions.length = 0;
-      this.pactInteractions = this.pactInteractions.concat(await mock.getInteraction(this.pactIds));
-      this.spec.interactions = this.spec.interactions.concat(this.pactInteractions.filter(interaction => interaction.expects.exercised));
+      this.interactions.length = 0;
+      this.interactions = this.interactions.concat(await mock.getInteraction(this.mockIds));
     }
   }
 
   async removeInteractionsFromServer() {
     if (this.mockIds.length > 0) {
       await mock.removeInteraction(this.mockIds);
-    }
-    if (this.pactIds.length > 0) {
-      await mock.removeInteraction(this.pactIds);
     }
   }
 
@@ -159,8 +142,7 @@ class Tosser {
   }
 
   validateInteractions() {
-    this.expect.validateInteractions(this.mockInteractions);
-    this.expect.validateInteractions(this.pactInteractions);
+    this.expect.validateInteractions(this.interactions);
   }
 
   validateResponse() {

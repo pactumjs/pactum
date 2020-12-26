@@ -5,12 +5,12 @@ describe('Stores', () => {
 
   it('store single value', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/stores'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -21,15 +21,15 @@ describe('Stores', () => {
       .expectStatus(200)
       .stores('UserId', 'id');
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/stores',
           body: {
             UserId: 1
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -39,12 +39,12 @@ describe('Stores', () => {
       })
       .expectStatus(200);
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/stores/1'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -54,12 +54,12 @@ describe('Stores', () => {
 
   it('store multiple value', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/stores'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: [
             {
@@ -78,15 +78,15 @@ describe('Stores', () => {
       .stores('FirstUser', '[0]')
       .stores('SecondUser', '[1]');
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/stores',
           body: {
             UserId: 1
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -99,15 +99,15 @@ describe('Stores', () => {
 
   it('invalid spec reference', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/stores',
           body: {
             UserId: '$S{Unknown}'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -121,12 +121,12 @@ describe('Stores', () => {
   it('store single value - capture handlers', async () => {
     pactum.handler.addCaptureHandler('GetID', ({ res }) => res.json.id);
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/stores'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -137,15 +137,15 @@ describe('Stores', () => {
       .expectStatus(200)
       .stores('CapturedUserId', '#GetID');
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/stores',
           body: {
             UserId: 1
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })

@@ -191,12 +191,12 @@ describe('Data Handler', () => {
 
 });
 
-describe('Mock Interaction Handler', () => {
+describe('Interaction Handler', () => {
 
   it('invalid handler name', () => {
     let err;
     try {
-      handler.addMockInteractionHandler();
+      handler.addInteractionHandler();
     } catch (error) {
       err = error;
     }
@@ -206,7 +206,7 @@ describe('Mock Interaction Handler', () => {
   it('empty handler name', () => {
     let err;
     try {
-      handler.addMockInteractionHandler('');
+      handler.addInteractionHandler('');
     } catch (error) {
       err = error;
     }
@@ -216,7 +216,7 @@ describe('Mock Interaction Handler', () => {
   it('invalid handler function', () => {
     let err;
     try {
-      handler.addMockInteractionHandler('hello');
+      handler.addInteractionHandler('hello');
     } catch (error) {
       err = error;
     }
@@ -226,55 +226,11 @@ describe('Mock Interaction Handler', () => {
   it('get invalid handler function', () => {
     let err;
     try {
-      handler.getMockInteractionHandler('hello');
+      handler.getInteractionHandler('hello');
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals(`Mock Interaction Handler Not Found - 'hello'`);
-  });
-
-});
-
-describe('Pact Interaction Handler', () => {
-
-  it('invalid handler name', () => {
-    let err;
-    try {
-      handler.addPactInteractionHandler();
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals('`name` is required');
-  });
-
-  it('empty handler name', () => {
-    let err;
-    try {
-      handler.addPactInteractionHandler('');
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals('`name` is required');
-  });
-
-  it('invalid handler function', () => {
-    let err;
-    try {
-      handler.addPactInteractionHandler('hello');
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals('`func` is required');
-  });
-
-  it('get invalid handler function', () => {
-    let err;
-    try {
-      handler.getPactInteractionHandler('hello');
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals(`Pact Interaction Handler Not Found - 'hello'`);
+    expect(err.message).equals(`Interaction Handler Not Found - 'hello'`);
   });
 
 });

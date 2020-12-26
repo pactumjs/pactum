@@ -5,9 +5,7 @@ const E2E = require('./models/E2E');
 const helper = require('./helpers/helper');
 
 const mock = require('./exports/mock');
-const consumer = require('./exports/consumer');
 const request = require('./exports/request');
-const provider = require('./exports/provider');
 const settings = require('./exports/settings');
 const handler = require('./exports/handler');
 const state = require('./exports/state');
@@ -18,9 +16,7 @@ const reporter = require('./exports/reporter');
 const pactum = {
 
   mock,
-  consumer,
   request,
-  provider,
   settings,
   handler,
   state,

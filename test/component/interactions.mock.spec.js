@@ -2,16 +2,17 @@ const expect = require('chai').expect;
 const pactum = require('../../src/index');
 const { like, eachLike } = require('pactum-matchers');
 
-describe('Mock Interactions - Query', () => {
+describe('Interactions - Not Strict - Query', () => {
 
   it('ignoring all query params', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/query'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -23,15 +24,16 @@ describe('Mock Interactions - Query', () => {
 
   it('ignoring few query params', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/query',
-          query: {
+          queryParams: {
             id: 1
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -43,15 +45,16 @@ describe('Mock Interactions - Query', () => {
 
   it('ignoring few query params - with like', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/query',
-          query: like({
+          queryParams: like({
             id: 2
           })
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -63,16 +66,17 @@ describe('Mock Interactions - Query', () => {
 
   it('all query params with like', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/query',
-          query: like({
+          queryParams: like({
             id: 2,
             name: 'fall'
           })
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -86,17 +90,17 @@ describe('Mock Interactions - Query', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/mock/query',
-            query: like({
+            queryParams: like({
               id: 2,
               name: 'fall',
               country: 'winter'
             })
           },
-          willRespondWith: {
+          response: {
             status: 200
           }
         })
@@ -114,17 +118,17 @@ describe('Mock Interactions - Query', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/mock/query',
-            query: like({
+            queryParams: like({
               id: 2,
               name: 'fall',
               country: 'winter'
             })
           },
-          willRespondWith: {
+          response: {
             status: 200
           }
         })
@@ -138,19 +142,20 @@ describe('Mock Interactions - Query', () => {
 
 });
 
-describe('Mock Interactions - Path Params', () => {
+describe('Interactions - Not Strict - Path Params', () => {
 
   it('including single path param', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/api/users/{user}',
           pathParams: {
             user: 'snow'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -161,8 +166,9 @@ describe('Mock Interactions - Path Params', () => {
 
   it('including multiple path param', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/api/project/{project}/repo/{repo}/pr/{pr}',
           pathParams: {
@@ -171,7 +177,7 @@ describe('Mock Interactions - Path Params', () => {
             pr: '1'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -184,8 +190,9 @@ describe('Mock Interactions - Path Params', () => {
 
   it('including multiple path param with like matcher', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/api/project/{project}/repo/{repo}/pr/{pr}',
           pathParams: {
@@ -194,7 +201,7 @@ describe('Mock Interactions - Path Params', () => {
             pr: like('10')
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -209,8 +216,9 @@ describe('Mock Interactions - Path Params', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          strict: false,
+          request: {
             method: 'GET',
             path: '/api/project/{project}/repo/{repo}/pr/{pr}',
             pathParams: {
@@ -219,7 +227,7 @@ describe('Mock Interactions - Path Params', () => {
               pr: '1'
             }
           },
-          willRespondWith: {
+          response: {
             status: 200
           }
         })
@@ -238,8 +246,9 @@ describe('Mock Interactions - Path Params', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          strict: false,
+          request: {
             method: 'GET',
             path: '/api/project/{project}/repo/{repo}/pr/{pr}',
             pathParams: {
@@ -248,7 +257,7 @@ describe('Mock Interactions - Path Params', () => {
               pr: '1'
             }
           },
-          willRespondWith: {
+          response: {
             status: 200
           }
         })
@@ -265,21 +274,22 @@ describe('Mock Interactions - Path Params', () => {
 
 });
 
-describe('Mock Interactions - Headers', () => {
+describe('Interactions - Not Strict - Headers', () => {
 
   it('expecting an header', async () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          strict: false,
+          request: {
             method: 'GET',
             path: '/mock/header',
             headers: {
               'x': 'y'
             }
           },
-          willRespondWith: {
+          response: {
             status: 200
           }
         })
@@ -293,16 +303,17 @@ describe('Mock Interactions - Headers', () => {
 
 });
 
-describe('Mock Interactions - Body', () => {
+describe('Interactions - Not Strict - Body', () => {
 
   it('ignoring body', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'POST',
           path: '/mock/body'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -317,15 +328,16 @@ describe('Mock Interactions - Body', () => {
 
   it('ignoring few properties in body', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'POST',
           path: '/mock/body',
           body: {
             id: 1
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -340,8 +352,9 @@ describe('Mock Interactions - Body', () => {
 
   it('ignoring few properties in body - with like', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'POST',
           path: '/mock/body',
           body: like({
@@ -349,7 +362,7 @@ describe('Mock Interactions - Body', () => {
             married: false
           })
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -364,8 +377,9 @@ describe('Mock Interactions - Body', () => {
 
   it('ignoring few properties in body - with each like', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'POST',
           path: '/mock/body',
           body: eachLike({
@@ -373,7 +387,7 @@ describe('Mock Interactions - Body', () => {
             married: false
           })
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -397,8 +411,9 @@ describe('Mock Interactions - Body', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          strict: false,
+          request: {
             method: 'POST',
             path: '/mock/body',
             body: {
@@ -407,7 +422,7 @@ describe('Mock Interactions - Body', () => {
               country: 'True North'
             }
           },
-          willRespondWith: {
+          response: {
             status: 200
           }
         })
@@ -428,8 +443,9 @@ describe('Mock Interactions - Body', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          strict: false,
+          request: {
             method: 'POST',
             path: '/mock/body',
             body: like({
@@ -438,7 +454,7 @@ describe('Mock Interactions - Body', () => {
               country: 'True North'
             })
           },
-          willRespondWith: {
+          response: {
             status: 200
           }
         })
@@ -457,16 +473,17 @@ describe('Mock Interactions - Body', () => {
 
 });
 
-describe('Mock Interactions - Wait', () => {
+describe('Interactions - Not Strict - Wait', () => {
 
   it('ignoring all query params', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/query'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -479,28 +496,30 @@ describe('Mock Interactions - Wait', () => {
 
 });
 
-describe('Mock Interactions - Follow Redirects', () => {
+describe('Interactions - Not Strict - Follow Redirects', () => {
 
   it('with Follow Redirects', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/redirect'
         },
-        willRespondWith: {
+        response: {
           status: 301,
           headers: {
             'location': 'http://localhost:9393/mock/actual'
           }
         }
       })
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/actual'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -511,12 +530,13 @@ describe('Mock Interactions - Follow Redirects', () => {
 
   it('without Follow Redirects', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/redirect'
         },
-        willRespondWith: {
+        response: {
           status: 301,
           headers: {
             'location': 'http://localhost:9393/mock/actual'
@@ -529,12 +549,13 @@ describe('Mock Interactions - Follow Redirects', () => {
 
   it('with Follow Redirects as false', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/redirect'
         },
-        willRespondWith: {
+        response: {
           status: 301,
           headers: {
             'location': 'http://localhost:9393/mock/actual'
@@ -549,24 +570,26 @@ describe('Mock Interactions - Follow Redirects', () => {
   it('with default Follow Redirects', async () => {
     pactum.request.setDefaultFollowRedirects(true);
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/redirect'
         },
-        willRespondWith: {
+        response: {
           status: 301,
           headers: {
             'location': 'http://localhost:9393/mock/actual'
           }
         }
       })
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/actual'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -577,12 +600,13 @@ describe('Mock Interactions - Follow Redirects', () => {
   it('with Follow Redirects as false & default as true', async () => {
     pactum.request.setDefaultFollowRedirects(true);
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/mock/redirect'
         },
-        willRespondWith: {
+        response: {
           status: 301,
           headers: {
             'location': 'http://localhost:9393/mock/actual'

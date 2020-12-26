@@ -35,7 +35,7 @@ export interface OnCall {
   [key: number]: InteractionResponseWithDelay
 }
 
-export interface MockInteractionResponse extends InteractionResponseWithDelay {
+export interface InteractionResponse extends InteractionResponseWithDelay {
   onCall?: OnCall
 }
 
@@ -45,27 +45,15 @@ export interface InteractionExpectations {
 }
 
 // TODO - accept function - (req, res)
-export interface MockInteraction {
+export interface Interaction {
   id?: string;
   /** name of the provider */
   provider?: string;
   /** flow of the provider */
   flow?: string;
-  withRequest: InteractionRequest;
-  willRespondWith: MockInteractionResponse;
-  expects?: InteractionExpectations;
-}
-
-export interface PactInteraction {
-  id?: string;
-  /** name of the provider */
-  provider: string;
-  /** state of the provider */
-  state: string;
-  /** description of the request */
-  uponReceiving: string;
-  withRequest: InteractionRequest;
-  willRespondWith: InteractionResponse;
+  strict: boolean;
+  request: InteractionRequest;
+  response: InteractionResponse;
   expects?: InteractionExpectations;
 }
 
@@ -73,6 +61,11 @@ export interface InteractionDetails {
   id: string;
   exercised: boolean;
   callCount: number;
+}
+
+export interface Handler {
+  name: string;
+  data?: any;
 }
 
 /**
@@ -93,10 +86,10 @@ export function start(port: number): Promise<void>;
 export function stop(): Promise<void>;
 
 /**
- * adds a mock interaction
+ * adds a interaction
  * @returns interaction id
  * @example
- * mock.addMockInteraction({
+ * mock.addInteraction({
  *  withRequest: {
  *   method: 'GET',
  *   path: '/api/orders'
@@ -107,49 +100,25 @@ export function stop(): Promise<void>;
  *  }
  * });
  */
-export function addMockInteraction(interaction: MockInteraction | string): string;
-export function addMockInteraction(interaction: MockInteraction[] | string[]): string[];
-export function addMockInteraction(interaction: MockInteraction | string): Promise<string>;
-export function addMockInteraction(interaction: MockInteraction[] | string[]): Promise<string[]>;
+export function addInteraction(interaction: Interaction): string | Promise<string>;
+export function addInteraction(interactions: Interaction[]): string[] | Promise<string[]>;
+export function addInteraction(handler: string, data?: any): string | Promise<string>;
+export function addInteraction(handlers: string[], data?: any): string[] | Promise<string[]>;
+export function addInteraction(handler: Handler, data?: any): string | Promise<string>;
+export function addInteraction(handlers: Handler[], data?: any): string[] | Promise<string[]>;
 
-/**
- * adds pact interaction used for contract testing
- * @returns interaction id
- * @example
- * mock.addPactInteraction({
- *  provider: 'order-service',
- *  state: 'there is an order with id 1',
- *  uponReceiving: 'request for order',
- *  withRequest: {
- *   method: 'GET',
- *   path: '/api/orders/1'
- *  },
- *  willRespondWith: {
- *   status: 200,
- *   body: 'your order with id 1'
- *  }
- * });
- */
-export function addPactInteraction(interaction: PactInteraction | string): string;
-export function addPactInteraction(interactions: PactInteraction[] | string[]): string[];
-export function addPactInteraction(interaction: PactInteraction | string): Promise<string>;
-export function addPactInteraction(interactions: PactInteraction[] | string[]): Promise<string[]>;
 /**
  * returns interaction details
  */
-export function getInteraction(id: string): InteractionDetails;
-export function getInteraction(ids: string[]): InteractionDetails[];
-export function getInteraction(id: string): Promise<InteractionDetails>;
-export function getInteraction(ids: string[]): Promise<InteractionDetails[]>;
+export function getInteraction(id: string): InteractionDetails | Promise<InteractionDetails>;
+export function getInteraction(ids: string[]): InteractionDetails[] | Promise<InteractionDetails[]>;
 
 /**
  * removes specified interaction from the mock server
  * @param id interaction id
  */
-export function removeInteraction(id: string): void;
-export function removeInteraction(ids: string[]): void;
-export function removeInteraction(id: string): Promise<void>;
-export function removeInteraction(ids: string[]): Promise<void>;
+export function removeInteraction(id: string): void | Promise<void>;
+export function removeInteraction(ids: string[]): void | Promise<void>;
 
 /**
  * clears all interactions from the server

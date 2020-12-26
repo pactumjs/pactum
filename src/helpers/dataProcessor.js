@@ -66,7 +66,7 @@ const dataProcessor = {
         logger.warn(`Template Not Found - ${templateName}`);
       }
     } else {
-      for (prop in data) {
+      for (const prop in data) {
         data[prop] = this.processDataTemplates(data[prop]);
       }
     }
@@ -78,7 +78,7 @@ const dataProcessor = {
       return this.getDataRefValue(data);
     }
     if (typeof data === 'object') {
-      for (prop in data) {
+      for (const prop in data) {
         data[prop] = this.processDataRefs(data[prop]);
       }
     }

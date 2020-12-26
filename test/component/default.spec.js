@@ -6,13 +6,13 @@ const config = require('../../src/config');
 describe('Mock - Default Mock Interaction', () => {
 
   before(() => {
-    mock.addMockInteraction({
+    mock.addInteraction({
       id: 'GET_FIRST_PROJECT',
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/projects/1'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -23,16 +23,16 @@ describe('Mock - Default Mock Interaction', () => {
         }
       }
     });
-    mock.addMockInteraction({
-      withRequest: {
+    mock.addInteraction({
+      request: {
         method: 'GET',
         path: '/api/projects/2',
-        query: {
+        queryParams: {
           id: 2,
           name: 'fake'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -43,12 +43,13 @@ describe('Mock - Default Mock Interaction', () => {
         }
       }
     });
-    mock.addMockInteraction({
-      withRequest: {
+    mock.addInteraction({
+      strict: false,
+      request: {
         method: 'POST',
         path: '/api/projects'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -109,12 +110,12 @@ describe('Mock - Default Mock Interaction', () => {
 
   it('GET - one interaction - overwrite default', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -151,96 +152,16 @@ describe('Mock - Default Mock Interaction', () => {
 
 });
 
-describe('Mock - Default Pact Interaction', () => {
-
-  before(() => {
-    mock.addPactInteraction({
-      id: 'GET_FIRST_PROJECT',
-      provider: 'p',
-      state: 'when there is a project with id 1',
-      uponReceiving: 'a request for project 1',
-      withRequest: {
-        method: 'GET',
-        path: '/api/projects/1'
-      },
-      willRespondWith: {
-        status: 200,
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: {
-          id: 1,
-          name: 'fake'
-        }
-      }
-    });
-    mock.addPactInteraction({
-      provider: 'p',
-      state: 'when there is a project with id 1',
-      uponReceiving: 'a request for project 1',
-      withRequest: {
-        method: 'GET',
-        path: '/api/projects/1',
-        query: {
-          id: 1,
-          name: 'fake'
-        }
-      },
-      willRespondWith: {
-        status: 200,
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: {
-          id: 1,
-          name: 'bake'
-        }
-      }
-    });
-  });
-
-  it('GET - one interaction', async () => {
-    await pactum.spec()
-      .get('http://localhost:9393/api/projects/1')
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'fake'
-      })
-      .toss();
-    expect(mock.getInteraction('GET_FIRST_PROJECT').callCount).equals(1, 'interaction should be called once');
-    expect(mock.getInteraction('GET_FIRST_PROJECT').exercised).equals(true, 'interaction should be exercised');
-  });
-
-  it('GET - one interaction - with multiple queries', async () => {
-    await pactum.spec()
-      .get('http://localhost:9393/api/projects/1')
-      .withQueryParams('id', 1)
-      .withQueryParams('name', 'fake')
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'bake'
-      })
-      .toss();
-  });
-
-  after(() => {
-    mock.clearInteractions();
-  });
-
-});
-
 describe('Mock - Default Mock Interactions', () => {
 
   before(() => {
-    mock.addMockInteraction([
+    mock.addInteraction([
       {
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -252,16 +173,16 @@ describe('Mock - Default Mock Interactions', () => {
         }
       }
     ]);
-    mock.addMockInteraction([{
-      withRequest: {
+    mock.addInteraction([{
+      request: {
         method: 'GET',
         path: '/api/projects/1',
-        query: {
+        queryParams: {
           id: 1,
           name: 'fake'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -272,12 +193,13 @@ describe('Mock - Default Mock Interactions', () => {
         }
       }
     }]);
-    mock.addMockInteraction([{
-      withRequest: {
+    mock.addInteraction([{
+      strict: false,
+      request: {
         method: 'POST',
         path: '/api/projects'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -333,87 +255,6 @@ describe('Mock - Default Mock Interactions', () => {
 
 });
 
-describe('Mock - Default Pact Interactions', () => {
-
-  before(() => {
-    mock.addPactInteraction([
-      {
-        provider: 'p',
-        state: 'when there is a project with id 1',
-        uponReceiving: 'a request for project 1',
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1'
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'fake'
-          }
-        }
-      }
-    ]);
-    mock.addPactInteraction([
-      {
-        provider: 'p',
-        state: 'when there is a project with id 1',
-        uponReceiving: 'a request for project 1',
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1',
-          query: {
-            id: 1,
-            name: 'fake'
-          }
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'bake'
-          }
-        }
-      }
-    ]);
-  });
-
-  it('GET - one interaction', async () => {
-    await pactum.spec()
-      .get('http://localhost:9393/api/projects/1')
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'fake'
-      })
-      .toss();
-  });
-
-  it('GET - one interaction - with multiple queries', async () => {
-    await pactum.spec()
-      .get('http://localhost:9393/api/projects/1')
-      .withQueryParams('id', 1)
-      .withQueryParams('name', 'fake')
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'bake'
-      })
-      .toss();
-  });
-
-  after(() => {
-    mock.clearInteractions();
-  });
-
-});
-
 describe('Mock - Defaults', () => {
 
   it('request - setBaseUrl', async () => {
@@ -455,12 +296,12 @@ describe('Mock - Defaults', () => {
 describe('OnCall - Mock Interactions', () => {
 
   before(() => {
-    mock.addMockInteraction({
-      withRequest: {
+    mock.addInteraction({
+      request: {
         method: 'GET',
         path: '/api/projects/1'
       },
-      willRespondWith: {
+      response: {
         status: 204,
         onCall: {
           0: {

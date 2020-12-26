@@ -5,12 +5,12 @@ describe('Retries', () => {
 
   it('retry strategy', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           onCall: {
             0: {
               status: 202
@@ -36,12 +36,12 @@ describe('Retries', () => {
 
   it('should not retry with default retry options', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           onCall: {
             0: {
               status: 200
@@ -60,12 +60,12 @@ describe('Retries', () => {
   it('custom retry strategy', async () => {
     pactum.handler.addRetryHandler('RetryTill200', ({res}) => res.statusCode !== 200);
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           onCall: {
             0: {
               status: 202
@@ -90,12 +90,12 @@ describe('Retries', () => {
     let err;
     try {
       await pactum.spec()
-        .useMockInteraction({
-          withRequest: {
+        .useInteraction({
+          request: {
             method: 'GET',
             path: '/api/projects/1'
           },
-          willRespondWith: {
+          response: {
             onCall: {
               0: {
                 status: 202

@@ -1,10 +1,8 @@
 const polka = require('polka');
 
-const Interaction = require('./interaction');
-
+const Interaction = require('./Interaction.model');
 const helper = require('../helpers/helper');
 const utils = require('../helpers/utils');
-const store = require('../helpers/store');
 const log = require('../helpers/logger');
 const hr = require('../helpers/handler.runner');
 const config = require('../config');
@@ -13,8 +11,7 @@ class Server {
 
   constructor() {
     this.app = null;
-    this.mockInteractions = new Map();
-    this.pactInteractions = new Map();
+    this.interactions =  new Map();
   }
 
   start() {
@@ -22,7 +19,6 @@ class Server {
     return new Promise((resolve) => {
       if (!this.app) {
         this.app = polka();
-        this.app.use(logger);
         this.app.use(bodyParser);
         registerPactumRemoteRoutes(this);
         registerAllRoutes(this, this.app);
@@ -52,57 +48,26 @@ class Server {
     });
   }
 
-  addMockInteraction(id, interaction) {
-    this.mockInteractions.set(id, interaction);
-    log.debug(`Mock Interaction added to Server - ${id}`);
-  }
-
-  addPactInteraction(id, interaction) {
-    store.addInteraction(interaction);
-    this.pactInteractions.set(id, interaction);
-    log.debug(`Pact Interaction added to Server - ${id}`);
+  addInteraction(id, interaction) {
+    this.interactions.set(id, interaction);
+    log.debug(`Interaction added to Server - ${id}`);
   }
 
   removeInteraction(id) {
-    if (this.mockInteractions.has(id)) {
-      this.removeMockInteraction(id);
-    } else if (this.pactInteractions.has(id)) {
-      this.removePactInteraction(id);
+    if (this.interactions.has(id)) {
+      this.interactions.delete(id);
     } else {
-      log.warn(`Unable to remove interaction. Interaction not found with id - ${id}`);
+      log.warn(`Interaction not found with id - ${id}`);
     }
   }
 
-  removeMockInteraction(id) {
-    this.mockInteractions.delete(id);
-    log.trace(`Removed mock interaction with id - ${id}`);
-  }
-
-  removePactInteraction(id) {
-    this.pactInteractions.delete(id);
-    log.trace(`Removed pact interaction with id - ${id}`);
-  }
-
-  clearMockInteractions() {
-    this.mockInteractions.clear();
-    log.trace('Cleared mock interactions');
-  }
-
-  clearPactInteractions() {
-    this.pactInteractions.clear();
-    log.trace('Cleared pact interactions');
-  }
-
-  clearAllInteractions() {
-    this.clearMockInteractions();
-    this.clearPactInteractions();
+  clearInteractions() {
+    this.interactions.clear();
   }
 
   getInteraction(id) {
-    if (this.mockInteractions.has(id)) {
-      return this.mockInteractions.get(id);
-    } else if (this.pactInteractions.has(id)) {
-      return this.pactInteractions.get(id);
+    if (this.interactions.has(id)) {
+      return this.interactions.get(id);
     } else {
       log.warn(`Interaction Not Found - ${id}`);
       return null;
@@ -119,10 +84,7 @@ class Server {
 function registerAllRoutes(server, app) {
   app.all('/*', (req, response) => {
     const res = new ExpressResponse(response);
-    let interaction = utils.getMatchingInteraction(req, server.pactInteractions);
-    if (!interaction) {
-      interaction = utils.getMatchingInteraction(req, server.mockInteractions);
-    }
+    const interaction = utils.getMatchingInteraction(req, server.interactions);
     if (interaction) {
       sendInteractionFoundResponse(req, res, interaction);
     } else {
@@ -138,25 +100,24 @@ function registerAllRoutes(server, app) {
  * @param {Interaction} interaction - HTTP interaction
  */
 function sendInteractionFoundResponse(req, res, interaction) {
-  store.updateInteractionExerciseCounter(interaction.id);
   interaction.exercised = true;
-  const { willRespondWith } = interaction;
-  if (typeof willRespondWith === 'function') {
-    willRespondWith(req, res);
+  const { response } = interaction;
+  if (typeof response === 'function') {
+    response(req, res);
   } else {
-    let response = {};
-    if (willRespondWith[interaction.callCount]) {
-      response = willRespondWith[interaction.callCount];
+    let _response = {};
+    if (response[interaction.callCount]) {
+      _response = response[interaction.callCount];
     } else {
-      response = willRespondWith;
+      _response = response;
     }
-    res.set(response.headers);
-    res.status(response.status);
-    const delay = getDelay(response);
+    res.set(_response.headers);
+    res.status(_response.status);
+    const delay = getDelay(_response);
     if (delay > 0) {
-      setTimeout(() => sendResponseBody(res, response.body), delay);
+      setTimeout(() => sendResponseBody(res, _response.body), delay);
     } else {
-      sendResponseBody(res, response.body);
+      sendResponseBody(res, _response.body);
     }
   }
   interaction.callCount += 1;
@@ -191,10 +152,11 @@ function sendResponseBody(res, body) {
 
 /**
  * returns response delay in ms
- * @param {object} willRespondWith - will Respond With
+ * @param {object} response - will Respond With
  */
-function getDelay(willRespondWith) {
-  const delay = willRespondWith.delay;
+function getDelay(response) {
+  const delay = response.delay;
+  if (!delay) return 0;
   if (delay.type === 'RANDOM') {
     const min = delay.min;
     const max = delay.max;
@@ -237,17 +199,8 @@ function registerPactumRemoteRoutes(server) {
       case '/api/pactum/handlers':
         handleRemoteHandler(req, res, server);
         break;
-      case '/api/pactum/mockInteractions':
-        handleRemoteInteractions(req, res, server, 'MOCK');
-        break;
-      case '/api/pactum/pactInteractions':
-        handleRemoteInteractions(req, res, server, 'PACT');
-        break;
-      case '/api/pactum/pacts/save':
-        savePactsRemote(req, res);
-        break;
-      case '/api/pactum/pacts/publish':
-        publishPactsRemote(req, res);
+      case '/api/pactum/interactions':
+        handleRemoteInteractions(req, res, server);
         break;
       default:
         res.writeHead(404, { "Content-Type": "text/plain" });
@@ -262,23 +215,11 @@ function handleRemoteHandler(req, res, server) {
   try {
     const ids = [];
     for (let i = 0; i < req.body.length; i++) {
-      const raw = req.body[i];
-      const handlers = raw.handlers;
-      const data = raw.data;
-      for (let j = 0; j < handlers.length; j++) {
-        const { name, type } = handlers[j];
-        if (type === 'MOCK') {
-          const rawMock = hr.mockInteraction(name, data);
-          const interaction = new Interaction(rawMock, true);
-          server.mockInteractions.set(interaction.id, interaction);
-          ids.push(interaction.id);
-        } else {
-          const rawPact = hr.pactInteraction(name, data);
-          const interaction = new Interaction(rawPact, false);
-          server.pactInteractions.set(interaction.id, interaction);
-          ids.push(interaction.id);
-        }
-      }
+      const { name, data } = req.body[i];
+      const raw = hr.interaction(name, data);
+      const interaction = new Interaction(raw);
+      server.addInteraction(interaction.id, interaction);
+      ids.push(interaction.id);
     }
     res.writeHead(200, { "Content-Type": "application/json" });
     res.write(JSON.stringify(ids));
@@ -291,10 +232,8 @@ function handleRemoteHandler(req, res, server) {
   }
 }
 
-function handleRemoteInteractions(req, response, server, interactionType) {
-  const res = new ExpressResponse(response);
-  const mock = interactionType === 'MOCK';
-  const interactions = (mock ? server.mockInteractions : server.pactInteractions);
+function handleRemoteInteractions(req, res, server) {
+  res = new ExpressResponse(res);
   const raws = [];
   const ids = [];
   try {
@@ -302,12 +241,9 @@ function handleRemoteInteractions(req, response, server, interactionType) {
       case 'POST':
         for (let i = 0; i < req.body.length; i++) {
           const raw = req.body[i];
-          const remoteInteraction = new Interaction(raw, mock);
-          interactions.set(remoteInteraction.id, remoteInteraction);
-          ids.push(remoteInteraction.id);
-          if (!mock) {
-            store.addInteraction(remoteInteraction);
-          }
+          const interaction = new Interaction(raw);
+          server.addInteraction(interaction.id, interaction);
+          ids.push(interaction.id);
         }
         res.status(200);
         res.send(ids);
@@ -316,14 +252,13 @@ function handleRemoteInteractions(req, response, server, interactionType) {
         if (req.query.ids) {
           const ids = req.query.ids.split(',');
           ids.forEach(id => {
-            const intObj = interactions.get(id);
+            const intObj = server.getInteraction(id);
             if (intObj) {
               raws.push(intObj);
             }
           });
         } else {
-          for (const [id, interaction] of interactions) {
-            log.trace(`Fetching remote interaction - ${id}`);
+          for (const [id, interaction] of server.interactions) {
             raws.push(interaction);
           }
         }
@@ -333,9 +268,9 @@ function handleRemoteInteractions(req, response, server, interactionType) {
       case 'DELETE':
         if (req.query.ids) {
           const ids = req.query.ids.split(',');
-          ids.forEach(id => interactions.delete(id));
+          ids.forEach(id => server.removeInteraction(id));
         } else {
-          interactions.clear();
+          server.clearInteractions();
         }
         res.status(200);
         res.send();
@@ -346,46 +281,10 @@ function handleRemoteInteractions(req, response, server, interactionType) {
         break;
     }
   } catch (error) {
-    log.error(`Error saving remote interaction - ${error}`);
+    log.error(`Error handling remote interaction - ${error}`);
     res.status(400);
     res.send({ error: error.message });
   }
-}
-
-function savePactsRemote(req, response) {
-  log.info('Saving Pacts (Remote)');
-  const res = new ExpressResponse(response);
-  try {
-    if (req.method === 'POST') {
-      store.save();
-      res.status(200);
-    } else {
-      res.status(405);
-    }
-  } catch (error) {
-    log.error('Error Saving Pacts (Remote)');
-    log.error(error);
-    res.status(500);
-  }
-  res.send();
-}
-
-async function publishPactsRemote(req, response) {
-  log.info('Publishing Pacts (Remote)');
-  const res = new ExpressResponse(response);
-  try {
-    if (req.method === 'POST') {
-      await store.publish(req.body);
-      res.status(200);
-    } else {
-      res.status(405);
-    }
-  } catch (error) {
-    log.error('Error Saving Pacts (Remote)');
-    log.error(error);
-    res.status(500);
-  }
-  res.send();
 }
 
 function bodyParser(req, res, next) {
@@ -398,16 +297,6 @@ function bodyParser(req, res, next) {
     log.trace('Request Body', req.body);
     next();
   });
-}
-
-function logger(req, res, next) {
-  log.trace('Request', {
-    method: req.method,
-    path: req.path,
-    query: req.query,
-    headers: req.headers
-  });
-  next();
 }
 
 class ExpressResponse {

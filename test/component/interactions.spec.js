@@ -5,12 +5,12 @@ describe('Mock', () => {
 
   it('GET - one interaction', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -48,12 +48,12 @@ describe('Mock', () => {
 
   it('GET - one interaction - without body', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 204,
           headers: {
             'content-type': 'application/json'
@@ -68,12 +68,12 @@ describe('Mock', () => {
 
   it('GET - one interaction - bad response', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 400,
           headers: {
             'content-type': 'application/json'
@@ -94,15 +94,15 @@ describe('Mock', () => {
 
   it('GET - one interaction - with one query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
-          query: {
+          queryParams: {
             name: 'fake'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -125,17 +125,17 @@ describe('Mock', () => {
 
   it('GET - one interaction - with multiple queries', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
-          query: {
+          queryParams: {
             id: 1,
             name: 'fake',
             age: 27
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -160,81 +160,16 @@ describe('Mock', () => {
 
   it('GET - one interaction - with query params', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
-          query: {
+          queryParams: {
             id: 1,
             name: 'fake'
           }
         },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'fake'
-          }
-        }
-      })
-      .get('http://localhost:9393/api/projects/1')
-      .withQueryParams({
-        'id': 1,
-        'name': 'fake'
-      })
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'fake'
-      })
-      .toss();
-  });
-
-  it('GET - one interaction - ignore query', async () => {
-    await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1'
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            id: 1,
-            name: 'fake'
-          }
-        }
-      })
-      .get('http://localhost:9393/api/projects/1')
-      .withQueryParams({
-        'id': 1,
-        'name': 'fake'
-      })
-      .expectStatus(200)
-      .expectJsonLike({
-        id: 1,
-        name: 'fake'
-      })
-      .toss();
-  });
-
-  it('GET - one interaction - ignore query - partial query match', async () => {
-    await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
-          method: 'GET',
-          path: '/api/projects/1',
-          query: {
-            id: 1
-          }
-        },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -260,8 +195,8 @@ describe('Mock', () => {
 
   it('GET - one interaction - with headers', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
           headers: {
@@ -270,7 +205,7 @@ describe('Mock', () => {
             'x-served-by': 'polka'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -297,12 +232,12 @@ describe('Mock', () => {
 
   it('GET - one interaction - with fixed delay', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -337,12 +272,12 @@ describe('Mock', () => {
 
   it('GET - one interaction - with random delay', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -380,12 +315,12 @@ describe('Mock', () => {
 
   it('POST - one interaction', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/projects'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -405,8 +340,8 @@ describe('Mock', () => {
 
   it('POST - one interaction - with body', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/projects',
           body: {
@@ -414,36 +349,7 @@ describe('Mock', () => {
             title: 'new fake'
           }
         },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: {
-            message: 'ok'
-          }
-        }
-      })
-      .post('http://localhost:9393/api/projects')
-      .withJson({
-        id: 1,
-        title: 'new fake'
-      })
-      .expectStatus(200)
-      .expectJson({
-        message: 'ok'
-      })
-      .toss();
-  });
-
-  it('POST - one interaction - with ignore body', async () => {
-    await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
-          method: 'POST',
-          path: '/api/projects'
-        },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -467,15 +373,16 @@ describe('Mock', () => {
 
   it('POST - one interaction - with form data', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'POST',
           path: '/api/projects',
           headers: {
             'content-type': 'application/x-www-form-urlencoded'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -498,12 +405,13 @@ describe('Mock', () => {
     const fs = require('fs');
     const path = require('path');
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'POST',
           path: '/api/projects'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -528,12 +436,13 @@ describe('Mock', () => {
     const form = new pactum.request.FormData();
     form.append('file', fs.readFileSync(path.resolve('./test/component/base.spec.js')), { contentType: 'application/js', filename: 'interactions.spec.js' });
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'POST',
           path: '/api/projects'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -610,12 +519,12 @@ describe('Mock', () => {
 
   it('GET - empty on call', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           onCall: {}
         }
       })
@@ -626,12 +535,12 @@ describe('Mock', () => {
 
   it('GET - 0th on call', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           onCall: {
             0: {
               status: 200
@@ -646,12 +555,12 @@ describe('Mock', () => {
 
   it('GET - with core options', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/core'
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -664,15 +573,15 @@ describe('Mock', () => {
 
   it('GET - with core options & auth', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/core',
           headers: {
             'authorization': 'Basic dXNlcjpwYXNz'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -686,15 +595,15 @@ describe('Mock', () => {
 
   it('GET - with auth', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/auth',
           headers: {
             'authorization': 'Basic dXNlcjpwYXNz'
           }
         },
-        willRespondWith: {
+        response: {
           status: 200
         }
       })
@@ -709,12 +618,12 @@ describe('Pact - matchers', () => {
 
   it('GET - one interaction', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -752,12 +661,12 @@ describe('Pact - matchers', () => {
 
   it('GET - one interaction - array body', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -791,15 +700,15 @@ describe('Pact - VALID', () => {
 
   it('GET - one interaction', async () => {
     await pactum.spec()
-      .usePactInteraction({
+      .useInteraction({
         provider: 'test-provider',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -821,15 +730,15 @@ describe('Pact - VALID', () => {
 
   it('GET - one interaction', async () => {
     await pactum.spec()
-      .usePactInteraction({
+      .useInteraction({
         provider: 'test-provider',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'
@@ -867,15 +776,15 @@ describe('Pact - VALID', () => {
 
   it('GET - one interaction - array body', async () => {
     await pactum.spec()
-      .usePactInteraction({
+      .useInteraction({
         provider: 'test-provider-2',
         state: 'when there is a project with id 1',
         uponReceiving: 'a request for project 1',
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/api/projects'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           headers: {
             'content-type': 'application/json'

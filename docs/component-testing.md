@@ -98,10 +98,10 @@ This looks simple & easy to test. But as the functionality of the application gr
 
 **pactum** makes component testing easy & fun as it allows us to control the behavior of the mock server for each & every test case. It works on top of [API Testing](api-testing) & [Mock Server](mock-server). If you haven't read about them, use the above links to learn more about them.
 
-Instead of maintaining a separate mock server, pactum comes with it. Interactions can be added to the mock server before the execution of a test case through `useMockInteraction` method. Once the interactions are added, you can build your request & expectations on top of it.
+Instead of maintaining a separate mock server, pactum comes with it. Interactions can be added to the mock server before the execution of a test case through `useInteraction` method. Once the interactions are added, you can build your request & expectations on top of it.
 
-* Interactions added through `useMockInteraction` method are auto removed from the mock server.
-* If interactions added through `useMockInteraction` method are not exercised, *pactum* will immediately fail the test case.
+* Interactions added through `useInteraction` method are auto removed from the mock server.
+* If interactions added through `useInteraction` method are not exercised, *pactum* will immediately fail the test case.
 
 <!-- tabs:start -->
 
@@ -126,15 +126,15 @@ const pactum = require('pactum');
 
 it('should buy a product which is in stock', async () => {
   await pactum.spec()
-    .useMockInteraction({
-      withRequest: {
+    .useInteraction({
+      request: {
         method: 'GET',
         path: '/api/inventory',
-        query: {
+        queryParams: {
           product: 'iPhone'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           "InStock": true
@@ -151,15 +151,15 @@ it('should buy a product which is in stock', async () => {
 
 it('should not buy a product which is out-of-stock', async () => {
   await pactum.spec()
-    .useMockInteraction({
-      withRequest: {
+    .useInteraction({
+      request: {
         method: 'GET',
         path: '/api/inventory',
-        query: {
+        queryParams: {
           product: 'iPhone'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           "InStock": false
@@ -185,12 +185,12 @@ Interaction can also contain expectations.
 ```js
 it('should not get health', async () => {
   await pactum.spec()
-    .useMockInteraction({
-      withRequest: {
+    .useInteraction({
+      request: {
         method: 'GET',
         path: '/api/health'
       },
-      willRespondWith: {
+      response: {
         status: 200
       },
       expects: {
@@ -205,7 +205,7 @@ it('should not get health', async () => {
 
 ## Multiple Interactions
 
-In real-life scenarios, a single service might be dependent upon *n* number of services. You can use `useMockInteraction` method multiple times to add multiple interactions.
+In real-life scenarios, a single service might be dependent upon *n* number of services. You can use `useInteraction` method multiple times to add multiple interactions.
 
 * All the interactions are auto removed.
 * Test will fail, if any one of the interaction is not exercised.
@@ -213,8 +213,8 @@ In real-life scenarios, a single service might be dependent upon *n* number of s
 ```javascript
 it('should not buy a product which is out-of-stock', () => {
   await pactum.spec()
-    .useMockInteraction(/* one interaction details */)
-    .useMockInteraction(/* another interaction details */)
+    .useInteraction(/* one interaction details */)
+    .useInteraction(/* another interaction details */)
     .post('/api/orders')
     .withJson({
       "name": "iPhone",
@@ -231,7 +231,7 @@ it('should not buy a product which is out-of-stock', () => {
 
 There are high chances that you wanted to use the same interaction in multiple occasions. To reuse interactions, you can create separate *js* files to hold interactions & import them in your spec file. This is one way to solve the issue. But there is a better way through *mock handlers*.
 
-Mock handlers help us to reuse interactions across tests. Use `handler.addMockInteractionHandler` function to temporarily store an interaction & later use it in test cases.
+Mock handlers help us to reuse interactions across tests. Use `handler.addInteractionHandler` function to temporarily store an interaction & later use it in test cases.
 
 It accepts two arguments
 
@@ -244,16 +244,16 @@ While using a mock handler, you can pass custom data into it to change the behav
 const handler = pactum.handler;
 
 before(async () => {
-  handler.addMockInteractionHandler('get product', (ctx) => {
+  handler.addInteractionHandler('get product', (ctx) => {
     return {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/inventory',
-        query: {
+        queryParams: {
           product: ctx.data.product
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           "InStock": ctx.data.inStock
@@ -265,7 +265,7 @@ before(async () => {
 
 it('should buy a product which is in stock', () => {
   await pactum.spec()
-    .useMockInteraction('get product', { product: 'iPhone', inStock: true })
+    .useInteraction('get product', { product: 'iPhone', inStock: true })
     .post('/api/orders')
     .withJson({
       "name": "iPhone",
@@ -276,7 +276,7 @@ it('should buy a product which is in stock', () => {
 
 it('should not buy a product which is out-of-stock', () => {
   await pactum.spec()
-    .useMockInteraction('get product', { product: 'iPhone', inStock: false })
+    .useInteraction('get product', { product: 'iPhone', inStock: false })
     .post('/api/orders')
     .withJson({
       "name": "iPhone",
@@ -295,13 +295,13 @@ Not all endpoints will perform CRUD operations. Some endpoints will perform some
 
 This library helps to validate whether interactions are exercised or not in the background. We can also validate the number of times the interaction is exercised.
 
-Use `mock.addMockInteraction` to add a interaction to the server & later use `mock.getInteraction` to get interaction details & perform validations on it.
+Use `mock.addInteraction` to add a interaction to the server & later use `mock.getInteraction` to get interaction details & perform validations on it.
 
 Lets look at an example
 
 ```javascript
 it('some background process', () => {
-  const id = mock.addMockInteraction('get product');
+  const id = mock.addInteraction('get product');
   await pactum.spec()
     .post('/api/process')
     .expectStatus(202);
@@ -318,7 +318,7 @@ We can also use `wait` method to pause the validation for the background process
 ```javascript
 it('some background process', () => {
   await pactum.spec()
-    .useMockInteraction('get product')
+    .useInteraction('get product')
     .post('/api/process')
     .expectStatus(202)
     .wait(1000);
@@ -337,16 +337,16 @@ const pactum = require('pactum');
 const mock = pactum.mock;
 const handler = pactum.handler;
 
-handler.addMockInteractionHandler('get product', (ctx) => {
+handler.addInteractionHandler('get product', (ctx) => {
   return {
-    withRequest: {
+    request: {
       method: 'GET',
       path: '/api/inventory',
-      query: {
+      queryParams: {
         product: ctx.data.product
       }
     },
-    willRespondWith: {
+    response: {
       status: 200,
       body: {
         "InStock": ctx.data.inStock
@@ -358,7 +358,7 @@ handler.addMockInteractionHandler('get product', (ctx) => {
 mock.start(4000);
 ```
 
-Everything works as usual when adding interactions through `useMockInteraction` method. But methods from *mock* will return promises. 
+Everything works as usual when adding interactions through `useInteraction` method. But methods from *mock* will return promises. 
 
 ```javascript
 // test.js
@@ -371,7 +371,7 @@ before(() => {
 
 it('should buy a product which is in stock', () => {
   await pactum.spec()
-    .useMockInteraction('get product', { product: 'iPhone', inStock: true })
+    .useInteraction('get product', { product: 'iPhone', inStock: true })
     .post('/api/orders')
     .withJson({
       "name": "iPhone",
@@ -382,7 +382,7 @@ it('should buy a product which is in stock', () => {
 
 it('should not buy a product which is out-of-stock', () => {
   await pactum.spec()
-    .useMockInteraction('get product', { product: 'iPhone', inStock: false })
+    .useInteraction('get product', { product: 'iPhone', inStock: false })
     .post('/api/orders')
     .withJson({
       "name": "iPhone",
@@ -395,7 +395,7 @@ it('should not buy a product which is out-of-stock', () => {
 });
 
 it('some background process', () => {
-  const id = await mock.addMockInteraction('get product');
+  const id = await mock.addInteraction('get product');
   await pactum.spec()
     .post('/api/process')
     .expectStatus(202);

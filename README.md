@@ -288,7 +288,7 @@ Running **pactum** as a standalone *mock server*.
 const pactum = require('pactum');
 const { regex } = require('pactum-matchers');
 
-pactum.mock.addMockInteraction({
+pactum.mock.addInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/projects',

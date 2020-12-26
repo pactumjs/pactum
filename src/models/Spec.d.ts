@@ -1,6 +1,6 @@
 import { RequestOptions } from 'http';
 import FormData from 'form-data';
-import { MockInteraction, PactInteraction } from '../exports/mock';
+import { Interaction } from '../exports/mock';
 import { ExpectHandlerFunction, RetryHandlerFunction, ReturnHandlerFunction } from '../exports/handler';
 import { LogLevel } from '../exports/settings';
 import { Expect } from '../exports/expect';
@@ -39,15 +39,15 @@ declare class Spec {
   setState(name: string, data?: any): Spec;
   
   /**
-   * adds a mock interaction to the server & auto removed after execution
+   * adds a interaction to the server & auto removed after execution
    * @example
    * await pactum.spec()
-   *  .useMockInteraction({
-   *    withRequest: {
+   *  .useInteraction({
+   *    request: {
    *      method: 'GET',
    *      path: '/api/projects/1'
    *    },
-   *    willRespondWith: {
+   *    response: {
    *      status: 200,
    *      body: {
    *        id: 1,
@@ -58,35 +58,9 @@ declare class Spec {
    *  .get('http://localhost:9393/projects/1')
    *  .expectStatus(200);
    */
-  useMockInteraction(interaction: MockInteraction): Spec;
-  useMockInteraction(handler: string, data?: any): Spec;
+  useInteraction(interaction: Interaction): Spec;
+  useInteraction(handler: string, data?: any): Spec;
   
-  /** 
-   * adds a pact interaction to the server & auto removed after execution
-   * @example
-   * await pactum.spec()
-   *  .usePactInteraction({
-   *    provider: 'project-provider',
-   *    state: 'when there is a project with id 1',
-   *    uponReceiving: 'a request for project 1',
-   *    withRequest: {
-   *      method: 'GET',
-   *      path: '/api/projects/1'
-   *    },
-   *    willRespondWith: {
-   *      status: 200,
-   *      body: {
-   *        id: 1,
-   *        name: 'fake'
-   *      }
-   *    }
-   *  })
-   *  .get('http://localhost:9393/projects/1')
-   *  .expectStatus(200);
-   */
-  usePactInteraction(interaction: PactInteraction): Spec;
-  usePactInteraction(handler: string, data?: any): Spec;
-
   /**
    * The GET method requests a representation of the specified resource.
    * @example

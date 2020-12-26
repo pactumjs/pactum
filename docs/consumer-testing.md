@@ -123,14 +123,14 @@ pactum.addPactInteraction({
   provider: 'product-service',
   state: 'there is product with id 190',
   uponReceiving: 'a request for product',
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/products',
     query: {
       id: 190
     }
   },
-  willRespondWith: {
+  response: {
     status: 200,
     headers: {
       'content-type': 'application/json'
@@ -164,14 +164,14 @@ it('should fetch order details', async () => {
       provider: 'product-service',
       state: 'there is product with id 190',
       uponReceiving: 'a request for product',
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/products',
         query: {
           id: 190
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
@@ -213,7 +213,7 @@ If anyone of the interaction is not exercised, the test will fail. At the end of
 await pactum
   .addPactInteraction(`GET_PRODUCT_DETAILS_WITH_ID_1`)
   .addPactInteraction(`POST_AUDIT_DETAILS`)
-  .addMockInteraction(`GET_DELIVERY_DETAILS`)
+  .addInteraction(`GET_DELIVERY_DETAILS`)
   .get('http://localhost:3000/api/orders/1')
   .expectStatus(200)
   .expectJson({

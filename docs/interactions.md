@@ -13,16 +13,16 @@ Interactions can be added or removed from the mock server in the following ways.
 
 * When using pactum as a **testing tool**
   * `pactum.addPactInteraction({ })` - auto removed after the test case execution
-  * `pactum.addMockInteraction({ })` - auto removed after the test case execution
+  * `pactum.addInteraction({ })` - auto removed after the test case execution
 * When using pactum as a **testing tool** or **mock server**
-  * `pactum.mock.addDefaultMockInteraction({ })`
+  * `pactum.mock.addDefaultInteraction({ })`
   * `pactum.mock.addDefaultPactInteraction({ })`
-  * `pactum.mock.addDefaultMockInteractions([{ }])`
+  * `pactum.mock.addDefaultInteractions([{ }])`
   * `pactum.mock.addDefaultPactInteractions([{ }])`
   * `pactum.mock.removeDefaultInteraction('')`
   * `pactum.mock.clearDefaultInteractions()`
 * Through **remote api**
-  * `/api/pactum/mockInteraction`
+  * `/api/pactum/interaction`
   * `/api/pactum/pactInteraction`
 
 Learn more about these methods at [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
@@ -63,17 +63,17 @@ The response of a mock interaction can be controlled in three forms:
 2. Custom Function
 3. Dynamic Object
 
-#### pactum.addMockInteraction
+#### pactum.addInteraction
 Type: `Function`<br>
 
 ```javascript
 // Static Object
-pactum.addMockInteraction({
-  withRequest: {
+pactum.addInteraction({
+  request: {
     method: 'GET',
     path: '/api/currency/INR'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     headers: {
       'content-type': 'application/json'
@@ -86,12 +86,12 @@ pactum.addMockInteraction({
 });
 
 // Custom Function
-pactum.addMockInteraction({
-  withRequest: {
+pactum.addInteraction({
+  request: {
     method: 'GET',
     path: '/api/currency/INR'
   },
-  willRespondWith: function (req, res) {
+  response: function (req, res) {
     res.status(200);
     res.send({
       id: 1,
@@ -101,12 +101,12 @@ pactum.addMockInteraction({
 });
 
 // Dynamic Object (change behavior on consecutive calls)
-pactum.addDefaultMockInteraction({
-  withRequest: {
+pactum.addDefaultInteraction({
+  request: {
     method: 'GET',
     path: '/api/projects/1'
   },
-  willRespondWith: {
+  response: {
     status: 204, // default response
     onCall: {
       0: {
@@ -158,11 +158,11 @@ pactum.addPactInteraction({
   provider: 'currency-service',
   state: 'there is INR currency',
   uponReceiving: 'a request for INR currency',
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/currency/INR'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     headers: {
       'content-type': 'application/json'
@@ -181,7 +181,7 @@ In real world applications, sometimes it is hard to match an expected request/re
 
 ```javascript
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders',
     query: {
@@ -189,7 +189,7 @@ const interaction = {
       id: 'p144XiRTu'
     }
   },
-  willRespondWith: {
+  response: {
     status: 200
   }
 }
@@ -227,7 +227,7 @@ Type matching for primitive data types - *string*/*number*/*boolean*
 ```javascript
 const { like } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders',
     query: {
@@ -235,7 +235,7 @@ const interaction = {
       id: like('abc')
     }
   },
-  willRespondWith: {
+  response: {
     status: 200,
     body: {
       // matches if it has quantity & active properties with number & bool types
@@ -251,11 +251,11 @@ Type matching for objects in **pactum** deviates from in **pact.io** when matchi
 ```javascript
 const { like } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     // matches if body is JSON & has quantity & active properties with number & bool types
     body: like({
@@ -270,11 +270,11 @@ const interaction = {
 // matching doesn't expand to nested objects
 const { like } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     // matches if body is JSON object
     // & it has quantity, active & item properties with number, bool & object types respectively
@@ -295,11 +295,11 @@ const interaction = {
 // to match nested objects with type, we need apply 'like()' explicitly to nested objects
 const { like } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     // matches if body is JSON object
     // & it has quantity, active, item & delivery properties with number, bool & object types respectively
@@ -328,11 +328,11 @@ const interaction = {
 ```javascript
 const { eachLike } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     // matches if body is an array of JSON objects
     // & each object in array should have it has quantity, active, item
@@ -361,11 +361,11 @@ What you need is a way to say "I expect something matching this regular expressi
 ```javascript
 const { regex } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: regex('/api/projects/\\d+')
   },
-  willRespondWith: {
+  response: {
     status: 200,
     body: {
       name: 'xyx'
@@ -392,8 +392,8 @@ const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers
 
 it('Matchers - Path & Query', () => {
   return pactum
-    .addMockInteraction({
-      withRequest: {
+    .addInteraction({
+      request: {
         method: 'GET',
         // Matches path with value in matcher. Value inside generate is used in contract testing.
         path: regex({ generate: '/api/projects/1', matcher: /\/api\/projects\/\d+/ }),
@@ -404,7 +404,7 @@ it('Matchers - Path & Query', () => {
           age: '10'
         } 
       },
-      willRespondWith: {
+      response: {
         status: 200
       }
     })
@@ -415,8 +415,8 @@ it('Matchers - Path & Query', () => {
 
 it('Matchers - Body', () => {
   return pactum
-    .addMockInteraction({
-      withRequest: {
+    .addInteraction({
+      request: {
         method: 'POST',
         path: '/api/person',
         // checks if the body has array of objects with id, name & address
@@ -432,7 +432,7 @@ it('Matchers - Body', () => {
           })
         })
       },
-      willRespondWith: {
+      response: {
         status: 200
       }
     })
@@ -461,12 +461,12 @@ const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers
 
 it('Matchers - Body', () => {
   return pactum
-    .addMockInteraction({
-      withRequest: {
+    .addInteraction({
+      request: {
         method: 'POST',
         path: '/api/person'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         // create a single array of object with id, name & address
         body: eachLike({

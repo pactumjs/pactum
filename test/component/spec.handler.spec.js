@@ -4,13 +4,13 @@ const handler = pactum.handler;
 describe('Spec Handler', () => {
 
   before(() => {
-    handler.addMockInteractionHandler('get users', () => {
+    handler.addInteractionHandler('get users', () => {
       return {
-        withRequest: {
+        request: {
           method: 'GET',
           path: '/api/users'
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             id: 1
@@ -20,7 +20,7 @@ describe('Spec Handler', () => {
     });
     handler.addSpecHandler('get user', (ctx) => {
       const spec = ctx.spec;
-      spec.useMockInteraction('get users');
+      spec.useInteraction('get users');
       spec.get('http://localhost:9393/api/users');
     });
   });

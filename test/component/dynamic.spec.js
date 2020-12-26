@@ -4,12 +4,12 @@ describe('Dynamic', () => {
 
   it('GET - without query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: function (req, res) {
+        response: function (req, res) {
           res.status(200);
           res.send({
             id: 1,
@@ -29,15 +29,15 @@ describe('Dynamic', () => {
 
   it('GET - with query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'GET',
           path: '/api/projects/1',
-          query: {
+          queryParams: {
             id: 1
           }
         },
-        willRespondWith: function (req, res) {
+        response: function (req, res) {
           res.status(200);
           res.send({
             id: 1,
@@ -58,12 +58,13 @@ describe('Dynamic', () => {
 
   it('GET - ignore query - first record', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/api/projects'
         },
-        willRespondWith: function (req, res) {
+        response: function (req, res) {
           const response = [
             {
               id: 1,
@@ -95,12 +96,13 @@ describe('Dynamic', () => {
 
   it('GET - ignore query - second record', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        strict: false,
+        request: {
           method: 'GET',
           path: '/api/projects/1'
         },
-        willRespondWith: function (req, res) {
+        response: function (req, res) {
           const response = [
             {
               id: 1,

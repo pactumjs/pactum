@@ -4,15 +4,15 @@ describe('GraphQL', () => {
 
   it('with single line graphql query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/graphql',
           graphQL: {
             query: `{ hello }`
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             data: {
@@ -34,8 +34,8 @@ describe('GraphQL', () => {
 
   it('with multi line graphql query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/graphql',
           graphQL: {
@@ -48,7 +48,7 @@ describe('GraphQL', () => {
             `
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             data: {
@@ -82,8 +82,8 @@ describe('GraphQL', () => {
 
   it('with nested graphql query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/graphql',
           graphQL: {
@@ -100,7 +100,7 @@ describe('GraphQL', () => {
             `
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             "data": {
@@ -160,8 +160,8 @@ describe('GraphQL', () => {
 
   it('with arguments graphql query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/graphql',
           graphQL: {
@@ -175,7 +175,7 @@ describe('GraphQL', () => {
             `
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             "data": {
@@ -205,8 +205,8 @@ describe('GraphQL', () => {
 
   it('with enum arguments graphql query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/graphql',
           graphQL: {
@@ -220,7 +220,7 @@ describe('GraphQL', () => {
             `
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             "data": {
@@ -255,8 +255,8 @@ describe('GraphQL', () => {
 
   it('with alias graphql query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/graphql',
           graphQL: {
@@ -272,7 +272,7 @@ describe('GraphQL', () => {
             `
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             "data": {
@@ -315,8 +315,8 @@ describe('GraphQL', () => {
 
   it('with fragments graphql query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/graphql',
           graphQL: {
@@ -340,7 +340,7 @@ describe('GraphQL', () => {
             `
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             "data": {
@@ -457,8 +457,8 @@ describe('GraphQL', () => {
 
   it('with operation name graphql query', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/graphql',
           graphQL: {
@@ -474,7 +474,7 @@ describe('GraphQL', () => {
             `
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             "data": {
@@ -533,8 +533,8 @@ describe('GraphQL', () => {
 
   it('with variables', async () => {
     await pactum.spec()
-      .useMockInteraction({
-        withRequest: {
+      .useInteraction({
+        request: {
           method: 'POST',
           path: '/api/graphql',
           graphQL: {
@@ -553,7 +553,7 @@ describe('GraphQL', () => {
             }
           }
         },
-        willRespondWith: {
+        response: {
           status: 200,
           body: {
             data: {
