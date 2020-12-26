@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const mock = pactum.mock;
 const handler = pactum.handler;
 
-xdescribe('Remote Server - use with spec', () => {
+describe('Remote Server - use with spec', () => {
 
   before(() => {
     mock.useRemoteServer('http://localhost:9393');
@@ -18,7 +18,7 @@ xdescribe('Remote Server - use with spec', () => {
           status: 200,
           body: ctx.data
         }
-      }
+      };
     });
     handler.addInteractionHandler('pact remote handler', () => {
       return {
@@ -48,7 +48,7 @@ xdescribe('Remote Server - use with spec', () => {
       .expectStatus(200);
     await pactum.spec()
       .get('http://localhost:9393/remote')
-      .expectStatus(404)
+      .expectStatus(404);
   });
 
   it('useInteraction - handler', async () => {
@@ -64,7 +64,7 @@ xdescribe('Remote Server - use with spec', () => {
       .expectBody('hello remote');
     await pactum.spec()
       .get('http://localhost:9393/remote/mock/handler')
-      .expectStatus(404)
+      .expectStatus(404);
   });
 
   it('useInteraction - handler not found', async () => {
@@ -78,7 +78,7 @@ xdescribe('Remote Server - use with spec', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).contains(`Mock Interaction Handler Not Found - 'random mock remote handler'`);
+    expect(err.message).contains(`Interaction Handler Not Found - 'random mock remote handler'`);
   });
 
   it('useInteraction', async () => {
@@ -99,7 +99,7 @@ xdescribe('Remote Server - use with spec', () => {
       .expectStatus(200);
     await pactum.spec()
       .get('http://localhost:9393/remote')
-      .expectStatus(404)
+      .expectStatus(404);
   });
 
   it('useInteraction - handler', async () => {
@@ -109,7 +109,7 @@ xdescribe('Remote Server - use with spec', () => {
       .expectStatus(200);
     await pactum.spec()
       .get('http://localhost:9393/remote')
-      .expectStatus(404)
+      .expectStatus(404);
   });
 
   after(async () => {
@@ -119,7 +119,7 @@ xdescribe('Remote Server - use with spec', () => {
 
 });
 
-xdescribe('Remote Server - before and after spec', () => {
+describe('Remote Server - before and after spec', () => {
 
   before(() => {
     mock.useRemoteServer('http://localhost:9393');
@@ -133,7 +133,7 @@ xdescribe('Remote Server - before and after spec', () => {
         response: {
           status: 200
         }
-      }
+      };
     });
   });
 
@@ -152,10 +152,9 @@ xdescribe('Remote Server - before and after spec', () => {
     const interaction = await mock.getInteraction('id');
     expect(interaction).deep.equals({
       id: 'id',
-      "consumer": "consumer",
-      "mock": true,
-      request: { method: 'GET', path: '/remote/get', "matchingRules": {} },
-      response: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+      "strict": true,
+      request: { method: 'GET', path: '/remote/get', "matchingRules": {}, "queryParams": {} },
+      response: { status: 200, "matchingRules": {} },
       callCount: 0,
       "calls": [],
       "exercised": false,
@@ -191,23 +190,21 @@ xdescribe('Remote Server - before and after spec', () => {
     expect(interactions).deep.equals([
       {
         id: 'id1',
-        "consumer": "consumer",
-        "mock": true,
-        request: { method: 'GET', path: '/remote/get', "matchingRules": {} },
-        response: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        "strict": true,
+        request: { method: 'GET', path: '/remote/get', "matchingRules": {}, "queryParams": {} },
+        response: { status: 200, "matchingRules": {} },
         callCount: 0,
-      "calls": [],
+        "calls": [],
         "exercised": false,
         expects: { exercised: true }
       },
       {
         id: 'id2',
-        "consumer": "consumer",
-        "mock": true,
-        request: { method: 'GET', path: '/remote/get', "matchingRules": {} },
-        response: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        "strict": true,
+        request: { method: 'GET', path: '/remote/get', "matchingRules": {}, "queryParams": {} },
+        response: { status: 200, "matchingRules": {} },
         callCount: 0,
-      "calls": [],
+        "calls": [],
         "exercised": false,
         expects: { exercised: true }
       }
@@ -233,23 +230,21 @@ xdescribe('Remote Server - before and after spec', () => {
     expect(interactions).deep.equals([
       {
         id: 'id1',
-        "consumer": "consumer",
-        "mock": true,
-        request: { method: 'GET', path: '/remote/get', "matchingRules": {} },
-        response: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        "strict": true,
+        request: { method: 'GET', path: '/remote/get', "matchingRules": {}, "queryParams": {} },
+        response: { status: 200, "matchingRules": {} },
         callCount: 0,
-      "calls": [],
+        "calls": [],
         "exercised": false,
         expects: { exercised: true }
       },
       {
         id: 'id2',
-        "consumer": "consumer",
-        "mock": true,
-        request: { method: 'GET', path: '/remote/mock/handler', "matchingRules": {} },
-        response: { status: 200, "matchingRules": {}, "delay": { "type": "NONE", "value": 0 } },
+        "strict": true,
+        request: { method: 'GET', path: '/remote/mock/handler', "matchingRules": {}, "queryParams": {} },
+        response: { status: 200, "matchingRules": {} },
         callCount: 0,
-      "calls": [],
+        "calls": [],
         "exercised": false,
         expects: { exercised: true }
       }

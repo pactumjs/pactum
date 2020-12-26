@@ -62,19 +62,16 @@ await mock.stop();
 
 By now, you know how to start & stop a mock server. To add behavior, we need to add to it. An interaction contains request & response details. When a real request is sent to mock server, it will try to match the received request with interactions request. If a match is found it will return the specified response or 404 will be returned.
 
-We have two kinds of interactions. They are
+### Interactions
 
-* Mock Interactions
-* Pact Interactions
-
-### Mock Interactions
-
-The simplest way to add behavior to the mock server is through mock interactions. Use `addInteraction` to add a mock interaction to the server. It has `withRequest` & `willRespondWith` objects to handle a request. When the mock server receives a request, it will match the request with interactions `withRequest` properties. If the request matches, the mock server will respond with details in `willRespondWith` object.
+The simplest way to add behavior to the mock server is through interactions. Use `addInteraction` to add a interaction to the server. It has `request` & `response` objects to handle a request. When the mock server receives a request, it will match the request with interactions `request` properties. If the request matches, the mock server will respond with details in `response` object.
 
 Matching:
 
 * Performs *exact match* on received HTTP Method & Path.
-* Performs *loose match* on received query params, headers & JSON body.
+* Performs *strong match* on the received request's query params & JSON body.
+* Performs *loose match* on received headers.
+* Performs *loose match* on the received request's query params & JSON body when **strict** is `false`.
 
 `addInteraction` returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
 
@@ -82,11 +79,12 @@ Matching:
 const mock = require('pactum').mock;
 
 mock.addInteraction({
-  withRequest: {
+  strict: false,
+  request: {
     method: 'GET',
     path: '/api/users/1'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     body: {
       id: 1,
@@ -105,18 +103,19 @@ mock.start(3000);
 
 Note on how the mock server performs an exact match on HTTP method & path. If a match is not found it will return a status code 404.
 
-To further distinguish the responses, let's add two mock interactions with query params
+To further distinguish the responses, let's add two interactions with query params
 
 ```javascript
 mock.addInteraction({
-  withRequest: {
+  strict: false,
+  request: {
     method: 'GET',
     path: '/api/users',
     query: {
       id: 1
     }
   },
-  willRespondWith: {
+  response: {
     status: 200,
     body: {
       id: 1,
@@ -126,14 +125,15 @@ mock.addInteraction({
 });
 
 mock.addInteraction({
-  withRequest: {
+  strict: false,
+  request: {
     method: 'GET',
     path: '/api/users',
     query: {
       id: 2
     }
   },
-  willRespondWith: {
+  response: {
     status: 200,
     body: {
       id: 2,
@@ -157,7 +157,8 @@ Let's look at an example
 
 ```javascript
 mock.addInteraction({
-  withRequest: {
+  strict: false,
+  request: {
     method: 'POST',
     path: '/api/users',
     body: {
@@ -166,7 +167,7 @@ mock.addInteraction({
       country: 'True North'
     }
   },
-  willRespondWith: {
+  response: {
     status: 200
   }
 })
@@ -195,32 +196,34 @@ Posting the below JSON to `/api/users` will return a 404 response. The *id* & *c
 }
 ```
 
-#### Mock Interaction Options
+#### interaction Options
 
-| Property                         | Description                     |
-| ------------------------------   | --------------------------      |
-| id                               | id of the interaction           |
-| provider                         | name of the provider            |
-| withRequest                      | request details                 |
-| withRequest.method               | HTTP method                     |
-| withRequest.path                 | api path                        |
-| withRequest.pathParams           | api path params                 |
-| withRequest.headers              | request headers                 |
-| withRequest.query                | query parameters                |
-| withRequest.body                 | request body                    |
-| withRequest.graphQL              | graphQL details                 |
-| withRequest.graphQL.query        | graphQL query                   |
-| withRequest.graphQL.variables    | graphQL variables               |
-| willRespondWith                  | response details                |
-| willRespondWith.status           | response status code            |
-| willRespondWith.headers          | response headers                |
-| willRespondWith.body             | response body                   |
-| willRespondWith.fixedDelay       | delays the response by ms       |
-| willRespondWith.randomDelay      | random delay details            |
-| willRespondWith.randomDelay.min  | delay the response by min ms    |
-| willRespondWith.randomDelay.max  | delay the response by max ms    |
-| willRespondWith.onCall           | response on consecutive calls   |
-| willRespondWith(req, res)        | response with custom function   |
+| Property                  | Description                     |
+| ------------------------  | ------------------------------  |
+| id                        | id of the interaction           |
+| strict                    | enable/disable strict matching  |
+| provider                  | name of the provider            |
+| flow                      | name of the flow                |
+| request                   | request details                 |
+| request.method            | HTTP method                     |
+| request.path              | api path                        |
+| request.pathParams        | api path params                 |
+| request.headers           | request headers                 |
+| request.queryParams       | query parameters                |
+| request.body              | request body                    |
+| request.graphQL           | graphQL details                 |
+| request.graphQL.query     | graphQL query                   |
+| request.graphQL.variables | graphQL variables               |
+| response                  | response details                |
+| response.status           | response status code            |
+| response.headers          | response headers                |
+| response.body             | response body                   |
+| response.fixedDelay       | delays the response by ms       |
+| response.randomDelay      | random delay details            |
+| response.randomDelay.min  | delay the response by min ms    |
+| response.randomDelay.max  | delay the response by max ms    |
+| response.onCall           | response on consecutive calls   |
+| response(req, res)        | response with custom function   |
 
 #### Path Params
 
@@ -228,14 +231,14 @@ Example of using path params.
 
 ```js
 mock.addInteraction({
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/users/{userId}',
     pathParams: {
       userId: '1'
     }
   },
-  willRespondWith: {
+  response: {
     status: 200,
     body: {
       id: 1,
@@ -251,11 +254,11 @@ mock.addInteraction({
 
 ```javascript
 mock.addInteraction({
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/health'
   },
-  willRespondWith: {
+  response: {
     onCall: {
       0: {
         status: 500
@@ -278,7 +281,7 @@ Note how the behavior of interaction falls back to the default behavior (*404*) 
 We can also define the default behavior by providing normal response details along with `onCall` details.
 
 ```javascript
-willRespondWith : {
+response : {
   status: 200,
   onCall: {
     0: {
@@ -294,87 +297,28 @@ willRespondWith : {
 
 ```javascript
 mock.addInteraction({
-  withRequest: {
+  request: {
     method: 'POST',
     path: '/api/users',
     body: {
       id: 3
     }
   },
-  willRespondWith: {
+  response: {
     status: 200,
     fixedDelay: 1000
   }
 })
 ```
 
-### Pact Interactions
-
-The final way of adding behavior to the mock server is through pact interactions. It is similar to a mock interaction & supports most of the options from it.
-
-Major differences between mock & pact interactions are
-
-* Pact Interactions generate a contract file which is later used for [Contract Testing](#contract-testing)
-* Performs a **strong match** on the received request's query params & JSON body.
-* Performs a **loose match** on the received request's headers.
-
-Use `addPactInteraction` to add a pact interaction to the server. It returns a string containing the id of the interaction. (*This id will be useful when you want to add assertions based on the call count or to check whether the interaction is exercised or not.*)
-
-```javascript
-mock.addPactInteraction({
-  provider: 'project-service',
-  state: 'there is a project with id 1',
-  uponReceiving: 'a request for project 1',
-  withRequest: {
-    method: 'GET',
-    path: '/api/projects',
-    query: {
-      id: 1
-    }
-  },
-  willRespondWith: {
-    status: 200,
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: {
-      id: 1,
-      name: 'fake'
-    }
-  }
-});
-```
-
-#### Pact Interaction Options
-
-| Property                         | Description                     |
-| ------------------------------   | -----------------------------   |
-| id                               | id of the interaction           |
-| provider                         | name of the provider            |
-| state                            | state of the provider           |
-| uponReceiving                    | description of the request      |
-| withRequest                      | request details                 |
-| withRequest.method               | HTTP method                     |
-| withRequest.path                 | api path                        |
-| withRequest.headers              | request headers                 |
-| withRequest.query                | query parameters                |
-| withRequest.body                 | request body                    |
-| withRequest.graphQL              | graphQL details                 |
-| withRequest.graphQL.query        | graphQL query                   |
-| withRequest.graphQL.variables    | graphQL variables               |
-| willRespondWith                  | response details                |
-| willRespondWith.status           | response status code            |
-| willRespondWith.headers          | response headers                |
-| willRespondWith.body             | response body                   |
-
 ### Handlers
 
-Interaction handlers help us to reuse same kind of interactions with modifications. Use `handler.addInteractionHandler` or `handler.addPactInteractionHandler` functions to temporarily store interactions & later use the handler name to add them to the mock server.
+Interaction handlers help us to reuse same kind of interactions with modifications. Use `handler.addInteractionHandler` function to temporarily store interactions & later use the handler name to add them to the mock server.
 
 It accepts two arguments
 
 * handler name - a string to refer the interaction later
-* callback function - it should return a mock interaction or reference to other interaction
+* callback function - it should return a interaction or reference to other interaction
 
 ```javascript
 const mock = pactum.mock;
@@ -382,14 +326,14 @@ const handler = pactum.handler;
 
 handler.addInteractionHandler('get product', (ctx) => {
   return {
-    withRequest: {
+    request: {
       method: 'GET',
       path: '/api/inventory',
       query: {
         product: ctx.data.product
       }
     },
-    willRespondWith: {
+    response: {
       status: 200,
       body: {
         "InStock": ctx.data.inStock
@@ -412,14 +356,14 @@ const handler = pactum.handler;
 
 handler.addInteractionHandler('get product', (ctx) => {
   return {
-    withRequest: {
+    request: {
       method: 'GET',
       path: '/api/inventory',
       query: {
         product: ctx.data.product
       }
     },
-    willRespondWith: {
+    response: {
       status: 200,
       body: {
         "InStock": ctx.data.inStock
@@ -462,11 +406,11 @@ stash.addDataTemplate({
 });
 
 mock.addInteraction({
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/users'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     headers: {
       'content-type': 'application/json'
@@ -513,7 +457,7 @@ Type matching for primitive data types - *string*/*number*/*boolean*
 ```javascript
 const { like } = require('pactum-matchers');
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders',
     query: {
@@ -521,7 +465,7 @@ const interaction = {
       id: like('abc')
     }
   },
-  willRespondWith: {
+  response: {
     status: 200,
     body: {
       // Note: Response Matching is used in Contract Testing
@@ -538,7 +482,7 @@ Type matching for objects in **pactum** deviates from in **pact.io** when matchi
 ```javascript
 const { like } = require('pactum-matchers');
 const interaction = {
-  withRequest: {
+  request: {
     method: 'POST',
     path: '/api/orders',
     // matches if the body is JSON 
@@ -549,7 +493,7 @@ const interaction = {
       active: true
     })
   },
-  willRespondWith: {
+  response: {
     status: 200
   }
 }
@@ -559,11 +503,11 @@ const interaction = {
 // matching doesn't expand to nested objects
 const { like } = require('pactum-matchers');
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     // Note: Response Matching is used in Contract Testing
     // matches if body is JSON object
@@ -586,7 +530,7 @@ const interaction = {
 // to match nested objects with type, we need apply 'like()' explicitly to nested objects
 const { like } = require('pactum-matchers');
 const interaction = {
-  withRequest: {
+  request: {
     method: 'POST',
     path: '/api/orders',
     // matches if body is JSON object
@@ -608,7 +552,7 @@ const interaction = {
       }
     })
   },
-  willRespondWith: {
+  response: {
     status: 200
   }
 }
@@ -621,11 +565,11 @@ const interaction = {
 ```javascript
 const { eachLike } = require('pactum-matchers');
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     // Note: Response Matching is used in Contract Testing
     // matches if body is an array 
@@ -659,7 +603,7 @@ What you need is a way to say "I expect something matching this regular expressi
 ```javascript
 const { regex } = require('pactum-matchers');
 const interaction = {
-  withRequest: {
+  request: {
     method: 'POST',
     path: '/api/projects/12',
     body: {
@@ -667,7 +611,7 @@ const interaction = {
       birthDate: regex('03/05/2020', /\d{2}\/\d{2}\/\d{4}/)
     }
   },
-  willRespondWith: {
+  response: {
     status: 200
   }
 }
@@ -683,23 +627,23 @@ const mock = require('pactum').mock;
 mock.start(3000);
 ```
 
-### Mock Interactions
+### Interactions
 
-#### /api/pactum/mockInteractions
+#### /api/pactum/interactions
 
 ##### GET
 
-Returns a single or all mock interactions.
+Returns a single or all interactions.
 
 ```Shell
-# Fetches a mock interaction with id "m1uh9"
-curl --location --request GET 'http://localhost:9393/api/pactum/mockInteractions?id=m1uh9'
+# Fetches a interaction with id "m1uh9"
+curl --location --request GET 'http://localhost:9393/api/pactum/interactions?id=m1uh9'
 
-# Fetches all mock interactions
-curl --location --request GET 'http://localhost:9393/api/pactum/mockInteractions'
+# Fetches all interactions
+curl --location --request GET 'http://localhost:9393/api/pactum/interactions'
 ```
 
-Response - returns all the mock interactions
+Response - returns all the interactions
 
 ```JSON
 [
@@ -707,14 +651,14 @@ Response - returns all the mock interactions
     "id": "<id>",
     "exercised": false,
     "callCount": 0,
-    "withRequest": {
+    "request": {
       "method": "GET",
       "path": "/api/projects/2",
       "query": {
         "name": "fake"
       }
     },
-    "willRespondWith": {
+    "response": {
       "status": 200,
       "headers": {
         "content-type": "application/json"
@@ -730,20 +674,20 @@ Response - returns all the mock interactions
 
 ##### POST
 
-Adds multiple mock interactions to the server.
+Adds multiple interactions to the server.
 
 ```Shell
-curl --location --request POST 'http://localhost:9393/api/pactum/mockInteractions' \
+curl --location --request POST 'http://localhost:9393/api/pactum/interactions' \
 --header 'Content-Type: application/json' \
 --data-raw '[{
-    "withRequest": {
+    "request": {
         "method": "GET",
         "path": "/api/projects/2",
         "query": {
             "name": "fake"
         }
     },
-    "willRespondWith": {
+    "response": {
         "status": 200,
         "headers": {
             "content-type": "application/json"
@@ -756,7 +700,7 @@ curl --location --request POST 'http://localhost:9393/api/pactum/mockInteraction
   }]'
 ```
 
-Response - returns the mock interaction id.
+Response - returns the interaction id.
 
 ```JSON
 [ "x121w" ] 
@@ -764,113 +708,14 @@ Response - returns the mock interaction id.
 
 ##### DELETE
 
-Removes a mock interaction or all mock interactions from the mock server.
+Removes a interaction or all interactions from the mock server.
 
 ```Shell
-# Removes a single mock interaction with id m1uh9
-curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteractions?id=m1uh9'
+# Removes a single interaction with id m1uh9
+curl --location --request DELETE 'http://localhost:9393/api/pactum/interactions?id=m1uh9'
 
-# Removes all mock interactions
-curl --location --request DELETE 'http://localhost:9393/api/pactum/mockInteractions'
-```
-
-### Pact Interactions
-
-#### /api/pactum/pactInteractions
-
-##### GET
-
-Returns a single or all pact interactions.
-
-```Shell
-# Fetches a pact interaction with id "m1uh9"
-curl --location --request GET 'http://localhost:9393/api/pactum/pactInteractions?id=m1uh9'
-
-# Fetches all pact interactions
-curl --location --request GET 'http://localhost:9393/api/pactum/pactInteractions'
-```
-
-Response - returns all the pact interactions
-
-```JSON
-[
-  {
-    "id": "<id>",
-    "exercised": true,
-    "callCount": 1,
-    "consumer": "consumer-name",
-    "provider": "provider-name",
-    "state": "provider state",
-    "uponReceiving": "description",
-    "withRequest": {
-      "method": "GET",
-      "path": "/api/projects/2",
-      "query": {
-        "name": "fake"
-      }
-    },
-    "willRespondWith": {
-      "status": 200,
-      "headers": {
-        "content-type": "application/json"
-      },
-      "body": {
-        "id": 1,
-        "name": "fake"
-      }
-    }
-  }
-]
-```
-
-##### POST
-
-Adds multiple pact interactions to the server.
-
-```Shell
-curl --location --request POST 'http://localhost:9393/api/pactum/pactInteractions' \
---header 'Content-Type: application/json' \
---data-raw '[{
-    "consumer": "consumer-name",
-    "provider": "provider-name",
-    "state": "provider state",
-    "uponReceiving": "description",
-    "withRequest": {
-        "method": "GET",
-        "path": "/api/projects/2",
-        "query": {
-            "name": "fake"
-        }
-    },
-    "willRespondWith": {
-        "status": 200,
-        "headers": {
-            "content-type": "application/json"
-        },
-        "body": {
-            "id": 1,
-            "name": "fake"
-        }
-    }
-  }]'
-```
-
-Response - returns the pact interaction id.
-
-```JSON
-[ "x121w" ]
-```
-
-##### DELETE
-
-Removes a pact interaction or all pact interactions from the mock server.
-
-```Shell
-# Removes a single pact interaction with id m1uh9
-curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteractions?id=m1uh9'
-
-# Removes all pact interactions
-curl --location --request DELETE 'http://localhost:9393/api/pactum/pactInteractions'
+# Removes all interactions
+curl --location --request DELETE 'http://localhost:9393/api/pactum/interactions'
 ```
 
 ### Interaction Handlers
@@ -885,11 +730,11 @@ const handler = pactum.handler;
 handler.addInteractionHandler('get user with', (ctx) => {
   const user = db.getUser(ctx.data.id);
   return {
-    withRequest: {
+    request: {
       method: 'GET',
       path: `/api/users/${ctx.data.id}`
     },
-    willRespondWith: {
+    response: {
       status: 200,
       body: user
     }
@@ -904,20 +749,10 @@ If you start the above mock server, by default it will have zero interactions in
 ```Shell
 curl --location --request POST 'http://localhost:9393/api/pactum/handlers' \
 --header 'Content-Type: application/json' \
---data-raw '{
-    "handlers": [
-      {
-        "name": "get user with",
-        "type": "MOCK"
-      }
-    ],
-    "data": {
-      "id": 10 
-    }
-  }'
+--data-raw '[ { "name": "get user with", "data": { "id": "some-random-id" } } ]'
 ```
 
-Response - returns the mock interaction id.
+Response - returns the interaction id.
 
 ```JSON
 [ "x121w" ]

@@ -63,6 +63,11 @@ export interface InteractionDetails {
   callCount: number;
 }
 
+export interface Handler {
+  name: string;
+  data?: any;
+}
+
 /**
  * starts the mock server on port 9393
  */
@@ -95,10 +100,12 @@ export function stop(): Promise<void>;
  *  }
  * });
  */
-export function addInteraction(interaction: Interaction | string): string;
-export function addInteraction(interaction: Interaction[] | string[]): string[];
-export function addInteraction(interaction: Interaction | string): Promise<string>;
-export function addInteraction(interaction: Interaction[] | string[]): Promise<string[]>;
+export function addInteraction(interaction: Interaction): string | Promise<string>;
+export function addInteraction(interactions: Interaction[]): string[] | Promise<string[]>;
+export function addInteraction(handler: string, data?: any): string | Promise<string>;
+export function addInteraction(handlers: string[], data?: any): string[] | Promise<string[]>;
+export function addInteraction(handler: Handler, data?: any): string | Promise<string>;
+export function addInteraction(handlers: Handler[], data?: any): string[] | Promise<string[]>;
 
 // /**
 //  * adds pact interaction used for contract testing
@@ -125,19 +132,15 @@ export function addInteraction(interaction: Interaction[] | string[]): Promise<s
 /**
  * returns interaction details
  */
-export function getInteraction(id: string): InteractionDetails;
-export function getInteraction(ids: string[]): InteractionDetails[];
-export function getInteraction(id: string): Promise<InteractionDetails>;
-export function getInteraction(ids: string[]): Promise<InteractionDetails[]>;
+export function getInteraction(id: string): InteractionDetails | Promise<InteractionDetails>;
+export function getInteraction(ids: string[]): InteractionDetails[] | Promise<InteractionDetails[]>;
 
 /**
  * removes specified interaction from the mock server
  * @param id interaction id
  */
-export function removeInteraction(id: string): void;
-export function removeInteraction(ids: string[]): void;
-export function removeInteraction(id: string): Promise<void>;
-export function removeInteraction(ids: string[]): Promise<void>;
+export function removeInteraction(id: string): void | Promise<void>;
+export function removeInteraction(ids: string[]): void | Promise<void>;
 
 /**
  * clears all interactions from the server

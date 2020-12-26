@@ -15,14 +15,14 @@ Interactions can be added or removed from the mock server in the following ways.
   * `pactum.addPactInteraction({ })` - auto removed after the test case execution
   * `pactum.addInteraction({ })` - auto removed after the test case execution
 * When using pactum as a **testing tool** or **mock server**
-  * `pactum.mock.addDefaultMockInteraction({ })`
+  * `pactum.mock.addDefaultInteraction({ })`
   * `pactum.mock.addDefaultPactInteraction({ })`
-  * `pactum.mock.addDefaultMockInteractions([{ }])`
+  * `pactum.mock.addDefaultInteractions([{ }])`
   * `pactum.mock.addDefaultPactInteractions([{ }])`
   * `pactum.mock.removeDefaultInteraction('')`
   * `pactum.mock.clearDefaultInteractions()`
 * Through **remote api**
-  * `/api/pactum/mockInteraction`
+  * `/api/pactum/interaction`
   * `/api/pactum/pactInteraction`
 
 Learn more about these methods at [Mock Server](https://github.com/ASaiAnudeep/pactum/wiki/Mock-Server)
@@ -101,7 +101,7 @@ pactum.addInteraction({
 });
 
 // Dynamic Object (change behavior on consecutive calls)
-pactum.addDefaultMockInteraction({
+pactum.addDefaultInteraction({
   withRequest: {
     method: 'GET',
     path: '/api/projects/1'

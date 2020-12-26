@@ -42,6 +42,8 @@ const mock = {
       let raw = interactions[i];
       if (typeof raw === 'string') {
         raw = hr.interaction(raw, data);
+      } else if (typeof raw === 'object' && typeof raw.name === 'string') {
+        raw = hr.interaction(raw.name, raw.data || data);
       }
       const interaction = new Interaction(raw, true);
       this._server.addInteraction(interaction.id, interaction);

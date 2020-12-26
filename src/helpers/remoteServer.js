@@ -5,37 +5,23 @@ const config = require('../config');
 const remote = {
 
   addInteraction(interactions, data, alone) {
-    return addInteractions(interactions, data, 'api/pactum/interactions', alone);
+    return addInteractions(interactions, data, alone);
   },
 
-  // addPactInteraction(interactions, data, alone) {
-  //   return addInteractions(interactions, data, 'api/pactum/pactInteractions', 'PACT', alone);
-  // },
-
   async getInteraction(ids, alone) {
-    let interactions = await Promise.all([
-      get(`${config.mock.remote}/api/pactum/pactInteractions?ids=${ids.join(',')}`),
-      get(`${config.mock.remote}/api/pactum/mockInteractions?ids=${ids.join(',')}`)
-    ]);
-    interactions = interactions[0].concat(interactions[1]);
+    const interactions = await get(`${config.mock.remote}/api/pactum/interactions?ids=${ids.join(',')}`);
     return alone ? interactions[0] : interactions;
   },
 
   removeInteraction(ids) {
-    return Promise.all([
-      del(`${config.mock.remote}/api/pactum/pactInteractions?ids=${ids.join(',')}`),
-      del(`${config.mock.remote}/api/pactum/mockInteractions?ids=${ids.join(',')}`)
-    ]);
+    return del(`${config.mock.remote}/api/pactum/interactions?ids=${ids.join(',')}`);
   },
 
   clearInteractions() {
-    return Promise.all([
-      del(`${config.mock.remote}/api/pactum/pactInteractions`),
-      del(`${config.mock.remote}/api/pactum/mockInteractions`)
-    ]);
+    return del(`${config.mock.remote}/api/pactum/interactions`);
   }
 
-}
+};
 
 async function get(url) {
   const res = await phin({
@@ -74,13 +60,15 @@ async function del(url) {
   }
 }
 
-function getRawsAndHandlers(interactions) {
+function getRawsAndHandlers(interactions, data) {
   const raws = [];
   const handlers = [];
   for (let i = 0; i < interactions.length; i++) {
     const interaction = interactions[i];
     if (typeof interaction === 'string') {
-      handlers.push(interaction);
+      handlers.push({ name: interaction, data });
+    } else if (typeof interaction === 'object' && typeof interaction.name === 'string') {
+      handlers.push({ name: interaction.name, data: interaction.data || data });
     } else {
       raws.push(interaction);
     }
@@ -88,28 +76,14 @@ function getRawsAndHandlers(interactions) {
   return { raws, handlers };
 }
 
-function getHandlersPayload(handlerNames, type, data) {
-  const payload = [];
-  const handlers = [];
-  for (let i = 0; i < handlerNames.length; i++) {
-    const name = handlerNames[i];
-    handlers.push({ name, type });
-  }
-  if (handlers.length > 0) {
-    payload.push({ handlers, data });
-  }
-  return payload;
-}
-
-async function addInteractions(interactions, data, path, type, alone) {
-  const { raws, handlers } = getRawsAndHandlers(interactions);
+async function addInteractions(interactions, data, alone) {
+  const { raws, handlers } = getRawsAndHandlers(interactions, data);
   let ids = [];
   if (raws.length > 0) {
-    ids = ids.concat(await post(`${config.mock.remote}/${path}`, raws));
+    ids = ids.concat(await post(`${config.mock.remote}/api/pactum/interactions`, raws));
   }
   if (handlers.length > 0) {
-    const payload = getHandlersPayload(handlers, type, data);
-    ids = ids.concat(await post(`${config.mock.remote}/api/pactum/handlers`, payload));
+    ids = ids.concat(await post(`${config.mock.remote}/api/pactum/handlers`, handlers));
   }
   return alone ? ids[0] : ids;
 }

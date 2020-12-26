@@ -1,3 +1,4 @@
+const mock = require('../../src/exports/mock');
 const pactum = require('../../src/index');
 const handler = pactum.handler;
 
@@ -13,7 +14,7 @@ describe('Mock Interactions - Handler', () => {
         response: {
           status: 200
         }
-      }
+      };
     });
     handler.addInteractionHandler('get project', (ctx) => {
       return {
@@ -24,7 +25,7 @@ describe('Mock Interactions - Handler', () => {
         response: {
           status: 200
         }
-      }
+      };
     });
     handler.addInteractionHandler('get parent', (ctx) => {
       return {
@@ -35,19 +36,19 @@ describe('Mock Interactions - Handler', () => {
         response: {
           status: 200
         }
-      }
+      };
     });
     handler.addInteractionHandler('get child', (ctx) => {
       return {
         name: 'get parent',
         data: ctx.data || 'child'
-      }
+      };
     });
     handler.addInteractionHandler('get sub child', () => {
       return {
         name: 'get child',
         data: 'child/sub'
-      }
+      };
     });
   });
 
@@ -77,6 +78,14 @@ describe('Mock Interactions - Handler', () => {
       .useInteraction('get sub child')
       .get('http://localhost:9393/api/parent/child/sub')
       .expectStatus(200);
+  });
+
+  it('GET - handler name & custom data by default mock', async () => {
+    mock.addInteraction({ name: 'get project', data: 1});
+    await pactum.spec()
+      .get('http://localhost:9393/api/projects/1')
+      .expectStatus(200);
+    mock.clearInteractions();
   });
 
 });
