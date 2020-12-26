@@ -9,15 +9,10 @@ const config = require('../../src/config');
 
 describe('Mock', () => {
 
-  before(() => {
-    config.pact.consumer = 'unit-test-consumer';
-  });
-
   beforeEach(() => {
     this.serverStartStub = sandbox.stub(Server.prototype, 'start');
     this.serverStopStub = sandbox.stub(Server.prototype, 'stop');
     this.serverAddInteractionStub = sandbox.stub(Server.prototype, 'addInteraction');
-    // this.serverAddPactInteractionStub = sandbox.stub(Server.prototype, 'addPactInteraction');
     this.serverRemoveInteractionStub = sandbox.stub(Server.prototype, 'removeInteraction');
     this.helperGetRandomIdStub = sandbox.stub(helper, 'getRandomId');
   });
@@ -145,7 +140,6 @@ describe('Mock', () => {
   });
 
   after(() => {
-    config.pact.consumer = '';
     config.mock.port = 9393;
   });
 

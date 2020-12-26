@@ -5,7 +5,7 @@ const { like, regex } = require('pactum-matchers');
 const Interaction = require('../../src/models/Interaction.model');
 const helper = require('../../src/helpers/helper');
 
-describe('Interaction - Mock', () => {
+describe('Interaction', () => {
 
   before(() => {
     this.helperGetRandomIdStub = sandbox.stub(helper, 'getRandomId');
@@ -787,6 +787,14 @@ describe('Interaction - Mock', () => {
 
   it('invalid mock interaction - undefined', () => {
     expect(function () { new Interaction(undefined, true); }).to.throws('`interaction` is required');
+  });
+
+  it('invalid mock interaction - array response', () => {
+    expect(function () { new Interaction({ request: { method: 'GET', path: '/s'}, response: [] }, true); }).to.throws('`response` is required');
+  });
+
+  it('invalid mock interaction - invalid status', () => {
+    expect(function () { new Interaction({ request: { method: 'GET', path: '/s'}, response: { status: 'sad'} }, true); }).to.throws('`response.status` is required');
   });
 
   after(() => {

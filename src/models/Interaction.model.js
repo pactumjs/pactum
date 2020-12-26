@@ -34,13 +34,7 @@ function validate(raw) {
   if (!helper.isValidObject(raw)) {
     throw new PactumInteractionError('`interaction` is required');
   }
-  const { provider, flow, request, response } = raw;
-  if (provider && typeof provider !== 'string') {
-    throw new PactumInteractionError('`provider` should be string');
-  }
-  if (flow && typeof flow !== 'string') {
-    throw new PactumInteractionError('`flow` should be string');
-  }
+  const { request, response } = raw;
   if (!request) {
     throw new PactumInteractionError('`request` is required');
   }

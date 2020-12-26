@@ -88,7 +88,7 @@ class Logger {
 
 function getMessage(msg) {
   try {
-    return typeof msg === 'object' ? JSON.stringify(msg, null, 2) : msg; 
+    return typeof msg === 'object' ? JSON.stringify(msg, null, 2) : msg;
   } catch (_) {
     return msg;
   }

@@ -1,8 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-
-const log = require('./logger');
-
 const helper = {
 
   getJson(jsonString) {

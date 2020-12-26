@@ -42,7 +42,7 @@ const stash = {
 
   addDataMap(maps) {
     if (!Array.isArray(maps)) {
-      maps = [maps]
+      maps = [maps];
     }
     maps.forEach(map => Object.assign(dataMap, map));
     config.data.ref.map.processed = false;
@@ -60,7 +60,7 @@ const stash = {
 
   addDataTemplate(templates) {
     if (!Array.isArray(templates)) {
-      templates = [templates]
+      templates = [templates];
     }
     templates.forEach(template => Object.assign(dataTemplate, template));
     config.data.template.processed = false;
