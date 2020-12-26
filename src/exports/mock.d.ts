@@ -107,28 +107,6 @@ export function addInteraction(handlers: string[], data?: any): string[] | Promi
 export function addInteraction(handler: Handler, data?: any): string | Promise<string>;
 export function addInteraction(handlers: Handler[], data?: any): string[] | Promise<string[]>;
 
-// /**
-//  * adds pact interaction used for contract testing
-//  * @returns interaction id
-//  * @example
-//  * mock.addPactInteraction({
-//  *  provider: 'order-service',
-//  *  state: 'there is an order with id 1',
-//  *  uponReceiving: 'request for order',
-//  *  withRequest: {
-//  *   method: 'GET',
-//  *   path: '/api/orders/1'
-//  *  },
-//  *  willRespondWith: {
-//  *   status: 200,
-//  *   body: 'your order with id 1'
-//  *  }
-//  * });
-//  */
-// export function addPactInteraction(interaction: PactInteraction | string): string;
-// export function addPactInteraction(interactions: PactInteraction[] | string[]): string[];
-// export function addPactInteraction(interaction: PactInteraction | string): Promise<string>;
-// export function addPactInteraction(interactions: PactInteraction[] | string[]): Promise<string[]>;
 /**
  * returns interaction details
  */

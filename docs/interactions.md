@@ -69,11 +69,11 @@ Type: `Function`<br>
 ```javascript
 // Static Object
 pactum.addInteraction({
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/currency/INR'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     headers: {
       'content-type': 'application/json'
@@ -87,11 +87,11 @@ pactum.addInteraction({
 
 // Custom Function
 pactum.addInteraction({
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/currency/INR'
   },
-  willRespondWith: function (req, res) {
+  response: function (req, res) {
     res.status(200);
     res.send({
       id: 1,
@@ -102,11 +102,11 @@ pactum.addInteraction({
 
 // Dynamic Object (change behavior on consecutive calls)
 pactum.addDefaultInteraction({
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/projects/1'
   },
-  willRespondWith: {
+  response: {
     status: 204, // default response
     onCall: {
       0: {
@@ -158,11 +158,11 @@ pactum.addPactInteraction({
   provider: 'currency-service',
   state: 'there is INR currency',
   uponReceiving: 'a request for INR currency',
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/currency/INR'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     headers: {
       'content-type': 'application/json'
@@ -181,7 +181,7 @@ In real world applications, sometimes it is hard to match an expected request/re
 
 ```javascript
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders',
     query: {
@@ -189,7 +189,7 @@ const interaction = {
       id: 'p144XiRTu'
     }
   },
-  willRespondWith: {
+  response: {
     status: 200
   }
 }
@@ -227,7 +227,7 @@ Type matching for primitive data types - *string*/*number*/*boolean*
 ```javascript
 const { like } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders',
     query: {
@@ -235,7 +235,7 @@ const interaction = {
       id: like('abc')
     }
   },
-  willRespondWith: {
+  response: {
     status: 200,
     body: {
       // matches if it has quantity & active properties with number & bool types
@@ -251,11 +251,11 @@ Type matching for objects in **pactum** deviates from in **pact.io** when matchi
 ```javascript
 const { like } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     // matches if body is JSON & has quantity & active properties with number & bool types
     body: like({
@@ -270,11 +270,11 @@ const interaction = {
 // matching doesn't expand to nested objects
 const { like } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     // matches if body is JSON object
     // & it has quantity, active & item properties with number, bool & object types respectively
@@ -295,11 +295,11 @@ const interaction = {
 // to match nested objects with type, we need apply 'like()' explicitly to nested objects
 const { like } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     // matches if body is JSON object
     // & it has quantity, active, item & delivery properties with number, bool & object types respectively
@@ -328,11 +328,11 @@ const interaction = {
 ```javascript
 const { eachLike } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/orders'
   },
-  willRespondWith: {
+  response: {
     status: 200,
     // matches if body is an array of JSON objects
     // & each object in array should have it has quantity, active, item
@@ -361,11 +361,11 @@ What you need is a way to say "I expect something matching this regular expressi
 ```javascript
 const { regex } = pactum.matchers;
 const interaction = {
-  withRequest: {
+  request: {
     method: 'GET',
     path: regex('/api/projects/\\d+')
   },
-  willRespondWith: {
+  response: {
     status: 200,
     body: {
       name: 'xyx'
@@ -393,7 +393,7 @@ const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers
 it('Matchers - Path & Query', () => {
   return pactum
     .addInteraction({
-      withRequest: {
+      request: {
         method: 'GET',
         // Matches path with value in matcher. Value inside generate is used in contract testing.
         path: regex({ generate: '/api/projects/1', matcher: /\/api\/projects\/\d+/ }),
@@ -404,7 +404,7 @@ it('Matchers - Path & Query', () => {
           age: '10'
         } 
       },
-      willRespondWith: {
+      response: {
         status: 200
       }
     })
@@ -416,7 +416,7 @@ it('Matchers - Path & Query', () => {
 it('Matchers - Body', () => {
   return pactum
     .addInteraction({
-      withRequest: {
+      request: {
         method: 'POST',
         path: '/api/person',
         // checks if the body has array of objects with id, name & address
@@ -432,7 +432,7 @@ it('Matchers - Body', () => {
           })
         })
       },
-      willRespondWith: {
+      response: {
         status: 200
       }
     })
@@ -462,11 +462,11 @@ const { like, somethingLike, term, regex, eachLike, contains } = pactum.matchers
 it('Matchers - Body', () => {
   return pactum
     .addInteraction({
-      withRequest: {
+      request: {
         method: 'POST',
         path: '/api/person'
       },
-      willRespondWith: {
+      response: {
         status: 200,
         // create a single array of object with id, name & address
         body: eachLike({

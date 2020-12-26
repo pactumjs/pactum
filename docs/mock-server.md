@@ -111,7 +111,7 @@ mock.addInteraction({
   request: {
     method: 'GET',
     path: '/api/users',
-    query: {
+    queryParams: {
       id: 1
     }
   },
@@ -129,7 +129,7 @@ mock.addInteraction({
   request: {
     method: 'GET',
     path: '/api/users',
-    query: {
+    queryParams: {
       id: 2
     }
   },
@@ -329,7 +329,7 @@ handler.addInteractionHandler('get product', (ctx) => {
     request: {
       method: 'GET',
       path: '/api/inventory',
-      query: {
+      queryParams: {
         product: ctx.data.product
       }
     },
@@ -359,7 +359,7 @@ handler.addInteractionHandler('get product', (ctx) => {
     request: {
       method: 'GET',
       path: '/api/inventory',
-      query: {
+      queryParams: {
         product: ctx.data.product
       }
     },
@@ -460,7 +460,7 @@ const interaction = {
   request: {
     method: 'GET',
     path: '/api/orders',
-    query: {
+    queryParams: {
       // matches if it has id & of type string
       id: like('abc')
     }

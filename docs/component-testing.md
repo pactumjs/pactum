@@ -127,14 +127,14 @@ const pactum = require('pactum');
 it('should buy a product which is in stock', async () => {
   await pactum.spec()
     .useInteraction({
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/inventory',
-        query: {
+        queryParams: {
           product: 'iPhone'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           "InStock": true
@@ -152,14 +152,14 @@ it('should buy a product which is in stock', async () => {
 it('should not buy a product which is out-of-stock', async () => {
   await pactum.spec()
     .useInteraction({
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/inventory',
-        query: {
+        queryParams: {
           product: 'iPhone'
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           "InStock": false
@@ -186,11 +186,11 @@ Interaction can also contain expectations.
 it('should not get health', async () => {
   await pactum.spec()
     .useInteraction({
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/health'
       },
-      willRespondWith: {
+      response: {
         status: 200
       },
       expects: {
@@ -246,14 +246,14 @@ const handler = pactum.handler;
 before(async () => {
   handler.addInteractionHandler('get product', (ctx) => {
     return {
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/inventory',
-        query: {
+        queryParams: {
           product: ctx.data.product
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         body: {
           "InStock": ctx.data.inStock
@@ -339,14 +339,14 @@ const handler = pactum.handler;
 
 handler.addInteractionHandler('get product', (ctx) => {
   return {
-    withRequest: {
+    request: {
       method: 'GET',
       path: '/api/inventory',
-      query: {
+      queryParams: {
         product: ctx.data.product
       }
     },
-    willRespondWith: {
+    response: {
       status: 200,
       body: {
         "InStock": ctx.data.inStock

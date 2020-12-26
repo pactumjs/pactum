@@ -123,14 +123,14 @@ pactum.addPactInteraction({
   provider: 'product-service',
   state: 'there is product with id 190',
   uponReceiving: 'a request for product',
-  withRequest: {
+  request: {
     method: 'GET',
     path: '/api/products',
     query: {
       id: 190
     }
   },
-  willRespondWith: {
+  response: {
     status: 200,
     headers: {
       'content-type': 'application/json'
@@ -164,14 +164,14 @@ it('should fetch order details', async () => {
       provider: 'product-service',
       state: 'there is product with id 190',
       uponReceiving: 'a request for product',
-      withRequest: {
+      request: {
         method: 'GET',
         path: '/api/products',
         query: {
           id: 190
         }
       },
-      willRespondWith: {
+      response: {
         status: 200,
         headers: {
           'content-type': 'application/json'
