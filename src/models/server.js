@@ -5,6 +5,7 @@ const helper = require('../helpers/helper');
 const utils = require('../helpers/utils');
 const log = require('../helpers/logger');
 const hr = require('../helpers/handler.runner');
+const rlc = require('../helpers/reporter.lifeCycle');
 const config = require('../config');
 
 class Server {
@@ -122,6 +123,7 @@ function sendInteractionFoundResponse(req, res, interaction) {
   }
   interaction.callCount += 1;
   updateCalls(req, interaction);
+  rlc.afterInteraction(interaction);
 }
 
 function updateCalls(req, interaction) {

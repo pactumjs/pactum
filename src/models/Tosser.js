@@ -107,6 +107,7 @@ class Tosser {
     if (this.mockIds.length > 0) {
       this.interactions.length = 0;
       this.interactions = this.interactions.concat(await mock.getInteraction(this.mockIds));
+      this.spec.interactions = this.interactions;
     }
   }
 

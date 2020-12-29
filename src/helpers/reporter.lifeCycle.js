@@ -59,6 +59,10 @@ const rlc = {
       };
       reporter.afterTest(data);
     }
+  },
+
+  afterInteraction(interaction) {
+    reporter.afterInteraction(interaction);
   }
 
 };
