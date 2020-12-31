@@ -63,7 +63,7 @@ describe('request', () => {
   });
 
   afterEach(() => {
-   config.request.headers = {}; 
+   config.request.headers = {};
   });
 
 });

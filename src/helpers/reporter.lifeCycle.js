@@ -21,7 +21,7 @@ const rlc = {
         method: spec._request.method,
         path: spec._request.path,
         headers: spec._request.headers,
-        body: spec._request.data
+        body: spec._request.body
       };
       if (spec._response) {
         data.response = {
