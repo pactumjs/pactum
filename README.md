@@ -115,18 +115,18 @@ Scenario: Check TeaPot
 Running **pactum** as a standalone *mock server*.
 
 ```javascript
-const pactum = require('pactum');
+const { mock } = require('pactum');
 const { regex } = require('pactum-matchers');
 
-pactum.mock.addInteraction({
-  withRequest: {
+mock.addInteraction({
+  request: {
     method: 'GET',
     path: '/api/projects',
-    query: {
+    queryParams: {
       date: regex('2020-12-12', /^\d{4}-\d{2}-\d{2}$/)
     }
   },
-  willRespondWith: {
+  response: {
     status: 200,
     headers: {
       'content-type': 'application/json'
@@ -138,7 +138,7 @@ pactum.mock.addInteraction({
   }
 });
 
-pactum.mock.start(3000);
+mock.start(3000);
 ```
 
 # Notes

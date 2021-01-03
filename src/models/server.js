@@ -6,13 +6,14 @@ const utils = require('../helpers/utils');
 const log = require('../helpers/logger');
 const hr = require('../helpers/handler.runner');
 const rlc = require('../helpers/reporter.lifeCycle');
+const reporter = require('../exports/reporter');
 const config = require('../config');
 
 class Server {
 
   constructor() {
     this.app = null;
-    this.interactions =  new Map();
+    this.interactions = new Map();
   }
 
   start() {
@@ -204,6 +205,9 @@ function registerPactumRemoteRoutes(server) {
       case '/api/pactum/interactions':
         handleRemoteInteractions(req, res, server);
         break;
+      case '/api/pactum/reporter/end':
+        handlerRemoteReporterEnd(res);
+        break;
       default:
         res.writeHead(404, { "Content-Type": "text/plain" });
         res.write("404 Not Found\n");
@@ -283,10 +287,25 @@ function handleRemoteInteractions(req, res, server) {
         break;
     }
   } catch (error) {
-    log.error(`Error handling remote interaction - ${error}`);
-    res.status(400);
-    res.send({ error: error.message });
+    handlerError('Error handling remote interaction', error, res);
   }
+}
+
+async function handlerRemoteReporterEnd(res) {
+  res = new ExpressResponse(res);
+  try {
+    await reporter.end();
+    res.status(200);
+    res.send({ message: 'Done' });
+  } catch (error) {
+    handlerError('Error running reporter end', error, res);
+  }
+}
+
+function handlerError(message, error, res) {
+  log.error(message, error);
+  res.status(500);
+  res.send({ error });
 }
 
 function bodyParser(req, res, next) {

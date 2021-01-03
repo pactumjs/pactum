@@ -197,11 +197,33 @@ describe('Remote- invalid requests', () => {
 
 describe('Remote - Health', () => {
 
-  it('publish interactions - not exercised', async () => {
+  it('get health', async () => {
     await pactum.spec()
       .get('http://localhost:9393/api/pactum/health')
       .expectStatus(200)
       .expectBody('OK');
+  });
+
+});
+
+describe('Remote - Reporter', () => {
+
+  it('reporter end - no reporters', async () => {
+    await pactum.spec()
+      .post('http://localhost:9393/api/pactum/reporter/end')
+      .expectStatus(200);
+  });
+
+  it('reporter end - with reporter fails', async () => {
+    pactum.reporter.add({
+      end() {
+        throw 'Some Error';
+      }
+    });
+    await pactum.spec()
+      .post('http://localhost:9393/api/pactum/reporter/end')
+      .expectStatus(500);
+    pactum.reporter.get().length = 0;
   });
 
 });
