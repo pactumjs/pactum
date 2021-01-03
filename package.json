@@ -1,7 +1,7 @@
 {
   "name": "pactum",
-  "version": "3.0.2",
-  "description": "REST API Testing Tool to write e2e, integration, contract & component or service level tests",
+  "version": "3.0.3",
+  "description": "REST API Testing Tool for all levels of testing in a Test Pyramid",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "files": [
@@ -45,6 +45,7 @@
     "server",
     "JSON",
     "pactum",
+    "pactumjs",
     "microservice",
     "microservices",
     "test",
@@ -53,11 +54,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ASaiAnudeep/pactum.git"
+    "url": "https://github.com/pactumjs/pactum.git"
   },
-  "homepage": "https://asaianudeep.github.io/pactum",
+  "homepage": "https://pactumjs.github.io",
   "bugs": {
-    "url": "https://github.com/ASaiAnudeep/pactum/issues"
+    "url": "https://github.com/pactumjs/pactum/issues"
   },
   "author": "Anudeep <asa.anudeep4@gmail.com>",
   "license": "ISC",

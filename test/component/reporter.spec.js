@@ -6,13 +6,17 @@ const jr = {
   afterSpec() { },
   afterStep() { },
   afterTest() { },
+  afterInteraction() { },
   end() { }
 };
+
+const jrr = {};
 
 describe('Reporter', () => {
 
   before(() => {
     reporter.add(jr);
+    reporter.add(jrr);
   });
 
   describe('Specs', () => {

@@ -26,7 +26,7 @@ describe('Data Processing - Templates', () => {
       'Address': {
         'Street': 'Main'
       }
-    }
+    };
     dp.processTemplates();
     expect(dp.template).deep.equals({
       'User': {
@@ -340,7 +340,7 @@ describe('Data Processing - Actual Data - Only Templates', () => {
   });
 
   it('processData - empty object', () => {
-    let data = {}
+    let data = {};
     data = dp.processData(data);
     expect(data).deep.equals({});
   });
@@ -484,7 +484,7 @@ describe('Data Processing - Actual Data - Only Maps', () => {
   });
 
   it('processData - empty object', () => {
-    let data = {}
+    let data = {};
     data = dp.processData(data);
     expect(data).deep.equals({});
   });

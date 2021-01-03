@@ -311,23 +311,23 @@ describe('Spec', () => {
   });
 
   it('name - Custom Name', function() {
-    let spec = new Spec();
-    spec.name('Custom Name')
+    const spec = new Spec();
+    spec.name('Custom Name');
     expect(spec._name).equals('Custom Name');
   });
 
   it('name - passing mocha context', function() {
-    let spec = new Spec(this);
+    const spec = new Spec(this);
     expect(spec._name).equals('Spec name - passing mocha context');
   });
 
   it('name - passing invalid context to spec', function() {
-    let spec = new Spec({});
+    const spec = new Spec({});
     expect(spec._name).equals('');
   });
 
   it('name - passing invalid context with test to spec', function() {
-    let spec = new Spec({ test: null });
+    const spec = new Spec({ test: null });
     expect(spec._name).equals('');
   });
 

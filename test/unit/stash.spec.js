@@ -7,7 +7,7 @@ describe('Stash', () => {
   it('default path not found', () => {
     let err;
     try {
-      stash.loadData();  
+      stash.loadData();
     } catch (error) {
       err = error;
     }
@@ -17,7 +17,7 @@ describe('Stash', () => {
   it('default path not found', () => {
     let err;
     try {
-      stash.loadData('./src/index.js');  
+      stash.loadData('./src/index.js');
     } catch (error) {
       err = error;
     }

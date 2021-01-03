@@ -29,6 +29,7 @@ const pactum = {
   },
 
   flow(name) {
+    if (typeof name !== 'string' || !name) throw `Invalid flow name`;
     const spec = new Spec();
     spec.flow = name;
     return spec;

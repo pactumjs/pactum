@@ -22,9 +22,14 @@ const reporter = {
     reporters.forEach(rpt => { if (rpt['afterTest']) rpt.afterTest(data); });
   },
 
+  afterInteraction(data) {
+    reporters.forEach(rpt => { if (rpt['afterInteraction']) rpt.afterInteraction(data); });
+  },
+
   async end() {
     for (let i = 0; i < reporters.length; i++) {
-      await reporters[i].end();
+      const rpt = reporters[i];
+      if (rpt['end']) await rpt.end();
     }
   }
 

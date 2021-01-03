@@ -20,8 +20,10 @@ const rlc = {
         url: spec._request.url,
         method: spec._request.method,
         path: spec._request.path,
+        pathParams: spec._request.pathParams,
+        queryParams: spec._request.queryParams,
         headers: spec._request.headers,
-        body: spec._request.data
+        body: spec._request.body
       };
       if (spec._response) {
         data.response = {
@@ -59,6 +61,10 @@ const rlc = {
       };
       reporter.afterTest(data);
     }
+  },
+
+  afterInteraction(interaction) {
+    reporter.afterInteraction(interaction);
   }
 
 };
