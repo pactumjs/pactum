@@ -1,11 +1,12 @@
 const pactum = require('../../src/index');
 const stash = require('../../src/exports/stash');
+const { addInteractionHandler } = pactum.handler;
 
 describe('Stores', () => {
 
-  it('store single value', async () => {
-    await pactum.spec()
-      .useInteraction({
+  before(() => {
+    addInteractionHandler('get stores', () => {
+      return {
         request: {
           method: 'GET',
           path: '/api/stores'
@@ -16,12 +17,10 @@ describe('Stores', () => {
             id: 1
           }
         }
-      })
-      .get('http://localhost:9393/api/stores')
-      .expectStatus(200)
-      .stores('UserId', 'id');
-    await pactum.spec()
-      .useInteraction({
+      };
+    });
+    addInteractionHandler('post stores', () => {
+      return {
         request: {
           method: 'POST',
           path: '/api/stores',
@@ -32,14 +31,10 @@ describe('Stores', () => {
         response: {
           status: 200
         }
-      })
-      .post('http://localhost:9393/api/stores')
-      .withJson({
-        UserId: '$S{UserId}'
-      })
-      .expectStatus(200);
-    await pactum.spec()
-      .useInteraction({
+      };
+    });
+    addInteractionHandler('post stores with id', () => {
+      return {
         request: {
           method: 'POST',
           path: '/api/stores/1'
@@ -47,7 +42,25 @@ describe('Stores', () => {
         response: {
           status: 200
         }
+      };
+    });
+  });
+
+  it('store single value', async () => {
+    await pactum.spec()
+      .useInteraction('get stores')
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200)
+      .stores('UserId', 'id');
+    await pactum.spec()
+      .useInteraction('post stores')
+      .post('http://localhost:9393/api/stores')
+      .withJson({
+        UserId: '$S{UserId}'
       })
+      .expectStatus(200);
+    await pactum.spec()
+      .useInteraction('post stores with id')
       .post('http://localhost:9393/api/stores/$S{UserId}')
       .expectStatus(200);
   });
@@ -153,6 +166,26 @@ describe('Stores', () => {
       .withJson({
         UserId: '$S{CapturedUserId}'
       })
+      .expectStatus(200);
+  });
+
+  it('store single value after response', async () => {
+    const spec = pactum.spec();
+    await spec
+      .useInteraction('get stores')
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200);
+    spec.stores('UserId', 'id');
+    await pactum.spec()
+      .useInteraction('post stores')
+      .post('http://localhost:9393/api/stores')
+      .withJson({
+        UserId: '$S{UserId}'
+      })
+      .expectStatus(200);
+    await pactum.spec()
+      .useInteraction('post stores with id')
+      .post('http://localhost:9393/api/stores/$S{UserId}')
       .expectStatus(200);
   });
 

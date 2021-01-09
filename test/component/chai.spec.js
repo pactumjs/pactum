@@ -2,6 +2,7 @@ const { like } = require('pactum-matchers');
 const pactum = require('../../src/index');
 const handler = pactum.handler;
 const expect = pactum.expect;
+const ce = require('chai').expect;
 
 describe('Chai Like Assertions', () => {
 
@@ -78,6 +79,10 @@ describe('Chai Like Assertions', () => {
 
   it('should run a custom expect handler', async () => {
     expect(response).to.have._('a user');
+  });
+
+  it('should return custom data', async () => {
+    ce(spec.returns('name')).equals('snow');
   });
 
 });
