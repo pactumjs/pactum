@@ -19,10 +19,6 @@ const helper = {
     return Date.now().toString();
   },
 
-  /**
-   * validates if the value is string or not
-   * @param {string} value - value to be validated
-   */
   isValidString(value) {
     return (typeof value === 'string' && value);
   },
@@ -44,10 +40,6 @@ const helper = {
     return value !== null && typeof value === 'object' && !Array.isArray(value);
   },
 
-  /**
-   * returns stringified object with 2 spaces
-   * @param {object} obj - object
-   */
   stringify(obj) {
     if (this.isValidObject(obj)) {
       try {
