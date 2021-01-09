@@ -8,8 +8,10 @@
 
 **pactum** is a REST API Testing Tool used to automate e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies.
 
-- 🐦 Lightweight
+- 🎈 Lightweight
 - 🚀 Simple & Powerful
+- 🛠️ Compelling Mock Server
+- 💎 Elegant Data Management
 - 🔧 Extendable & Customizable
 - 📚 Clear & Comprehensive Testing Style
 - 🔗 Component, Contract & E2E testing of APIs
