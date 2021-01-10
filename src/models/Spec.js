@@ -4,6 +4,7 @@ const Expect = require('./expect');
 const State = require('./State');
 const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
+const th = require('../helpers/toss.helper');
 const { PactumRequestError } = require('../helpers/errors');
 const responseExpect = require('../exports/expect');
 const handler = require('../exports/handler');
@@ -356,17 +357,29 @@ class Spec {
   }
 
   returns(handler) {
-    this._returns.push(handler);
+    if (this._response) {
+      return th.getOutput(this, [handler]);
+    } else {
+      this._returns.push(handler);
+    }
     return this;
   }
 
   stores(name, path) {
-    this._stores.push({ name, path });
+    if (this._response) {
+      th.storeSpecData(this, [{ name, path }]);
+    } else {
+      this._stores.push({ name, path });
+    }
     return this;
   }
 
   records(name, path) {
-    this._recorders.push({ name, path });
+    if (this._response) {
+      th.recordSpecData(this, [{ name, path }]);
+    } else {
+      this._recorders.push({ name, path });
+    }
     return this;
   }
 

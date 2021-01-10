@@ -490,42 +490,27 @@ declare class Spec {
   expectResponseTime(value: number): Spec;
 
   /**
-   * stores spec response data 
+   * stores spec request & response data 
    */
   stores(name: string, path: string): Spec;
 
   /**
+   * stores spec request & response data 
+   */
+  stores(name: string, handlerName: string): Spec;
+
+  /**
    * returns custom response from json response using custom handler
-   * @example
-   * const id = await pactum.spec()
-   *  .get('some-url')
-   *  .expectStatus(200)
-   *  .returns('GetUserId');
    */
   returns(handlerName: string): Spec;
 
   /**
    * returns custom response from json response using json-query
-   * @example
-   * const id = await pactum.spec()
-   *  .get('some-url')
-   *  .expectStatus(200)
-   *  .returns('user.id') // json query
-   * // 'id' will be equal to '123' if response is { user: { id: 123 }}
-   * 
    */
-  returns(query: string): Spec;
+  returns(path: string): Spec;
 
   /**
    * returns custom response from json response using custom function
-   * @example
-   * const resp = await pactum.spec()
-   *  .get('some-url')
-   *  .expectStatus(200)
-   *  .returns('[0].name')
-   *  .returns((req, res) => { return res.json[0].id }) // custom function
-   * // 'resp' will be an array containing ['name', 'id']
-   * 
    */
   returns(handler: ReturnHandlerFunction): Spec;
 

@@ -1,14 +1,11 @@
 const phin = require('phin');
-const jqy = require('json-query');
-const config = require('../config');
-const hr = require('../helpers/handler.runner');
 const helper = require('../helpers/helper');
 const log = require('../helpers/logger');
 const rlc = require('../helpers/reporter.lifeCycle');
 const requestProcessor = require('../helpers/requestProcessor');
+const th = require('../helpers/toss.helper');
 const mock = require('../exports/mock');
 const handler = require('../exports/handler');
-const stash = require('../exports/stash');
 const request = require('../exports/request');
 
 class Tosser {
@@ -18,9 +15,6 @@ class Tosser {
     this.request = spec._request;
     this.state = spec._state;
     this.expect = spec._expect;
-    this.stores = spec._stores;
-    this.returns = spec._returns;
-    this.recorders = spec._recorders;
     this.interactions = spec.interactions;
     this.previousLogLevel = spec.previousLogLevel;
     this.response = {};
@@ -39,9 +33,9 @@ class Tosser {
     await this.getInteractionsFromServer();
     await this.removeInteractionsFromServer();
     this.recordData();
-    this.storeSpecData();
+    th.storeSpecData(this.spec, this.spec._stores);
     this.validate();
-    return this.getOutput();
+    return th.getOutput(this.spec, this.spec._returns);
   }
 
   setState() {
@@ -99,8 +93,8 @@ class Tosser {
 
   recordData() {
     const defaultRecorders = request.getDefaultRecorders();
-    defaultRecorders.forEach(recorder => { recordData(recorder, this.spec); });
-    this.recorders.forEach(recorder => { recordData(recorder, this.spec); });
+    th.recordSpecData(this.spec, defaultRecorders);
+    th.recordSpecData(this.spec, this.spec._recorders);
   }
 
   async getInteractionsFromServer() {
@@ -155,50 +149,9 @@ class Tosser {
     log.warn('Response', helper.getTrimResponse(this.response));
   }
 
-  storeSpecData() {
-    const ctx = { req: this.request, res: this.response };
-    for (let i = 0; i < this.stores.length; i++) {
-      const store = this.stores[i];
-      const specData = {};
-      const captureHandler = getCaptureHandlerName(store.path);
-      if (captureHandler) {
-        specData[store.name] = hr.capture(captureHandler, ctx);
-      } else {
-        specData[store.name] = getPathValueFromSpec(store.path, this.spec);
-      }
-      stash.addDataStore(specData);
-    }
-  }
-
   sleep(ms) {
     if (typeof ms === 'number') {
       return helper.sleep(ms);
-    }
-  }
-
-  getOutput() {
-    const outputs = [];
-    const ctx = { req: this.request, res: this.response };
-    for (let i = 0; i < this.returns.length; i++) {
-      const _return = this.returns[i];
-      if (typeof _return === 'function') {
-        outputs.push(_return(ctx));
-      }
-      if (typeof _return === 'string') {
-        const captureHandler = getCaptureHandlerName(_return);
-        if (captureHandler) {
-          outputs.push(hr.capture(captureHandler, ctx));
-        } else {
-          outputs.push(getPathValueFromSpec(_return, this.spec));
-        }
-      }
-    }
-    if (outputs.length === 1) {
-      return outputs[0];
-    } else if (outputs.length > 1) {
-      return outputs;
-    } else {
-      return this.response;
     }
   }
 
@@ -217,45 +170,6 @@ async function getResponse(req) {
   }
   res.responseTime = Date.now() - requestStartTime;
   return res;
-}
-
-function recordData(recorder, spec) {
-  try {
-    const { name, path } = recorder;
-    const captureHandler = getCaptureHandlerName(path);
-    if (captureHandler) {
-      spec.recorded[name] = hr.capture(captureHandler, { req: spec._request, res: spec._response });
-    } else {
-      spec.recorded[name] = getPathValueFromSpec(path, spec);
-    }
-  } catch (error) {
-    log.warn('Unable to record data');
-    log.warn(error.toString());
-  }
-}
-
-function getPathValueFromSpec(path, spec) {
-  let data;
-  if (path.startsWith('req.headers')) {
-    path = path.replace('req.headers', '');
-    data = spec._request.headers;
-  } else if (path.startsWith('req.body')) {
-    path = path.replace('req.body', '');
-    data = spec._request.body;
-  } else if (path.startsWith('res.headers')) {
-    path = path.replace('res.headers', '');
-    data = spec._response.headers;
-  } else {
-    path = path.replace('res.body', '');
-    data = spec._response.json;
-  }
-  return jqy(path, { data }).value;
-}
-
-function getCaptureHandlerName(name) {
-  if (helper.matchesStrategy(name, config.strategy.capture.handler)) {
-    return helper.sliceStrategy(name, config.strategy.capture.handler);
-  }
 }
 
 module.exports = Tosser;

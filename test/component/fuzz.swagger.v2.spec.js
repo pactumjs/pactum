@@ -130,6 +130,8 @@ describe('Fuzz', () => {
   it('swagger - with batch size & inspect', async () => {
     await pactum.fuzz()
       .onSwagger('http://localhost:9393/swagger.json')
+      .withHeaders('x', 'y')
+      .withHeaders({'x': 'z'})
       .withBatchSize(5)
       .inspect();
   });
