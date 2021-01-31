@@ -31,7 +31,7 @@ function getPathValueFromSpec(path, spec) {
 }
 
 function storeSpecData(spec, stores) {
-  const ctx = { req: spec._request, res: spec._response };
+  const ctx = { req: spec._request, res: spec._response, store: stash.getDataStore() };
   for (let i = 0; i < stores.length; i++) {
     const store = stores[i];
     const specData = {};

@@ -31,3 +31,7 @@ export function addDataMap(maps: object[]): void;
  */
 export function addDataTemplate(templates: object): void;
 export function addDataTemplate(templates: object[]): void;
+
+export function getDataMap(): object;
+export function getDataTemplate(): object;
+export function getDataStore(): object;

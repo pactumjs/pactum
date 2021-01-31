@@ -62,13 +62,13 @@ const handler = {
     throw new PactumHandlerError(`State Handler Not Found - '${name}'`);
   },
 
-  addDataFunHandler(name, func) {
+  addDataFuncHandler(name, func) {
     isValidHandler(name, func);
     dataHandlers[name] = func;
     config.data.ref.fun.enabled = true;
   },
 
-  getDataFunHandler(name) {
+  getDataFuncHandler(name) {
     if (dataHandlers[name]) return dataHandlers[name];
     throw new PactumHandlerError(`Data Handler Not Found - '${name}'`);
   },
