@@ -34,7 +34,7 @@ class Tosser {
     await this.removeInteractionsFromServer();
     this.recordData();
     th.storeSpecData(this.spec, this.spec._stores);
-    this.validate();
+    await this.validate();
     return th.getOutput(this.spec, this.spec._returns);
   }
 
@@ -111,11 +111,11 @@ class Tosser {
     }
   }
 
-  validate() {
+  async validate() {
     this.validateError();
     try {
       this.validateInteractions();
-      this.validateResponse();
+      await this.validateResponse();
       this.spec.status = 'PASSED';
       rlc.afterSpecReport(this.spec);
     } catch (error) {
@@ -140,8 +140,8 @@ class Tosser {
     this.expect.validateInteractions(this.interactions);
   }
 
-  validateResponse() {
-    this.expect.validate(this.request, this.response);
+  async validateResponse() {
+    await this.expect.validate(this.request, this.response);
   }
 
   printReqAndRes() {

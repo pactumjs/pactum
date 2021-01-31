@@ -48,7 +48,8 @@ class Expect {
     this._validateJsonMatchQuery(response);
     this._validateJsonSnapshot(response);
     this._validateResponseTime(response);
-    this._validateCustomExpectHandlers(request, response);
+    // for asynchronous expectations
+    return this._validateCustomExpectHandlers(request, response);
   }
 
   validateInteractions(interactions) {
@@ -313,15 +314,15 @@ class Expect {
     }
   }
 
-  _validateCustomExpectHandlers(request, response) {
+  async _validateCustomExpectHandlers(request, response) {
     for (let i = 0; i < this.customExpectHandlers.length; i++) {
       const requiredHandler = this.customExpectHandlers[i];
       const ctx = { req: request, res: response, data: requiredHandler.data };
       if (typeof requiredHandler.handler === 'function') {
-        requiredHandler.handler(ctx);
+        await requiredHandler.handler(ctx);
       } else {
         const handlerFun = handler.getExpectHandler(requiredHandler.handler);
-        handlerFun(ctx);
+        await handlerFun(ctx);
       }
     }
   }
