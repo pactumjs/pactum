@@ -13,7 +13,7 @@ export interface Have {
   jsonMatch(value: object): void;
   jsonMatchAt(path: string, value: object): void;
   responseTimeLessThan(ms: number): void;
-  _(handler: string, data: any): void
+  _(handler: string, data: any): Promise<void>;
 }
 
 export interface To {

@@ -80,11 +80,11 @@ class Have {
 
   _(handler, data) {
     this.expect.customExpectHandlers.push({ handler, data });
-    this._validate();
+    return this._validate();
   }
 
   _validate() {
-    this.expect.validate({}, this.response);
+    return this.expect.validate({}, this.response);
   }
 
 }

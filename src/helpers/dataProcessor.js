@@ -99,7 +99,7 @@ const dataProcessor = {
         }
         if (refType === 'F') {
           const [handlerName, ..._args] = refValue.split(':');
-          const handlerFun = handler.getDataFunHandler(handlerName);
+          const handlerFun = handler.getDataFuncHandler(handlerName);
           values.push(handlerFun({ args: _args.length > 0 ? _args[0].split(',') : _args }));
         }
         if (refType === 'S') {

@@ -14,6 +14,14 @@ describe('Chai Like Assertions', () => {
       const res = ctx.res;
       expect(res).should.have.status(200);
     });
+    handler.addExpectHandler('a status 200', (ctx) => {
+      const res = ctx.res;
+      expect(res).should.have.status(200);
+    });
+    handler.addExpectHandler('a status 400', (ctx) => {
+      const res = ctx.res;
+      expect(res).should.have.status(400);
+    });
   });
 
   it('Given a user with name snow', () => {
@@ -49,8 +57,8 @@ describe('Chai Like Assertions', () => {
   });
 
   it('should return a valid user', async () => {
-    expect(response).to.have.json({ name: 'snow'});
-    expect(response).should.have.jsonLike({ name: 'snow'});
+    expect(response).to.have.json({ name: 'snow' });
+    expect(response).should.have.jsonLike({ name: 'snow' });
     expect(response).to.have.jsonAt('name', 'snow');
     expect(response).to.have.jsonLikeAt('name', 'snow');
     expect(response).to.have.body(`{"name":"snow"}`);
@@ -58,27 +66,42 @@ describe('Chai Like Assertions', () => {
   });
 
   it('should return a valid schema', async () => {
-    expect(response).to.have.jsonSchema({ properties: { name: { type: 'string' } }});
+    expect(response).to.have.jsonSchema({ properties: { name: { type: 'string' } } });
   });
 
   it('should return a valid schema at', async () => {
-    expect(response).to.have.jsonSchemaAt('.', { properties: { name: { type: 'string' } }});
+    expect(response).to.have.jsonSchemaAt('.', { properties: { name: { type: 'string' } } });
   });
 
   it('should return a match', async () => {
-    expect(response).to.have.jsonMatch(like({ name: 'snow'}));
+    expect(response).to.have.jsonMatch(like({ name: 'snow' }));
   });
 
   it('should return a match at', async () => {
-    expect(response).to.have.jsonMatchAt('.', like({ name: 'snow'}));
+    expect(response).to.have.jsonMatchAt('.', like({ name: 'snow' }));
   });
 
   it('should return a response within 500 ms', async () => {
     expect(response).to.have.responseTimeLessThan(500);
+    let err;
+    try {
+      expect(response).to.have.responseTimeLessThan(0);
+    } catch (error) {
+      err = error;
+    }
+    ce(err).not.undefined;
   });
 
   it('should run a custom expect handler', async () => {
-    expect(response).to.have._('a user');
+    let err;
+    await expect(response).to.have._('a user');
+    await expect(response).to.have._('a status 200');
+    try {
+      await expect(response).to.have._('a status 400');
+    } catch (error) {
+      err = error;
+    }
+    ce(err).not.undefined;
   });
 
   it('should return custom data', async () => {

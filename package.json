@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "REST API Testing Tool for all levels in a Test Pyramid",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -10,10 +10,7 @@
   "exports": {
     ".": "./src/index.js",
     "./handler": "./src/exports/handler.js",
-    "./matcher": "./src/exports/matcher.js",
     "./mock": "./src/exports/mock.js",
-    "./pact": "./src/exports/pact.js",
-    "./provider": "./src/exports/provider.js",
     "./request": "./src/exports/request.js",
     "./settings": "./src/exports/settings.js",
     "./state": "./src/exports/state.js"

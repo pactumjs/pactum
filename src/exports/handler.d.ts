@@ -28,6 +28,10 @@ interface RequestResponseContext {
   res: Response;
 }
 
+interface CaptureContext extends RequestResponseContext {
+  store?: object;
+}
+
 interface ExpectHandlerContext extends RequestResponseContext {
   data?: any;
 }
@@ -53,7 +57,7 @@ interface ParentHandler {
 export type SpecHandlerFunction = (ctx: SpecHandlerContext) => void;
 export type ExpectHandlerFunction = (ctx: ExpectHandlerContext) => void;
 export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
-export type ReturnHandlerFunction = (ctx: RequestResponseContext) => any;
+export type CaptureHandlerFunction = (ctx: CaptureContext) => any;
 export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
 export type DataHandlerFunction = (ctx: DataHandlerContext) => any;
 export type InteractionHandlerFunction = (ctx: InteractionContext) => Interaction | ParentHandler;
@@ -77,7 +81,7 @@ export function addRetryHandler(name: string, func: RetryHandlerFunction): void;
 /**
  * adds a custom return handler
  */
-export function addCaptureHandler(name: string, func: ReturnHandlerFunction): void;
+export function addCaptureHandler(name: string, func: CaptureHandlerFunction): void;
 
 /**
  * adds a custom state handler
@@ -87,7 +91,7 @@ export function addStateHandler(name: string, func: StateHandlerFunction): void;
 /**
  * adds a custom data handler
  */
-export function addDataFunHandler(name: string, func: DataHandlerFunction): void;
+export function addDataFuncHandler(name: string, func: DataHandlerFunction): void;
 
 /**
  * adds a custom interaction handler
