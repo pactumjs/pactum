@@ -56,17 +56,17 @@ class Tosser {
     const retryOptions = this.request.retryOptions;
     if (retryOptions) {
       const { count, delay, strategy } = retryOptions;
-      let retry = false;
+      let retry = true;
       for (let i = 0; i < count; i++) {
+        const ctx = { req: this.request, res: this.response };
         if (typeof strategy === 'function') {
-          retry = strategy(this.request, this.response);
+          retry = strategy(ctx);
         }
         if (typeof strategy === 'string') {
           const handlerFun = handler.getRetryHandler(strategy);
-          const ctx = { req: this.request, res: this.response };
           retry = handlerFun(ctx);
         }
-        if (retry) {
+        if (!retry) {
           await helper.sleep(delay);
           this.response = await getResponse(this.request);
         } else {
