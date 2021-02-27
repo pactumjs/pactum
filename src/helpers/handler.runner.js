@@ -10,6 +10,12 @@ const hr = {
 
   capture(name, ctx) {
     return handler.getCaptureHandler(name)(ctx);
+  },
+
+  spec(name, data, spec) {
+    if (typeof name !== 'undefined') {
+      handler.getSpecHandler(name)({ spec, data });
+    }
   }
 
 };

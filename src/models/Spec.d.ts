@@ -37,6 +37,15 @@ declare class Spec {
    *  .expectStatus(200);
    */
   setState(name: string, data?: any): Spec;
+
+  /**
+   * runs custom spec handler
+   * @example
+   * await pactum.spec()
+   *  .use('spec handler name', { optional: 'data' })
+   *  .expectStatus(200);
+   */
+  use(name: string, data?: any): Spec
   
   /**
    * adds a interaction to the server & auto removed after execution

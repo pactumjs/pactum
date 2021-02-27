@@ -87,11 +87,11 @@ export function stop(): Promise<void>;
  * @returns interaction id
  * @example
  * mock.addInteraction({
- *  withRequest: {
+ *  request: {
  *   method: 'GET',
  *   path: '/api/orders'
  *  },
- *  willRespondWith: {
+ *  response: {
  *   status: 200,
  *   body: 'your orders'
  *  }
