@@ -538,6 +538,7 @@ declare class Spec {
    *  .expectStatus(200)
    */
   wait(milliseconds: number): Spec;
+  wait(spec: Spec): Spec;
 
   /**
    * prints request & response

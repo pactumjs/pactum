@@ -27,7 +27,7 @@ class Spec {
     this._state = new State();
     this.previousLogLevel = null;
     this.interactions = [];
-    this._waitDuration = null;
+    this._wait = null;
     hr.spec(name, data, this);
   }
 
@@ -371,7 +371,7 @@ class Spec {
   }
 
   wait(ms) {
-    this._waitDuration = ms;
+    this._wait = ms;
     return this;
   }
 

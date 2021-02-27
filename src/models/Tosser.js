@@ -28,7 +28,7 @@ class Tosser {
     await this.addInteractionsToServer();
     await this.setResponse();
     this.inspect();
-    await this.sleep(this.spec._waitDuration);
+    await this.wait();
     this.setPreviousLogLevel();
     await this.getInteractionsFromServer();
     await this.removeInteractionsFromServer();
@@ -82,6 +82,15 @@ class Tosser {
     if (this.spec._inspect) {
       log.warn('Inspecting Request & Response');
       this.printReqAndRes();
+    }
+  }
+
+  async wait() {
+    const _wait = this.spec._wait;
+    if (typeof _wait === 'number') {
+      await helper.sleep(_wait);
+    } else if (_wait && typeof _wait === 'object') {
+      await _wait;
     }
   }
 
@@ -147,12 +156,6 @@ class Tosser {
   printReqAndRes() {
     log.warn('Request', this.request);
     log.warn('Response', helper.getTrimResponse(this.response));
-  }
-
-  sleep(ms) {
-    if (typeof ms === 'number') {
-      return helper.sleep(ms);
-    }
   }
 
 }
