@@ -2,6 +2,7 @@ const { compare } = require('pactum-matchers').utils;
 const graphQL = require('./graphQL');
 
 const log = require('./logger');
+const helper = require('./helper');
 
 const utils = {
 
@@ -43,6 +44,11 @@ const utils = {
       log.debug(`Interaction with id ${interactionId} failed to match - HTTP Body`);
     }
     return null;
+  },
+
+  printReqAndRes(request, response) {
+    log.warn('Request', request);
+    log.warn('Response', helper.getTrimResponse(response));
   }
 
 };

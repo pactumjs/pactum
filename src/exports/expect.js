@@ -1,11 +1,12 @@
 const ExpectModel = require('../models/expect');
+const utils = require('../helpers/utils');
 
 class Have {
 
-  constructor(response, request) {
+  constructor(response, spec) {
     this.expect = new ExpectModel();
     this.response = response;
-    this.request = request;
+    this.spec = spec;
   }
 
   status(code) {
@@ -84,30 +85,38 @@ class Have {
   }
 
   _validate() {
-    return this.expect.validate({}, this.response);
+    try {
+      return this.expect.validate({}, this.response);
+    } catch (error) {
+      if (this.spec && this.spec.status !== 'FAILED') {
+        this.spec.status = 'FAILED';
+        utils.printReqAndRes(this.spec._request, this.response);
+      }
+      throw error;
+    }
   }
 
 }
 
 class To {
 
-  constructor(response, request) {
-    this.have = new Have(response, request);
+  constructor(response, spec) {
+    this.have = new Have(response, spec);
   }
 
 }
 
 class Expect {
 
-  constructor(response, request) {
-    this.to = new To(response, request);
-    this.should = new To(response, request);
+  constructor(response, spec) {
+    this.to = new To(response, spec);
+    this.should = new To(response, spec);
   }
 
 }
 
-function expect(response, request) {
-  return new Expect(response, request);
+function expect(response, spec) {
+  return new Expect(response, spec);
 }
 
 module.exports = expect;

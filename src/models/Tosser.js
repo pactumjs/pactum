@@ -4,6 +4,7 @@ const log = require('../helpers/logger');
 const rlc = require('../helpers/reporter.lifeCycle');
 const requestProcessor = require('../helpers/requestProcessor');
 const th = require('../helpers/toss.helper');
+const utils = require('../helpers/utils');
 const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const request = require('../exports/request');
@@ -81,7 +82,7 @@ class Tosser {
   inspect() {
     if (this.spec._inspect) {
       log.warn('Inspecting Request & Response');
-      this.printReqAndRes();
+      utils.printReqAndRes(this.request, this.response);
     }
   }
 
@@ -131,7 +132,7 @@ class Tosser {
       this.spec.status = 'FAILED';
       this.spec.failure = error.toString();
       rlc.afterSpecReport(this.spec);
-      this.printReqAndRes();
+      utils.printReqAndRes(this.request, this.response);
       throw error;
     }
   }
@@ -151,11 +152,6 @@ class Tosser {
 
   async validateResponse() {
     await this.expect.validate(this.request, this.response);
-  }
-
-  printReqAndRes() {
-    log.warn('Request', this.request);
-    log.warn('Response', helper.getTrimResponse(this.response));
   }
 
 }

@@ -90,6 +90,12 @@ describe('Chai Like Assertions', () => {
       err = error;
     }
     ce(err).not.undefined;
+    try {
+      spec.response().to.have.responseTimeLessThan(0);
+    } catch (error) {
+      err = error;
+    }
+    ce(err).not.undefined;
   });
 
   it('should run a custom expect handler', async () => {

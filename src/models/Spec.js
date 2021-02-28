@@ -395,7 +395,7 @@ class Spec {
     if (!this._response) {
       throw new PactumRequestError(`'response()' should be called after resolving 'toss()'`);
     }
-    return responseExpect(this._response, this._request);
+    return responseExpect(this._response, this);
   }
 
 }
