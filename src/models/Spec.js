@@ -8,6 +8,7 @@ const th = require('../helpers/toss.helper');
 const { PactumRequestError } = require('../helpers/errors');
 const responseExpect = require('../exports/expect');
 const hr = require('../helpers/handler.runner');
+const rlc = require('../helpers/reporter.lifeCycle');
 
 class Spec {
 
@@ -396,6 +397,11 @@ class Spec {
       throw new PactumRequestError(`'response()' should be called after resolving 'toss()'`);
     }
     return responseExpect(this._response, this);
+  }
+
+  end() {
+    rlc.afterSpecReport(this);
+    return this;
   }
 
 }

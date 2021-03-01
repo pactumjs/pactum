@@ -8,6 +8,7 @@ const utils = require('../helpers/utils');
 const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const request = require('../exports/request');
+const config = require('../config');
 
 class Tosser {
 
@@ -127,11 +128,11 @@ class Tosser {
       this.validateInteractions();
       await this.validateResponse();
       this.spec.status = 'PASSED';
-      rlc.afterSpecReport(this.spec);
+      this.runReport();
     } catch (error) {
       this.spec.status = 'FAILED';
       this.spec.failure = error.toString();
-      rlc.afterSpecReport(this.spec);
+      this.runReport();
       utils.printReqAndRes(this.request, this.response);
       throw error;
     }
@@ -141,7 +142,7 @@ class Tosser {
     if (this.response instanceof Error) {
       this.spec.status = 'ERROR';
       this.spec.failure = this.response.toString();
-      rlc.afterSpecReport(this.spec);
+      this.runReport();
       this.expect.fail(this.response);
     }
   }
@@ -152,6 +153,12 @@ class Tosser {
 
   async validateResponse() {
     await this.expect.validate(this.request, this.response);
+  }
+
+  runReport() {
+    if (config.reporter.autoRun) {
+      rlc.afterSpecReport(this.spec);
+    }
   }
 
 }

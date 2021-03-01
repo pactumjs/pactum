@@ -44,6 +44,9 @@ const config = {
   },
   snapshot: {
     dir: '.pactum/snapshots'
+  },
+  reporter : {
+    autoRun: true
   }
 };
 

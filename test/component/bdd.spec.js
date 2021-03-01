@@ -1,10 +1,9 @@
 const { like } = require('pactum-matchers');
 const pactum = require('../../src/index');
-const handler = pactum.handler;
-const expect = pactum.expect;
+const { handler, expect, settings } = pactum;
 const ce = require('chai').expect;
 
-describe('Chai Like Assertions', () => {
+describe('BDD', () => {
 
   let spec = pactum.spec();
   let response;
@@ -112,6 +111,33 @@ describe('Chai Like Assertions', () => {
 
   it('should return custom data', async () => {
     ce(spec.returns('name')).equals('snow');
+  });
+
+});
+
+describe('BDD - AutoReportRunner Disabled', () => {
+
+  before(() => {
+    settings.setReporterAutoRun(false);
+    this.spec = pactum.spec();
+    this.spec.useInteraction('default get');
+  });
+
+  it('get default', () => {
+    this.spec.get('http://localhost:9393/default/get');
+  });
+
+  it('should return a response', async () => {
+    await this.spec.toss();
+  });
+
+  it('should return a status 200', () => {
+    this.spec.response().to.have.status(200);
+  });
+
+  after(() => {
+    this.spec.end();
+    settings.setReporterAutoRun(true);
   });
 
 });

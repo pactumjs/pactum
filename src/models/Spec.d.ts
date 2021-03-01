@@ -562,6 +562,11 @@ declare class Spec {
    * returns new instance of cleanup spec
    */
   clean(name?: string, data?: any): Spec;
+
+  /**
+   * runs registered reporters
+   */
+  end(): Spec;
 }
 
 declare namespace Spec {}

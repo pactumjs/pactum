@@ -16,3 +16,4 @@ export function setAssertHandlerStrategy(strategy: Strategy): void;
 export function setAssertExpressionStrategy(strategy: Strategy): void;
 export function setCaptureHandlerStrategy(strategy: Strategy): void;
 export function setSnapshotDirectoryPath(path: string): void;
+export function setReporterAutoRun(auto: boolean): void;
