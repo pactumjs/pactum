@@ -37,6 +37,15 @@ declare class Spec {
    *  .expectStatus(200);
    */
   setState(name: string, data?: any): Spec;
+
+  /**
+   * runs custom spec handler
+   * @example
+   * await pactum.spec()
+   *  .use('spec handler name', { optional: 'data' })
+   *  .expectStatus(200);
+   */
+  use(name: string, data?: any): Spec
   
   /**
    * adds a interaction to the server & auto removed after execution
@@ -529,6 +538,7 @@ declare class Spec {
    *  .expectStatus(200)
    */
   wait(milliseconds: number): Spec;
+  wait(spec: Spec): Spec;
 
   /**
    * prints request & response
@@ -552,6 +562,11 @@ declare class Spec {
    * returns new instance of cleanup spec
    */
   clean(name?: string, data?: any): Spec;
+
+  /**
+   * runs registered reporters
+   */
+  end(): Spec;
 }
 
 declare namespace Spec {}

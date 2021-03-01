@@ -7,7 +7,8 @@ const log = require('../helpers/logger');
 const th = require('../helpers/toss.helper');
 const { PactumRequestError } = require('../helpers/errors');
 const responseExpect = require('../exports/expect');
-const handler = require('../exports/handler');
+const hr = require('../helpers/handler.runner');
+const rlc = require('../helpers/reporter.lifeCycle');
 
 class Spec {
 
@@ -27,19 +28,8 @@ class Spec {
     this._state = new State();
     this.previousLogLevel = null;
     this.interactions = [];
-    this._waitDuration = null;
-    this._init(name, data);
-  }
-
-  _init(ctx, data) {
-    if (ctx && typeof ctx === "object") {
-      const test = ctx.test;
-      if (test && test.fullTitle) {
-        this._name = test.fullTitle();
-      }
-    } else {
-      this._runHandler(ctx, data);
-    }
+    this._wait = null;
+    hr.spec(name, data, this);
   }
 
   name(value) {
@@ -48,15 +38,13 @@ class Spec {
     return this;
   }
 
-  _runHandler(name, data) {
-    if (typeof name !== 'undefined') {
-      const fun = handler.getSpecHandler(name);
-      fun({ spec: this, data });
-    }
-  }
-
   setState(name, data) {
     this._state.add(name, data);
+    return this;
+  }
+
+  use(name, data) {
+    hr.spec(name, data, this);
     return this;
   }
 
@@ -384,7 +372,7 @@ class Spec {
   }
 
   wait(ms) {
-    this._waitDuration = ms;
+    this._wait = ms;
     return this;
   }
 
@@ -408,7 +396,12 @@ class Spec {
     if (!this._response) {
       throw new PactumRequestError(`'response()' should be called after resolving 'toss()'`);
     }
-    return responseExpect(this._response, this._request);
+    return responseExpect(this._response, this);
+  }
+
+  end() {
+    rlc.afterSpecReport(this);
+    return this;
   }
 
 }

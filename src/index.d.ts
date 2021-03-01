@@ -20,13 +20,13 @@ export * as state from './exports/state';
  *  .expectStatus(200);
  */
 export function spec(): Spec;
+
 /**
- * @param ctx - test runner context
- */
-export function spec(ctx?: object): Spec;
-/**
- * @param name - spec handler name
- * @param data - custom data
+ * returns an instance of a spec & runs custom spec handler
+ * @example
+ * await pactum.spec()
+ *  .use('spec handler name', { optional: 'data' })
+ *  .expectStatus(200);
  */
 export function spec(name: string, data?: any): Spec;
 

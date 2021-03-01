@@ -175,13 +175,18 @@ function getDelay(response) {
  * @param {ExpressResponse} res - HTTP response
  */
 function sendInteractionNotFoundResponse(req, res) {
-  log.warn('Interaction Not Found in Mock Server', {
+  const msg = {
     method: req.method,
     path: req.path,
     headers: req.headers,
-    query: req.query,
-    body: req.body
-  });
+  };
+  if (req.query && typeof req.query === 'object' && Object.keys(req.query) > 0) {
+    msg.queryParams = req.query;
+  }
+  if (req.body) {
+    msg.body = req.body;
+  }
+  log.warn('Interaction Not Found in Mock Server', msg);
   res.status(404);
   res.send('Interaction Not Found');
 }

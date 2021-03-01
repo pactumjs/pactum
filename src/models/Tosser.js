@@ -4,9 +4,11 @@ const log = require('../helpers/logger');
 const rlc = require('../helpers/reporter.lifeCycle');
 const requestProcessor = require('../helpers/requestProcessor');
 const th = require('../helpers/toss.helper');
+const utils = require('../helpers/utils');
 const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const request = require('../exports/request');
+const config = require('../config');
 
 class Tosser {
 
@@ -28,7 +30,7 @@ class Tosser {
     await this.addInteractionsToServer();
     await this.setResponse();
     this.inspect();
-    await this.sleep(this.spec._waitDuration);
+    await this.wait();
     this.setPreviousLogLevel();
     await this.getInteractionsFromServer();
     await this.removeInteractionsFromServer();
@@ -56,17 +58,17 @@ class Tosser {
     const retryOptions = this.request.retryOptions;
     if (retryOptions) {
       const { count, delay, strategy } = retryOptions;
-      let retry = false;
+      let retry = true;
       for (let i = 0; i < count; i++) {
+        const ctx = { req: this.request, res: this.response };
         if (typeof strategy === 'function') {
-          retry = strategy(this.request, this.response);
+          retry = strategy(ctx);
         }
         if (typeof strategy === 'string') {
           const handlerFun = handler.getRetryHandler(strategy);
-          const ctx = { req: this.request, res: this.response };
           retry = handlerFun(ctx);
         }
-        if (retry) {
+        if (!retry) {
           await helper.sleep(delay);
           this.response = await getResponse(this.request);
         } else {
@@ -81,7 +83,16 @@ class Tosser {
   inspect() {
     if (this.spec._inspect) {
       log.warn('Inspecting Request & Response');
-      this.printReqAndRes();
+      utils.printReqAndRes(this.request, this.response);
+    }
+  }
+
+  async wait() {
+    const _wait = this.spec._wait;
+    if (typeof _wait === 'number') {
+      await helper.sleep(_wait);
+    } else if (_wait && typeof _wait === 'object') {
+      await _wait;
     }
   }
 
@@ -117,12 +128,12 @@ class Tosser {
       this.validateInteractions();
       await this.validateResponse();
       this.spec.status = 'PASSED';
-      rlc.afterSpecReport(this.spec);
+      this.runReport();
     } catch (error) {
       this.spec.status = 'FAILED';
       this.spec.failure = error.toString();
-      rlc.afterSpecReport(this.spec);
-      this.printReqAndRes();
+      this.runReport();
+      utils.printReqAndRes(this.request, this.response);
       throw error;
     }
   }
@@ -131,7 +142,7 @@ class Tosser {
     if (this.response instanceof Error) {
       this.spec.status = 'ERROR';
       this.spec.failure = this.response.toString();
-      rlc.afterSpecReport(this.spec);
+      this.runReport();
       this.expect.fail(this.response);
     }
   }
@@ -144,14 +155,9 @@ class Tosser {
     await this.expect.validate(this.request, this.response);
   }
 
-  printReqAndRes() {
-    log.warn('Request', this.request);
-    log.warn('Response', helper.getTrimResponse(this.response));
-  }
-
-  sleep(ms) {
-    if (typeof ms === 'number') {
-      return helper.sleep(ms);
+  runReport() {
+    if (config.reporter.autoRun) {
+      rlc.afterSpecReport(this.spec);
     }
   }
 

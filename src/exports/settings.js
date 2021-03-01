@@ -21,6 +21,10 @@ const settings = {
 
   setSnapshotDirectoryPath(path) {
     config.snapshot.dir = path;
+  },
+
+  setReporterAutoRun(val) {
+    config.reporter.autoRun = val;
   }
 
 };
