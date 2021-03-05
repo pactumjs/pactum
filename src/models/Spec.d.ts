@@ -475,6 +475,16 @@ declare class Spec {
   expectJsonMatchAt(path: string, value: object): Spec;
 
   /**
+   * expects the json to strictly match with value
+   */
+  expectJsonMatchStrict(value: object): Spec;
+
+  /**
+   * expects the json at path to strictly match with value
+   */
+  expectJsonMatchStrictAt(value: object): Spec;
+
+  /**
    * expects the json to match with stored snapshots
    * @example
    * const { like } = require('pactum-matchers');

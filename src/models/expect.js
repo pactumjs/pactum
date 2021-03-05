@@ -25,6 +25,8 @@ class Expect {
     this.jsonSchemaQuery = [];
     this.jsonMatch = [];
     this.jsonMatchQuery = [];
+    this.jsonMatchStrict = [];
+    this.jsonMatchStrictQuery = [];
     this.jsonSnapshot = [];
     this.headers = [];
     this.headerContains = [];
@@ -46,6 +48,8 @@ class Expect {
     this._validateJsonSchemaQuery(response);
     this._validateJsonMatch(response);
     this._validateJsonMatchQuery(response);
+    this._validateJsonMatchStrict(response);
+    this._validateJsonMatchStrictQuery(response);
     this._validateJsonSnapshot(response);
     this._validateResponseTime(response);
     // for asynchronous expectations
@@ -264,6 +268,33 @@ class Expect {
       const rules = jmv.getMatchingRules(jQ.value, jQ.path);
       const expectedValue = jmv.getRawValue(jQ.value);
       const errors = jmv.validate(actualValue, expectedValue, rules, jQ.path);
+      if (errors) {
+        this.fail(errors);
+      }
+    }
+  }
+
+  _validateJsonMatchStrict(response) {
+    this.jsonMatchStrict = processor.processData(this.jsonMatchStrict);
+    for (let i = 0; i < this.jsonMatchStrict.length; i++) {
+      const data = this.jsonMatchStrict[i];
+      const rules = jmv.getMatchingRules(data, '$.body');
+      const value = jmv.getRawValue(data);
+      const errors = jmv.validate(response.json, value, rules, '$.body', true);
+      if (errors) {
+        this.fail(errors.replace('$.body', '$'));
+      }
+    }
+  }
+
+  _validateJsonMatchStrictQuery(response) {
+    this.jsonMatchStrictQuery = processor.processData(this.jsonMatchStrictQuery);
+    for (let i = 0; i < this.jsonMatchStrictQuery.length; i++) {
+      const jQ = this.jsonMatchStrictQuery[i];
+      const actualValue = jqy(jQ.path, { data: response.json }).value;
+      const rules = jmv.getMatchingRules(jQ.value, jQ.path);
+      const expectedValue = jmv.getRawValue(jQ.value);
+      const errors = jmv.validate(actualValue, expectedValue, rules, jQ.path, true);
       if (errors) {
         this.fail(errors);
       }
