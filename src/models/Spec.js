@@ -329,6 +329,16 @@ class Spec {
     return this;
   }
 
+  expectJsonMatchStrict(value) {
+    this._expect.jsonMatchStrict.push(value);
+    return this;
+  }
+
+  expectJsonMatchStrictAt(path, value) {
+    this._expect.jsonMatchStrictQuery.push({ path, value });
+    return this;
+  }
+
   expectJsonSnapshot(matchers) {
     this._expect.jsonSnapshot.push(matchers);
     return this;

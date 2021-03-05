@@ -620,6 +620,56 @@ describe('Expects', () => {
     expect(err).not.undefined;
   });
 
+  it('json strict match at', async () => {
+    await pactum.spec()
+      .useInteraction('get people')
+      .get('http://localhost:9393/api/people')
+      .expectStatus(200)
+      .expectJsonMatchStrictAt('people[*].name', eachLike('Matt'));
+  });
+
+  it('json match strict at - fails', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useInteraction('get people')
+        .get('http://localhost:9393/api/people')
+        .expectStatus(200)
+        .expectJsonMatchStrictAt('people[*].name', eachLike(12));
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+  it('json strict match', async () => {
+    await pactum.spec()
+      .useInteraction('get people')
+      .get('http://localhost:9393/api/people')
+      .expectStatus(200)
+      .expectJsonMatchStrict({
+        people: [
+          { name: 'Matt', country: 'NZ' },
+          { name: 'Pete', country: 'AU' },
+          { name: 'Mike', country: 'NZ' }
+        ]
+      });
+  });
+
+  it('json match strict - fails', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useInteraction('get people')
+        .get('http://localhost:9393/api/people')
+        .expectStatus(200)
+        .expectJsonMatchStrict({});
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
   it('json snapshot - deep equal', async () => {
     await pactum.spec()
       .useInteraction('get people')
