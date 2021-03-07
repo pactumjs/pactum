@@ -12,6 +12,8 @@ export interface Have {
   jsonSchemaAt(path: string, schema: object): void;
   jsonMatch(value: object): void;
   jsonMatchAt(path: string, value: object): void;
+  jsonMatchStrict(value: object): void;
+  jsonMatchStrictAt(path: string, value: object): void;
   responseTimeLessThan(ms: number): void;
   _(handler: string, data: any): Promise<void>;
 }
