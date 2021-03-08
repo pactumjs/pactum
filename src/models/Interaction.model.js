@@ -173,13 +173,21 @@ class InteractionExpectations {
 class Interaction {
 
   constructor(raw) {
+    let unprocessedResponse;
+    if (raw && raw.response) {
+      unprocessedResponse = raw.response;
+      delete raw.response;
+    }
     raw = process(raw);
+    if (raw && unprocessedResponse) {
+      raw.response = unprocessedResponse;
+    }
     setRawDefaults(raw);
     validate(raw);
     this.callCount = 0;
     this.exercised = false;
     this.calls = [];
-    const { id, provider, flow, strict, request, response, expects } = raw;
+    const { id, provider, flow, strict, request, response, expects, stores } = raw;
     this.id = id || helper.getRandomId();
     if (flow) this.flow = flow;
     if (provider) this.provider = provider;
@@ -187,6 +195,9 @@ class Interaction {
     this.request = new InteractionRequest(request);
     this.response = setResponse(response);
     this.expects = new InteractionExpectations(expects);
+    if (stores && typeof stores === 'object') {
+      this.stores = stores;
+    }
   }
 
 }

@@ -79,6 +79,7 @@ function validatePath(req, interaction) {
         }
       }
     }
+    req.pathParams = actual;
     return compare(actual, expected, matchingRules, '$.path').equal;
   } else {
     return compare(actualPath, expectedPath, matchingRules, '$.path').equal;
