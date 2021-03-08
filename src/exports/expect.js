@@ -74,6 +74,16 @@ class Have {
     this._validate();
   }
 
+  jsonMatchStrict(value) {
+    this.expect.jsonMatchStrict.push(value);
+    this._validate();
+  }
+
+  jsonMatchStrictAt(path, value) {
+    this.expect.jsonMatchStrictQuery.push({ path, value });
+    this._validate();
+  }
+
   responseTimeLessThan(ms) {
     this.expect.responseTime = ms;
     this._validate();

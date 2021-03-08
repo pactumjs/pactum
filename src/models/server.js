@@ -6,6 +6,8 @@ const utils = require('../helpers/utils');
 const log = require('../helpers/logger');
 const hr = require('../helpers/handler.runner');
 const rlc = require('../helpers/reporter.lifeCycle');
+const th = require('../helpers/toss.helper');
+const processor = require('../helpers/dataProcessor');
 const reporter = require('../exports/reporter');
 const config = require('../config');
 
@@ -103,15 +105,19 @@ function registerAllRoutes(server, app) {
  */
 function sendInteractionFoundResponse(req, res, interaction) {
   interaction.exercised = true;
-  const { response } = interaction;
-  if (typeof response === 'function') {
-    response(req, res);
+  if (interaction.stores) {
+    th.storeInteractionData(req, interaction);
+  }
+  interaction.response = processor.processData(interaction.response);
+  const interactionResponse = interaction.response;
+  if (typeof interactionResponse === 'function') {
+    interactionResponse(req, res);
   } else {
     let _response = {};
-    if (response[interaction.callCount]) {
-      _response = response[interaction.callCount];
+    if (interactionResponse[interaction.callCount]) {
+      _response = interactionResponse[interaction.callCount];
     } else {
-      _response = response;
+      _response = interactionResponse;
     }
     res.set(_response.headers);
     res.status(_response.status);

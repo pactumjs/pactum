@@ -80,6 +80,14 @@ describe('BDD', () => {
     expect(response).to.have.jsonMatchAt('.', like({ name: 'snow' }));
   });
 
+  it('should return a strict match', async () => {
+    expect(response).to.have.jsonMatchStrict(like({ name: 'snow' }));
+  });
+
+  it('should return a strict match at', async () => {
+    expect(response).to.have.jsonMatchStrictAt('.', like({ name: 'snow' }));
+  });
+
   it('should return a response within 500 ms', async () => {
     expect(response).to.have.responseTimeLessThan(500);
     let err;
