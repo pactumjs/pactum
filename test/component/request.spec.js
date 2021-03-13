@@ -99,6 +99,74 @@ describe('Request', () => {
       .expectStatus(200);
   });
 
+  it('with file - just path', async () => {
+    await pactum.spec()
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'POST',
+          path: '/api/file'
+        },
+        response: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/file')
+      .withFile('./package.json')
+      .expectStatus(200);
+  });
+
+  it('with file - path & options', async () => {
+    await pactum.spec()
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'POST',
+          path: '/api/file'
+        },
+        response: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/file')
+      .withFile('./package.json', { contentType: 'application/json' })
+      .expectStatus(200);
+  });
+
+  it('with file - key & path', async () => {
+    await pactum.spec()
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'POST',
+          path: '/api/file'
+        },
+        response: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/file')
+      .withFile('file-2', './package.json')
+      .expectStatus(200);
+  });
+
+  it('with file - key, path & options', async () => {
+    await pactum.spec()
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'POST',
+          path: '/api/file'
+        },
+        response: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/file')
+      .withFile('file-2', './package.json', { contentType: 'application/json' })
+      .expectStatus(200);
+  });
+
   afterEach(() => {
     config.request.baseUrl = '';
     config.request.headers = {};

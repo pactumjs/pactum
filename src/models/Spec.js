@@ -1,4 +1,6 @@
 const FormData = require('form-data');
+const fs = require('fs');
+const path = require('path');
 const Tosser = require('./Tosser');
 const Expect = require('./expect');
 const State = require('./State');
@@ -202,6 +204,23 @@ class Spec {
       this._request._multiPartFormData.append(key, value, options);
     }
     return this;
+  }
+
+  withFile(key, filePath, options) {
+    if (typeof filePath === 'object') {
+      options = filePath;
+      filePath = key;
+      key = 'file';
+    }
+    if (!filePath) {
+      filePath = key;
+      key = 'file';
+    }
+    if (!options) {
+      options = {};
+    }
+    options.filename = options.filename ? options.filename : path.basename(filePath);
+    return this.withMultiPartFormData(key, fs.readFileSync(filePath), options);
   }
 
   withCore(options) {
