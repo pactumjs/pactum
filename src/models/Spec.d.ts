@@ -230,6 +230,20 @@ declare class Spec {
   withBody(body: any): Spec;
 
   /**
+   * appends file to the form-data
+   * @example
+   * await pactum.spec()
+   *  .post('url')
+   *  .withFile('./file/path')
+   * 
+   * await pactum.spec()
+   *  .post('url')
+   *  .withFile('key', './file/path', { contentType: 'text/plain' })
+   */
+  withFile(path: string, options?: FormData.AppendOptions): Spec;
+  withFile(key: string, path: string, options?: FormData.AppendOptions): Spec;
+
+  /**
    * attaches form data to the request with header - "application/x-www-form-urlencoded"
    * @example
    * await pactum.spec()

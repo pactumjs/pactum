@@ -17,7 +17,7 @@ describe('E2E', () => {
             id: 1
           }
         }
-      }
+      };
     });
     handler.addInteractionHandler('save user', () => {
       return {
@@ -28,7 +28,7 @@ describe('E2E', () => {
         response: {
           status: 200
         }
-      }
+      };
     });
     handler.addInteractionHandler('delete user', () => {
       return {
@@ -39,7 +39,7 @@ describe('E2E', () => {
         response: {
           status: 200
         }
-      }
+      };
     });
     handler.addSpecHandler('User.AddUser', (ctx) => {
       const spec = ctx.spec;
@@ -320,6 +320,83 @@ describe('E2E', () => {
       await this.e2e.cleanup();
     });
 
+  });
+
+  describe('E2E - With Initializers & Cleanups', () => {
+
+    before(async () => {
+      handler.addInitializeHandler('Authorize', () => { });
+      handler.addCleanupHandler('UnAuthorize', () => { });
+      this.e2e = pactum.e2e('E2E with Initializers & Cleanups');
+      await this.e2e.init();
+    });
+
+    it('save user', async () => {
+      await this.e2e
+        .step('Save User')
+        .spec('User.AddUser')
+        .clean('User.DeleteUser');
+    });
+
+    it('get user', async () => {
+      await this.e2e
+        .step('Get User')
+        .spec('User.GetUser');
+    });
+
+    it('clean up', async () => {
+      await this.e2e.cleanup();
+    });
+
+  });
+
+  describe('E2E - With Initializer Fails', () => {
+
+    before(async () => {
+      handler.addInitializeHandler('Authorize', () => { throw 'Failed'; });
+      handler.addCleanupHandler('UnAuthorize', () => { });
+      this.e2e = pactum.e2e('E2E with Initializers & Cleanups');
+    });
+
+    it('init failed', async () => {
+      let err;
+      try {
+        await this.e2e.init();
+      } catch (error) {
+        err = error;
+      }
+      expect(err).not.undefined;
+    });
+
+    it('clean up', async () => {
+      await this.e2e.cleanup();
+    });
+
+  });
+
+  describe('E2E - With Initializer Fails', () => {
+
+    before(async () => {
+      handler.addInitializeHandler('Authorize', () => { });
+      handler.addCleanupHandler('UnAuthorize', () => { throw 'Failed'; });
+      this.e2e = pactum.e2e('E2E with Initializers & Cleanups');
+    });
+
+    it('clean up failed', async () => {
+      let err;
+      try {
+        await this.e2e.cleanup();
+      } catch (error) {
+        err = error;
+      }
+      expect(err).not.undefined;
+    });
+
+  });
+
+  after(() => {
+    handler.addInitializeHandler('Authorize', () => { });
+    handler.addCleanupHandler('UnAuthorize', () => { });
   });
 
 });

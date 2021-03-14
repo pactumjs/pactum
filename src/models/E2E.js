@@ -2,6 +2,7 @@ const Step = require('./Step');
 const log = require('../helpers/logger');
 const helper = require('../helpers/helper');
 const rlc = require('../helpers/reporter.lifeCycle');
+const hr = require('../helpers/handler.runner');
 
 class E2E {
 
@@ -15,6 +16,15 @@ class E2E {
       this.params = options.params;
     }
     this.steps = [];
+  }
+
+  async init() {
+    try {
+      await hr.initialize();
+    } catch (error) {
+      log.error('Failed to initialize');
+      throw error;
+    }
   }
 
   step(name) {
@@ -49,6 +59,12 @@ class E2E {
     rlc.afterTestReport(this);
     if (errors.length > 0) {
       throw errors[0];
+    }
+    try {
+      await hr.cleanup();
+    } catch (error) {
+      log.error('Failed to cleanup');
+      throw error;
     }
   }
 

@@ -12,10 +12,10 @@ const requestProcessor = {
     setBaseUrl(request);
     setPathParams(request);
     setQueryParams(request);
-    setHeaders(request);
     setBody(request);
     setMultiPartFormData(request);
     setFollowRedirects(request);
+    setHeaders(request);
     request.timeout = request.timeout || config.request.timeout;
     return request;
   }

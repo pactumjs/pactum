@@ -1,4 +1,5 @@
 const handler = require('../exports/handler');
+const log = require('./logger');
 
 const hr = {
 
@@ -15,6 +16,24 @@ const hr = {
   spec(name, data, spec) {
     if (typeof name !== 'undefined') {
       handler.getSpecHandler(name)({ spec, data });
+    }
+  },
+
+  async initialize() {
+    const handlers = handler.getInitializeHandlers();
+    const keys = Object.keys(handlers);
+    for (let i = 0; i < keys.length; i++) {
+      log.info(`Running Initializer - ${keys[i]}`);
+      await handlers[keys[i]]();
+    }
+  },
+
+  async cleanup() {
+    const handlers = handler.getCleanupHandlers();
+    const keys = Object.keys(handlers);
+    for (let i = 0; i < keys.length; i++) {
+      log.info(`Running Cleaner - ${keys[i]}`);
+      await handlers[keys[i]]();
     }
   }
 

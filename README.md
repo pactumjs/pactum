@@ -8,6 +8,7 @@
 
 **pactum** is a REST API Testing Tool used to automate e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies.
 
+- ⏱ Swift
 - 🎈 Lightweight
 - 🚀 Simple & Powerful
 - 🛠️ Compelling Mock Server
@@ -118,25 +119,20 @@ Running **pactum** as a standalone *mock server*.
 
 ```javascript
 const { mock } = require('pactum');
-const { regex } = require('pactum-matchers');
 
 mock.addInteraction({
   request: {
     method: 'GET',
-    path: '/api/projects',
-    queryParams: {
-      date: regex('2020-12-12', /^\d{4}-\d{2}-\d{2}$/)
-    }
+    path: '/api/projects'
   },
   response: {
     status: 200,
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: {
-      id: 1,
-      name: 'fake'
-    }
+    body: [
+      {
+        id: 'project-id',
+        name: 'project-name'
+      }
+    ]
   }
 });
 
