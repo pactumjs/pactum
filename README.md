@@ -11,7 +11,12 @@
 ![Size](https://img.shields.io/bundlephobia/minzip/pactum)
 ![Platform](https://img.shields.io/node/v/pactum)
 
-**pactum** is a REST API Testing Tool used to automate e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies.
+<br />
+<p><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/demo.gif" alt="PactumJS Demo"/></a>
+</p>
+<br />
+
+**PactumJS** is a REST API Testing Tool used to automate e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies.
 
 - ⏱ Swift
 - 🎈 Lightweight
@@ -21,9 +26,6 @@
 - 🔧 Extendable & Customizable
 - 📚 Clear & Comprehensive Testing Style
 - 🔗 Component, Contract & E2E testing of APIs
-
-<p align="center"><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/demo.gif" alt="PactumJS Demo"/></a>
-</p>
 
 ## Documentation
 
