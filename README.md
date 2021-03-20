@@ -1,4 +1,9 @@
-# pactum
+<p align="center"><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/logo.png" alt="PactumJS Logo" height="100"/></a>
+</p>
+
+<div align="center">
+ <h2>REST API Testing Tool for all levels in a Test Pyramid</h2>
+</div>
 
 ![Build](https://github.com/pactumjs/pactum/workflows/Build/badge.svg?branch=master)
 ![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
@@ -6,7 +11,12 @@
 ![Size](https://img.shields.io/bundlephobia/minzip/pactum)
 ![Platform](https://img.shields.io/node/v/pactum)
 
-**pactum** is a REST API Testing Tool used to automate e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies.
+<br />
+<p><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/demo.gif" alt="PactumJS Demo"/></a>
+</p>
+<br />
+
+**PactumJS** is a REST API Testing Tool used to automate e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies.
 
 - ⏱ Swift
 - 🎈 Lightweight
@@ -26,6 +36,10 @@ This readme offers an basic introduction to the library. Head over to the full d
 - [Component Testing](https://pactumjs.github.io/#/component-testing)
 - [Contract Testing](https://pactumjs.github.io/#/contract-testing)
 - [E2E Testing](https://pactumjs.github.io/#/e2e-testing)
+
+## Need Help
+
+We use Github [Discussions](https://github.com/pactumjs/pactum/discussions) to receive feedback, discuss ideas & answer questions.
 
 ## Installation
 
@@ -141,4 +155,16 @@ mock.start(3000);
 
 # Notes
 
-Inspired from [frisby](https://docs.frisbyjs.com/) testing style & [pact](https://docs.pact.io) interactions.
+- Inspired from [frisby](https://docs.frisbyjs.com/) and [pact](https://docs.pact.io).
+- Like this project? Star it on [Github](https://github.com/pactumjs/pactum/stargazers)
+
+## Contributors
+
+If you've ever wanted to contribute to open source, and a great cause, now is your chance!
+
+See the [contributing docs](https://github.com/pactumjs/pactum/blob/master/CONTRIBUTING.md) for more information
+
+<a href="https://github.com/pactumjs/pactum/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=pactumjs/pactum" />
+</a>
+<br />

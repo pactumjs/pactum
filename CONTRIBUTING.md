@@ -21,13 +21,13 @@ Pull requests are the best way to propose changes to the codebase (we use [Githu
 1. Fork the repo and create your branch from `master`.
 2. If you've added code that should be tested, add tests.
 3. Changes should be as light as possible by never compromising on the quality of the features.
-4. If you've changed APIs, update the documentation.
+4. If you've changed APIs, update the [documentation](https://github.com/pactumjs/pactumjs.github.io).
 5. Ensure the test suite passes.
 6. Make sure your code lints.
 7. Issue that pull request!
 
 
-## We love ideas, feedback & questions
+## We would love to hear ideas, feedback & questions
 
 We use Github [Discussions](https://github.com/pactumjs/pactum/discussions) to receive feedback, discuss ideas & answer questions.
 
