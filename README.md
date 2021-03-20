@@ -1,6 +1,10 @@
-![Logo](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/logo.png)
+<p align="center"><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/logo.png" alt="PactumJS Logo" height="100"/></a>
+</p>
 
-# pactum
+<div align="center">
+ <h2>REST API Testing Tool for all levels in a Test Pyramid</h2>
+ <hr />
+</div>
 
 ![Build](https://github.com/pactumjs/pactum/workflows/Build/badge.svg?branch=master)
 ![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
@@ -28,6 +32,10 @@ This readme offers an basic introduction to the library. Head over to the full d
 - [Component Testing](https://pactumjs.github.io/#/component-testing)
 - [Contract Testing](https://pactumjs.github.io/#/contract-testing)
 - [E2E Testing](https://pactumjs.github.io/#/e2e-testing)
+
+## Need Help
+
+We use Github [Discussions](https://github.com/pactumjs/pactum/discussions) to receive feedback, discuss ideas & answer questions.
 
 ## Installation
 
@@ -140,6 +148,10 @@ mock.addInteraction({
 
 mock.start(3000);
 ```
+
+## Supporters
+
+[![Stargazers repo roster for @pactumjs/pactum](https://reporoster.com/stars/pactumjs/pactum)](https://github.com/pactumjs/pactum/stargazers)
 
 # Notes
 
