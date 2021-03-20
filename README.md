@@ -3,7 +3,6 @@
 
 <div align="center">
  <h2>REST API Testing Tool for all levels in a Test Pyramid</h2>
- <hr />
 </div>
 
 ![Build](https://github.com/pactumjs/pactum/workflows/Build/badge.svg?branch=master)
@@ -149,10 +148,18 @@ mock.addInteraction({
 mock.start(3000);
 ```
 
-## Supporters
-
-[![Stargazers repo roster for @pactumjs/pactum](https://reporoster.com/stars/pactumjs/pactum)](https://github.com/pactumjs/pactum/stargazers)
-
 # Notes
 
-Inspired from [frisby](https://docs.frisbyjs.com/) testing style & [pact](https://docs.pact.io) interactions.
+- Inspired from [frisby](https://docs.frisbyjs.com/) and [pact](https://docs.pact.io).
+- Like this project? Star it on [Github](https://github.com/pactumjs/pactum/stargazers)
+
+## Contributors
+
+If you've ever wanted to contribute to open source, and a great cause, now is your chance!
+
+See the [contributing docs](https://github.com/pactumjs/pactum/blob/master/CONTRIBUTING.md) for more information
+
+<a href="https://github.com/pactumjs/pactum/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=pactumjs/pactum" />
+</a>
+<br />
