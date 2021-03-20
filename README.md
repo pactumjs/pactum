@@ -22,6 +22,9 @@
 - 📚 Clear & Comprehensive Testing Style
 - 🔗 Component, Contract & E2E testing of APIs
 
+<p align="center"><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/demo.gif" alt="PactumJS Demo"/></a>
+</p>
+
 ## Documentation
 
 This readme offers an basic introduction to the library. Head over to the full documentation at https://pactumjs.github.io
