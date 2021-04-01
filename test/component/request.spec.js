@@ -62,6 +62,24 @@ describe("Request", () => {
       .expectStatus(200);
   });
 
+  it("HEAD with baseurl", async () => {
+    request.setBaseUrl("http://localhost:9393");
+    await pactum
+      .spec()
+      .useInteraction({
+        request: {
+          method: "HEAD",
+          path: "/users",
+        },
+        response: {
+          status: 200,
+        },
+      })
+      .withMethod("HEAD")
+      .withPath("/users")
+      .expectStatus(200);
+  });
+
   it("with baseurl override", async () => {
     request.setBaseUrl("http://localhost:9392");
     await pactum
