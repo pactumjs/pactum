@@ -97,6 +97,31 @@ class Spec {
     return this;
   }
 
+  options(url) {
+    validateRequestUrl(this._request, url);
+    this._request.url = url;
+    this._request.method = "OPTIONS";
+    return this;
+  }
+
+  trace(url) {
+    validateRequestUrl(this._request, url);
+    this._request.url = url;
+    this._request.method = "TRACE";
+    return this;
+  }
+
+  withMethod(method) {
+    this._request.method = method;
+    return this;
+  }
+
+  withPath(url) {
+    validateRequestUrl(this._request, url);
+    this._request.url = url;
+    return this;
+  }
+
   withPathParams(key, value) {
     if (!this._request.pathParams) {
       this._request.pathParams = {};
