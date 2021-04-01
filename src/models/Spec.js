@@ -13,7 +13,6 @@ const hr = require('../helpers/handler.runner');
 const rlc = require('../helpers/reporter.lifeCycle');
 
 class Spec {
-
   constructor(name, data) {
     this.id = helper.getRandomId();
     this.flow = '';
@@ -100,14 +99,14 @@ class Spec {
   options(url) {
     validateRequestUrl(this._request, url);
     this._request.url = url;
-    this._request.method = "OPTIONS";
+    this._request.method = 'OPTIONS';
     return this;
   }
 
   trace(url) {
     validateRequestUrl(this._request, url);
     this._request.url = url;
-    this._request.method = "TRACE";
+    this._request.method = 'TRACE';
     return this;
   }
 
@@ -202,7 +201,9 @@ class Spec {
 
   withBody(body) {
     if (typeof this._request.data !== 'undefined') {
-      throw new PactumRequestError(`Duplicate body in request - ${this._request.data}`);
+      throw new PactumRequestError(
+        `Duplicate body in request - ${this._request.data}`
+      );
     }
     this._request.data = body;
     return this;
@@ -244,7 +245,9 @@ class Spec {
     if (!options) {
       options = {};
     }
-    options.filename = options.filename ? options.filename : path.basename(filePath);
+    options.filename = options.filename
+      ? options.filename
+      : path.basename(filePath);
     return this.withMultiPartFormData(key, fs.readFileSync(filePath), options);
   }
 
@@ -310,7 +313,7 @@ class Spec {
   expectHeader(header, value) {
     this._expect.headers.push({
       key: header,
-      value
+      value,
     });
     return this;
   }
@@ -318,7 +321,7 @@ class Spec {
   expectHeaderContains(header, value) {
     this._expect.headerContains.push({
       key: header,
-      value
+      value,
     });
     return this;
   }
@@ -442,13 +445,15 @@ class Spec {
 
   then(resolve, reject) {
     this.toss()
-      .then(res => resolve(res))
-      .catch(err => reject(err));
+      .then((res) => resolve(res))
+      .catch((err) => reject(err));
   }
 
   response() {
     if (!this._response) {
-      throw new PactumRequestError(`'response()' should be called after resolving 'toss()'`);
+      throw new PactumRequestError(
+        `'response()' should be called after resolving 'toss()'`
+      );
     }
     return responseExpect(this._response, this);
   }
@@ -457,12 +462,13 @@ class Spec {
     rlc.afterSpecReport(this);
     return this;
   }
-
 }
 
 function validateRequestUrl(request, url) {
   if (request.url && request.method) {
-    throw new PactumRequestError(`Duplicate request initiated. Existing request - ${request.method} ${request.url}`);
+    throw new PactumRequestError(
+      `Duplicate request initiated. Existing request - ${request.method} ${request.url}`
+    );
   }
   if (!helper.isValidString(url)) {
     throw new PactumRequestError(`Invalid request url - ${url}`);
