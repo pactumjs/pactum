@@ -1,175 +1,223 @@
-const pactum = require('../../src/index');
+const pactum = require("../../src/index");
 const request = pactum.request;
-const config = require('../../src/config');
+const config = require("../../src/config");
 
-describe('Request', () => {
-
-  it('with baseurl', async () => {
-    request.setBaseUrl('http://localhost:9393');
-    await pactum.spec()
+describe("Request", () => {
+  it("GET with baseurl", async () => {
+    request.setBaseUrl("http://localhost:9393");
+    await pactum
+      .spec()
       .useInteraction({
         request: {
-          method: 'GET',
-          path: '/users'
+          method: "GET",
+          path: "/users",
         },
         response: {
-          status: 200
-        }
+          status: 200,
+        },
       })
-      .get('/users')
+      .get("/users")
       .expectStatus(200)
       .inspect();
   });
 
-  it('with baseurl override', async () => {
-    request.setBaseUrl('http://localhost:9392');
-    await pactum.spec()
+  it("OPTIONS with baseurl", async () => {
+    request.setBaseUrl("http://localhost:9393");
+    await pactum
+      .spec()
       .useInteraction({
         request: {
-          method: 'GET',
-          path: '/users'
+          method: "OPTIONS",
+          path: "/users",
         },
         response: {
-          status: 200
-        }
-      })
-      .get('http://localhost:9393/users')
-      .expectStatus(200);
-  });
-
-  it('with default header', async () => {
-    request.setBaseUrl('http://localhost:9393');
-    request.setDefaultHeaders('x', 'a');
-    await pactum.spec()
-      .useInteraction({
-        request: {
-          method: 'GET',
-          path: '/users',
+          status: 204,
           headers: {
-            'x': 'a'
-          }
+            "access-control-allow-methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+          },
+        },
+      })
+      .options("/users")
+      .expectStatus(204)
+      .expectHeader(
+        "access-control-allow-methods",
+        "GET,HEAD,PUT,PATCH,POST,DELETE"
+      );
+  });
+
+  it("TRACE with baseurl", async () => {
+    request.setBaseUrl("http://localhost:9393");
+    await pactum
+      .spec()
+      .useInteraction({
+        request: {
+          method: "TRACE",
+          path: "/users",
         },
         response: {
-          status: 200
-        }
+          status: 200,
+        },
       })
-      .get('http://localhost:9393/users')
+      .trace("/users")
       .expectStatus(200);
   });
 
-  it('with override default header to empty value', async () => {
-    request.setBaseUrl('http://localhost:9393');
-    request.setDefaultHeaders('x', 'a');
-    await pactum.spec()
+  it("with baseurl override", async () => {
+    request.setBaseUrl("http://localhost:9392");
+    await pactum
+      .spec()
       .useInteraction({
         request: {
-          method: 'GET',
-          path: '/users',
+          method: "GET",
+          path: "/users",
+        },
+        response: {
+          status: 200,
+        },
+      })
+      .get("http://localhost:9393/users")
+      .expectStatus(200);
+  });
+
+  it("with default header", async () => {
+    request.setBaseUrl("http://localhost:9393");
+    request.setDefaultHeaders("x", "a");
+    await pactum
+      .spec()
+      .useInteraction({
+        request: {
+          method: "GET",
+          path: "/users",
           headers: {
-            'x': ''
-          }
+            x: "a",
+          },
         },
         response: {
-          status: 200
-        }
+          status: 200,
+        },
       })
-      .get('http://localhost:9393/users')
-      .withHeaders('x', '')
+      .get("http://localhost:9393/users")
       .expectStatus(200);
   });
 
-  it('with override default header', async () => {
-    request.setBaseUrl('http://localhost:9393');
-    request.setDefaultHeaders('x', 'a');
-    await pactum.spec()
+  it("with override default header to empty value", async () => {
+    request.setBaseUrl("http://localhost:9393");
+    request.setDefaultHeaders("x", "a");
+    await pactum
+      .spec()
       .useInteraction({
         request: {
-          method: 'GET',
-          path: '/users',
+          method: "GET",
+          path: "/users",
           headers: {
-            'x': 'b'
-          }
+            x: "",
+          },
         },
         response: {
-          status: 200
-        }
+          status: 200,
+        },
       })
-      .get('http://localhost:9393/users')
-      .withHeaders('x', 'b')
+      .get("http://localhost:9393/users")
+      .withHeaders("x", "")
       .expectStatus(200);
   });
 
-  it('with file - just path', async () => {
-    await pactum.spec()
+  it("with override default header", async () => {
+    request.setBaseUrl("http://localhost:9393");
+    request.setDefaultHeaders("x", "a");
+    await pactum
+      .spec()
       .useInteraction({
-        strict: false,
         request: {
-          method: 'POST',
-          path: '/api/file'
+          method: "GET",
+          path: "/users",
+          headers: {
+            x: "b",
+          },
         },
         response: {
-          status: 200
-        }
+          status: 200,
+        },
       })
-      .post('http://localhost:9393/api/file')
-      .withFile('./package.json')
+      .get("http://localhost:9393/users")
+      .withHeaders("x", "b")
       .expectStatus(200);
   });
 
-  it('with file - path & options', async () => {
-    await pactum.spec()
+  it("with file - just path", async () => {
+    await pactum
+      .spec()
       .useInteraction({
         strict: false,
         request: {
-          method: 'POST',
-          path: '/api/file'
+          method: "POST",
+          path: "/api/file",
         },
         response: {
-          status: 200
-        }
+          status: 200,
+        },
       })
-      .post('http://localhost:9393/api/file')
-      .withFile('./package.json', { contentType: 'application/json' })
+      .post("http://localhost:9393/api/file")
+      .withFile("./package.json")
       .expectStatus(200);
   });
 
-  it('with file - key & path', async () => {
-    await pactum.spec()
+  it("with file - path & options", async () => {
+    await pactum
+      .spec()
       .useInteraction({
         strict: false,
         request: {
-          method: 'POST',
-          path: '/api/file'
+          method: "POST",
+          path: "/api/file",
         },
         response: {
-          status: 200
-        }
+          status: 200,
+        },
       })
-      .post('http://localhost:9393/api/file')
-      .withFile('file-2', './package.json')
+      .post("http://localhost:9393/api/file")
+      .withFile("./package.json", { contentType: "application/json" })
       .expectStatus(200);
   });
 
-  it('with file - key, path & options', async () => {
-    await pactum.spec()
+  it("with file - key & path", async () => {
+    await pactum
+      .spec()
       .useInteraction({
         strict: false,
         request: {
-          method: 'POST',
-          path: '/api/file'
+          method: "POST",
+          path: "/api/file",
         },
         response: {
-          status: 200
-        }
+          status: 200,
+        },
       })
-      .post('http://localhost:9393/api/file')
-      .withFile('file-2', './package.json', { contentType: 'application/json' })
+      .post("http://localhost:9393/api/file")
+      .withFile("file-2", "./package.json")
+      .expectStatus(200);
+  });
+
+  it("with file - key, path & options", async () => {
+    await pactum
+      .spec()
+      .useInteraction({
+        strict: false,
+        request: {
+          method: "POST",
+          path: "/api/file",
+        },
+        response: {
+          status: 200,
+        },
+      })
+      .post("http://localhost:9393/api/file")
+      .withFile("file-2", "./package.json", { contentType: "application/json" })
       .expectStatus(200);
   });
 
   afterEach(() => {
-    config.request.baseUrl = '';
+    config.request.baseUrl = "";
     config.request.headers = {};
   });
-
 });
