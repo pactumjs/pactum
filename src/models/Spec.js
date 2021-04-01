@@ -313,7 +313,7 @@ class Spec {
   expectHeader(header, value) {
     this._expect.headers.push({
       key: header,
-      value,
+      value
     });
     return this;
   }
@@ -321,7 +321,7 @@ class Spec {
   expectHeaderContains(header, value) {
     this._expect.headerContains.push({
       key: header,
-      value,
+      value
     });
     return this;
   }
@@ -445,8 +445,8 @@ class Spec {
 
   then(resolve, reject) {
     this.toss()
-      .then((res) => resolve(res))
-      .catch((err) => reject(err));
+      .then(res => resolve(res))
+      .catch(err => reject(err));
   }
 
   response() {

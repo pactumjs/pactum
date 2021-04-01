@@ -10,11 +10,11 @@ describe('Request', () => {
       .useInteraction({
         request: {
           method: 'GET',
-          path: '/users',
+          path: '/users'
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .get('/users')
       .expectStatus(200)
@@ -28,14 +28,14 @@ describe('Request', () => {
       .useInteraction({
         request: {
           method: 'OPTIONS',
-          path: '/users',
+          path: '/users'
         },
         response: {
           status: 204,
           headers: {
-            'access-control-allow-methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-          },
-        },
+            'access-control-allow-methods': 'GET,HEAD,PUT,PATCH,POST,DELETE'
+          }
+        }
       })
       .options('/users')
       .expectStatus(204)
@@ -52,11 +52,11 @@ describe('Request', () => {
       .useInteraction({
         request: {
           method: 'TRACE',
-          path: '/users',
+          path: '/users'
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .trace('/users')
       .expectStatus(200);
@@ -69,11 +69,11 @@ describe('Request', () => {
       .useInteraction({
         request: {
           method: 'HEAD',
-          path: '/users',
+          path: '/users'
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .withMethod('HEAD')
       .withPath('/users')
@@ -87,11 +87,11 @@ describe('Request', () => {
       .useInteraction({
         request: {
           method: 'GET',
-          path: '/users',
+          path: '/users'
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .get('http://localhost:9393/users')
       .expectStatus(200);
@@ -107,12 +107,12 @@ describe('Request', () => {
           method: 'GET',
           path: '/users',
           headers: {
-            x: 'a',
-          },
+            'x': 'a'
+          }
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .get('http://localhost:9393/users')
       .expectStatus(200);
@@ -128,12 +128,12 @@ describe('Request', () => {
           method: 'GET',
           path: '/users',
           headers: {
-            x: '',
-          },
+            'x': ''
+          }
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .get('http://localhost:9393/users')
       .withHeaders('x', '')
@@ -150,12 +150,12 @@ describe('Request', () => {
           method: 'GET',
           path: '/users',
           headers: {
-            x: 'b',
-          },
+            'x': 'b'
+          }
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .get('http://localhost:9393/users')
       .withHeaders('x', 'b')
@@ -169,11 +169,11 @@ describe('Request', () => {
         strict: false,
         request: {
           method: 'POST',
-          path: '/api/file',
+          path: '/api/file'
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .post('http://localhost:9393/api/file')
       .withFile('./package.json')
@@ -187,11 +187,11 @@ describe('Request', () => {
         strict: false,
         request: {
           method: 'POST',
-          path: '/api/file',
+          path: '/api/file'
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .post('http://localhost:9393/api/file')
       .withFile('./package.json', { contentType: 'application/json' })
@@ -205,11 +205,11 @@ describe('Request', () => {
         strict: false,
         request: {
           method: 'POST',
-          path: '/api/file',
+          path: '/api/file'
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .post('http://localhost:9393/api/file')
       .withFile('file-2', './package.json')
@@ -223,11 +223,11 @@ describe('Request', () => {
         strict: false,
         request: {
           method: 'POST',
-          path: '/api/file',
+          path: '/api/file'
         },
         response: {
-          status: 200,
-        },
+          status: 200
+        }
       })
       .post('http://localhost:9393/api/file')
       .withFile('file-2', './package.json', { contentType: 'application/json' })

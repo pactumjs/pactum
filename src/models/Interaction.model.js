@@ -129,7 +129,7 @@ class InteractionRequest {
       this.graphQL = new InteractionRequestGraphQL(request.graphQL);
       this.body = {
         query: request.graphQL.query,
-        variables: request.graphQL.variables,
+        variables: request.graphQL.variables
       };
     }
   }
