@@ -18,7 +18,7 @@
 
 **PactumJS** is a REST API Testing Tool used to automate e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies.
 
-- ⏱ Swift
+- ⚡ Swift
 - 🎈 Lightweight
 - 🚀 Simple & Powerful
 - 🛠️ Compelling Mock Server
@@ -155,14 +155,19 @@ mock.start(3000);
 
 # Notes
 
-- Inspired from [frisby](https://docs.frisbyjs.com/) and [pact](https://docs.pact.io).
-- Like this project? Star it on [Github](https://github.com/pactumjs/pactum/stargazers)
+Inspired from [frisby](https://docs.frisbyjs.com/) and [pact](https://docs.pact.io).
+
+## Support
+
+Like this project! Star it on [Github](https://github.com/pactumjs/pactum/stargazers). Your support means a lot to us.
+
+<a href="https://github.com/pactumjs/pactum/stargazers"><img src="https://img.shields.io/github/stars/pactumjs/pactum?style=social" style="margin-left:0;box-shadow:none;border-radius:0;height:24px"></a>
 
 ## Contributors
 
-If you've ever wanted to contribute to open source, and a great cause, now is your chance!
+If you've ever wanted to contribute to open source, and a great cause, now is your chance! See the [contributing docs](https://github.com/pactumjs/pactum/blob/master/CONTRIBUTING.md) for more information
 
-See the [contributing docs](https://github.com/pactumjs/pactum/blob/master/CONTRIBUTING.md) for more information
+Thanks to all the people who contribute.
 
 <a href="https://github.com/pactumjs/pactum/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=pactumjs/pactum" />

@@ -62,7 +62,7 @@ describe('Request', () => {
       .expectStatus(200);
   });
 
-  it('HEAD with baseurl', async () => {
+  it('withMethod & withPath', async () => {
     request.setBaseUrl('http://localhost:9393');
     await pactum
       .spec()
