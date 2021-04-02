@@ -140,6 +140,39 @@ declare class Spec {
   delete(url: string): Spec;
 
   /**
+   * The OPTIONS method asks for request-methods supported by the request.
+   * @example
+   * await pactum.spec()
+   *  .options('https://jsonplaceholder.typicode.com/posts')
+   *  .expectStatus(204)
+   *  .expectHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+   */
+   options(url: string): Spec;
+  
+   /**
+    * The TRACE method echos the contents of an HTTP Request back to the requester
+    * @example
+    * await pactum.spec()
+    *  .trace('http://localhost:9393/projects/1')
+    *  .expectStatus(200);
+    */
+   trace(url: string): Spec;
+ 
+   /**
+    * The WITHMETHOD method extends the support for the request-methods apart from 
+    * (GET, POST, DELETE, PATCH, PUT, HEAD)
+    * 
+    * The WITHPATH method triggers the request passed through withMethod()
+    * @example
+    * await pactum.spec()
+    *  .withMethod('HEAD')
+    *  .withPath('https://jsonplaceholder.typicode.com/posts')
+    *  .expectStatus(200);
+    */
+   withMethod(method: string): Spec;
+   withPath(url: string): Spec;
+   
+  /**
    * replaces path params in the request url - /api/users/mike
    * @example
    * await pactum.spec()

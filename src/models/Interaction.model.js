@@ -2,7 +2,16 @@ const { setMatchingRules, getValue } = require('pactum-matchers').utils;
 const processor = require('../helpers/dataProcessor');
 const helper = require('../helpers/helper');
 const { PactumInteractionError } = require('../helpers/errors');
-const ALLOWED_REQUEST_METHODS = new Set(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD']);
+const ALLOWED_REQUEST_METHODS = new Set([
+  'GET',
+  'POST',
+  'PUT',
+  'DELETE',
+  'PATCH',
+  'HEAD',
+  'OPTIONS',
+  'TRACE',
+]);
 
 function process(raw) {
   processor.processMaps();
@@ -49,7 +58,9 @@ function validate(raw) {
   }
   if (typeof request.queryParams !== 'undefined') {
     if (!helper.isValidObject(request.queryParams)) {
-      throw new PactumInteractionError('`request.queryParams` should be object');
+      throw new PactumInteractionError(
+        '`request.queryParams` should be object'
+      );
     }
   }
   if (helper.isValidObject(response)) {
@@ -78,16 +89,13 @@ function setResponse(response) {
 }
 
 class InteractionRequestGraphQL {
-
   constructor(graphQL) {
     this.query = graphQL.query;
     this.variables = graphQL.variables;
   }
-
 }
 
 class InteractionRequest {
-
   constructor(request) {
     this.matchingRules = {};
     this.method = request.method;
@@ -125,11 +133,9 @@ class InteractionRequest {
       };
     }
   }
-
 }
 
 class InteractionResponse {
-
   constructor(response) {
     this.matchingRules = {};
     this.status = response.status;
@@ -143,11 +149,9 @@ class InteractionResponse {
       this.delay = new InteractionResponseDelay('RANDOM', response.randomDelay);
     }
   }
-
 }
 
 class InteractionResponseDelay {
-
   constructor(type, props) {
     this.type = type;
     if (type === 'RANDOM') {
@@ -158,20 +162,16 @@ class InteractionResponseDelay {
       this.value = props;
     }
   }
-
 }
 
 class InteractionExpectations {
-
   constructor(expects) {
     this.exercised = expects.exercised;
     this.callCount = expects.callCount;
   }
-
 }
 
 class Interaction {
-
   constructor(raw) {
     let unprocessedResponse;
     if (raw && raw.response) {
@@ -187,7 +187,16 @@ class Interaction {
     this.callCount = 0;
     this.exercised = false;
     this.calls = [];
-    const { id, provider, flow, strict, request, response, expects, stores } = raw;
+    const {
+      id,
+      provider,
+      flow,
+      strict,
+      request,
+      response,
+      expects,
+      stores,
+    } = raw;
     this.id = id || helper.getRandomId();
     if (flow) this.flow = flow;
     if (provider) this.provider = provider;
@@ -199,7 +208,6 @@ class Interaction {
       this.stores = stores;
     }
   }
-
 }
 
 module.exports = Interaction;
