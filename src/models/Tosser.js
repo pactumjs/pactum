@@ -143,6 +143,7 @@ class Tosser {
       this.spec.status = 'ERROR';
       this.spec.failure = this.response.toString();
       this.runReport();
+      utils.printReqAndRes(this.request, this.response);
       this.expect.fail(this.response);
     }
   }
@@ -171,7 +172,7 @@ async function getResponse(req) {
     res = await phin(req);
     res.json = helper.getJson(res.body);
   } catch (error) {
-    log.warn('Error performing request', error);
+    log.error('Error performing request', error);
     res = error;
   }
   res.responseTime = Date.now() - requestStartTime;
