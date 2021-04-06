@@ -42,7 +42,6 @@ describe('Mock', () => {
         "type": "number"
       })
       .expectJsonAt('id', 1)
-      .expectResponseTime(200)
       .toss();
   });
 
@@ -62,7 +61,6 @@ describe('Mock', () => {
       })
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(204)
-      .expectResponseTime(200)
       .toss();
   });
 
@@ -88,7 +86,6 @@ describe('Mock', () => {
       .expectJsonLike({
         message: 'invalid request'
       })
-      .expectResponseTime(200)
       .toss();
   });
 
@@ -468,7 +465,6 @@ describe('Mock', () => {
       .expectStatus(404)
       .expectBody('Interaction Not Found')
       .expectBodyContains('Not Found')
-      .expectResponseTime(200)
       .toss();
   });
 
@@ -485,7 +481,6 @@ describe('Mock', () => {
       .expectStatus(404)
       .expectBody('Interaction Not Found')
       .expectBodyContains('Not Found')
-      .expectResponseTime(200)
       .toss();
   });
 
@@ -496,8 +491,7 @@ describe('Mock', () => {
       .expectStatus(404)
       .expectBody('Interaction Not Found')
       .expectHeader('connection', 'close')
-      .expectHeaderContains('connection', 'close')
-      .expectResponseTime(200);
+      .expectHeaderContains('connection', 'close');
   });
 
   it('PATCH - invalid interaction', async () => {
@@ -505,7 +499,6 @@ describe('Mock', () => {
       .patch('http://localhost:9393/api/projects/1')
       .expectStatus(404)
       .expectBody('Interaction Not Found')
-      .expectResponseTime(200)
       .toss();
   });
 
@@ -513,7 +506,6 @@ describe('Mock', () => {
     await pactum.spec()
       .head('http://localhost:9393/api/projects/1')
       .expectStatus(404)
-      .expectResponseTime(200)
       .toss();
   });
 

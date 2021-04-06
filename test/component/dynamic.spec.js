@@ -23,7 +23,6 @@ describe('Dynamic', () => {
         id: 1,
         name: 'fake'
       })
-      .expectResponseTime(200)
       .toss();
   });
 
@@ -52,7 +51,6 @@ describe('Dynamic', () => {
         id: 1,
         name: 'fake'
       })
-      .expectResponseTime(200)
       .toss();
   });
 
@@ -90,7 +88,6 @@ describe('Dynamic', () => {
         id: 1,
         name: 'fake'
       })
-      .expectResponseTime(200)
       .toss();
   });
 
@@ -128,7 +125,6 @@ describe('Dynamic', () => {
         id: 2,
         name: 'bake'
       })
-      .expectResponseTime(200)
       .toss();
   });
 

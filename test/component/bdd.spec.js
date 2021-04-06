@@ -89,7 +89,7 @@ describe('BDD', () => {
   });
 
   it('should return a response within 500 ms', async () => {
-    expect(response).to.have.responseTimeLessThan(500);
+    expect(response).to.have.responseTimeLessThan(1500);
     let err;
     try {
       expect(response).to.have.responseTimeLessThan(0);
