@@ -1,7 +1,7 @@
 const { compare } = require('pactum-matchers').utils;
 const graphQL = require('./graphQL');
 
-const log = require('./logger');
+const log = require('../exports/logger').get();
 const helper = require('./helper');
 
 const utils = {

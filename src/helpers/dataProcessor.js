@@ -3,7 +3,7 @@ const jq = require('json-query');
 
 const stash = require('../exports/stash');
 const handler = require('../exports/handler');
-const logger = require('./logger');
+const log = require('../exports/logger').get();
 const config = require('../config');
 
 const DATA_REF_PATTERN = /(\$\w\{[^\}]+\})/g;
@@ -63,7 +63,7 @@ const dataProcessor = {
           data = this.processDataTemplates(data);
         }
       } else {
-        logger.warn(`Template Not Found - ${templateName}`);
+        log.warn(`Template Not Found - ${templateName}`);
       }
     } else {
       for (const prop in data) {

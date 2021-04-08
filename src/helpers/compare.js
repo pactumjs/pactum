@@ -1,5 +1,5 @@
 const config = require('../config');
-const log = require('./logger');
+const log = require('../exports/logger').get();
 const handler = require('../exports/handler');
 const helper = require('../helpers/helper');
 

@@ -1,4 +1,4 @@
-const { options, magenta, blue, green, yellow, red } = require('./colors');
+const { options, magenta, blue, green, yellow, red } = require('../helpers/colors');
 
 const LEVEL_TRACE = 3;
 const LEVEL_DEBUG = 4;
@@ -94,4 +94,14 @@ function getMessage(msg) {
   }
 }
 
-module.exports = new Logger();
+module.exports = {
+  logger: new Logger(),
+
+  get() {
+    return this.logger;
+  },
+
+  set(lgr) {
+    this.logger = lgr;
+  }
+};
