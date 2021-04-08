@@ -11,6 +11,7 @@ export * as request from './exports/request';
 export * as settings from './exports/settings';
 export * as stash from './exports/stash';
 export * as state from './exports/state';
+export * as logger from './exports/logger';
 
 /**
  * returns an instance of a spec

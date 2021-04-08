@@ -3,7 +3,7 @@ const polka = require('polka');
 const Interaction = require('./Interaction.model');
 const helper = require('../helpers/helper');
 const utils = require('../helpers/utils');
-const log = require('../helpers/logger');
+const log = require('../exports/logger').get();
 const hr = require('../helpers/handler.runner');
 const rlc = require('../helpers/reporter.lifeCycle');
 const th = require('../helpers/toss.helper');
@@ -19,7 +19,6 @@ class Server {
   }
 
   start() {
-    log.trace(`Starting mock server on port ${config.mock.port}`);
     return new Promise((resolve) => {
       if (!this.app) {
         this.app = polka();
@@ -37,7 +36,6 @@ class Server {
   }
 
   stop() {
-    log.trace(`Stopping mock server on port ${config.mock.port}`);
     return new Promise((resolve) => {
       if (this.app) {
         this.app.server.close(() => {
@@ -326,7 +324,6 @@ function bodyParser(req, res, next) {
   });
   req.on('end', () => {
     req.body = helper.getJson(body);
-    log.trace('Request Body', req.body);
     next();
   });
 }

@@ -2,7 +2,7 @@ const assert = require('assert');
 const jqy = require('json-query');
 
 const file = require('../helpers/file.utils');
-const log = require('../helpers/logger');
+const log = require('../exports/logger').get();
 const Compare = require('../helpers/compare');
 const processor = require('../helpers/dataProcessor');
 const handler = require('../exports/handler');

@@ -1,5 +1,5 @@
 const Spec = require('./Spec');
-const log = require('../helpers/logger');
+const log = require('../exports/logger').get();
 const helper = require('../helpers/helper');
 const rlc = require('../helpers/reporter.lifeCycle');
 

@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const sandbox = require('sinon').createSandbox();
-const logger = require('../../src/helpers/logger');
+const logger = require('../../src/exports/logger').get();
 
 describe('Logger', () => {
 

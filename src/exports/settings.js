@@ -1,10 +1,14 @@
 const config = require('../config');
-const logger = require('../helpers/logger');
+const logger = require('./logger');
 
 const settings = {
 
   setLogLevel(level) {
-    logger.setLevel(level);
+    logger.get().setLevel(level);
+  },
+
+  setLogger(lgr) {
+    logger.set(lgr);
   },
 
   setAssertHandlerStrategy(strategy) {
