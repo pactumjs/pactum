@@ -19,7 +19,6 @@ class Server {
   }
 
   start() {
-    log.trace(`Starting mock server on port ${config.mock.port}`);
     return new Promise((resolve) => {
       if (!this.app) {
         this.app = polka();
@@ -37,7 +36,6 @@ class Server {
   }
 
   stop() {
-    log.trace(`Stopping mock server on port ${config.mock.port}`);
     return new Promise((resolve) => {
       if (this.app) {
         this.app.server.close(() => {
@@ -326,7 +324,6 @@ function bodyParser(req, res, next) {
   });
   req.on('end', () => {
     req.body = helper.getJson(body);
-    log.trace('Request Body', req.body);
     next();
   });
 }
