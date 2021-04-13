@@ -203,7 +203,7 @@ describe('Response', () => {
 
   it('with default expected response time - valid time', async () => {
     request.setBaseUrl('http://localhost:9392');
-    response.setDefaultExpectResponseTime(100);
+    response.setDefaultExpectResponseTime(300);
     await pactum
       .spec()
       .useInteraction({
@@ -343,7 +343,7 @@ describe('Response', () => {
 
   it('with default expected response - all valid values', async () => {
     request.setBaseUrl('http://localhost:9392');
-    response.setDefaultExpectResponseTime(100);
+    response.setDefaultExpectResponseTime(300);
     response.setDefaultExpectHeaders("x-header", "value");
     response.setDefaultExpectStatus(200)
     await pactum
