@@ -198,12 +198,12 @@ describe('Response', () => {
       })
       .get('http://localhost:9393/users')
       .expectStatus(400)
-      .expectResponseTime(200);
+      .expectResponseTime(500);
   });
 
   it('with default expected response time - valid time', async () => {
     request.setBaseUrl('http://localhost:9392');
-    response.setDefaultExpectResponseTime(300);
+    response.setDefaultExpectResponseTime(500);
     await pactum
       .spec()
       .useInteraction({
@@ -343,7 +343,7 @@ describe('Response', () => {
 
   it('with default expected response - all valid values', async () => {
     request.setBaseUrl('http://localhost:9392');
-    response.setDefaultExpectResponseTime(300);
+    response.setDefaultExpectResponseTime(500);
     response.setDefaultExpectHeaders("x-header", "value");
     response.setDefaultExpectStatus(200)
     await pactum
