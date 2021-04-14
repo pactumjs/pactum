@@ -67,8 +67,12 @@ describe('response', () => {
     expect(() => response.setDefaultExpectStatus('1000')).throws('Invalid expected response status provided - 1000');
   });
 
-  it('setDefaultExpectStatus - 800', () => {
-    expect(() => response.setDefaultExpectStatus(800)).throws('Invalid expected response status provided - 800');
+  it('setDefaultExpectStatus - status > 599', () => {
+    expect(() => response.setDefaultExpectStatus(600)).throws('Invalid expected response status provided - 600');
+  });
+
+  it('setDefaultExpectStatus - status < 100', () => {
+    expect(() => response.setDefaultExpectStatus(99)).throws('Invalid expected response status provided - 99');
   });
 
   it('setDefaultExpectStatus - Valid value', () => {

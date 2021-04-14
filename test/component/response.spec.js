@@ -5,98 +5,6 @@ const { expect } = require('chai');
 
 describe('Response', () => {
 
-  it('with default expected response status - string value', async () => {
-    request.setBaseUrl('http://localhost:9392');
-    try {
-      response.setDefaultExpectStatus("100");
-      await pactum
-        .spec()
-        .useInteraction({
-          request: {
-            method: 'GET',
-            path: '/users'
-          },
-          response: {
-            status: 400
-          }
-        })
-        .get('http://localhost:9393/users')
-        .expectStatus(200);
-    }
-    catch (error) {
-      expect(error.message).equals(`Invalid expected response status provided - 100`);
-    }
-  });
-
-  it('with default expected response status - empty value', async () => {
-    request.setBaseUrl('http://localhost:9392');
-    try {
-      response.setDefaultExpectStatus();
-      await pactum
-        .spec()
-        .useInteraction({
-          request: {
-            method: 'GET',
-            path: '/users'
-          },
-          response: {
-            status: 200
-          }
-        })
-        .get('http://localhost:9393/users')
-        .expectStatus(200);
-    }
-    catch (error) {
-      expect(error.message).equals(`Invalid expected response status provided - undefined`);
-    }
-  });
-
-  it('with default expected response status - status code > 599', async () => {
-    request.setBaseUrl('http://localhost:9392');
-    try {
-      response.setDefaultExpectStatus(600);
-      await pactum
-        .spec()
-        .useInteraction({
-          request: {
-            method: 'GET',
-            path: '/users'
-          },
-          response: {
-            status: 200
-          }
-        })
-        .get('http://localhost:9393/users')
-        .expectStatus(200);
-    }
-    catch (error) {
-      expect(error.message).equals(`Invalid expected response status provided - 600`);
-    }
-  });
-
-  it('with default expected response status - status code < 100', async () => {
-    request.setBaseUrl('http://localhost:9392');
-    try {
-      response.setDefaultExpectStatus(99);
-      await pactum
-        .spec()
-        .useInteraction({
-          request: {
-            method: 'GET',
-            path: '/users'
-          },
-          response: {
-            status: 200
-          }
-        })
-        .get('http://localhost:9393/users')
-        .expectStatus(200);
-    }
-    catch (error) {
-      expect(error.message).equals(`Invalid expected response status provided - 99`);
-    }
-  });
-
   it('with default expected response status - override value', async () => {
     request.setBaseUrl('http://localhost:9392');
     response.setDefaultExpectStatus(200);
@@ -131,54 +39,6 @@ describe('Response', () => {
       })
       .get('http://localhost:9393/users')
       .expectStatus(200);
-  });
-
-  it('with default expected response time - string value', async () => {
-    request.setBaseUrl('http://localhost:9392');
-    try {
-      response.setDefaultExpectResponseTime("100");
-      await pactum
-        .spec()
-        .useInteraction({
-          request: {
-            method: 'GET',
-            path: '/users'
-          },
-          response: {
-            status: 400,
-            fixedDelay: 200
-          }
-        })
-        .get('http://localhost:9393/users')
-        .expectStatus(200);
-    }
-    catch (error) {
-      expect(error.message).equals(`Invalid expected response time provided - 100`);
-    }
-  });
-
-  it('with default expected response time - empty value', async () => {
-    request.setBaseUrl('http://localhost:9392');
-    try {
-      response.setDefaultExpectResponseTime();
-      await pactum
-        .spec()
-        .useInteraction({
-          request: {
-            method: 'GET',
-            path: '/users'
-          },
-          response: {
-            status: 200,
-            fixedDelay: 200
-          }
-        })
-        .get('http://localhost:9393/users')
-        .expectStatus(200);
-    }
-    catch (error) {
-      expect(error.message).equals(`Invalid expected response time provided - undefined`);
-    }
   });
 
   it('with default expected response time - override value', async () => {
@@ -218,32 +78,6 @@ describe('Response', () => {
       })
       .get('http://localhost:9393/users')
       .expectStatus(200);
-  });
-
-  it('with default expected response header - no headers', async () => {
-    request.setBaseUrl('http://localhost:9393');
-    try {
-      response.setDefaultExpectHeaders();
-      await pactum
-        .spec()
-        .useInteraction({
-          request: {
-            method: 'GET',
-            path: '/users'
-          },
-          response: {
-            status: 200,
-            headers: {
-              'x': '2'
-            }
-          }
-        })
-        .get('http://localhost:9393/users')
-        .expectStatus(200);
-    }
-    catch (error) {
-      expect(error.message).equals(`Invalid expected response header key provided - undefined`);
-    }
   });
 
   it('with default expected response header - header not present', async () => {
