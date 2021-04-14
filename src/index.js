@@ -6,6 +6,7 @@ const helper = require('./helpers/helper');
 
 const mock = require('./exports/mock');
 const request = require('./exports/request');
+const response = require('./exports/response');
 const settings = require('./exports/settings');
 const handler = require('./exports/handler');
 const state = require('./exports/state');
@@ -17,6 +18,7 @@ const pactum = {
 
   mock,
   request,
+  response,
   settings,
   handler,
   state,

@@ -1,6 +1,8 @@
 const assert = require('assert');
 const jqy = require('json-query');
 
+const config = require('../config');
+const utils = require('../helpers/utils');
 const file = require('../helpers/file.utils');
 const log = require('../exports/logger').get();
 const Compare = require('../helpers/compare');
@@ -95,7 +97,7 @@ class Expect {
       const expectedHeaderObject = this.headers[i];
       const expectedHeader = expectedHeaderObject.key;
       const expectedHeaderValue = expectedHeaderObject.value;
-      if (!response.headers[expectedHeader]) {
+      if (!(expectedHeader in response.headers)) {
         this.fail(`Header '${expectedHeader}' not present in HTTP response`);
       }
       if (expectedHeaderValue !== undefined) {
@@ -119,7 +121,7 @@ class Expect {
       const expectedHeaderObject = this.headerContains[i];
       const expectedHeader = expectedHeaderObject.key;
       const expectedHeaderValue = expectedHeaderObject.value;
-      if (!response.headers[expectedHeader]) {
+      if (!(expectedHeader in response.headers)) {
         this.fail(`Header '${expectedHeader}' not present in HTTP response`);
       }
       if (expectedHeaderValue !== undefined) {
@@ -360,6 +362,20 @@ class Expect {
 
   fail(error) {
     assert.fail(error);
+  }
+
+  setDefaultResponseExpectations() {
+    if (config.response.status) {
+      this.statusCode = config.response.status;
+    }
+    if (config.response.time) {
+      this.responseTime = config.response.time;
+    }
+    if (config.response.headers && Object.keys(config.response.headers).length !== 0) {
+      for (const [key, value] of Object.entries(config.response.headers)) {
+        utils.upsertValues(this.headers, { key, value });
+      }
+    }
   }
 
 }

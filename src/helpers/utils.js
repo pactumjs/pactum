@@ -49,8 +49,17 @@ const utils = {
   printReqAndRes(request, response) {
     log.warn('Request', request);
     log.warn('Response', helper.getTrimResponse(response));
-  }
+  },
 
+  upsertValues(jsonArray, item) {
+    const index = jsonArray.findIndex(_item => _item.key === item.key);
+    if (index > -1 ) {
+      jsonArray[index] = item
+    } else {
+      jsonArray.push(item);
+    }
+  }
+  
 };
 
 function validatePath(req, interaction) {

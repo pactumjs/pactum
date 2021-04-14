@@ -8,6 +8,7 @@ export * as matchers from './exports/matcher';
 export * as mock from './exports/mock';
 export * as reporter from './exports/reporter';
 export * as request from './exports/request';
+export * as response from './exports/response';
 export * as settings from './exports/settings';
 export * as stash from './exports/stash';
 export * as state from './exports/state';
