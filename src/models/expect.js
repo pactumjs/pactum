@@ -374,7 +374,6 @@ class Expect {
     if (config.response.headers && Object.keys(config.response.headers).length !== 0) {
       for (const [key, value] of Object.entries(config.response.headers)) {
         utils.upsertValues(this.headers, { key, value });
-        // this.expect.headers.push({key, value});
       }
     }
   }
