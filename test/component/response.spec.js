@@ -87,10 +87,34 @@ describe('Response', () => {
       .expectHeader('connection', 'close');
   });
 
+  it('with default expected response handler', async () => {
+    response.setDefaultExpectHandlers(({ res }) => {
+      expect(res.statusCode).equals(200);
+    });
+    await pactum.spec()
+      .useInteraction('default get')
+      .get('http://localhost:9393/default/get');
+  });
+
+  it('with default expected response handler - failure', async () => {
+    response.setDefaultExpectHandlers(({ res }) => {
+      expect(res.statusCode).equals(200);
+    });
+    let err;
+    try {
+      await pactum.spec()
+        .get('http://localhost:9393/default/get');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('expected 404 to equal 200');
+  });
+
   afterEach(() => {
     config.response.status = null;
     config.response.time = null;
-    config.response.headers = {};
+    response.removeDefaultExpectHeaders();
+    response.removeDefaultExpectHandlers();
   });
 
 });
