@@ -1,3 +1,5 @@
+import { ExpectHandlerFunction } from './handler';
+
 /**
  * sets default expected response headers to all the responses
  */
@@ -17,11 +19,22 @@ export function setDefaultExpectResponseTime(respTime: number): void;
 export function setDefaultExpectStatus(status: number): void;
 
 /**
- * removes default header
+ * sets default custom expect handlers
  */
- export function removeDefaultExpectHeader(key: string): void;
+export function setDefaultExpectHandlers(handlerName: string, data?: any): void;
+export function setDefaultExpectHandlers(handler: ExpectHandlerFunction): void;
 
- /**
-  * removes all default headers
-  */
- export function removeDefaultExpectHeaders(): void;
+/**
+ * removes default expect header
+ */
+export function removeDefaultExpectHeader(key: string): void;
+
+/**
+ * removes all default expect headers
+ */
+export function removeDefaultExpectHeaders(): void;
+
+/**
+* removes all default expect handlers
+*/
+export function removeDefaultExpectHandlers(): void;

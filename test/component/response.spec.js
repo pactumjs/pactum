@@ -3,7 +3,7 @@ const { response } = pactum;
 const config = require('../../src/config');
 const { expect } = require('chai');
 
-describe.only('Response', () => {
+describe('Response', () => {
 
   it('with default expected response status', async () => {
     response.setDefaultExpectStatus(200);

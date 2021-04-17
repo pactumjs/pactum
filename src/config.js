@@ -12,7 +12,8 @@ const config = {
   response: {
     time: process.env.PACTUM_RESPONSE_TIME ? parseInt(process.env.PACTUM_RESPONSE_TIME) : null,
     status: process.env.PACTUM_RESPONSE_STATUS ? parseInt(process.env.PACTUM_RESPONSE_STATUS) : null,
-    headers: {}
+    headers: {},
+    expectHandlers: []
   },
   data: {
     ref: {
