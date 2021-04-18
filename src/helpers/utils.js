@@ -54,12 +54,12 @@ const utils = {
   upsertValues(jsonArray, item) {
     const index = jsonArray.findIndex(_item => _item.key === item.key);
     if (index > -1 ) {
-      jsonArray[index] = item
+      jsonArray[index] = item;
     } else {
       jsonArray.push(item);
     }
   }
-  
+
 };
 
 function validatePath(req, interaction) {

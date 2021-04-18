@@ -1,5 +1,6 @@
 const override = require('deep-override');
 const jq = require('json-query');
+const { klona } = require("klona");
 
 const stash = require('../exports/stash');
 const handler = require('../exports/handler');
@@ -16,7 +17,7 @@ const dataProcessor = {
   processMaps() {
     if (!config.data.ref.map.processed) {
       const orgMap = stash.getDataMap();
-      this.map = JSON.parse(JSON.stringify(orgMap));
+      this.map = klona(orgMap);
       this.map = this.processDataRefs(this.map);
       config.data.ref.map.processed = true;
       if (Object.keys(this.map).length > 0) {
@@ -28,7 +29,7 @@ const dataProcessor = {
   processTemplates() {
     if (!config.data.template.processed) {
       const orgTemplate = stash.getDataTemplate();
-      this.template = JSON.parse(JSON.stringify(orgTemplate));
+      this.template = klona(orgTemplate);
       this.template = this.processDataTemplates(this.template);
       config.data.template.processed = true;
       if (Object.keys(this.template).length > 0) {
@@ -56,7 +57,7 @@ const dataProcessor = {
     if (templateName) {
       const templateValue = this.template[templateName];
       if (templateValue) {
-        data = JSON.parse(JSON.stringify(templateValue));
+        data = klona(templateValue);
         data = this.processDataTemplates(data);
         if (overrides) {
           override(data, overrides);

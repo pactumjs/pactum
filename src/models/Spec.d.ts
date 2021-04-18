@@ -159,10 +159,10 @@ declare class Spec {
    trace(url: string): Spec;
  
    /**
-    * The WITHMETHOD method extends the support for the request-methods apart from 
+    * The `withMethod` method extends the support for the request-methods apart from 
     * (GET, POST, DELETE, PATCH, PUT, HEAD)
     * 
-    * The WITHPATH method triggers the request passed through withMethod()
+    * The `withPath` method triggers the request passed through withMethod()
     * @example
     * await pactum.spec()
     *  .withMethod('HEAD')

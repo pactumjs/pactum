@@ -376,6 +376,9 @@ class Expect {
         utils.upsertValues(this.headers, { key, value });
       }
     }
+    if (config.response.expectHandlers.length > 0) {
+      this.customExpectHandlers = this.customExpectHandlers.concat(config.response.expectHandlers);
+    }
   }
 
 }

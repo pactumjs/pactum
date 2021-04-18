@@ -33,6 +33,10 @@ const response = {
     config.response.status = status;
   },
 
+  setDefaultExpectHandlers(handler, data) {
+    config.response.expectHandlers.push({ handler, data });
+  },
+
   removeDefaultExpectHeader(key) {
     if (!key) {
       throw new PactumResponseError(`Invalid expected response header key provided - ${key}`);
@@ -42,6 +46,10 @@ const response = {
 
   removeDefaultExpectHeaders() {
     config.response.headers = {};
+  },
+
+  removeDefaultExpectHandlers() {
+    config.response.expectHandlers = [];
   }
 
 };
