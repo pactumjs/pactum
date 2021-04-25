@@ -50,6 +50,33 @@ describe('Mock Interactions - Handler', () => {
         data: 'child/sub'
       };
     });
+    handler.addInteractionHandler('get sub child', () => {
+      return {
+        name: 'get child',
+        data: 'child/sub'
+      };
+    });
+    handler.addInteractionHandler('get users with id 1 & 2', (ctx) => {
+      return [
+      {
+        request: {
+          method: 'GET',
+          path: `/api/users/${ctx.data[0]}`
+        },
+        response: {
+          status: 200
+        }
+      },
+      {
+        request: {
+          method: 'GET',
+          path: `/api/users/${ctx.data[1]}`
+        },
+        response: {
+          status: 200
+        }
+      }];
+    });
   });
 
   it('GET - with handler name', async () => {
@@ -85,6 +112,18 @@ describe('Mock Interactions - Handler', () => {
     await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200);
+    mock.clearInteractions();
+  });
+
+  it('GET - multiple interactions', async () => {
+    const specWait = pactum.spec()
+    .get('http://localhost:9393/api/users/1')
+    .expectStatus(200)
+    await pactum.spec()
+      .useInteraction('get users with id 1 & 2', [1, 2])
+      .get('http://localhost:9393/api/users/2')
+      .expectStatus(200)
+      .wait(specWait);
     mock.clearInteractions();
   });
 
