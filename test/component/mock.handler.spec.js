@@ -67,6 +67,17 @@ describe('Mock Interactions - Handler', () => {
       }
       return interactions;
     });
+    handler.addInteractionHandler('get parents', (ctx) => {
+      const { data } = ctx;
+      const interactions = [];
+      for (let i = 0; i < data.length; i++) {
+        interactions.push({
+          name: 'get parent',
+          data: data[i]
+        });
+      }
+      return interactions;
+    });
   });
 
   it('GET - with handler name', async () => {
@@ -131,6 +142,17 @@ describe('Mock Interactions - Handler', () => {
       err = error;
     }
     expect(err).not.undefined;
+  });
+
+  it('GET - single handler - multiple parent interactions', async () => {
+    const specWait = pactum.spec()
+      .get('http://localhost:9393/api/parent/1')
+      .expectStatus(200);
+    await pactum.spec()
+      .useInteraction('get parents', [1, 2])
+      .get('http://localhost:9393/api/parent/2')
+      .expectStatus(200)
+      .wait(specWait);
   });
 
 });

@@ -5,8 +5,20 @@ const hr = {
 
   interaction(name, data) {
     const mi = handler.getInteractionHandler(name)({ data });
-    if (mi && mi.name) return this.interaction(mi.name, mi.data);
-    return mi;
+    if (Array.isArray(mi)) {
+      const interactions = [];
+      for (let i = 0; i < mi.length; i++) {
+        if (mi[i] && mi[i].name) {
+          interactions.push(this.interaction(mi[i].name, mi[i].data));
+        } else {
+          interactions.push(mi[i]);
+        }
+      }
+      return interactions;
+    } else {
+      if (mi && mi.name) return this.interaction(mi.name, mi.data);
+      return mi;
+    }
   },
 
   capture(name, ctx) {
