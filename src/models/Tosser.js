@@ -54,7 +54,7 @@ class Tosser {
   }
 
   async setResponse() {
-    this.response = await getResponse(this.request);
+    this.response = await getResponse(this);
     const retryOptions = this.request.retryOptions;
     if (retryOptions) {
       const { count, delay, strategy } = retryOptions;
@@ -70,7 +70,7 @@ class Tosser {
         }
         if (!retry) {
           await helper.sleep(delay);
-          this.response = await getResponse(this.request);
+          this.response = await getResponse(this);
         } else {
           break;
         }
@@ -139,7 +139,7 @@ class Tosser {
   }
 
   validateError() {
-    if (this.response instanceof Error) {
+    if (this.response instanceof Error && this.expect.errors.length === 0) {
       this.spec.status = 'ERROR';
       this.spec.failure = this.response.toString();
       this.runReport();
@@ -157,22 +157,25 @@ class Tosser {
   }
 
   runReport() {
-    if (config.reporter.autoRun) {
+    if (config.reporter.autoRun && this.expect.errors.length === 0) {
       rlc.afterSpecReport(this.spec);
     }
   }
 
 }
 
-async function getResponse(req) {
+async function getResponse(tosser) {
+  const { request, expect } = tosser;
   let res = {};
   const requestStartTime = Date.now();
   try {
-    log.debug(`${req.method} ${req.url}`);
-    res = await phin(req);
+    log.debug(`${request.method} ${request.url}`);
+    res = await phin(request);
     res.json = helper.getJson(res.body);
   } catch (error) {
-    log.error('Error performing request', error);
+    if (expect.errors.length === 0) {
+      log.error('Error performing request', error);
+    }
     res = error;
   }
   res.responseTime = Date.now() - requestStartTime;

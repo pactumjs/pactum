@@ -393,6 +393,11 @@ class Spec {
     return this;
   }
 
+  expectError(error) {
+    this._expect.errors.push(error);
+    return this;
+  }
+
   updateSnapshot() {
     this._expect.updateSnapshot = true;
     return this;

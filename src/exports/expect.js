@@ -89,6 +89,11 @@ class Have {
     this._validate();
   }
 
+  error(err) {
+    this.expect.errors.push(err);
+    this._validate();
+  }
+
   _(handler, data) {
     this.expect.customExpectHandlers.push({ handler, data });
     return this._validate();

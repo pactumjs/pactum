@@ -531,6 +531,10 @@ declare class Spec {
    */
   expectJsonMatchStrictAt(value: object): Spec;
 
+  expectError(): Spec;
+  expectError(error: string): Spec;
+  expectError(error: object): Spec;
+
   /**
    * expects the json to match with stored snapshots
    * @example

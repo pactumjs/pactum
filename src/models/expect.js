@@ -34,6 +34,7 @@ class Expect {
     this.headerContains = [];
     this.responseTime = null;
     this.customExpectHandlers = [];
+    this.errors = [];
   }
 
   validate(request, response) {
@@ -54,6 +55,7 @@ class Expect {
     this._validateJsonMatchStrictQuery(response);
     this._validateJsonSnapshot(response);
     this._validateResponseTime(response);
+    this._validateErrors(response);
     // for asynchronous expectations
     return this._validateCustomExpectHandlers(request, response);
   }
@@ -343,6 +345,31 @@ class Expect {
     if (this.responseTime !== null) {
       if (response.responseTime > this.responseTime) {
         this.fail(`Request took longer than ${this.responseTime}ms: (${response.responseTime}ms).`);
+      }
+    }
+  }
+
+  _validateErrors(response) {
+    if (this.errors.length > 0) {
+      if (!(response instanceof Error)) {
+        this.fail(`No Error while performing a request`);
+      }
+      for (let i = 0; i < this.errors.length; i++) {
+        const expected = this.errors[i];
+        if (typeof expected === 'string') {
+          const actual = response.toString();
+          if (!actual.includes(expected)) {
+            this.fail(`Error - "${actual}" doesn't include - ${expected}`);
+          }
+        }
+        if (typeof expected === 'object') {
+          const rules = jmv.getMatchingRules(expected, '$.error');
+          const value = jmv.getRawValue(expected);
+          const errors = jmv.validate(response, value, rules, '$.error', false);
+          if (errors) {
+            this.fail(errors.replace('$.error', '$'));
+          }
+        }
       }
     }
   }
