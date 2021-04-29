@@ -1,3 +1,4 @@
+const { expect } = require('chai');
 const mock = require('../../src/exports/mock');
 const pactum = require('../../src/index');
 const handler = pactum.handler;
@@ -50,32 +51,32 @@ describe('Mock Interactions - Handler', () => {
         data: 'child/sub'
       };
     });
-    handler.addInteractionHandler('get sub child', () => {
-      return {
-        name: 'get child',
-        data: 'child/sub'
-      };
+    handler.addInteractionHandler('get users with ids', (ctx) => {
+      const { data } = ctx;
+      const interactions = [];
+      for (let i = 0; i < data.length; i++) {
+        interactions.push({
+          request: {
+            method: 'GET',
+            path: `/api/users/${data[i]}`
+          },
+          response: {
+            status: 200
+          }
+        });
+      }
+      return interactions;
     });
-    handler.addInteractionHandler('get users with id 1 & 2', (ctx) => {
-      return [
-      {
-        request: {
-          method: 'GET',
-          path: `/api/users/${ctx.data[0]}`
-        },
-        response: {
-          status: 200
-        }
-      },
-      {
-        request: {
-          method: 'GET',
-          path: `/api/users/${ctx.data[1]}`
-        },
-        response: {
-          status: 200
-        }
-      }];
+    handler.addInteractionHandler('get parents', (ctx) => {
+      const { data } = ctx;
+      const interactions = [];
+      for (let i = 0; i < data.length; i++) {
+        interactions.push({
+          name: 'get parent',
+          data: data[i]
+        });
+      }
+      return interactions;
     });
   });
 
@@ -108,23 +109,50 @@ describe('Mock Interactions - Handler', () => {
   });
 
   it('GET - handler name & custom data by default mock', async () => {
-    mock.addInteraction({ name: 'get project', data: 1});
+    mock.addInteraction({ name: 'get project', data: 1 });
     await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
       .expectStatus(200);
     mock.clearInteractions();
   });
 
-  it('GET - multiple interactions', async () => {
+  it('GET - single handler - multiple interactions', async () => {
     const specWait = pactum.spec()
-    .get('http://localhost:9393/api/users/1')
-    .expectStatus(200)
+      .get('http://localhost:9393/api/users/1')
+      .expectStatus(200);
     await pactum.spec()
-      .useInteraction('get users with id 1 & 2', [1, 2])
+      .useInteraction('get users with ids', [1, 2])
       .get('http://localhost:9393/api/users/2')
       .expectStatus(200)
       .wait(specWait);
-    mock.clearInteractions();
+  });
+
+  it('GET - single handler - multiple interactions - one interaction not exercised - throws error', async () => {
+    let err;
+    try {
+      const specWait = pactum.spec()
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200);
+      await pactum.spec()
+        .useInteraction('get users with ids', [1, 2])
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200)
+        .wait(specWait);
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+  it('GET - single handler - multiple parent interactions', async () => {
+    const specWait = pactum.spec()
+      .get('http://localhost:9393/api/parent/1')
+      .expectStatus(200);
+    await pactum.spec()
+      .useInteraction('get parents', [1, 2])
+      .get('http://localhost:9393/api/parent/2')
+      .expectStatus(200)
+      .wait(specWait);
   });
 
 });

@@ -47,6 +47,8 @@ const mock = {
       }
       if (!Array.isArray(raw)) {
         raw = [raw];
+      } else {
+        alone = false;
       }
       for (let j = 0; j < raw.length; j++) {
         const interaction = new Interaction(raw[j], true);
