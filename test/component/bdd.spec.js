@@ -143,6 +143,16 @@ describe('BDD - AutoReportRunner Disabled', () => {
     this.spec.response().to.have.status(200);
   });
 
+  it('should not return an error', async () => {
+    let err;
+    try {
+      this.spec.response().should.have.error();
+    } catch (error) {
+      err = error;
+    }
+    ce(err).not.undefined;
+  });
+
   after(() => {
     this.spec.end();
     settings.setReporterAutoRun(true);
