@@ -31,6 +31,7 @@ class Server {
         });
       } else {
         log.warn(`Mock server is already running on port ${config.mock.port}`);
+        resolve();
       }
     });
   }

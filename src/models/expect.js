@@ -144,12 +144,7 @@ class Expect {
   _validateBody(response) {
     this.body = processor.processData(this.body);
     if (this.body !== null) {
-      if (response.body instanceof Buffer) {
-        const text = response.body.toString();
-        assert.strictEqual(text, this.body);
-      } else {
-        assert.strictEqual(response.body, this.body);
-      }
+      assert.deepStrictEqual(response.body, this.body);
     }
   }
 
@@ -157,27 +152,21 @@ class Expect {
     this.bodyContains = processor.processData(this.bodyContains);
     for (let i = 0; i < this.bodyContains.length; i++) {
       const expectedBodyValue = this.bodyContains[i];
-      if (expectedBodyValue instanceof RegExp) {
-        if (response.body instanceof Buffer) {
-          const text = response.body.toString();
-          if (!expectedBodyValue.test(text)) {
-            this.fail(`Value '${expectedBodyValue}' not found in response body`);
-          }
-        } else {
-          if (!expectedBodyValue.test(response.body)) {
-            this.fail(`Value '${expectedBodyValue}' not found in response body`);
-          }
+      let expected = expectedBodyValue;
+      if (expected && typeof expected === 'object' && !(expected instanceof RegExp)) {
+        expected = JSON.stringify(expected);
+      }
+      if (expected instanceof RegExp) {
+        if (!expected.test(response.body)) {
+          this.fail(`Value '${expected}' not found in response body`);
         }
       } else {
-        if (response.body instanceof Buffer) {
-          const text = response.body.toString();
-          if (text.indexOf(expectedBodyValue) === -1) {
-            this.fail(`Value '${expectedBodyValue}' not found in response body`);
-          }
-        } else {
-          if (response.body.indexOf(expectedBodyValue) === -1) {
-            this.fail(`Value '${expectedBodyValue}' not found in response body`);
-          }
+        let actual = response.body;
+        if (actual && typeof actual === 'object') {
+          actual = JSON.stringify(actual);
+        }
+        if (actual.indexOf(expected) === -1) {
+          this.fail(`Value '${expected}' not found in response body`);
         }
       }
     }
