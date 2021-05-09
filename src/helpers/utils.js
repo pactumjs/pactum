@@ -97,6 +97,10 @@ function validatePath(req, interaction) {
 
 function validateQuery(req, interaction) {
   const { strict, request } = interaction;
+  if (req.method === 'GET' && request.graphQL) {
+    if (req.query.variables) req.query.variables = JSON.parse(req.query.variables);
+    return graphQL.compare(req.query, request.queryParams, strict);
+  }
   return compare(req.query, request.queryParams, request.matchingRules, '$.query', strict).equal;
 }
 
@@ -119,8 +123,8 @@ function validateHeaders(req, interaction) {
 
 function validateBody(req, interaction) {
   const { strict, request } = interaction;
-  if (request.graphQL) {
-    return graphQL.compare(req.body, request.body);
+  if (request.graphQL && req.method !== 'GET') {
+    return graphQL.compare(req.body, request.body, strict);
   }
   if (strict) {
     if (req.body || request.body) {

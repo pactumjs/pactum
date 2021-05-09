@@ -127,10 +127,15 @@ class InteractionRequest {
     }
     if (request.graphQL) {
       this.graphQL = new InteractionRequestGraphQL(request.graphQL);
-      this.body = {
-        query: request.graphQL.query,
-        variables: request.graphQL.variables
-      };
+      if (this.method === 'GET') {
+        this.queryParams.query = request.graphQL.query;
+        if (request.graphQL.variables) this.queryParams.variables = request.graphQL.variables;
+      } else {
+        this.body = {
+          query: request.graphQL.query,
+          variables: request.graphQL.variables
+        };
+      }
     }
   }
 }
