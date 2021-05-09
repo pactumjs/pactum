@@ -217,7 +217,7 @@ describe('Expects', () => {
     expect(err.message).contains('Interaction Not Found');
   });
 
-  it('failed body contains', async () => {
+  it('failed body contains - string', async () => {
     let err;
     try {
       await pactum.spec()
@@ -227,6 +227,18 @@ describe('Expects', () => {
       err = error;
     }
     expect(err.message).equals(`Value 'Hello World' not found in response body`);
+  });
+
+  it('failed body contains - object', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .get('http://localhost:9393/api/users/1')
+        .expectBodyContains({ msg: 'Hello World' });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals(`Value '{"msg":"Hello World"}' not found in response body`);
   });
 
   it('failed body contains - RegEx', async () => {

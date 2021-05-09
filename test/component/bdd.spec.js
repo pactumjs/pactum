@@ -5,7 +5,7 @@ const ce = require('chai').expect;
 
 describe('BDD', () => {
 
-  let spec = pactum.spec();
+  const spec = pactum.spec();
   let response;
 
   before(() => {
@@ -60,7 +60,7 @@ describe('BDD', () => {
     expect(response).should.have.jsonLike({ name: 'snow' });
     expect(response).to.have.jsonAt('name', 'snow');
     expect(response).to.have.jsonLikeAt('name', 'snow');
-    expect(response).to.have.body(`{"name":"snow"}`);
+    expect(response).to.have.body({ name: 'snow' });
     spec.response().to.have.bodyContains(`snow`);
   });
 

@@ -1,3 +1,4 @@
+const { expect } = require('chai');
 const pactum = require('../../src/index');
 
 describe('GraphQL', () => {
@@ -32,6 +33,41 @@ describe('GraphQL', () => {
       .toss();
   });
 
+  it('with single line graphql query - not matching', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useInteraction({
+          request: {
+            method: 'POST',
+            path: '/api/graphql',
+            graphQL: {
+              query: `{ hello }`
+            }
+          },
+          response: {
+            status: 200,
+            body: {
+              data: {
+                hello: 'Hello World'
+              }
+            }
+          }
+        })
+        .post('http://localhost:9393/api/graphql')
+        .withGraphQLQuery(`{ world }`)
+        .expectStatus(200)
+        .expectJson({
+          data: {
+            hello: 'Hello World'
+          }
+        });
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
   it('with multi line graphql query', async () => {
     await pactum.spec()
       .useInteraction({
@@ -43,6 +79,7 @@ describe('GraphQL', () => {
               {
                 hero {
                   name
+                  age
                 }
               }
             `
@@ -65,6 +102,7 @@ describe('GraphQL', () => {
           {
             hero {
               name
+              age
             }
           }
         `
@@ -587,6 +625,70 @@ describe('GraphQL', () => {
         }
       })
       .toss();
+  });
+
+  it('GET method with query should work', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/graphql',
+          graphQL: {
+            query: `{ hello }`
+          }
+        },
+        response: {
+          status: 200,
+          body: {
+            data: {
+              hello: 'Hello World'
+            }
+          }
+        }
+      })
+      .get('http://localhost:9393/api/graphql')
+      .withGraphQLQuery(`{ hello }`)
+      .expectStatus(200)
+      .expectJson({
+        data: {
+          hello: 'Hello World'
+        }
+      });
+  });
+
+  it('GET method with query & variables should work', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/graphql',
+          graphQL: {
+            query: `{ hello }`,
+            variables: {
+              "episode": "JEDI"
+            }
+          }
+        },
+        response: {
+          status: 200,
+          body: {
+            data: {
+              hello: 'Hello World'
+            }
+          }
+        }
+      })
+      .get('http://localhost:9393/api/graphql')
+      .withGraphQLQuery(`{ hello }`)
+      .withGraphQLVariables({
+        "episode": "JEDI"
+      })
+      .expectStatus(200)
+      .expectJson({
+        data: {
+          hello: 'Hello World'
+        }
+      });
   });
 
 });

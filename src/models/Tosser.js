@@ -176,7 +176,11 @@ async function getResponse(tosser) {
   try {
     log.debug(`${request.method} ${request.url}`);
     res = await phin(request);
+    res.body = helper.bufferToString(res.body);
     res.json = helper.getJson(res.body);
+    if (helper.isContentJson(res)) {
+      res.body = res.json;
+    }
   } catch (error) {
     if (expect.errors.length === 0) {
       log.error('Error performing request', error);

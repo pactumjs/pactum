@@ -1,13 +1,14 @@
 const helper = {
 
-  getJson(jsonString) {
+  bufferToString(value) {
+    return value instanceof Buffer ? value.toString() : value;
+  },
+
+  getJson(value) {
     try {
-      if (jsonString instanceof Buffer) {
-        jsonString = jsonString.toString();
-      }
-      return JSON.parse(jsonString);
+      return JSON.parse(value);
     } catch (error) {
-      return jsonString;
+      return value;
     }
   },
 
@@ -40,17 +41,6 @@ const helper = {
     return value !== null && typeof value === 'object' && !Array.isArray(value);
   },
 
-  stringify(obj) {
-    if (this.isValidObject(obj)) {
-      try {
-        return JSON.stringify(obj, null, 2);
-      } catch (error) {
-        return obj;
-      }
-    }
-    return obj;
-  },
-
   sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   },
@@ -74,6 +64,11 @@ const helper = {
       headers: response.headers,
       body: response.json
     };
+  },
+
+  isContentJson(res) {
+    const type = res && res.headers['content-type'];
+    return type ? type.includes('application/json') : false;
   }
 
 };

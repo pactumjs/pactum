@@ -1,20 +1,20 @@
-const assert = require('assert');
 const { parse } = require('parse-graphql');
+const { compare } = require('pactum-matchers').utils;
 
 const graphql = {
 
-  compare(actual, expected) {
+  compare(actual, expected, strict) {
     try {
       if (actual && typeof actual === 'object' && actual.query) {
         const actualQuery = parse(actual.query);
         const expectedQuery = parse(expected.query);
         removeLoc(actualQuery);
         removeLoc(expectedQuery);
-        assert.deepStrictEqual(actualQuery, expectedQuery);
-        if (actual.variables || expected.variables) {
-          assert.deepStrictEqual(actual.variables, expected.variables);
+        const result = compare(actualQuery, expectedQuery, {}, '$.graphQL.query', strict).equal;
+        if (result && (actual.variables || expected.variables)) {
+          return compare(actual.variables, expected.variables, {}, '$.graphQL.variables', strict).equal;
         }
-        return true;
+        return result;
       }
     } catch (error) {
       return false;

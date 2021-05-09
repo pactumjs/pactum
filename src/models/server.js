@@ -31,6 +31,7 @@ class Server {
         });
       } else {
         log.warn(`Mock server is already running on port ${config.mock.port}`);
+        resolve();
       }
     });
   }
@@ -52,7 +53,8 @@ class Server {
 
   addInteraction(id, interaction) {
     this.interactions.set(id, interaction);
-    log.debug(`Interaction added to Server - ${id}`);
+    const { method, path } = interaction.request;
+    log.debug(`Interaction added to Server with id - ${id} | ${method} ${path}`);
   }
 
   removeInteraction(id) {
