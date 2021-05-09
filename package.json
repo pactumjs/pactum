@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "3.0.12",
+  "version": "3.0.13",
   "description": "REST API Testing Tool for all levels in a Test Pyramid",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -72,10 +72,10 @@
     "polka": "^0.5.2"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^7.1.2",
-    "nyc": "^15.0.0",
-    "sinon": "^9.0.2"
+    "chai": "^4.3.4",
+    "mocha": "^8.4.0",
+    "nyc": "^15.1.0",
+    "sinon": "^10.0.0"
   },
   "engines": {
     "node": ">=10"
