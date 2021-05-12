@@ -98,7 +98,6 @@ function validatePath(req, interaction) {
 function validateQuery(req, interaction) {
   const { strict, request } = interaction;
   if (req.method === 'GET' && request.graphQL) {
-    if (req.query.variables) req.query.variables = JSON.parse(req.query.variables);
     return graphQL.compare(req.query, request.queryParams, strict);
   }
   return compare(req.query, request.queryParams, request.matchingRules, '$.query', strict).equal;

@@ -11,8 +11,9 @@ const graphql = {
         removeLoc(actualQuery);
         removeLoc(expectedQuery);
         const result = compare(actualQuery, expectedQuery, {}, '$.graphQL.query', strict).equal;
-        if (result && (actual.variables || expected.variables)) {
-          return compare(actual.variables, expected.variables, {}, '$.graphQL.variables', strict).equal;
+        const actualVariables = typeof actual.variables === 'string' ? JSON.parse(actual.variables) : actual.variables;
+        if (result && (actualVariables || expected.variables)) {
+          return compare(actualVariables, expected.variables, {}, '$.graphQL.variables', strict).equal;
         }
         return result;
       }
