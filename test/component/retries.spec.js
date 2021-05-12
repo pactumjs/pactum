@@ -3,6 +3,90 @@ const expect = require('chai').expect;
 
 describe('Retries', () => {
 
+  it('default retry', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        response: {
+          onCall: {
+            0: {
+              status: 202
+            },
+            1: {
+              status: 200
+            }
+          }
+        },
+        expects: {
+          callCount: 2
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .retry()
+      .expectStatus(200)
+      .toss();
+  });
+
+  it('retry with custom count', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        response: {
+          onCall: {
+            0: {
+              status: 202
+            },
+            1: {
+              status: 202
+            },
+            2: {
+              status: 200
+            }
+          }
+        },
+        expects: {
+          callCount: 3
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .retry(2)
+      .expectStatus(200)
+      .toss();
+  });
+
+  it('retry with custom count & delay', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        response: {
+          onCall: {
+            0: {
+              status: 202
+            },
+            1: {
+              status: 200
+            }
+          }
+        },
+        expects: {
+          callCount: 2
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .retry(3, 1)
+      .expectStatus(200)
+      .toss();
+  });
+
   it('retry strategy', async () => {
     await pactum.spec()
       .useInteraction({
