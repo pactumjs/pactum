@@ -1,7 +1,13 @@
 const pactum = require('../../src/index');
 const expect = require('chai').expect;
+const { settings } = pactum;
 
 describe('Retries', () => {
+
+  before(() => {
+    settings.setDefaultRetryCount(1);
+    settings.setDefaultRetryDelay(1);
+  });
 
   it('default retry', async () => {
     await pactum.spec()
@@ -205,6 +211,11 @@ describe('Retries', () => {
       err = error;
     }
     expect(err.message).contains(`Retry Handler Not Found - 'RetryTill400'`);
+  });
+
+  after(() => {
+    settings.setDefaultRetryCount(1);
+    settings.setDefaultRetryDelay(1000);
   });
 
 });
