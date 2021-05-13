@@ -60,11 +60,11 @@ class Tosser {
 
   async setResponse() {
     this.response = await getResponse(this);
-    const retryOptions = this.request.retryOptions;
-    if (retryOptions) {
-      const count = retryOptions.count || config.retry.count;
-      const delay = retryOptions.delay || config.retry.delay;
-      const strategy = retryOptions.strategy;
+    const options = this.request.retryOptions;
+    if (options) {
+      const count = typeof options.count === 'number' ? options.count : config.retry.count;
+      const delay = typeof options.delay === 'number' ? options.delay : config.retry.delay;
+      const strategy = options.strategy;
       for (let i = 0; i < count; i++) {
         let noRetry = true;
         const ctx = { req: this.request, res: this.response };
@@ -82,7 +82,7 @@ class Tosser {
         }
         if (!noRetry) {
           const scale = delay === 1000 ? 'second' : 'seconds';
-          log.debug(`Retrying request in ${delay/1000} ${scale}`);
+          log.debug(`Retrying request in ${delay / 1000} ${scale}`);
           await helper.sleep(delay);
           this.response = await getResponse(this);
         } else {

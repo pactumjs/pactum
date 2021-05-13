@@ -88,7 +88,7 @@ describe('Retries', () => {
         }
       })
       .get('http://localhost:9393/api/projects/1')
-      .retry(3, 1)
+      .retry(3, 0)
       .expectStatus(200)
       .toss();
   });

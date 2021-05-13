@@ -272,9 +272,7 @@ class Spec {
   }
 
   retry(options, delay) {
-    if (typeof options === 'undefined') {
-      options = {};
-    } else if (typeof options === 'number') {
+    if (typeof options === 'undefined' || typeof options === 'number') {
       options = { count: options, delay: delay };
     }
     this._request.retryOptions = options;
