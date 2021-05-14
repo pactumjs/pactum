@@ -11,6 +11,7 @@
 ![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
 ![Downloads](https://img.shields.io/npm/dt/pactum)
 ![Size](https://img.shields.io/bundlephobia/minzip/pactum)
+![Platform](https://img.shields.io/node/v/pactum)
 
 </span>
 
