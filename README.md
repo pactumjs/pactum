@@ -62,11 +62,11 @@ npm install --save-dev pactum
 npm install --save-dev mocha
 ```
 
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/rainbow.png)
+
 # Usage
 
 **pactum** can be used for all levels of testing in a test pyramid. It can also act as an standalone mock server to generate contracts for consumer driven contract testing.
-
-![----------](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/rainbow.png)
 
 ## API Testing
 
@@ -137,8 +137,6 @@ Scenario: Check TeaPot
   Then response should have a status 200
 ```
 
-![----------](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/rainbow.png)
-
 ## Mock Server
 
 **pactum** can act as a standalone *mock server* that allows us to mock any server via HTTP or HTTPS, such as a REST endpoint. Simply it is a simulator for HTTP-based APIs.
@@ -166,6 +164,8 @@ mock.addInteraction({
 
 mock.start(3000);
 ```
+
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/rainbow.png)
 
 # Notes
 
