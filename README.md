@@ -5,14 +5,18 @@
  <h2>REST API Testing Tool for all levels in a Test Pyramid</h2>
 </div>
 
+<span align="center">
+
 ![Build](https://github.com/pactumjs/pactum/workflows/Build/badge.svg?branch=master)
 ![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
 ![Downloads](https://img.shields.io/npm/dt/pactum)
 ![Size](https://img.shields.io/bundlephobia/minzip/pactum)
 ![Platform](https://img.shields.io/node/v/pactum)
 
+</span>
+
 <br />
-<p><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/demo.gif" alt="PactumJS Demo"/></a>
+<p align="center"><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/demo.gif" alt="PactumJS Demo"/></a>
 </p>
 <br />
 
