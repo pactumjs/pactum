@@ -53,6 +53,10 @@ const config = {
   },
   reporter : {
     autoRun: true
+  },
+  retry: {
+    count: 1,
+    delay: 1000
   }
 };
 

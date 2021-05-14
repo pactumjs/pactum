@@ -271,18 +271,9 @@ class Spec {
     return this;
   }
 
-  retry(options) {
-    if (!options) {
-      throw new PactumRequestError('Invalid retry options');
-    }
-    if (!options.strategy) {
-      throw new PactumRequestError('Invalid retry strategy');
-    }
-    if (!options.count) {
-      options.count = 3;
-    }
-    if (!options.delay) {
-      options.delay = 1000;
+  retry(options, delay) {
+    if (typeof options === 'undefined' || typeof options === 'number') {
+      options = { count: options, delay: delay };
     }
     this._request.retryOptions = options;
     return this;

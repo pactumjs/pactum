@@ -8,14 +8,11 @@ const rlc = {
       const data = {};
       data.id = spec.id;
       data.flow = spec.flow;
-      data.info = {
-        id: spec.id,
-        name: spec._name,
-        status: spec.status,
-        failure: spec.failure,
-        start: spec.start,
-        end: helper.getCurrentTime(),
-      };
+      data.name = spec._name,
+      data.status = spec.status,
+      data.failure = spec.failure,
+      data.start = spec.start,
+      data.end = helper.getCurrentTime(),
       data.request = {
         url: spec._request.url,
         method: spec._request.method,

@@ -29,6 +29,14 @@ const settings = {
 
   setReporterAutoRun(val) {
     config.reporter.autoRun = val;
+  },
+
+  setDefaultRetryCount(count) {
+    config.retry.count = count;
+  },
+
+  setDefaultRetryDelay(delay) {
+    config.retry.delay = delay;
   }
 
 };

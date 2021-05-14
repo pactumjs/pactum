@@ -10,7 +10,7 @@ declare interface RetryOptions {
   count?: number;
   /** delay between retries - defaults to 3 */
   delay?: number;
-  strategy?: string|RetryHandlerFunction;
+  strategy?: string | RetryHandlerFunction;
 }
 
 export = Spec;
@@ -46,7 +46,7 @@ declare class Spec {
    *  .expectStatus(200);
    */
   use(name: string, data?: any): Spec
-  
+
   /**
    * adds a interaction to the server & auto removed after execution
    * @example
@@ -69,7 +69,7 @@ declare class Spec {
    */
   useInteraction(interaction: Interaction): Spec;
   useInteraction(handler: string, data?: any): Spec;
-  
+
   /**
    * The GET method requests a representation of the specified resource.
    * @example
@@ -100,7 +100,7 @@ declare class Spec {
    *  .expectStatus(200);
    */
   patch(url: string): Spec;
-  
+
   /**
    * The POST method is used to submit an entity to the specified resource, often causing a change in state or side effects on the server.
    * @example
@@ -114,7 +114,7 @@ declare class Spec {
    *  .expectStatus(201);
    */
   post(url: string): Spec;
-  
+
   /**
    * The PUT method replaces all current representations of the target resource with the request payload.
    * @example
@@ -129,7 +129,7 @@ declare class Spec {
    *  .expectStatus(200);
    */
   put(url: string): Spec;
-  
+
   /**
    * The DELETE method deletes the specified resource.
    * @example
@@ -147,31 +147,31 @@ declare class Spec {
    *  .expectStatus(204)
    *  .expectHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
    */
-   options(url: string): Spec;
-  
-   /**
-    * The TRACE method echos the contents of an HTTP Request back to the requester
-    * @example
-    * await pactum.spec()
-    *  .trace('http://localhost:9393/projects/1')
-    *  .expectStatus(200);
-    */
-   trace(url: string): Spec;
- 
-   /**
-    * The `withMethod` method extends the support for the request-methods apart from 
-    * (GET, POST, DELETE, PATCH, PUT, HEAD)
-    * 
-    * The `withPath` method triggers the request passed through withMethod()
-    * @example
-    * await pactum.spec()
-    *  .withMethod('HEAD')
-    *  .withPath('https://jsonplaceholder.typicode.com/posts')
-    *  .expectStatus(200);
-    */
-   withMethod(method: string): Spec;
-   withPath(url: string): Spec;
-   
+  options(url: string): Spec;
+
+  /**
+   * The TRACE method echos the contents of an HTTP Request back to the requester
+   * @example
+   * await pactum.spec()
+   *  .trace('http://localhost:9393/projects/1')
+   *  .expectStatus(200);
+   */
+  trace(url: string): Spec;
+
+  /**
+   * The `withMethod` method extends the support for the request-methods apart from 
+   * (GET, POST, DELETE, PATCH, PUT, HEAD)
+   * 
+   * The `withPath` method triggers the request passed through withMethod()
+   * @example
+   * await pactum.spec()
+   *  .withMethod('HEAD')
+   *  .withPath('https://jsonplaceholder.typicode.com/posts')
+   *  .expectStatus(200);
+   */
+  withMethod(method: string): Spec;
+  withPath(url: string): Spec;
+
   /**
    * replaces path params in the request url - /api/users/mike
    * @example
@@ -300,7 +300,7 @@ declare class Spec {
    *  .expectStatus(200);
    */
   withMultiPartFormData(form: FormData): Spec;
-  
+
   /**
    * attaches multi part form data to the request with header - "multipart/form-data"
    * @see https://www.npmjs.com/package/form-data
@@ -311,7 +311,7 @@ declare class Spec {
    *   .withMultiPartFormData('user', 'drake')
    *   .expectStatus(200);
    */
-  withMultiPartFormData(key: string, value: string|Buffer|Array|ArrayBuffer, options?: FormData.AppendOptions): Spec;
+  withMultiPartFormData(key: string, value: string | Buffer | Array | ArrayBuffer, options?: FormData.AppendOptions): Spec;
 
   /**
    * with http core options
@@ -335,15 +335,22 @@ declare class Spec {
   withFollowRedirects(follow: boolean): Spec;
 
   /**
-   * retry request on specific conditions before making assertions
+   * retry request on specific conditions
    * @example
-   * await pactum.spec()
-   *  .get('/some/url)
+   * // retry once on failure
+   * await pactum.spec().get('/some/url').retry().expectStatus(200);
+   * // retry twice on failure
+   * await pactum.spec().get('/some/url').retry(2).expectStatus(200);
+   * // retry once on failure with custom delay of 2 seconds
+   * await pactum.spec().get('/some/url').retry(1, 2000).expectStatus(200);
+   * // retry with custom strategy
+   * await pactum.spec().get('/some/url')
    *  .retry({
    *     strategy: (req, res) => res.statusCode !== 200
    *   })
    *  .expectStatus(200);
    */
+  retry(count?: number, delay?: number): Spec;
   retry(options: RetryOptions): Spec;
 
   /**
@@ -548,7 +555,7 @@ declare class Spec {
    *  });
    */
   expectJsonSnapshot(value?: object): Spec;
-  
+
   /**
    * updates the reference snapshot file
    */
@@ -630,4 +637,4 @@ declare class Spec {
   end(): Spec;
 }
 
-declare namespace Spec {}
+declare namespace Spec { }

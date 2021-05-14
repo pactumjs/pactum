@@ -14,14 +14,6 @@ export interface SpecResponse {
   responseTime: number;
 }
 
-export interface SpecInfo {
-  id: string;
-  status: string;
-  failure: string;
-  start: string;
-  end: string;
-}
-
 export interface InteractionCall {
   request: InteractionRequest;
   exercisedAt: string;
@@ -35,7 +27,12 @@ export interface Interaction {
 
 export interface SpecData {
   id: string;
-  info: SpecInfo;
+  flow?: string;
+  name?: string;
+  status: string;
+  failure: string;
+  start: string;
+  end: string;
   request: SpecRequest;
   response?: SpecResponse;
   recorded?: object;
