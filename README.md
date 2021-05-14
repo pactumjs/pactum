@@ -16,6 +16,10 @@
 </p>
 <br />
 
+<table>
+<tr>
+<td>
+
 **PactumJS** is a REST API Testing Tool used to automate e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies.
 
 - ⚡ Swift
@@ -26,6 +30,12 @@
 - 🔧 Extendable & Customizable
 - 📚 Clear & Comprehensive Testing Style
 - 🔗 Component, Contract & E2E testing of APIs
+
+</td>
+</tr>
+</table>
+
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/rainbow.png)
 
 ## Documentation
 
@@ -55,6 +65,8 @@ npm install --save-dev mocha
 # Usage
 
 **pactum** can be used for all levels of testing in a test pyramid. It can also act as an standalone mock server to generate contracts for consumer driven contract testing.
+
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/rainbow.png)
 
 ## API Testing
 
@@ -124,6 +136,8 @@ Scenario: Check TeaPot
   When I receive a response
   Then response should have a status 200
 ```
+
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/rainbow.png)
 
 ## Mock Server
 
