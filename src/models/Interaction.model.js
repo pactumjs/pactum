@@ -121,7 +121,7 @@ class InteractionRequest {
     } else {
       this.queryParams = {};
     }
-    if (request.body) {
+    if (typeof request.body !== 'undefined') {
       if (typeof request.body === 'object') {
         setMatchingRules(this.matchingRules, request.body, '$.body');
       }
