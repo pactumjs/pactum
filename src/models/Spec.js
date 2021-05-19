@@ -179,7 +179,9 @@ class Spec {
   }
 
   withJson(json) {
-    if (typeof json !== 'object') {
+    if (typeof json === 'string') {
+      json = JSON.parse(fs.readFileSync(json));
+    } else if (typeof json !== 'object') {
       throw new PactumRequestError(`Invalid json in request - ${json}`);
     }
     this._request.data = json;

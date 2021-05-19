@@ -235,6 +235,7 @@ declare class Spec {
    *  .expectStatus(201);
    */
   withJson(json: object): Spec;
+  withJson(filePath: string): Spec;
 
   /**
    * attaches headers to the request
