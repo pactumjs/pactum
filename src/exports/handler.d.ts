@@ -11,6 +11,9 @@ interface Request {
 
 interface Response extends IncomingMessage {
   json?: object;
+  body?: any;
+  text?: string;
+  buffer?: Buffer;
 }
 
 interface StateHandlerContext {
