@@ -2,15 +2,15 @@
 
 ![logo](https://pactumjs.github.io/_media/logo-icon-small.svg)
 
-<p style="font-weight: bold; font-size: 3.5em;">PactumJS</p>
-
-<h2>REST API Testing Tool for all levels in a Test Pyramid</h2>
+# PactumJS
 
 ![Build](https://github.com/pactumjs/pactum/workflows/Build/badge.svg?branch=master)
 ![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
 ![Downloads](https://img.shields.io/npm/dt/pactum)
 ![Size](https://img.shields.io/bundlephobia/minzip/pactum)
 ![Platform](https://img.shields.io/node/v/pactum)
+
+#### REST API Testing Tool for all levels in a Test Pyramid
 
 </span>
 
