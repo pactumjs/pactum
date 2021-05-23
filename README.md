@@ -1,11 +1,10 @@
 <span align="center">
 
-<p><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/logo.png" alt="PactumJS Logo" height="100"/></a>
-</p>
+![logo](https://pactumjs.github.io/_media/logo-icon-small.svg)
 
-<div>
- <h2>REST API Testing Tool for all levels in a Test Pyramid</h2>
-</div>
+<span style="font-weight:bold; font-size:3.5em;">PactumJS</span>
+
+<h2>REST API Testing Tool for all levels in a Test Pyramid</h2>
 
 ![Build](https://github.com/pactumjs/pactum/workflows/Build/badge.svg?branch=master)
 ![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
@@ -16,7 +15,7 @@
 </span>
 
 <br />
-<p align="center"><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/demo.gif" alt="PactumJS Demo"/></a>
+<p align="center"><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/master/assets/demo.gif" alt="PactumJS Demo"/></a>
 </p>
 <br />
 
@@ -39,7 +38,7 @@
 </tr>
 </table>
 
-![----------](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/rainbow.png)
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/master/assets/rainbow.png)
 
 ## Documentation
 
@@ -66,7 +65,7 @@ npm install --save-dev pactum
 npm install --save-dev mocha
 ```
 
-![----------](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/rainbow.png)
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/master/assets/rainbow.png)
 
 # Usage
 
@@ -169,7 +168,7 @@ mock.addInteraction({
 mock.start(3000);
 ```
 
-![----------](https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/rainbow.png)
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/master/assets/rainbow.png)
 
 # Notes
 
