@@ -10,17 +10,17 @@ const graphql = {
         const expectedQuery = parse(expected.query);
         removeLoc(actualQuery);
         removeLoc(expectedQuery);
-        const result = compare(actualQuery, expectedQuery, {}, '$.graphQL.query', strict).equal;
+        const result = compare(actualQuery, expectedQuery, {}, '$.graphQL.query', strict);
         const actualVariables = typeof actual.variables === 'string' ? JSON.parse(actual.variables) : actual.variables;
-        if (result && (actualVariables || expected.variables)) {
-          return compare(actualVariables, expected.variables, {}, '$.graphQL.variables', strict).equal;
+        if (result.equal && (actualVariables || expected.variables)) {
+          return compare(actualVariables, expected.variables, {}, '$.graphQL.variables', strict);
         }
         return result;
       }
     } catch (error) {
-      return false;
+      return { message: error.toString(), equal: false };
     }
-    return false;
+    return { message: 'Not a graphql query', equal: false };
   }
 
 };

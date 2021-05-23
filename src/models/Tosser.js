@@ -185,6 +185,8 @@ async function getResponse(tosser) {
   try {
     log.debug(`${request.method} ${request.url}`);
     res = await phin(request);
+    res.buffer = res.body;
+    res.text = helper.bufferToString(res.body) || '';
     res.body = helper.bufferToString(res.body);
     res.json = helper.getJson(res.body);
     if (helper.isContentJson(res)) {

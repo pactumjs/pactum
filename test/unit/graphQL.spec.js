@@ -6,13 +6,13 @@ describe('GraphQL', () => {
   it('null objects', () => {
     const actual = null;
     const expected = null;
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
   it('empty objects', () => {
     const actual = {};
     const expected = {};
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
   it('plain query', () => {
@@ -22,7 +22,7 @@ describe('GraphQL', () => {
     const expected = {
       query: `{ hello }`
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('plain query with different indentation', () => {
@@ -36,7 +36,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('plain query invalid', () => {
@@ -46,7 +46,7 @@ describe('GraphQL', () => {
     const expected = {
       query: `{ hello }`
     };
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
   it('multi line query', () => {
@@ -68,7 +68,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('multi line query with different indentation', () => {
@@ -84,7 +84,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('multi line query invalid', () => {
@@ -101,7 +101,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
   it('nested query', () => {
@@ -131,7 +131,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('nested query with different indentation', () => {
@@ -156,7 +156,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('nested query invalid', () => {
@@ -182,7 +182,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
   it('query with arguments', () => {
@@ -206,7 +206,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('query with arguments & different indentation', () => {
@@ -228,7 +228,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('invalid query with arguments', () => {
@@ -250,7 +250,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
   it('query with enum arguments', () => {
@@ -274,7 +274,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('query with enum arguments & different indentation', () => {
@@ -296,7 +296,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('invalid query with enum arguments', () => {
@@ -318,7 +318,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
   it('query with alias', () => {
@@ -346,7 +346,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('query with alias & different indentation', () => {
@@ -368,7 +368,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('invalid query with alias', () => {
@@ -394,7 +394,7 @@ describe('GraphQL', () => {
       }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
   it('query with fragments', () => {
@@ -437,7 +437,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('query with fragments & different indentation', () => {
@@ -478,7 +478,7 @@ describe('GraphQL', () => {
       }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('invalid query with fragments', () => {
@@ -519,7 +519,7 @@ describe('GraphQL', () => {
       }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
   it('query with operation name', () => {
@@ -547,7 +547,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('query with operation name & different indentation', () => {
@@ -573,7 +573,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('invalid query with operation name', () => {
@@ -599,7 +599,7 @@ describe('GraphQL', () => {
         }
       `
     };
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
   it('query with variables', () => {
@@ -633,7 +633,7 @@ describe('GraphQL', () => {
         "episode": "JEDI"
       }
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('query with variables & different indentation', () => {
@@ -665,7 +665,7 @@ describe('GraphQL', () => {
         "episode": "JEDI"
       }
     };
-    expect(graphQL.compare(actual, expected)).to.be.true;
+    expect(graphQL.compare(actual, expected).equal).to.be.true;
   });
 
   it('invalid query with variables', () => {
@@ -699,7 +699,7 @@ describe('GraphQL', () => {
         "episode": "MODI"
       }
     };
-    expect(graphQL.compare(actual, expected)).to.be.false;
+    expect(graphQL.compare(actual, expected).equal).to.be.false;
   });
 
 });

@@ -121,8 +121,10 @@ class InteractionRequest {
     } else {
       this.queryParams = {};
     }
-    if (request.body && typeof request.body === 'object') {
-      setMatchingRules(this.matchingRules, request.body, '$.body');
+    if (typeof request.body !== 'undefined') {
+      if (typeof request.body === 'object') {
+        setMatchingRules(this.matchingRules, request.body, '$.body');
+      }
       this.body = getValue(request.body);
     }
     if (request.graphQL) {

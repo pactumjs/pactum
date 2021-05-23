@@ -87,6 +87,7 @@ class Server {
  */
 function registerAllRoutes(server, app) {
   app.all('/*', (req, response) => {
+    log.debug(`Request received - ${req.method} ${req.path}`);
     const res = new ExpressResponse(response);
     const interaction = utils.getMatchingInteraction(req, server.interactions);
     if (interaction) {
