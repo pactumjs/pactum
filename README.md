@@ -2,7 +2,7 @@
 
 ![logo](https://pactumjs.github.io/_media/logo-icon-small.svg)
 
-<span style="font-weight:bold; font-size:3.5em;">PactumJS</span>
+<p style="font-weight: bold; font-size: 3.5em;">PactumJS</p>
 
 <h2>REST API Testing Tool for all levels in a Test Pyramid</h2>
 
