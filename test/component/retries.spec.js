@@ -1,7 +1,97 @@
 const pactum = require('../../src/index');
 const expect = require('chai').expect;
+const { settings } = pactum;
 
 describe('Retries', () => {
+
+  before(() => {
+    settings.setDefaultRetryCount(1);
+    settings.setDefaultRetryDelay(1);
+  });
+
+  it('default retry', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        response: {
+          onCall: {
+            0: {
+              status: 202
+            },
+            1: {
+              status: 200
+            }
+          }
+        },
+        expects: {
+          callCount: 2
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .retry()
+      .expectStatus(200)
+      .toss();
+  });
+
+  it('retry with custom count', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        response: {
+          onCall: {
+            0: {
+              status: 202
+            },
+            1: {
+              status: 202
+            },
+            2: {
+              status: 200
+            }
+          }
+        },
+        expects: {
+          callCount: 3
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .retry(2)
+      .expectStatus(200)
+      .toss();
+  });
+
+  it('retry with custom count & delay', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        response: {
+          onCall: {
+            0: {
+              status: 202
+            },
+            1: {
+              status: 200
+            }
+          }
+        },
+        expects: {
+          callCount: 2
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .retry(3, 0)
+      .expectStatus(200)
+      .toss();
+  });
 
   it('retry strategy', async () => {
     await pactum.spec()
@@ -121,6 +211,11 @@ describe('Retries', () => {
       err = error;
     }
     expect(err.message).contains(`Retry Handler Not Found - 'RetryTill400'`);
+  });
+
+  after(() => {
+    settings.setDefaultRetryCount(1);
+    settings.setDefaultRetryDelay(1000);
   });
 
 });

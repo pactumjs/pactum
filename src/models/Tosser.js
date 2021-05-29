@@ -45,32 +45,46 @@ class Tosser {
   }
 
   async addInteractionsToServer() {
-    const mockIdPromises = [];
+    let mockIdPromises = [];
     for (let i = 0; i < this.interactions.length; i++) {
-      const raw = this.interactions[i];
-      mockIdPromises.push(mock.addInteraction(raw.interaction, raw.data));
+      const { interaction, data } = this.interactions[i];
+      const ids = mock.addInteraction(interaction, data);
+      if (Array.isArray(ids)) {
+        mockIdPromises = mockIdPromises.concat(ids);
+      } else {
+        mockIdPromises.push(ids);
+      }
     }
     this.mockIds = this.mockIds.concat(await Promise.all(mockIdPromises));
   }
 
   async setResponse() {
-    this.response = await getResponse(this.request);
-    const retryOptions = this.request.retryOptions;
-    if (retryOptions) {
-      const { count, delay, strategy } = retryOptions;
-      let retry = true;
+    this.response = await getResponse(this);
+    const options = this.request.retryOptions;
+    if (options) {
+      const count = typeof options.count === 'number' ? options.count : config.retry.count;
+      const delay = typeof options.delay === 'number' ? options.delay : config.retry.delay;
+      const strategy = options.strategy;
       for (let i = 0; i < count; i++) {
+        let noRetry = true;
         const ctx = { req: this.request, res: this.response };
         if (typeof strategy === 'function') {
-          retry = strategy(ctx);
-        }
-        if (typeof strategy === 'string') {
+          noRetry = strategy(ctx);
+        } else if (typeof strategy === 'string') {
           const handlerFun = handler.getRetryHandler(strategy);
-          retry = handlerFun(ctx);
+          noRetry = handlerFun(ctx);
+        } else {
+          try {
+            await this.validateResponse();
+          } catch (error) {
+            noRetry = false;
+          }
         }
-        if (!retry) {
+        if (!noRetry) {
+          const scale = delay === 1000 ? 'second' : 'seconds';
+          log.debug(`Retrying request in ${delay / 1000} ${scale}`);
           await helper.sleep(delay);
-          this.response = await getResponse(this.request);
+          this.response = await getResponse(this);
         } else {
           break;
         }
@@ -139,7 +153,7 @@ class Tosser {
   }
 
   validateError() {
-    if (this.response instanceof Error) {
+    if (this.response instanceof Error && this.expect.errors.length === 0) {
       this.spec.status = 'ERROR';
       this.spec.failure = this.response.toString();
       this.runReport();
@@ -157,22 +171,31 @@ class Tosser {
   }
 
   runReport() {
-    if (config.reporter.autoRun) {
+    if (config.reporter.autoRun && this.expect.errors.length === 0) {
       rlc.afterSpecReport(this.spec);
     }
   }
 
 }
 
-async function getResponse(req) {
+async function getResponse(tosser) {
+  const { request, expect } = tosser;
   let res = {};
   const requestStartTime = Date.now();
   try {
-    log.debug(`${req.method} ${req.url}`);
-    res = await phin(req);
+    log.debug(`${request.method} ${request.url}`);
+    res = await phin(request);
+    res.buffer = res.body;
+    res.text = helper.bufferToString(res.body) || '';
+    res.body = helper.bufferToString(res.body);
     res.json = helper.getJson(res.body);
+    if (helper.isContentJson(res)) {
+      res.body = res.json;
+    }
   } catch (error) {
-    log.error('Error performing request', error);
+    if (expect.errors.length === 0) {
+      log.error('Error performing request', error);
+    }
     res = error;
   }
   res.responseTime = Date.now() - requestStartTime;

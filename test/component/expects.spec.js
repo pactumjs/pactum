@@ -217,7 +217,7 @@ describe('Expects', () => {
     expect(err.message).contains('Interaction Not Found');
   });
 
-  it('failed body contains', async () => {
+  it('failed body contains - string', async () => {
     let err;
     try {
       await pactum.spec()
@@ -227,6 +227,18 @@ describe('Expects', () => {
       err = error;
     }
     expect(err.message).equals(`Value 'Hello World' not found in response body`);
+  });
+
+  it('failed body contains - object', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .get('http://localhost:9393/api/users/1')
+        .expectBodyContains({ msg: 'Hello World' });
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals(`Value '{"msg":"Hello World"}' not found in response body`);
   });
 
   it('failed body contains - RegEx', async () => {
@@ -734,7 +746,7 @@ describe('Expects', () => {
 
   it('json snapshot - with matchers', async () => {
     await pactum.spec()
-    .useInteraction('get user with id 1')
+      .useInteraction('get user with id 1')
       .name('json snapshot - with matchers')
       .get('http://localhost:9393/api/users/1')
       .expectStatus(200)
@@ -742,7 +754,7 @@ describe('Expects', () => {
         id: like(1)
       });
     await pactum.spec()
-    .useInteraction('get user with id 1')
+      .useInteraction('get user with id 1')
       .name('json snapshot - with matchers')
       .get('http://localhost:9393/api/users/1')
       .expectStatus(200)
@@ -959,6 +971,61 @@ describe('Expects', () => {
     fs.unlinkSync(`.pactum/snapshots/json snapshot - with matchers.json`);
     expect(err1).not.undefined;
     expect(err2).not.undefined;
+  });
+
+  it('error - empty', async () => {
+    await pactum.spec()
+      .get('http://localhost:9392')
+      .expectError();
+  });
+
+  it('error - with string', async () => {
+    await pactum.spec()
+      .get('http://localhost:9392')
+      .expectError('ECONNREFUSED');
+  });
+
+  it('error - with object', async () => {
+    await pactum.spec()
+      .get('http://localhost:9392')
+      .expectError({ code: 'ECONNREFUSED' });
+  });
+
+  it('error - empty - fails', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useInteraction('default get')
+        .get('http://localhost:9393/default/get')
+        .expectError();
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+  it('error - with string - fails', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .get('http://localhost:9392')
+        .expectError('ECONNRESET');
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+  it('error - with object - fails', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .get('http://localhost:9392')
+        .expectError({ code: 'ECONNRESET' });
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
   });
 
 });

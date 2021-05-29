@@ -121,16 +121,23 @@ class InteractionRequest {
     } else {
       this.queryParams = {};
     }
-    if (request.body && typeof request.body === 'object') {
-      setMatchingRules(this.matchingRules, request.body, '$.body');
+    if (typeof request.body !== 'undefined') {
+      if (typeof request.body === 'object') {
+        setMatchingRules(this.matchingRules, request.body, '$.body');
+      }
       this.body = getValue(request.body);
     }
     if (request.graphQL) {
       this.graphQL = new InteractionRequestGraphQL(request.graphQL);
-      this.body = {
-        query: request.graphQL.query,
-        variables: request.graphQL.variables
-      };
+      if (this.method === 'GET') {
+        this.queryParams.query = request.graphQL.query;
+        if (request.graphQL.variables) this.queryParams.variables = request.graphQL.variables;
+      } else {
+        this.body = {
+          query: request.graphQL.query,
+          variables: request.graphQL.variables
+        };
+      }
     }
   }
 }

@@ -9,6 +9,12 @@ const config = {
     headers: {},
     followRedirects: false
   },
+  response: {
+    time: process.env.PACTUM_RESPONSE_TIME ? parseInt(process.env.PACTUM_RESPONSE_TIME) : null,
+    status: process.env.PACTUM_RESPONSE_STATUS ? parseInt(process.env.PACTUM_RESPONSE_STATUS) : null,
+    headers: {},
+    expectHandlers: []
+  },
   data: {
     ref: {
       map: {
@@ -47,6 +53,10 @@ const config = {
   },
   reporter : {
     autoRun: true
+  },
+  retry: {
+    count: 1,
+    delay: 1000
   }
 };
 

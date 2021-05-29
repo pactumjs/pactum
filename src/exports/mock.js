@@ -45,9 +45,16 @@ const mock = {
       } else if (typeof raw === 'object' && typeof raw.name === 'string') {
         raw = hr.interaction(raw.name, raw.data || data);
       }
-      const interaction = new Interaction(raw, true);
-      this._server.addInteraction(interaction.id, interaction);
-      ids.push(interaction.id);
+      if (!Array.isArray(raw)) {
+        raw = [raw];
+      } else {
+        alone = false;
+      }
+      for (let j = 0; j < raw.length; j++) {
+        const interaction = new Interaction(raw[j], true);
+        this._server.addInteraction(interaction.id, interaction);
+        ids.push(interaction.id);
+      }
     }
     return alone ? ids[0] : ids;
   },

@@ -368,6 +368,23 @@ describe('Mock', () => {
       .toss();
   });
 
+  it('POST - one interaction - with string as body', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'POST',
+          path: '/api/hello',
+          body: 'Hello World!'
+        },
+        response: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/hello')
+      .withBody('Hello World!')
+      .expectStatus(200);
+  });
+
   it('POST - one interaction - with form data', async () => {
     await pactum.spec()
       .useInteraction({

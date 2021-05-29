@@ -1,9 +1,8 @@
-<p align="center"><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/logo.png" alt="PactumJS Logo" height="100"/></a>
-</p>
+<span align="center">
 
-<div align="center">
- <h2>REST API Testing Tool for all levels in a Test Pyramid</h2>
-</div>
+![logo](https://pactumjs.github.io/_media/logo-icon-small.svg)
+
+# PactumJS
 
 ![Build](https://github.com/pactumjs/pactum/workflows/Build/badge.svg?branch=master)
 ![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
@@ -11,10 +10,18 @@
 ![Size](https://img.shields.io/bundlephobia/minzip/pactum)
 ![Platform](https://img.shields.io/node/v/pactum)
 
+#### REST API Testing Tool for all levels in a Test Pyramid
+
+</span>
+
 <br />
-<p><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/v3/assets/demo.gif" alt="PactumJS Demo"/></a>
+<p align="center"><a href="https://pactumjs.github.io"><img src="https://raw.githubusercontent.com/pactumjs/pactum/master/assets/demo.gif" alt="PactumJS Demo"/></a>
 </p>
 <br />
+
+<table>
+<tr>
+<td>
 
 **PactumJS** is a REST API Testing Tool used to automate e2e, integration, contract & component (*or service level*) tests. It comes with a powerful *mock server* which can control the state of external dependencies.
 
@@ -26,6 +33,12 @@
 - 🔧 Extendable & Customizable
 - 📚 Clear & Comprehensive Testing Style
 - 🔗 Component, Contract & E2E testing of APIs
+
+</td>
+</tr>
+</table>
+
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/master/assets/rainbow.png)
 
 ## Documentation
 
@@ -51,6 +64,8 @@ npm install --save-dev pactum
 # mocha / jest / cucumber
 npm install --save-dev mocha
 ```
+
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/master/assets/rainbow.png)
 
 # Usage
 
@@ -152,6 +167,8 @@ mock.addInteraction({
 
 mock.start(3000);
 ```
+
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/master/assets/rainbow.png)
 
 # Notes
 

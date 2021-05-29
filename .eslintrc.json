@@ -1,0 +1,19 @@
+{
+  "env": {
+    "node": true,
+    "mocha": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "no-console": "warn",
+    "no-dupe-else-if": "error",
+    "no-irregular-whitespace":"warn",
+    "no-trailing-spaces": "warn",
+    "prefer-const": "warn",
+    "semi": "warn"
+  }
+}

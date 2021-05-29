@@ -1,6 +1,8 @@
 const assert = require('assert');
 const jqy = require('json-query');
 
+const config = require('../config');
+const utils = require('../helpers/utils');
 const file = require('../helpers/file.utils');
 const log = require('../exports/logger').get();
 const Compare = require('../helpers/compare');
@@ -32,6 +34,7 @@ class Expect {
     this.headerContains = [];
     this.responseTime = null;
     this.customExpectHandlers = [];
+    this.errors = [];
   }
 
   validate(request, response) {
@@ -52,6 +55,7 @@ class Expect {
     this._validateJsonMatchStrictQuery(response);
     this._validateJsonSnapshot(response);
     this._validateResponseTime(response);
+    this._validateErrors(response);
     // for asynchronous expectations
     return this._validateCustomExpectHandlers(request, response);
   }
@@ -95,7 +99,7 @@ class Expect {
       const expectedHeaderObject = this.headers[i];
       const expectedHeader = expectedHeaderObject.key;
       const expectedHeaderValue = expectedHeaderObject.value;
-      if (!response.headers[expectedHeader]) {
+      if (!(expectedHeader in response.headers)) {
         this.fail(`Header '${expectedHeader}' not present in HTTP response`);
       }
       if (expectedHeaderValue !== undefined) {
@@ -119,7 +123,7 @@ class Expect {
       const expectedHeaderObject = this.headerContains[i];
       const expectedHeader = expectedHeaderObject.key;
       const expectedHeaderValue = expectedHeaderObject.value;
-      if (!response.headers[expectedHeader]) {
+      if (!(expectedHeader in response.headers)) {
         this.fail(`Header '${expectedHeader}' not present in HTTP response`);
       }
       if (expectedHeaderValue !== undefined) {
@@ -140,12 +144,7 @@ class Expect {
   _validateBody(response) {
     this.body = processor.processData(this.body);
     if (this.body !== null) {
-      if (response.body instanceof Buffer) {
-        const text = response.body.toString();
-        assert.strictEqual(text, this.body);
-      } else {
-        assert.strictEqual(response.body, this.body);
-      }
+      assert.deepStrictEqual(response.body, this.body);
     }
   }
 
@@ -153,27 +152,21 @@ class Expect {
     this.bodyContains = processor.processData(this.bodyContains);
     for (let i = 0; i < this.bodyContains.length; i++) {
       const expectedBodyValue = this.bodyContains[i];
-      if (expectedBodyValue instanceof RegExp) {
-        if (response.body instanceof Buffer) {
-          const text = response.body.toString();
-          if (!expectedBodyValue.test(text)) {
-            this.fail(`Value '${expectedBodyValue}' not found in response body`);
-          }
-        } else {
-          if (!expectedBodyValue.test(response.body)) {
-            this.fail(`Value '${expectedBodyValue}' not found in response body`);
-          }
+      let expected = expectedBodyValue;
+      if (expected && typeof expected === 'object' && !(expected instanceof RegExp)) {
+        expected = JSON.stringify(expected);
+      }
+      if (expected instanceof RegExp) {
+        if (!expected.test(response.body)) {
+          this.fail(`Value '${expected}' not found in response body`);
         }
       } else {
-        if (response.body instanceof Buffer) {
-          const text = response.body.toString();
-          if (text.indexOf(expectedBodyValue) === -1) {
-            this.fail(`Value '${expectedBodyValue}' not found in response body`);
-          }
-        } else {
-          if (response.body.indexOf(expectedBodyValue) === -1) {
-            this.fail(`Value '${expectedBodyValue}' not found in response body`);
-          }
+        let actual = response.body;
+        if (actual && typeof actual === 'object') {
+          actual = JSON.stringify(actual);
+        }
+        if (actual.indexOf(expected) === -1) {
+          this.fail(`Value '${expected}' not found in response body`);
         }
       }
     }
@@ -345,6 +338,31 @@ class Expect {
     }
   }
 
+  _validateErrors(response) {
+    if (this.errors.length > 0) {
+      if (!(response instanceof Error)) {
+        this.fail(`No Error while performing a request`);
+      }
+      for (let i = 0; i < this.errors.length; i++) {
+        const expected = this.errors[i];
+        if (typeof expected === 'string') {
+          const actual = response.toString();
+          if (!actual.includes(expected)) {
+            this.fail(`Error - "${actual}" doesn't include - ${expected}`);
+          }
+        }
+        if (typeof expected === 'object') {
+          const rules = jmv.getMatchingRules(expected, '$.error');
+          const value = jmv.getRawValue(expected);
+          const errors = jmv.validate(response, value, rules, '$.error', false);
+          if (errors) {
+            this.fail(errors.replace('$.error', '$'));
+          }
+        }
+      }
+    }
+  }
+
   async _validateCustomExpectHandlers(request, response) {
     for (let i = 0; i < this.customExpectHandlers.length; i++) {
       const requiredHandler = this.customExpectHandlers[i];
@@ -360,6 +378,23 @@ class Expect {
 
   fail(error) {
     assert.fail(error);
+  }
+
+  setDefaultResponseExpectations() {
+    if (config.response.status) {
+      this.statusCode = config.response.status;
+    }
+    if (config.response.time) {
+      this.responseTime = config.response.time;
+    }
+    if (config.response.headers && Object.keys(config.response.headers).length !== 0) {
+      for (const [key, value] of Object.entries(config.response.headers)) {
+        utils.upsertValues(this.headers, { key, value });
+      }
+    }
+    if (config.response.expectHandlers.length > 0) {
+      this.customExpectHandlers = this.customExpectHandlers.concat(config.response.expectHandlers);
+    }
   }
 
 }

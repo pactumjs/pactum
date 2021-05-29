@@ -15,33 +15,33 @@ const utils = {
     const ids = Array.from(interactions.keys());
     for (let i = ids.length - 1; i >= 0; i--) {
       const interactionId = ids[i];
-      log.debug(`Comparing interaction with id ${interactionId}`);
+      log.debug(`Comparing interaction with id "${interactionId}"`);
       const interaction = interactions.get(interactionId);
       const isValidMethod = (interaction.request.method === req.method);
       if (!isValidMethod) {
-        log.debug(`Interaction with id ${interactionId} failed to match - HTTP Method`);
+        log.debug(`Interaction with id "${interactionId}" failed to match - HTTP Method`);
         continue;
       }
       const isValidPath = validatePath(req, interaction);
-      if (!isValidPath) {
-        log.debug(`Interaction with id ${interactionId} failed to match - HTTP Path`);
+      if (!isValidPath.equal) {
+        log.debug(`Interaction with id "${interactionId}" failed to match - HTTP Path - ${isValidPath.message}`);
         continue;
       }
       const isValidQuery = validateQuery(req, interaction);
-      if (!isValidQuery) {
-        log.debug(`Interaction with id ${interactionId} failed to match - HTTP Query Params`);
+      if (!isValidQuery.equal) {
+        log.debug(`Interaction with id "${interactionId}" failed to match - HTTP Query Params - ${isValidQuery.message}`);
         continue;
       }
       const isValidHeaders = validateHeaders(req, interaction);
-      if (!isValidHeaders) {
-        log.debug(`Interaction with id ${interactionId} failed to match - HTTP Headers`);
+      if (!isValidHeaders.equal) {
+        log.debug(`Interaction with id "${interactionId}" failed to match - HTTP Headers - ${isValidHeaders.message}`);
         continue;
       }
       const isValidBody = validateBody(req, interaction);
-      if (isValidMethod && isValidPath && isValidQuery && isValidHeaders && isValidBody) {
+      if (isValidMethod && isValidPath.equal && isValidQuery.equal && isValidHeaders.equal && isValidBody.equal) {
         return interaction;
       }
-      log.debug(`Interaction with id ${interactionId} failed to match - HTTP Body`);
+      log.debug(`Interaction with id "${interactionId}" failed to match - HTTP Body - ${isValidBody.message}`);
     }
     return null;
   },
@@ -49,6 +49,15 @@ const utils = {
   printReqAndRes(request, response) {
     log.warn('Request', request);
     log.warn('Response', helper.getTrimResponse(response));
+  },
+
+  upsertValues(jsonArray, item) {
+    const index = jsonArray.findIndex(_item => _item.key === item.key);
+    if (index > -1 ) {
+      jsonArray[index] = item;
+    } else {
+      jsonArray.push(item);
+    }
   }
 
 };
@@ -61,7 +70,10 @@ function validatePath(req, interaction) {
     const actualParts = actualPath.split('/');
     const expectedParts = expectedPath.split('/');
     if (actualParts.length !== expectedParts.length) {
-      return false;
+      return {
+        message: `Path parts length not equal "${actualParts.length}" !== "${expectedParts.length}"`,
+        equal: false
+      };
     }
     const actual = {};
     const expected = {};
@@ -75,20 +87,26 @@ function validatePath(req, interaction) {
         actual[param] = actualPart;
       } else {
         if (actualPart !== expectedPart) {
-          return false;
+          return {
+            message: `Path part not equal "${actualPart}" !== "${expectedPart}"`,
+            equal: false
+          };
         }
       }
     }
     req.pathParams = actual;
-    return compare(actual, expected, matchingRules, '$.path').equal;
+    return compare(actual, expected, matchingRules, '$.path');
   } else {
-    return compare(actualPath, expectedPath, matchingRules, '$.path').equal;
+    return compare(actualPath, expectedPath, matchingRules, '$.path');
   }
 }
 
 function validateQuery(req, interaction) {
   const { strict, request } = interaction;
-  return compare(req.query, request.queryParams, request.matchingRules, '$.query', strict).equal;
+  if (req.method === 'GET' && request.graphQL) {
+    return graphQL.compare(req.query, request.queryParams, strict);
+  }
+  return compare(req.query, request.queryParams, request.matchingRules, '$.query', strict);
 }
 
 function validateHeaders(req, interaction) {
@@ -102,27 +120,26 @@ function validateHeaders(req, interaction) {
     for (const prop in request.headers) {
       lowerCaseExpected[prop.toLowerCase()] = request.headers[prop];
     }
-    const response = compare(lowerCaseActual, lowerCaseExpected, request.matchingRules, '$.headers');
-    return response.equal;
+    return compare(lowerCaseActual, lowerCaseExpected, request.matchingRules, '$.headers');
   }
-  return true;
+  return { message: '', equal: true };
 }
 
 function validateBody(req, interaction) {
   const { strict, request } = interaction;
-  if (request.graphQL) {
-    return graphQL.compare(req.body, request.body);
+  if (request.graphQL && req.method !== 'GET') {
+    return graphQL.compare(req.body, request.body, strict);
   }
   if (strict) {
     if (req.body || request.body) {
-      return compare(req.body, request.body, request.matchingRules, '$.body', strict).equal;
+      return compare(req.body, request.body, request.matchingRules, '$.body', strict);
     }
   } else {
     if (request.body) {
-      return compare(req.body, request.body, request.matchingRules, '$.body', strict).equal;
+      return compare(req.body, request.body, request.matchingRules, '$.body', strict);
     }
   }
-  return true;
+  return { message: '', equal: true };
 }
 
 module.exports = utils;

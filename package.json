@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "3.0.10",
+  "version": "3.0.15",
   "description": "REST API Testing Tool for all levels in a Test Pyramid",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -61,20 +61,21 @@
   "license": "MIT",
   "dependencies": {
     "@exodus/schemasafe": "^1.0.0-rc.3",
-    "deep-override": "^1.0.1",
+    "deep-override": "^1.0.2",
     "form-data": "^4.0.0",
     "json-query": "^2.2.2",
+    "klona": "^2.0.4",
     "openapi-fuzzer-core": "^1.0.6",
-    "pactum-matchers": "^1.0.1",
+    "pactum-matchers": "^1.0.2",
     "parse-graphql": "^1.0.0",
     "phin": "^3.5.1",
     "polka": "^0.5.2"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^7.1.2",
-    "nyc": "^15.0.0",
-    "sinon": "^9.0.2"
+    "chai": "^4.3.4",
+    "mocha": "^8.4.0",
+    "nyc": "^15.1.0",
+    "sinon": "^10.0.0"
   },
   "engines": {
     "node": ">=10"

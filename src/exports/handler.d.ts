@@ -11,6 +11,9 @@ interface Request {
 
 interface Response extends IncomingMessage {
   json?: object;
+  body?: any;
+  text?: string;
+  buffer?: Buffer;
 }
 
 interface StateHandlerContext {
@@ -60,7 +63,7 @@ export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
 export type CaptureHandlerFunction = (ctx: CaptureContext) => any;
 export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
 export type DataHandlerFunction = (ctx: DataHandlerContext) => any;
-export type InteractionHandlerFunction = (ctx: InteractionContext) => Interaction | ParentHandler;
+export type InteractionHandlerFunction = (ctx: InteractionContext) => Interaction | ParentHandler | Interaction[] | ParentHandler[];
 export type AssertHandlerFunction = (ctx: AssertionContext) => boolean;
 
 /**

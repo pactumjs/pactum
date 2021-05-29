@@ -11,6 +11,7 @@ const requestProcessor = {
     request = processor.processData(request);
     setBaseUrl(request);
     setPathParams(request);
+    setGraphQLParams(request);
     setQueryParams(request);
     setBody(request);
     setMultiPartFormData(request);
@@ -34,6 +35,17 @@ function setPathParams(request) {
   if (request.pathParams) {
     for (const pathParam of Object.keys(request.pathParams)) {
       request.url = request.url.replace(`{${pathParam}}`, request.pathParams[pathParam]);
+    }
+  }
+}
+
+function setGraphQLParams(request) {
+  if (request.method === 'GET' && request.data) {
+    if (request.data.query) {
+      request.queryParams = request.queryParams ? request.queryParams : {};
+      request.queryParams.query = request.data.query;
+      if (request.data.variables) request.queryParams.variables = JSON.stringify(request.data.variables);
+      delete request.data;
     }
   }
 }

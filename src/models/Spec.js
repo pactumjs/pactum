@@ -7,6 +7,7 @@ const State = require('./State');
 const helper = require('../helpers/helper');
 const log = require('../exports/logger').get();
 const th = require('../helpers/toss.helper');
+const utils = require('../helpers/utils');
 const { PactumRequestError } = require('../helpers/errors');
 const responseExpect = require('../exports/expect');
 const hr = require('../helpers/handler.runner');
@@ -31,6 +32,7 @@ class Spec {
     this.interactions = [];
     this._wait = null;
     hr.spec(name, data, this);
+    this._expect.setDefaultResponseExpectations();
   }
 
   name(value) {
@@ -177,7 +179,9 @@ class Spec {
   }
 
   withJson(json) {
-    if (typeof json !== 'object') {
+    if (typeof json === 'string') {
+      json = JSON.parse(fs.readFileSync(json));
+    } else if (typeof json !== 'object') {
       throw new PactumRequestError(`Invalid json in request - ${json}`);
     }
     this._request.data = json;
@@ -269,18 +273,9 @@ class Spec {
     return this;
   }
 
-  retry(options) {
-    if (!options) {
-      throw new PactumRequestError('Invalid retry options');
-    }
-    if (!options.strategy) {
-      throw new PactumRequestError('Invalid retry strategy');
-    }
-    if (!options.count) {
-      options.count = 3;
-    }
-    if (!options.delay) {
-      options.delay = 1000;
+  retry(options, delay) {
+    if (typeof options === 'undefined' || typeof options === 'number') {
+      options = { count: options, delay: delay };
     }
     this._request.retryOptions = options;
     return this;
@@ -311,7 +306,7 @@ class Spec {
   }
 
   expectHeader(header, value) {
-    this._expect.headers.push({
+    utils.upsertValues(this._expect.headers, {
       key: header,
       value
     });
@@ -319,7 +314,7 @@ class Spec {
   }
 
   expectHeaderContains(header, value) {
-    this._expect.headerContains.push({
+    utils.upsertValues(this._expect.headerContains, {
       key: header,
       value
     });
@@ -388,6 +383,11 @@ class Spec {
 
   expectJsonSnapshot(matchers) {
     this._expect.jsonSnapshot.push(matchers);
+    return this;
+  }
+
+  expectError(error) {
+    this._expect.errors.push(error);
     return this;
   }
 

@@ -15,6 +15,7 @@ export interface Have {
   jsonMatchStrict(value: object): void;
   jsonMatchStrictAt(path: string, value: object): void;
   responseTimeLessThan(ms: number): void;
+  error(err?: string | object): void;
   _(handler: string, data: any): Promise<void>;
 }
 

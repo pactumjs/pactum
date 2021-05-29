@@ -3,6 +3,7 @@ const request = pactum.request;
 const config = require('../../src/config');
 
 describe('Request', () => {
+
   it('GET with baseurl', async () => {
     request.setBaseUrl('http://localhost:9393');
     await pactum
@@ -234,8 +235,30 @@ describe('Request', () => {
       .expectStatus(200);
   });
 
+  it('with json - path', async () => {
+    await pactum
+      .spec()
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'POST',
+          path: '/api/file',
+          body: {
+            "name": "pactum"
+          }
+        },
+        response: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/file')
+      .withJson('./package.json')
+      .expectStatus(200);
+  });
+
   afterEach(() => {
     config.request.baseUrl = '';
     config.request.headers = {};
   });
+
 });
