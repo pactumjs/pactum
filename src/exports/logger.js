@@ -8,7 +8,6 @@ const LEVEL_WARN = 6;
 const LEVEL_ERROR = 7;
 const LEVEL_SILENT = 8;
 
-
 /**
  * returns log level value
  * @param {string} level - log level
