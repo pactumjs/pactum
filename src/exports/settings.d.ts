@@ -1,5 +1,4 @@
-export type
-    LogLevel = 'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR'|'SILENT';
+export type LogLevel = 'VERBOSE'|'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR'|'SILENT';
 
 /**
   * sets log level
