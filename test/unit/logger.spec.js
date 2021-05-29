@@ -217,7 +217,7 @@ describe('Logger', () => {
   });
 
   it('silent', () => {
-    logger.setLevel('ERROR');
+    logger.setLevel('SILENT');
     logger.trace('demo');
     expect(this.writeStub.callCount).equals(0);
     expect(this.debugStub.callCount).equals(0);
@@ -243,7 +243,7 @@ describe('Logger', () => {
     expect(this.warnStub.callCount).equals(0);
     expect(this.errorStub.callCount).equals(0);
     logger.error('demo');
-    expect(this.writeStub.callCount).equals(1);
+    expect(this.writeStub.callCount).equals(0);
     expect(this.debugStub.callCount).equals(0);
     expect(this.infoStub.callCount).equals(0);
     expect(this.warnStub.callCount).equals(0);
