@@ -1,12 +1,13 @@
 const { options, magenta, blue, green, yellow, red } = require('../helpers/colors');
 
+const LEVEL_VERBOSE = 2;
 const LEVEL_TRACE = 3;
 const LEVEL_DEBUG = 4;
 const LEVEL_INFO = 5;
 const LEVEL_WARN = 6;
 const LEVEL_ERROR = 7;
 const LEVEL_SILENT = 8;
-const LEVEL_VERBOSE = 9;
+
 
 /**
  * returns log level value
@@ -90,22 +91,6 @@ class Logger {
     }
   }
 
-  silent(...msg) {
-    if (this.levelValue <= LEVEL_SILENT) {}
-    }
-
-  verbose(...msg) {
-    if (this.levelValue <= LEVEL_VERBOSE) {
-      process.stdout.write(`[${blue('D')}] `);
-      msg.forEach(m => this.console.debug(m));
-      process.stdout.write(`[${green('I')}] `);
-      msg.forEach(m => this.console.info(m));
-      process.stdout.write(`[${yellow('W')}] `);
-      msg.forEach(m => this.console.warn(getMessage(m)));
-      process.stdout.write(`[${red('E')}] `);
-      msg.forEach(m => this.console.error(getMessage(m)));
-    }
-  }
 }
 
 function getMessage(msg) {
