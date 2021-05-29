@@ -94,6 +94,18 @@ class Logger {
     if (this.levelValue <= LEVEL_SILENT) {}
     }
 
+  verbose(...msg) {
+    if (this.levelValue <= LEVEL_VERBOSE) {
+      process.stdout.write(`[${blue('D')}] `);
+      msg.forEach(m => this.console.debug(m));
+      process.stdout.write(`[${green('I')}] `);
+      msg.forEach(m => this.console.info(m));
+      process.stdout.write(`[${yellow('W')}] `);
+      msg.forEach(m => this.console.warn(getMessage(m)));
+      process.stdout.write(`[${red('E')}] `);
+      msg.forEach(m => this.console.error(getMessage(m)));
+    }
+  }
 }
 
 function getMessage(msg) {
