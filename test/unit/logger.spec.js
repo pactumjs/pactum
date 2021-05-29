@@ -11,6 +11,40 @@ describe('Logger', () => {
     this.errorStub = sandbox.stub(console, 'error');
     this.writeStub = sandbox.stub(process.stdout, 'write');
   });
+  
+  it('verbose', () => {
+    logger.setLevel('VERBOSE');
+    logger.trace('demo');
+    expect(this.writeStub.callCount).equals(1);
+    expect(this.debugStub.callCount).equals(1);
+    expect(this.infoStub.callCount).equals(0);
+    expect(this.warnStub.callCount).equals(0);
+    expect(this.errorStub.callCount).equals(0);
+    logger.debug('demo');
+    expect(this.writeStub.callCount).equals(2);
+    expect(this.debugStub.callCount).equals(2);
+    expect(this.infoStub.callCount).equals(0);
+    expect(this.warnStub.callCount).equals(0);
+    expect(this.errorStub.callCount).equals(0);
+    logger.info('demo');
+    expect(this.writeStub.callCount).equals(3);
+    expect(this.debugStub.callCount).equals(2);
+    expect(this.infoStub.callCount).equals(1);
+    expect(this.warnStub.callCount).equals(0);
+    expect(this.errorStub.callCount).equals(0);
+    logger.warn('demo');
+    expect(this.writeStub.callCount).equals(4);
+    expect(this.debugStub.callCount).equals(2);
+    expect(this.infoStub.callCount).equals(1);
+    expect(this.warnStub.callCount).equals(1);
+    expect(this.errorStub.callCount).equals(0);
+    logger.error('demo');
+    expect(this.writeStub.callCount).equals(5);
+    expect(this.debugStub.callCount).equals(2);
+    expect(this.infoStub.callCount).equals(1);
+    expect(this.warnStub.callCount).equals(1);
+    expect(this.errorStub.callCount).equals(1);
+  });
 
   it('trace', () => {
     logger.setLevel('TRACE');
@@ -44,18 +78,6 @@ describe('Logger', () => {
     expect(this.infoStub.callCount).equals(1);
     expect(this.warnStub.callCount).equals(1);
     expect(this.errorStub.callCount).equals(1);
-    logger.silent('demo');
-    expect(this.writeStub.callCount).equals(5);
-    expect(this.debugStub.callCount).equals(2);
-    expect(this.infoStub.callCount).equals(1);
-    expect(this.warnStub.callCount).equals(1);
-    expect(this.errorStub.callCount).equals(1);
-    logger.verbose('demo');
-    expect(this.writeStub.callCount).equals(9);
-    expect(this.debugStub.callCount).equals(3);
-    expect(this.infoStub.callCount).equals(2);
-    expect(this.warnStub.callCount).equals(2);
-    expect(this.errorStub.callCount).equals(2);
   });
 
   it('debug', () => {
@@ -90,18 +112,6 @@ describe('Logger', () => {
     expect(this.infoStub.callCount).equals(1);
     expect(this.warnStub.callCount).equals(1);
     expect(this.errorStub.callCount).equals(1);
-    logger.silent('demo');
-    expect(this.writeStub.callCount).equals(4);
-    expect(this.debugStub.callCount).equals(1);
-    expect(this.infoStub.callCount).equals(1);
-    expect(this.warnStub.callCount).equals(1);
-    expect(this.errorStub.callCount).equals(1);
-    logger.verbose('demo');
-    expect(this.writeStub.callCount).equals(8);
-    expect(this.debugStub.callCount).equals(2);
-    expect(this.infoStub.callCount).equals(2);
-    expect(this.warnStub.callCount).equals(2);
-    expect(this.errorStub.callCount).equals(2);
   });
 
   it('info', () => {
@@ -136,18 +146,6 @@ describe('Logger', () => {
     expect(this.infoStub.callCount).equals(1);
     expect(this.warnStub.callCount).equals(1);
     expect(this.errorStub.callCount).equals(1);
-    logger.silent('demo');
-    expect(this.writeStub.callCount).equals(3);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(1);
-    expect(this.warnStub.callCount).equals(1);
-    expect(this.errorStub.callCount).equals(1);
-    logger.verbose('demo');
-    expect(this.writeStub.callCount).equals(7);
-    expect(this.debugStub.callCount).equals(1);
-    expect(this.infoStub.callCount).equals(2);
-    expect(this.warnStub.callCount).equals(2);
-    expect(this.errorStub.callCount).equals(2);
   });
 
   it('warn', () => {
@@ -182,18 +180,6 @@ describe('Logger', () => {
     expect(this.infoStub.callCount).equals(0);
     expect(this.warnStub.callCount).equals(1);
     expect(this.errorStub.callCount).equals(1);
-    logger.silent('demo');
-    expect(this.writeStub.callCount).equals(2);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(1);
-    expect(this.errorStub.callCount).equals(1);
-    logger.verbose('demo');
-    expect(this.writeStub.callCount).equals(6);
-    expect(this.debugStub.callCount).equals(1);
-    expect(this.infoStub.callCount).equals(1);
-    expect(this.warnStub.callCount).equals(2);
-    expect(this.errorStub.callCount).equals(2);
   });
 
   it('error', () => {
@@ -228,109 +214,39 @@ describe('Logger', () => {
     expect(this.infoStub.callCount).equals(0);
     expect(this.warnStub.callCount).equals(0);
     expect(this.errorStub.callCount).equals(1);
-    logger.silent('demo');
+  });
+
+  it('silent', () => {
+    logger.setLevel('ERROR');
+    logger.trace('demo');
+    expect(this.writeStub.callCount).equals(0);
+    expect(this.debugStub.callCount).equals(0);
+    expect(this.infoStub.callCount).equals(0);
+    expect(this.warnStub.callCount).equals(0);
+    expect(this.errorStub.callCount).equals(0);
+    logger.debug('demo');
+    expect(this.writeStub.callCount).equals(0);
+    expect(this.debugStub.callCount).equals(0);
+    expect(this.infoStub.callCount).equals(0);
+    expect(this.warnStub.callCount).equals(0);
+    expect(this.errorStub.callCount).equals(0);
+    logger.info('demo');
+    expect(this.writeStub.callCount).equals(0);
+    expect(this.debugStub.callCount).equals(0);
+    expect(this.infoStub.callCount).equals(0);
+    expect(this.warnStub.callCount).equals(0);
+    expect(this.errorStub.callCount).equals(0);
+    logger.warn('demo');
+    expect(this.writeStub.callCount).equals(0);
+    expect(this.debugStub.callCount).equals(0);
+    expect(this.infoStub.callCount).equals(0);
+    expect(this.warnStub.callCount).equals(0);
+    expect(this.errorStub.callCount).equals(0);
+    logger.error('demo');
     expect(this.writeStub.callCount).equals(1);
     expect(this.debugStub.callCount).equals(0);
     expect(this.infoStub.callCount).equals(0);
     expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(1);
-    logger.verbose('demo');
-    expect(this.writeStub.callCount).equals(5);
-    expect(this.debugStub.callCount).equals(1);
-    expect(this.infoStub.callCount).equals(1);
-    expect(this.warnStub.callCount).equals(1);
-    expect(this.errorStub.callCount).equals(2);
-  });
-
-  it('silent', () => {
-    logger.setLevel('SILENT');
-    logger.trace('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.debug('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.info('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.warn('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.error('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.silent('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.verbose('demo');
-    expect(this.writeStub.callCount).equals(4);
-    expect(this.debugStub.callCount).equals(1);
-    expect(this.infoStub.callCount).equals(1);
-    expect(this.warnStub.callCount).equals(1);
-    expect(this.errorStub.callCount).equals(1);
-  });
-
-  it('verbose', () => {
-    logger.setLevel('VERBOSE');
-    logger.trace('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.debug('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.info('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.warn('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.error('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.silent('demo');
-    expect(this.writeStub.callCount).equals(0);
-    expect(this.debugStub.callCount).equals(0);
-    expect(this.infoStub.callCount).equals(0);
-    expect(this.warnStub.callCount).equals(0);
-    expect(this.errorStub.callCount).equals(0);
-    logger.verbose('demo');
-    expect(this.writeStub.callCount).equals(4);
-    expect(this.debugStub.callCount).equals(1);
-    expect(this.infoStub.callCount).equals(1);
-    expect(this.warnStub.callCount).equals(1);
     expect(this.errorStub.callCount).equals(1);
   });
 
