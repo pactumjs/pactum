@@ -5,6 +5,8 @@ const LEVEL_DEBUG = 4;
 const LEVEL_INFO = 5;
 const LEVEL_WARN = 6;
 const LEVEL_ERROR = 7;
+const LEVEL_SILENT = 8;
+const LEVEL_VERBOSE = 9;
 
 /**
  * returns log level value
@@ -23,6 +25,10 @@ function getLevelValue(level) {
       return LEVEL_WARN;
     case 'ERROR':
       return LEVEL_ERROR;
+    case 'SILENT':
+      return LEVEL_SILENT;
+    case 'VERBOSE':
+      return LEVEL_VERBOSE;
     default:
       return LEVEL_INFO;
   }
@@ -84,6 +90,9 @@ class Logger {
     }
   }
 
+  silent(...msg) {
+    if (this.levelValue <= LEVEL_SILENT) {}
+    }
 }
 
 function getMessage(msg) {
