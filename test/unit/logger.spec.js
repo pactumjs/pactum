@@ -212,7 +212,7 @@ describe('Logger', () => {
     expect(this.errorStub.callCount).equals(1);
   });
 
-  it('slient', () => {
+  it('silent', () => {
     logger.setLevel('SILENT');
     logger.trace('demo');
     expect(this.writeStub.callCount).equals(0);

@@ -93,6 +93,7 @@ class Logger {
   silent(...msg) {
     if (this.levelValue <= LEVEL_SILENT) {}
     }
+
 }
 
 function getMessage(msg) {
