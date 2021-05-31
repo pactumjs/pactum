@@ -5,6 +5,7 @@ export interface SpecRequest {
   path: string;
   headers?: object;
   body?: any;
+  cookies?: object;
 }
 
 export interface SpecResponse {
@@ -12,6 +13,7 @@ export interface SpecResponse {
   headers: object;
   body?: any;
   responseTime: number;
+  cookies?: object;
 }
 
 export interface InteractionCall {

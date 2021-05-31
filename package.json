@@ -65,6 +65,7 @@
     "form-data": "^4.0.0",
     "json-query": "^2.2.2",
     "klona": "^2.0.4",
+    "lightcookie": "^1.0.24",
     "openapi-fuzzer-core": "^1.0.6",
     "pactum-matchers": "^1.0.2",
     "parse-graphql": "^1.0.0",

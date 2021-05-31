@@ -12,13 +12,13 @@ const jsv = require('../plugins/json.schema');
 const jmv = require('../plugins/json.match');
 
 class Expect {
-
   constructor() {
     this.name = null;
     this.updateSnapshot = false;
     this.statusCode = null;
     this.body = null;
     this.bodyContains = [];
+    this.cookies = [];
     this.json = [];
     this.jsonQuery = [];
     this.jsonLike = [];
@@ -42,6 +42,8 @@ class Expect {
     this._validateHeaders(response);
     this._validateHeaderContains(response);
     this._validateBody(response);
+    this._validateCookies(response);
+    // this._validateStrictCookies(response);
     this._validateBodyContains(response);
     this._validateJson(response);
     this._validateJsonLike(response);
@@ -93,6 +95,84 @@ class Expect {
     }
   }
 
+  _validateCookies(response) {
+    console.log('in validate * cookies');
+    this.cookies = processor.processData(this.headers['cookie']);
+
+    const expectedCookie = this.headers['cookie'];
+
+    console.log('expected -->', expectedCookie);
+
+    if (
+      response.headers !== undefined &&
+      response.headers['set-cookie'] !== undefined
+    ) {
+      // fetched cookie in actual response
+      const actualCookie = response.headers['set-cookie'][0];
+      console.log('actual -->', actualCookie);
+
+      // if (!(expectedCookie in response.headers['set-cookie'])) {
+      //   console.log('checker', expectedCookie);
+      //   console.log('checker', response.headers['set-cookie']);
+      //   this.fail(`Cookie '${expectedCookie}' not present in HTTP response`);
+      // }
+
+      if (expectedCookie instanceof RegExp) {
+        if (!expectedCookie.test(actualCookie)) {
+          this.fail(
+            `Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`
+          );
+        }
+      } else {
+        if (
+          !actualCookie.toLowerCase().includes(expectedCookie.toLowerCase())
+        ) {
+          this.fail(
+            `Cookie value '${expectedCookie}' did not match for cookie '${actuaslCookie}'`
+          );
+        }
+      }
+    }
+  }
+
+  // _validateStrictCookies(response) {
+  //   console.log('in validate strict cookies');
+  //   this.cookies = processor.processData(this.headers['cookie']);
+
+  //   const expectedCookie = this.headers['cookie'];
+
+  //   console.log('expected -->', expectedCookie);
+
+  //   if (
+  //     response.headers !== undefined &&
+  //     response.headers['set-cookie'] !== undefined
+  //   ) {
+  //     // fetched cookie in actual response
+  //     const actualCookie = response.headers['set-cookie'][0];
+  //     console.log('actual -->', actualCookie);
+
+  //     // if (!(expectedCookie in response.headers['set-cookie'])) {
+  //     //   console.log('checker', expectedCookie);
+  //     //   console.log('checker', response.headers['set-cookie']);
+  //     //   this.fail(`Cookie '${expectedCookie}' not present in HTTP response`);
+  //     // }
+
+  //     if (expectedCookie instanceof RegExp) {
+  //       if (!expectedCookie.test(actualCookie)) {
+  //         this.fail(
+  //           `Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`
+  //         );
+  //       }
+  //     } else {
+  //       if (expectedCookie.toLowerCase() !== actualCookie.toLowerCase()) {
+  //         this.fail(
+  //           `Cookie value '${expectedCookie}' did not match for cookie '${actualCookie}'`
+  //         );
+  //       }
+  //     }
+  //   }
+  // }
+
   _validateHeaders(response) {
     this.headers = processor.processData(this.headers);
     for (let i = 0; i < this.headers.length; i++) {
@@ -134,7 +214,7 @@ class Expect {
           }
         } else {
           if (!actualHeaderValue.toLowerCase().includes(expectedHeaderValue.toLowerCase())) {
-            this.fail(`Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
+              this.fail(`Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
           }
         }
       }
