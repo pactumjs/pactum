@@ -19,6 +19,7 @@ class Expect {
     this.body = null;
     this.bodyContains = [];
     this.cookies = [];
+    this.strictCookies = [];
     this.json = [];
     this.jsonQuery = [];
     this.jsonLike = [];
@@ -43,7 +44,7 @@ class Expect {
     this._validateHeaderContains(response);
     this._validateBody(response);
     this._validateCookies(response);
-    // this._validateStrictCookies(response);
+    this._validateStrictCookies(response);
     this._validateBodyContains(response);
     this._validateJson(response);
     this._validateJsonLike(response);
@@ -97,81 +98,88 @@ class Expect {
 
   _validateCookies(response) {
     console.log('in validate * cookies');
-    this.cookies = processor.processData(this.headers['cookie']);
 
-    const expectedCookie = this.headers['cookie'];
-
+    this.cookies = processor.processData(this.cookies);
+    const expectedCookie = this.cookies;
     console.log('expected -->', expectedCookie);
 
-    if (
-      response.headers !== undefined &&
-      response.headers['set-cookie'] !== undefined
-    ) {
-      // fetched cookie in actual response
-      const actualCookie = response.headers['set-cookie'][0];
-      console.log('actual -->', actualCookie);
+    if (!expectedCookie === []) {
+      if (
+        response.headers !== undefined &&
+        response.headers['set-cookie'] !== undefined
+      ) {
+        // fetched cookie in actual response
+        const actualCookie = response.headers['set-cookie'][0];
+        console.log('actual -->', actualCookie);
 
-      // if (!(expectedCookie in response.headers['set-cookie'])) {
-      //   console.log('checker', expectedCookie);
-      //   console.log('checker', response.headers['set-cookie']);
-      //   this.fail(`Cookie '${expectedCookie}' not present in HTTP response`);
-      // }
+        // if (!(expectedCookie in response.headers['set-cookie'])) {
+        //   console.log('checker', expectedCookie);
+        //   console.log('checker', response.headers['set-cookie']);
+        //   this.fail(`Cookie '${expectedCookie}' not present in HTTP response`);
+        // }
 
-      if (expectedCookie instanceof RegExp) {
-        if (!expectedCookie.test(actualCookie)) {
-          this.fail(
-            `Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`
-          );
-        }
-      } else {
-        if (
-          !actualCookie.toLowerCase().includes(expectedCookie.toLowerCase())
-        ) {
-          this.fail(
-            `Cookie value '${expectedCookie}' did not match for cookie '${actuaslCookie}'`
-          );
+        if (expectedCookie instanceof RegExp) {
+          if (
+            !expectedCookie.test(actualCookie) &&
+            !actualCookie.test(expectedCookie)
+          ) {
+            this.fail(
+              `Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`
+            );
+          }
+        } else {
+          if (
+            !actualCookie
+              .toLowerCase()
+              .includes(expectedCookie.toLowerCase()) &&
+            !expectedCookie.toLowerCase().includes(actualCookie.toLowerCase())
+          ) {
+            this.fail(
+              `Cookie value '${expectedCookie}' did not match for response cookie '${actualCookie}'`
+            );
+          }
         }
       }
     }
   }
 
-  // _validateStrictCookies(response) {
-  //   console.log('in validate strict cookies');
-  //   this.cookies = processor.processData(this.headers['cookie']);
+  _validateStrictCookies(response) {
+    console.log('in validate strict cookies');
 
-  //   const expectedCookie = this.headers['cookie'];
+    this.strictCookies = processor.processData(this.strictCookies);
+    const expectedCookie = this.strictCookies;
+    console.log('expected -->', this.strictCookies);
+    if (!expectedCookie === []) {
+      if (
+        response.headers !== undefined &&
+        response.headers['set-cookie'] !== undefined
+      ) {
+        // fetched cookie in actual response
+        const actualCookie = response.headers['set-cookie'][0];
+        console.log('actual -->', actualCookie);
 
-  //   console.log('expected -->', expectedCookie);
+        // if (!(expectedCookie in response.headers['set-cookie'])) {
+        //   console.log('checker', expectedCookie);
+        //   console.log('checker', response.headers['set-cookie']);
+        //   this.fail(`Cookie '${expectedCookie}' not present in HTTP response`);
+        // }
 
-  //   if (
-  //     response.headers !== undefined &&
-  //     response.headers['set-cookie'] !== undefined
-  //   ) {
-  //     // fetched cookie in actual response
-  //     const actualCookie = response.headers['set-cookie'][0];
-  //     console.log('actual -->', actualCookie);
-
-  //     // if (!(expectedCookie in response.headers['set-cookie'])) {
-  //     //   console.log('checker', expectedCookie);
-  //     //   console.log('checker', response.headers['set-cookie']);
-  //     //   this.fail(`Cookie '${expectedCookie}' not present in HTTP response`);
-  //     // }
-
-  //     if (expectedCookie instanceof RegExp) {
-  //       if (!expectedCookie.test(actualCookie)) {
-  //         this.fail(
-  //           `Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`
-  //         );
-  //       }
-  //     } else {
-  //       if (expectedCookie.toLowerCase() !== actualCookie.toLowerCase()) {
-  //         this.fail(
-  //           `Cookie value '${expectedCookie}' did not match for cookie '${actualCookie}'`
-  //         );
-  //       }
-  //     }
-  //   }
-  // }
+        if (expectedCookie instanceof RegExp) {
+          if (!expectedCookie.test(actualCookie)) {
+            this.fail(
+              `Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`
+            );
+          }
+        } else {
+          if (expectedCookie.toLowerCase() !== actualCookie.toLowerCase()) {
+            this.fail(
+              `Cookie value '${expectedCookie}' did not match for cookie '${actualCookie}'`
+            );
+          }
+        }
+      }
+    }
+  }
 
   _validateHeaders(response) {
     this.headers = processor.processData(this.headers);
@@ -214,7 +222,7 @@ class Expect {
           }
         } else {
           if (!actualHeaderValue.toLowerCase().includes(expectedHeaderValue.toLowerCase())) {
-              this.fail(`Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
+            this.fail(`Header value '${expectedHeaderValue}' did not match for header '${expectedHeader}': '${actualHeaderValue}'`);
           }
         }
       }

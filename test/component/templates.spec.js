@@ -291,7 +291,9 @@ describe('Templates & Maps', () => {
       .get('http://localhost:9393/api/army')
       .withCookies({
         name: 'snow',
-        HttpOnly: null,
+      })
+      .withCookies({
+        name1: 'snow1',
       })
       .expectStatus(200)
       .expectCookies({

@@ -220,7 +220,14 @@ class Spec {
       }
       Object.assign(cookieObject, key);
     }
-    this._request.headers['cookie'] = lightcookie.serialize(cookieObject);
+    if (this._request.headers['cookie'] !== undefined) {
+      this._request.headers['cookie'] =
+        this._request.headers['cookie'] +
+        ';' +
+        lightcookie.serialize(cookieObject);
+    } else {
+      this._request.headers['cookie'] = lightcookie.serialize(cookieObject);
+    }
     console.log('***request****', this._request);
     return this;
   }
@@ -393,8 +400,9 @@ class Spec {
       }
       cookieObject = key;
     }
-    this._expect.headers['cookie'] = lightcookie.serialize(cookieObject);
-    console.log('***expect****', this._expect.headers);
+    // this._expect.headers['cookie'] = lightcookie.serialize(cookieObject);
+    this._expect.cookies = lightcookie.serialize(cookieObject);
+    console.log('***expect1****', this._expect.cookies);
     return this;
   }
 
@@ -413,8 +421,9 @@ class Spec {
       }
       cookieObject = key;
     }
-    this._expect.headers['cookie'] = lightcookie.serialize(cookieObject);
-    console.log('***expect****', this._expect.headers);
+    // this._expect.headers['cookie'] = lightcookie.serialize(cookieObject);
+    this._expect.strictCookies = lightcookie.serialize(cookieObject);
+    console.log('***expect2****', this._expect.strictCookies);
     return this;
   }
 
