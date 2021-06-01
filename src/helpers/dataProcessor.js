@@ -4,7 +4,7 @@ const { klona } = require("klona");
 
 const stash = require('../exports/stash');
 const handler = require('../exports/handler');
-const log = require('../exports/logger').get();
+const log = require('../plugins/logger');
 const config = require('../config');
 
 const DATA_REF_PATTERN = /(\$\w\{[^\}]+\})/g;

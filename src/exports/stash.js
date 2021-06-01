@@ -1,6 +1,6 @@
 const fs = require('fs');
 const pt = require('path');
-const log = require('../exports/logger').get();
+const log = require('../plugins/logger');
 const { PactumConfigurationError } = require('../helpers/errors');
 const config = require('../config');
 

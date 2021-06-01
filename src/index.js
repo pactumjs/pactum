@@ -1,3 +1,6 @@
+const logger = require('./plugins/logger');
+logger.setAdapter(require('./adapters/logger'));
+
 const Spec = require('./models/Spec');
 const Fuzz = require('./models/Fuzz');
 const E2E = require('./models/E2E');

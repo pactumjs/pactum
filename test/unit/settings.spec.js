@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 
 const settings = require('../../src/exports/settings');
 const config = require('../../src/config');
-const logger = require('../../src/exports/logger');
+const logger = require('../../src/adapters/logger');
 
 describe('Settings', () => {
 
@@ -12,7 +12,7 @@ describe('Settings', () => {
   });
 
   it('setLogger', () => {
-    settings.setLogger(logger.get());
+    settings.setLogger(logger);
   });
 
   after(() => {

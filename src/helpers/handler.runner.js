@@ -1,5 +1,5 @@
 const handler = require('../exports/handler');
-const log = require('../exports/logger').get();
+const log = require('../plugins/logger');
 
 const hr = {
 

@@ -1,6 +1,6 @@
 const phin = require('phin');
 const helper = require('../helpers/helper');
-const log = require('../exports/logger').get();
+const log = require('../plugins/logger');
 const rlc = require('../helpers/reporter.lifeCycle');
 const requestProcessor = require('../helpers/requestProcessor');
 const th = require('../helpers/toss.helper');

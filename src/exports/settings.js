@@ -1,14 +1,14 @@
 const config = require('../config');
-const logger = require('./logger');
+const logger = require('../plugins/logger');
 
 const settings = {
 
   setLogLevel(level) {
-    logger.get().setLevel(level);
+    logger.setLevel(level);
   },
 
   setLogger(lgr) {
-    logger.set(lgr);
+    logger.setAdapter(lgr);
   },
 
   setAssertHandlerStrategy(strategy) {

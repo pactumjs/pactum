@@ -1,5 +1,5 @@
 const Step = require('./Step');
-const log = require('../exports/logger').get();
+const log = require('../plugins/logger');
 const helper = require('../helpers/helper');
 const rlc = require('../helpers/reporter.lifeCycle');
 const hr = require('../helpers/handler.runner');

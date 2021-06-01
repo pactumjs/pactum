@@ -1,4 +1,4 @@
-const { options, magenta, blue, green, yellow, red } = require('../helpers/colors');
+const { options } = require('../helpers/colors');
 
 const LEVEL_VERBOSE = 2;
 const LEVEL_TRACE = 3;
@@ -37,13 +37,16 @@ function getLevelValue(level) {
 class Logger {
 
   constructor() {
-    this.console = console;
-    // validate log level
+    this.adapter = null;
     this.level = process.env.PACTUM_LOG_LEVEL || 'INFO';
     this.levelValue = getLevelValue(this.level);
     if (process.env.PACTUM_DISABLE_LOG_COLORS === 'true') {
       options.disableColors = true;
     }
+  }
+
+  setAdapter(adapter) {
+    this.adapter = adapter;
   }
 
   /**
@@ -57,57 +60,34 @@ class Logger {
 
   trace(...msg) {
     if (this.levelValue <= LEVEL_TRACE) {
-      process.stdout.write(`[${magenta('T')}] `);
-      msg.forEach(m => this.console.debug(m));
+      this.adapter.trace(msg);
     }
   }
 
   debug(...msg) {
     if (this.levelValue <= LEVEL_DEBUG) {
-      process.stdout.write(`[${blue('D')}] `);
-      msg.forEach(m => this.console.debug(m));
+      this.adapter.debug(msg);
     }
   }
 
   info(...msg) {
     if (this.levelValue <= LEVEL_INFO) {
-      process.stdout.write(`[${green('I')}] `);
-      msg.forEach(m => this.console.info(m));
+      this.adapter.info(msg);
     }
   }
 
   warn(...msg) {
     if (this.levelValue <= LEVEL_WARN) {
-      process.stdout.write(`[${yellow('W')}] `);
-      msg.forEach(m => this.console.warn(getMessage(m)));
+      this.adapter.warn(msg);
     }
   }
 
   error(...msg) {
     if (this.levelValue <= LEVEL_ERROR) {
-      process.stdout.write(`[${red('E')}] `);
-      msg.forEach(m => this.console.error(getMessage(m)));
+      this.adapter.error(msg);
     }
   }
 
 }
 
-function getMessage(msg) {
-  try {
-    return typeof msg === 'object' ? JSON.stringify(msg, null, 2) : msg;
-  } catch (_) {
-    return msg;
-  }
-}
-
-module.exports = {
-  logger: new Logger(),
-
-  get() {
-    return this.logger;
-  },
-
-  set(lgr) {
-    this.logger = lgr;
-  }
-};
+module.exports = new Logger();
