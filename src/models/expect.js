@@ -97,85 +97,64 @@ class Expect {
   }
 
   _validateCookies(response) {
-    console.log('in validate * cookies');
-
     this.cookies = processor.processData(this.cookies);
     const expectedCookie = this.cookies;
-    console.log('expected -->', expectedCookie);
-
-    if (!expectedCookie === []) {
-      if (
-        response.headers !== undefined &&
-        response.headers['set-cookie'] !== undefined
-      ) {
-        // fetched cookie in actual response
-        const actualCookie = response.headers['set-cookie'][0];
-        console.log('actual -->', actualCookie);
-
-        // if (!(expectedCookie in response.headers['set-cookie'])) {
-        //   console.log('checker', expectedCookie);
-        //   console.log('checker', response.headers['set-cookie']);
-        //   this.fail(`Cookie '${expectedCookie}' not present in HTTP response`);
-        // }
-
-        if (expectedCookie instanceof RegExp) {
-          if (
-            !expectedCookie.test(actualCookie) &&
-            !actualCookie.test(expectedCookie)
-          ) {
-            this.fail(
-              `Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`
-            );
+    if (expectedCookie.length > 0) {
+      if (response.headers !== undefined) {
+        if (response.headers['set-cookie'] !== undefined) {
+          // fetched cookie from actual response
+          const actualCookie = response.headers['set-cookie'][0];
+          if (expectedCookie instanceof RegExp) {
+            if (
+              !expectedCookie.test(actualCookie) &&
+              !actualCookie.test(expectedCookie)
+            ) {
+              this.fail(
+                `Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`
+              );
+            }
+          } else {
+            if (
+              !actualCookie
+                .toLowerCase()
+                .includes(expectedCookie.toLowerCase()) &&
+              !expectedCookie.toLowerCase().includes(actualCookie.toLowerCase())
+            ) {
+              this.fail(
+                `Cookie value '${expectedCookie}' did not match for response cookie '${actualCookie}'`
+              );
+            }
           }
         } else {
-          if (
-            !actualCookie
-              .toLowerCase()
-              .includes(expectedCookie.toLowerCase()) &&
-            !expectedCookie.toLowerCase().includes(actualCookie.toLowerCase())
-          ) {
-            this.fail(
-              `Cookie value '${expectedCookie}' did not match for response cookie '${actualCookie}'`
-            );
-          }
+          this.fail(`set-cookie key not found in response header'`);
         }
       }
     }
   }
 
   _validateStrictCookies(response) {
-    console.log('in validate strict cookies');
-
     this.strictCookies = processor.processData(this.strictCookies);
     const expectedCookie = this.strictCookies;
-    console.log('expected -->', this.strictCookies);
-    if (!expectedCookie === []) {
-      if (
-        response.headers !== undefined &&
-        response.headers['set-cookie'] !== undefined
-      ) {
-        // fetched cookie in actual response
-        const actualCookie = response.headers['set-cookie'][0];
-        console.log('actual -->', actualCookie);
-
-        // if (!(expectedCookie in response.headers['set-cookie'])) {
-        //   console.log('checker', expectedCookie);
-        //   console.log('checker', response.headers['set-cookie']);
-        //   this.fail(`Cookie '${expectedCookie}' not present in HTTP response`);
-        // }
-
-        if (expectedCookie instanceof RegExp) {
-          if (!expectedCookie.test(actualCookie)) {
-            this.fail(
-              `Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`
-            );
+    if (expectedCookie.length > 0) {
+      if (response.headers !== undefined) {
+        if (response.headers['set-cookie'] !== undefined) {
+          // fetched cookie from actual response
+          const actualCookie = response.headers['set-cookie'][0];
+          if (expectedCookie instanceof RegExp) {
+            if (!expectedCookie.test(actualCookie)) {
+              this.fail(
+                `Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`
+              );
+            }
+          } else {
+            if (expectedCookie.toLowerCase() !== actualCookie.toLowerCase()) {
+              this.fail(
+                `Cookie value '${expectedCookie}' did not match for cookie '${actualCookie}'`
+              );
+            }
           }
         } else {
-          if (expectedCookie.toLowerCase() !== actualCookie.toLowerCase()) {
-            this.fail(
-              `Cookie value '${expectedCookie}' did not match for cookie '${actualCookie}'`
-            );
-          }
+          this.fail(`set-cookie key not found in response header'`);
         }
       }
     }

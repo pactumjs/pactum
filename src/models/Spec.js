@@ -210,10 +210,12 @@ class Spec {
     if (!this._request.headers) {
       this._request.headers = {};
     }
-    if (typeof key === 'string' && value !== undefined) {
-      cookieObject[key] = value;
-    } else if (typeof key === 'string' && value === undefined) {
-      cookieObject = lightcookie.parse(key);
+    if (typeof key === 'string') {
+      if (value !== undefined) {
+        cookieObject[key] = value;
+      } else if (value === undefined) {
+        cookieObject = lightcookie.parse(key);
+      }
     } else {
       if (!helper.isValidObject(key)) {
         throw new PactumRequestError('`cookies` are required');
@@ -228,7 +230,6 @@ class Spec {
     } else {
       this._request.headers['cookie'] = lightcookie.serialize(cookieObject);
     }
-    console.log('***request****', this._request);
     return this;
   }
 
@@ -370,39 +371,24 @@ class Spec {
     return this;
   }
 
-  // expectCookies(key, value) {
-  //   if (typeof key === 'string' && value !== undefined) {
-  //     this._expect.cookies[key] = value;
-  //   } else if (typeof key === 'string' && value === undefined) {
-  //     this._expect.cookies = lightcookie.parse(key);
-  //   } else {
-  //     if (!helper.isValidObject(key)) {
-  //       throw new PactumRequestError('`cookies` are required');
-  //     }
-  //     this._expect.cookies = key;
-  //   }
-  //   console.log('***expect***', this._expect.cookies);
-  //   return this;
-  // }
-
   expectCookies(key, value) {
     let cookieObject = {};
     if (!this._expect.headers) {
       this._expect.headers = {};
     }
-    if (typeof key === 'string' && value !== undefined) {
-      cookieObject[key] = value;
-    } else if (typeof key === 'string' && value === undefined) {
-      cookieObject = lightcookie.parse(key);
+    if (typeof key === 'string') {
+      if (value !== undefined) {
+        cookieObject[key] = value;
+      } else if (value === undefined) {
+        cookieObject = lightcookie.parse(key);
+      }
     } else {
       if (!helper.isValidObject(key)) {
         throw new PactumRequestError('`cookies` are required');
       }
       cookieObject = key;
     }
-    // this._expect.headers['cookie'] = lightcookie.serialize(cookieObject);
     this._expect.cookies = lightcookie.serialize(cookieObject);
-    console.log('***expect1****', this._expect.cookies);
     return this;
   }
 
@@ -411,19 +397,19 @@ class Spec {
     if (!this._expect.headers) {
       this._expect.headers = {};
     }
-    if (typeof key === 'string' && value !== undefined) {
-      cookieObject[key] = value;
-    } else if (typeof key === 'string' && value === undefined) {
-      cookieObject = lightcookie.parse(key);
+    if (typeof key === 'string') {
+      if (value !== undefined) {
+        cookieObject[key] = value;
+      } else if (value === undefined) {
+        cookieObject = lightcookie.parse(key);
+      }
     } else {
       if (!helper.isValidObject(key)) {
         throw new PactumRequestError('`cookies` are required');
       }
       cookieObject = key;
     }
-    // this._expect.headers['cookie'] = lightcookie.serialize(cookieObject);
     this._expect.strictCookies = lightcookie.serialize(cookieObject);
-    console.log('***expect2****', this._expect.strictCookies);
     return this;
   }
 
