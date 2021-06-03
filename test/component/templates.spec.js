@@ -2,7 +2,6 @@ const pactum = require('../../src/index');
 const stash = pactum.stash;
 
 describe('Templates & Maps', () => {
-
   before(() => {
     stash.loadData('./test/data');
     stash.addDataTemplate({
