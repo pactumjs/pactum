@@ -251,6 +251,23 @@ declare class Spec {
   withHeaders(key: string, value: any): Spec;
   withHeaders(headers: object): Spec;
 
+    /**
+   * attaches cookies to the request
+   * @example
+   * await pactum.spec()
+   *  .get('/api/posts')
+   *  .withCookies('name', 'snow')
+   *  .withCookies({
+   *    name: 'snow',
+   *    httpOnly: null
+   *  })
+   *  .withCookies('name=snow')
+   *  .expectStatus(201);
+   */
+  withCookies(key: string, value: any): Spec;
+  withCookies(json: object): Spec;
+  withCookies(raw: string): Spec;
+
   /**
    * attaches body to the request
    * @example
@@ -431,6 +448,46 @@ declare class Spec {
    *  });
    */
   expectJson(json: object): Spec;
+
+  /**
+   * expects a cookie in the response
+   * @example
+   * await pactum.spec()
+   *  .get('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectCookies('name', 'snow')
+   *  .expectCookies({
+   *    name: 'snow',
+   *    httpOnly: null
+   *  })
+   *  .expectCookies('name=snow')
+   *  .expectJson({
+   *    userId: 1,
+   *    user: 'frank'
+   *  });
+   */
+  expectCookies(key: string, value: any): Spec;
+  expectCookies(json: object): Spec;
+  expectCookies(raw: string): Spec;
+
+  /**
+   * expects exact match on cookie in the response
+   * @example
+   * await pactum.spec()
+   *  .get('https://jsonplaceholder.typicode.com/posts/1')
+   *  .expectCookies('name', 'snow')
+   *  .expectCookies({
+   *    name: 'snow',
+   *    httpOnly: null
+   *  })
+   *  .expectCookies('name=snow')
+   *  .expectJson({
+   *    userId: 1,
+   *    user: 'frank'
+   *  });
+   */
+  expectStrictCookies(key: string, value: any): Spec;
+  expectStrictCookies(json: object): Spec;
+  expectStrictCookies(raw: string): Spec;
 
   /**
    * expects a partial json object in the response

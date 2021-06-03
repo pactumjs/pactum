@@ -1,5 +1,7 @@
 const FormData = require('form-data');
 const fs = require('fs');
+const lightcookie = require('lightcookie');
+
 const path = require('path');
 const Tosser = require('./Tosser');
 const Expect = require('./expect');
@@ -203,6 +205,20 @@ class Spec {
     return this;
   }
 
+  withCookies(key, value) {
+    if (!this._request.headers) {
+      this._request.headers = {};
+    }
+    let cookieObject = createCookieObject(key, value);
+    if (this._request.headers['cookie'] !== undefined) {
+      this._request.headers['cookie'] = this._request.headers['cookie'] +
+        ';' + lightcookie.serialize(cookieObject);
+    } else {
+      this._request.headers['cookie'] = lightcookie.serialize(cookieObject);
+    }
+    return this;
+  }
+
   withBody(body) {
     if (typeof this._request.data !== 'undefined') {
       throw new PactumRequestError(
@@ -308,7 +324,7 @@ class Spec {
   expectHeader(header, value) {
     utils.upsertValues(this._expect.headers, {
       key: header,
-      value
+      value,
     });
     return this;
   }
@@ -316,7 +332,7 @@ class Spec {
   expectHeaderContains(header, value) {
     utils.upsertValues(this._expect.headerContains, {
       key: header,
-      value
+      value,
     });
     return this;
   }
@@ -338,6 +354,18 @@ class Spec {
 
   expectJsonLike(json) {
     this._expect.jsonLike.push(json);
+    return this;
+  }
+
+  expectCookies(key, value) {
+    let cookieObject = createCookieObject(key, value);
+    this._expect.cookies.push(lightcookie.serialize(cookieObject));
+    return this;
+  }
+
+  expectStrictCookies(key, value) {
+    let cookieObject = createCookieObject(key, value);
+    this._expect.strictCookies.push(lightcookie.serialize(cookieObject));
     return this;
   }
 
@@ -473,6 +501,23 @@ function validateRequestUrl(request, url) {
   if (!helper.isValidString(url)) {
     throw new PactumRequestError(`Invalid request url - ${url}`);
   }
+}
+
+function createCookieObject(key, value) {
+  let cookieObject = {};
+  if (typeof key === 'string') {
+    if (value !== undefined) {
+      cookieObject[key] = value;
+    } else if (value === undefined) {
+      cookieObject = lightcookie.parse(key);
+    }
+  } else {
+    if (!helper.isValidObject(key)) {
+      throw new PactumRequestError('`cookies` are required');
+    }
+    Object.assign(cookieObject, key);
+  }
+  return cookieObject;
 }
 
 module.exports = Spec;
