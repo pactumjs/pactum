@@ -1,6 +1,6 @@
 const FormData = require('form-data');
 const fs = require('fs');
-const lightcookie = require('lightcookie');
+const lc = require('lightcookie');
 
 const path = require('path');
 const Tosser = require('./Tosser');
@@ -209,12 +209,12 @@ class Spec {
     if (!this._request.headers) {
       this._request.headers = {};
     }
-    let cookieObject = createCookieObject(key, value);
-    if (this._request.headers['cookie'] !== undefined) {
-      this._request.headers['cookie'] = this._request.headers['cookie'] +
-        ';' + lightcookie.serialize(cookieObject);
+    const cookieObject = createCookieObject(key, value);
+    const headers = this._request.headers;
+    if (headers['cookie'] !== undefined) {
+      headers['cookie'] = headers['cookie'] + ';' + lc.serialize(cookieObject);
     } else {
-      this._request.headers['cookie'] = lightcookie.serialize(cookieObject);
+      headers['cookie'] = lc.serialize(cookieObject);
     }
     return this;
   }
@@ -358,14 +358,12 @@ class Spec {
   }
 
   expectCookies(key, value) {
-    let cookieObject = createCookieObject(key, value);
-    this._expect.cookies.push(lightcookie.serialize(cookieObject));
+    this._expect.cookies.push(createCookieObject(key, value));
     return this;
   }
 
   expectStrictCookies(key, value) {
-    let cookieObject = createCookieObject(key, value);
-    this._expect.strictCookies.push(lightcookie.serialize(cookieObject));
+    this._expect.strictCookies.push(createCookieObject(key, value));
     return this;
   }
 
@@ -509,7 +507,7 @@ function createCookieObject(key, value) {
     if (value !== undefined) {
       cookieObject[key] = value;
     } else if (value === undefined) {
-      cookieObject = lightcookie.parse(key);
+      cookieObject = lc.parse(key);
     }
   } else {
     if (!helper.isValidObject(key)) {

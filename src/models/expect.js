@@ -1,5 +1,6 @@
 const assert = require('assert');
 const jqy = require('json-query');
+const lc = require('lightcookie');
 
 const config = require('../config');
 const utils = require('../helpers/utils');
@@ -98,48 +99,31 @@ class Expect {
 
   _validateCookies(response) {
     this.cookies = processor.processData(this.cookies);
-    const expectedCookie = this.cookies[0];
-    if (expectedCookie !== undefined) {
-        if (response.headers['set-cookie'] !== undefined) {
-          // fetched cookie from actual response
-          const actualCookie = response.headers['set-cookie'][0];
-          if (expectedCookie instanceof RegExp) {
-            if (!expectedCookie.test(actualCookie) && !actualCookie.test(expectedCookie)) {
-              this.fail(`Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`);
-            }
-          } else {
-            if (
-              !actualCookie.toLowerCase().includes(expectedCookie.toLowerCase()) &&
-              !expectedCookie.toLowerCase().includes(actualCookie.toLowerCase())
-            ) {
-              this.fail(`Cookie value '${expectedCookie}' did not match for response cookie '${actualCookie}'`);
-            }
-          }
-        } else {
-          this.fail(`set-cookie key not found in response header'`);
-       }
+    for (let i = 0; i < this.cookies.length; i++) {
+      const expectedCookie = this.cookies[i];
+      let actualCookie = response.headers['set-cookie'];
+      if (!actualCookie) {
+        this.fail(`'set-cookie' key not found in response headers`);
+      }
+      actualCookie = lc.parse(actualCookie);
+      const compare = new Compare();
+      const res = compare.jsonLike(actualCookie, expectedCookie);
+      if (!res.equal) {
+        this.fail(res.message);
+      }
     }
   }
 
   _validateStrictCookies(response) {
     this.strictCookies = processor.processData(this.strictCookies);
-    const expectedCookie = this.strictCookies[0];
-    if (expectedCookie !== undefined) {
-        if (response.headers['set-cookie'] !== undefined) {
-          // fetched cookie from actual response
-          const actualCookie = response.headers['set-cookie'][0];
-          if (expectedCookie instanceof RegExp) {
-            if (!expectedCookie.test(actualCookie)) {
-              this.fail(`Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`);
-            }
-          } else {
-            if (expectedCookie.toLowerCase() !== actualCookie.toLowerCase()) {
-              this.fail(`Cookie value '${expectedCookie}' did not match for cookie '${actualCookie}'`);
-            }
-          }
-        } else {
-          this.fail(`set-cookie key not found in response header'`);
-        }
+    for (let i = 0; i < this.strictCookies.length; i++) {
+      const expectedCookie = this.strictCookies[i];
+      let actualCookie = response.headers['set-cookie'];
+      if (!actualCookie) {
+        this.fail(`'set-cookie' key not found in response headers`);
+      }
+      actualCookie = lc.parse(actualCookie);
+      assert.deepStrictEqual(actualCookie, expectedCookie);
     }
   }
 
