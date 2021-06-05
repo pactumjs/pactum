@@ -1,21 +1,15 @@
-const { utils } = require('pactum-matchers');
+const BasePlugin = require('./plugin.base');
 
-const jmv = {
-
+class JsonMatchValidator extends BasePlugin {
   getMatchingRules(data, path, rules) {
-    const _rules = rules || {};
-    utils.setMatchingRules(_rules, data, path);
-    return _rules;
-  },
-
-  getRawValue(data) {
-    return utils.getValue(data);
-  },
-
-  validate(actual, expected, rules, path, strict) {
-    return utils.compare(actual, expected, rules, path, strict).message;
+    return this.adapter.getMatchingRules(data, path, rules);
   }
+  getRawValue(data) {
+    return this.adapter.getRawValue(data);
+  }
+  validate(actual, expected, rules, path, strict) {
+    return this.adapter.validate(actual, expected, rules, path, strict);
+  }
+}
 
-};
-
-module.exports = jmv;
+module.exports = new JsonMatchValidator();

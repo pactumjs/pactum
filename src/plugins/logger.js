@@ -1,3 +1,4 @@
+const BasePlugin = require('./plugin.base');
 const { options } = require('../helpers/colors');
 
 const LEVEL_VERBOSE = 2;
@@ -34,19 +35,15 @@ function getLevelValue(level) {
   }
 }
 
-class Logger {
+class Logger extends BasePlugin {
 
   constructor() {
-    this.adapter = null;
+    super();
     this.level = process.env.PACTUM_LOG_LEVEL || 'INFO';
     this.levelValue = getLevelValue(this.level);
     if (process.env.PACTUM_DISABLE_LOG_COLORS === 'true') {
       options.disableColors = true;
     }
-  }
-
-  setAdapter(adapter) {
-    this.adapter = adapter;
   }
 
   /**

@@ -1,5 +1,6 @@
-const logger = require('./plugins/logger');
-logger.setAdapter(require('./adapters/logger'));
+require('./plugins/logger').setAdapter(require('./adapters/logger'));
+require('./plugins/json.schema').setAdapter(require('./adapters/json.schema'));
+require('./plugins/json.match').setAdapter(require('./adapters/json.match'));
 
 const Spec = require('./models/Spec');
 const Fuzz = require('./models/Fuzz');

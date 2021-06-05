@@ -1,13 +1,9 @@
-const { validator } = require('@exodus/schemasafe');
+const BasePlugin = require('./plugin.base');
 
-const jsv = {
-
+class JsonSchemaValidator extends BasePlugin {
   validate(schema, target) {
-    const validate = validator(schema, { includeErrors: true });
-    validate(target);
-    return validate.errors;
+    return this.adapter.validate(schema, target);
   }
+}
 
-};
-
-module.exports = jsv;
+module.exports = new JsonSchemaValidator();

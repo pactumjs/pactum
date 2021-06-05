@@ -257,7 +257,7 @@ class Expect {
     for (let i = 0; i < this.jsonSchema.length; i++) {
       const errors = jsv.validate(this.jsonSchema[i], response.json);
       if (errors) {
-        this.fail(`Response doesn't match with JSON schema: \n ${JSON.stringify(errors, null, 2)}`);
+        this.fail(`Response doesn't match with JSON schema - ${errors}`);
       }
     }
   }
