@@ -1,6 +1,7 @@
 require('./plugins/logger').setAdapter(require('./adapters/logger'));
 require('./plugins/json.schema').setAdapter(require('./adapters/json.schema'));
 require('./plugins/json.match').setAdapter(require('./adapters/json.match'));
+require('./plugins/json.like').setAdapter(require('./adapters/json.like'));
 
 const Spec = require('./models/Spec');
 const Fuzz = require('./models/Fuzz');

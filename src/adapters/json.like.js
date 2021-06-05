@@ -1,21 +1,12 @@
 const config = require('../config');
-const log = require('../plugins/logger');
 const handler = require('../exports/handler');
 const helper = require('../helpers/helper');
 
-class Compare {
-
-  jsonLike(actual, expected) {
-    const comparer = new LikeJson();
-    const message = comparer.compare(actual, expected);
-    const equal = message === '';
-    log.debug(`JSON Like | Equal - ${equal} | Message - ${message}`);
-    return { equal, message };
-  }
-
-}
-
 class LikeJson {
+
+  constructor(opts = {}) {
+    this.target = opts.target || 'Json';
+  }
 
   compare(actual, expected, actualPath = '$', expectedPath = '$') {
     const valueRes = this.valueCompare(actual, expected, actualPath, expectedPath);
@@ -43,7 +34,7 @@ class LikeJson {
         const expression = expected.replace(value, 'actual');
         const res = eval(expression);
         if (res !== true) {
-          return `Json doesn't fulfil expression '${expression.replace('actual', expectedPath).trim()}'`;
+          return `${this.target} doesn't fulfil expression '${expression.replace('actual', expectedPath).trim()}'`;
         }
         return true;
       }
@@ -59,7 +50,7 @@ class LikeJson {
         const args = _args.length > 0 ? _args[0].split(',') : _args;
         const res = handlerFun({ data: actual, args });
         if (res !== true) {
-          return `Json doesn't fulfil assertion '${expected}' at '${expectedPath}'`;
+          return `${this.target} doesn't fulfil assertion '${expected}' at '${expectedPath}'`;
         }
         return true;
       } catch (_) {
@@ -76,7 +67,7 @@ class LikeJson {
       if (expected.test(actual)) {
         return '';
       }
-      return `Json doesn't match with '${expected}' at '${expectedPath}' but found '${actual}'`;
+      return `${this.target} doesn't match with '${expected}' at '${expectedPath}' but found '${actual}'`;
     }
     const exprRes = this.expressionCompare(actual, expected, actualPath, expectedPath);
     if (exprRes) {
@@ -87,26 +78,26 @@ class LikeJson {
       return valueAssertRes === true ? '' : valueAssertRes;
     }
     if (typeof expected !== typeof actual) {
-      return `Json doesn't have type '${typeof expected}' at '${expectedPath}' but found '${typeof actual}'`;
+      return `${this.target} doesn't have type '${typeof expected}' at '${expectedPath}' but found '${typeof actual}'`;
     }
     if (typeof expected !== 'object' && typeof actual !== 'object') {
-      return `Json doesn't have value '${expected}' at '${expectedPath}' but found '${actual}'`;
+      return `${this.target} doesn't have value '${expected}' at '${expectedPath}' but found '${actual}'`;
     }
     if (expected === null || actual === null) {
-      return `Json doesn't have value '${expected}' at '${expectedPath}' but found '${actual}'`;
+      return `${this.target} doesn't have value '${expected}' at '${expectedPath}' but found '${actual}'`;
     }
     if (Array.isArray(expected) && !Array.isArray(actual)) {
-      return `Json doesn't have type 'array' at '${expectedPath}' but found 'object'`;
+      return `${this.target} doesn't have type 'array' at '${expectedPath}' but found 'object'`;
     }
     if (!Array.isArray(expected) && Array.isArray(actual)) {
-      return `Json doesn't have type 'object' at '${expectedPath}' but found 'array'`;
+      return `${this.target} doesn't have type 'object' at '${expectedPath}' but found 'array'`;
     }
     return null;
   }
 
   arrayCompare(actual, expected, actualPath, expectedPath) {
     if (expected.length > actual.length) {
-      return `Json doesn't have 'array' with length '${expected.length}' at '${expectedPath}' but found 'array' with length '${actual.length}'`;
+      return `${this.target} doesn't have 'array' with length '${expected.length}' at '${expectedPath}' but found 'array' with length '${actual.length}'`;
     }
     const seen = new Set();
     for (let i = 0; i < expected.length; i++) {
@@ -116,7 +107,7 @@ class LikeJson {
       const newExpectedPath = expectedPath + `[${i}]`;
       let actualPathResp = '';
       if (seen.has(i)) {
-        actualPathResp = `Json doesn't have expected value at '${newExpectedPath}'`;
+        actualPathResp = `${this.target} doesn't have expected value at '${newExpectedPath}'`;
       } else {
         actualPathResp = this.compare(aItem, eItem, newExpectedPath, newExpectedPath);
         if (actualPathResp === '') {
@@ -163,7 +154,7 @@ class LikeJson {
         continue;
       }
       if (!Object.prototype.hasOwnProperty.call(actual, prop)) {
-        return `Json doesn't have property '${prop}' at '${expectedPath}'`;
+        return `${this.target} doesn't have property '${prop}' at '${expectedPath}'`;
       }
       const newPath = expectedPath + '.' + prop;
       const resp = this.compare(actual[prop], expected[prop], newPath, newPath);
@@ -175,4 +166,10 @@ class LikeJson {
 
 }
 
-module.exports = Compare;
+function validate(actual, expected, opts) {
+  return new LikeJson(opts).compare(actual, expected);
+}
+
+module.exports = {
+  validate
+};

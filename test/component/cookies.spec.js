@@ -193,7 +193,7 @@ describe('Cookies', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals(`Json doesn't have property 'name' at '$'`);
+    expect(err.message).equals(`Cookie doesn't have property 'name' at '$'`);
   });
 
   it('expected cookie not found in response - expectStrictCookies', async () => {

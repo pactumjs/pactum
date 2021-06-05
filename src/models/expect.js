@@ -6,11 +6,11 @@ const config = require('../config');
 const utils = require('../helpers/utils');
 const file = require('../helpers/file.utils');
 const log = require('../plugins/logger');
-const Compare = require('../helpers/compare');
 const processor = require('../helpers/dataProcessor');
 const handler = require('../exports/handler');
 const jsv = require('../plugins/json.schema');
 const jmv = require('../plugins/json.match');
+const jlv = require('../plugins/json.like');
 
 class Expect {
   constructor() {
@@ -106,11 +106,8 @@ class Expect {
         this.fail(`'set-cookie' key not found in response headers`);
       }
       actualCookie = lc.parse(actualCookie);
-      const compare = new Compare();
-      const res = compare.jsonLike(actualCookie, expectedCookie);
-      if (!res.equal) {
-        this.fail(res.message);
-      }
+      const msg = jlv.validate(actualCookie, expectedCookie, { target: 'Cookie' });
+      if (msg) this.fail(msg);
     }
   }
 
@@ -218,11 +215,8 @@ class Expect {
     this.jsonLike = processor.processData(this.jsonLike);
     for (let i = 0; i < this.jsonLike.length; i++) {
       const expectedJSON = this.jsonLike[i];
-      const compare = new Compare();
-      const res = compare.jsonLike(response.json, expectedJSON);
-      if (!res.equal) {
-        this.fail(res.message);
-      }
+      const msg = jlv.validate(response.json, expectedJSON);
+      if (msg) this.fail(msg);
     }
   }
 
@@ -244,11 +238,8 @@ class Expect {
     for (let i = 0; i < this.jsonQueryLike.length; i++) {
       const jQ = this.jsonQueryLike[i];
       const value = jqy(jQ.path, { data: response.json }).value;
-      const compare = new Compare();
-      const res = compare.jsonLike(value, jQ.value);
-      if (!res.equal) {
-        this.fail(res.message);
-      }
+      const msg = jlv.validate(value, jQ.value);
+      if (msg) this.fail(msg);
     }
   }
 
