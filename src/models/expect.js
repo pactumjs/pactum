@@ -20,7 +20,7 @@ class Expect {
     this.body = null;
     this.bodyContains = [];
     this.cookies = [];
-    this.strictCookies = [];
+    this.cookiesLike = [];
     this.json = [];
     this.jsonQuery = [];
     this.jsonLike = [];
@@ -45,7 +45,7 @@ class Expect {
     this._validateHeaderContains(response);
     this._validateBody(response);
     this._validateCookies(response);
-    this._validateStrictCookies(response);
+    this._validateCookiesLike(response);
     this._validateBodyContains(response);
     this._validateJson(response);
     this._validateJsonLike(response);
@@ -106,21 +106,21 @@ class Expect {
         this.fail(`'set-cookie' key not found in response headers`);
       }
       actualCookie = lc.parse(actualCookie);
-      const msg = jlv.validate(actualCookie, expectedCookie, { target: 'Cookie' });
-      if (msg) this.fail(msg);
+      assert.deepStrictEqual(actualCookie, expectedCookie);
     }
   }
 
-  _validateStrictCookies(response) {
-    this.strictCookies = processor.processData(this.strictCookies);
-    for (let i = 0; i < this.strictCookies.length; i++) {
-      const expectedCookie = this.strictCookies[i];
+  _validateCookiesLike(response) {
+    this.cookiesLike = processor.processData(this.cookiesLike);
+    for (let i = 0; i < this.cookiesLike.length; i++) {
+      const expectedCookie = this.cookiesLike[i];
       let actualCookie = response.headers['set-cookie'];
       if (!actualCookie) {
         this.fail(`'set-cookie' key not found in response headers`);
       }
       actualCookie = lc.parse(actualCookie);
-      assert.deepStrictEqual(actualCookie, expectedCookie);
+      const msg = jlv.validate(actualCookie, expectedCookie, { target: 'Cookie' });
+      if (msg) this.fail(msg);
     }
   }
 

@@ -2,6 +2,8 @@ export interface Have {
   status(code: number): void;
   header(key: string, value: any): void;
   headerContains(key: string, value: any): void;
+  cookiesLike(key: any, value?: any): void;
+  cookies(key: any, value?: any): void;
   body(value: any): void;
   bodyContains(value: any): void;
   json(value: any): void;

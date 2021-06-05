@@ -24,6 +24,16 @@ class Have {
     this._validate();
   }
 
+  cookiesLike(key, value) {
+    this.expect.cookies.push(utils.createCookieObject(key, value));
+    this._validate();
+  }
+
+  cookies(key, value) {
+    this.expect.cookiesLike.push(utils.createCookieObject(key, value));
+    this._validate();
+  }
+
   body(value) {
     this.expect.body = value;
     this._validate();

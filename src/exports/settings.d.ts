@@ -1,4 +1,4 @@
-export type LogLevel = 'VERBOSE'|'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR'|'SILENT';
+export type LogLevel = 'VERBOSE' | 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'SILENT';
 
 /**
   * sets log level
@@ -18,7 +18,7 @@ export function setLogger(logger: Logger): void;
 
 export interface Strategy {
   starts?: string;
-  ends?: string; 
+  ends?: string;
   includes?: string;
 }
 

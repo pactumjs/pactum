@@ -209,7 +209,7 @@ class Spec {
     if (!this._request.headers) {
       this._request.headers = {};
     }
-    const cookieObject = createCookieObject(key, value);
+    const cookieObject = utils.createCookieObject(key, value);
     const headers = this._request.headers;
     if (headers['cookie'] !== undefined) {
       headers['cookie'] = headers['cookie'] + ';' + lc.serialize(cookieObject);
@@ -358,12 +358,12 @@ class Spec {
   }
 
   expectCookies(key, value) {
-    this._expect.cookies.push(createCookieObject(key, value));
+    this._expect.cookies.push(utils.createCookieObject(key, value));
     return this;
   }
 
-  expectStrictCookies(key, value) {
-    this._expect.strictCookies.push(createCookieObject(key, value));
+  expectCookiesLike(key, value) {
+    this._expect.cookiesLike.push(utils.createCookieObject(key, value));
     return this;
   }
 
@@ -499,23 +499,6 @@ function validateRequestUrl(request, url) {
   if (!helper.isValidString(url)) {
     throw new PactumRequestError(`Invalid request url - ${url}`);
   }
-}
-
-function createCookieObject(key, value) {
-  let cookieObject = {};
-  if (typeof key === 'string') {
-    if (value !== undefined) {
-      cookieObject[key] = value;
-    } else if (value === undefined) {
-      cookieObject = lc.parse(key);
-    }
-  } else {
-    if (!helper.isValidObject(key)) {
-      throw new PactumRequestError('`cookies` are required');
-    }
-    Object.assign(cookieObject, key);
-  }
-  return cookieObject;
 }
 
 module.exports = Spec;

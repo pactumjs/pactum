@@ -1,5 +1,7 @@
 const { compare } = require('pactum-matchers').utils;
 const graphQL = require('./graphQL');
+const lc = require('lightcookie');
+const { PactumRequestError } = require('../helpers/errors');
 
 const log = require('../plugins/logger');
 const helper = require('./helper');
@@ -58,6 +60,23 @@ const utils = {
     } else {
       jsonArray.push(item);
     }
+  },
+
+  createCookieObject(key, value) {
+    let cookieObject = {};
+    if (typeof key === 'string') {
+      if (value !== undefined) {
+        cookieObject[key] = value;
+      } else if (value === undefined) {
+        cookieObject = lc.parse(key);
+      }
+    } else {
+      if (!helper.isValidObject(key)) {
+        throw new PactumRequestError('`cookies` are required');
+      }
+      Object.assign(cookieObject, key);
+    }
+    return cookieObject;
   }
 
 };

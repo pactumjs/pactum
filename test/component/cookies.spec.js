@@ -29,7 +29,7 @@ describe('Cookies', () => {
       .get('http://localhost:9393/api/army')
       .withCookies('name', 'snow')
       .expectStatus(200)
-      .expectCookies('name', 'snow');
+      .expectCookiesLike('name', 'snow');
   });
 
   it('sending cookies as string', async () => {
@@ -58,7 +58,7 @@ describe('Cookies', () => {
       .get('http://localhost:9393/api/army')
       .withCookies('name=snow')
       .expectStatus(200)
-      .expectStrictCookies('name=snow');
+      .expectCookies('name=snow');
   });
 
   it('sending cookies as object', async () => {
@@ -87,7 +87,7 @@ describe('Cookies', () => {
       .get('http://localhost:9393/api/army')
       .withCookies({ name: 'snow' })
       .expectStatus(200)
-      .expectStrictCookies({ name: 'snow' });
+      .expectCookies({ name: 'snow' });
   });
 
   it('sending multiple cookies & assert multiple cookies', async () => {
@@ -118,10 +118,10 @@ describe('Cookies', () => {
       .withCookies('foo', 'bar')
       .withCookies('bro')
       .expectStatus(200)
-      .expectCookies('name', 'snow')
-      .expectCookies('httpOnly')
-      .expectCookies('foo', 'bar')
-      .expectStrictCookies('foo=bar;name=snow;httpOnly');
+      .expectCookiesLike('name', 'snow')
+      .expectCookiesLike('httpOnly')
+      .expectCookiesLike('foo', 'bar')
+      .expectCookies('foo=bar;name=snow;httpOnly');
   });
 
   it('set-cookie key not found in response - expectCookie', async () => {
@@ -140,14 +140,14 @@ describe('Cookies', () => {
         })
         .get('http://localhost:9393/api/army')
         .expectStatus(200)
-        .expectCookies('name', 'snow');
+        .expectCookiesLike('name', 'snow');
     } catch (error) {
       err = error;
     }
     expect(err.message).equals(`'set-cookie' key not found in response headers`);
   });
 
-  it('set-cookie key not found in response - expectStrictCookies', async () => {
+  it('set-cookie key not found in response - expectCookies', async () => {
     let err;
     try {
       await pactum
@@ -163,7 +163,7 @@ describe('Cookies', () => {
         })
         .get('http://localhost:9393/api/army')
         .expectStatus(200)
-        .expectStrictCookies('name', 'snow');
+        .expectCookies('name', 'snow');
     } catch (error) {
       err = error;
     }
@@ -189,14 +189,14 @@ describe('Cookies', () => {
         })
         .get('http://localhost:9393/api/army')
         .expectStatus(200)
-        .expectCookies('name', 'snow');
+        .expectCookiesLike('name', 'snow');
     } catch (error) {
       err = error;
     }
     expect(err.message).equals(`Cookie doesn't have property 'name' at '$'`);
   });
 
-  it('expected cookie not found in response - expectStrictCookies', async () => {
+  it('expected cookie not found in response - expectCookies', async () => {
     let err;
     try {
       await pactum
@@ -215,7 +215,7 @@ describe('Cookies', () => {
         })
         .get('http://localhost:9393/api/army')
         .expectStatus(200)
-        .expectStrictCookies('name', 'snow');
+        .expectCookies('name', 'snow');
     } catch (error) {
       err = error;
     }
