@@ -5,11 +5,20 @@ export type LogLevel = 'VERBOSE'|'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR'|'SILENT';
   * @env PACTUM_LOG_LEVEL
 */
 export function setLogLevel(level: LogLevel): void;
-export function setLogger(logger: object): void;
+
+export type LogFunction = (messages: any[]) => void;
+export interface Logger {
+  trace: LogFunction;
+  debug: LogFunction;
+  info: LogFunction;
+  warn: LogFunction;
+  error: LogFunction;
+}
+export function setLogger(logger: Logger): void;
 
 export interface Strategy {
   starts?: string;
-  ends?: string;
+  ends?: string; 
   includes?: string;
 }
 
