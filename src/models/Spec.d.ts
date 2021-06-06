@@ -374,7 +374,7 @@ declare class Spec {
   /**
    * overrides default log level for current spec
    */
-  __setLogLevel(level: LogLevel): Spec;
+  useLogLevel(level: LogLevel): Spec;
 
   /**
    * overrides default timeout for current request in ms
