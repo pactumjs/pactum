@@ -1,6 +1,7 @@
 const expect = require('chai').expect;
 const sandbox = require('sinon').createSandbox();
-const logger = require('../../src/exports/logger').get();
+const logger = require('../../src/plugins/logger');
+logger.setAdapter(require('../../src/adapters/logger'));
 
 describe('Logger', () => {
 
@@ -11,7 +12,7 @@ describe('Logger', () => {
     this.errorStub = sandbox.stub(console, 'error');
     this.writeStub = sandbox.stub(process.stdout, 'write');
   });
-  
+
   it('verbose', () => {
     logger.setLevel('VERBOSE');
     logger.trace('demo');

@@ -1,11 +1,20 @@
-export type LogLevel = 'VERBOSE'|'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR'|'SILENT';
+export type LogLevel = 'VERBOSE' | 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'SILENT';
 
 /**
   * sets log level
   * @env PACTUM_LOG_LEVEL
 */
 export function setLogLevel(level: LogLevel): void;
-export function setLogger(logger: object): void;
+
+export type LogFunction = (messages: any[]) => void;
+export interface Logger {
+  trace: LogFunction;
+  debug: LogFunction;
+  info: LogFunction;
+  warn: LogFunction;
+  error: LogFunction;
+}
+export function setLogger(logger: Logger): void;
 
 export interface Strategy {
   starts?: string;
@@ -18,5 +27,5 @@ export function setAssertExpressionStrategy(strategy: Strategy): void;
 export function setCaptureHandlerStrategy(strategy: Strategy): void;
 export function setSnapshotDirectoryPath(path: string): void;
 export function setReporterAutoRun(auto: boolean): void;
-export function setDefaultRetryCount(count: number): void;
-export function setDefaultRetryDelay(delay: number): void;
+export function setRequestDefaultRetryCount(count: number): void;
+export function setRequestDefaultRetryDelay(delay: number): void;

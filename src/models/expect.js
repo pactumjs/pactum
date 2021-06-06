@@ -1,15 +1,16 @@
 const assert = require('assert');
 const jqy = require('json-query');
+const lc = require('lightcookie');
 
 const config = require('../config');
 const utils = require('../helpers/utils');
 const file = require('../helpers/file.utils');
-const log = require('../exports/logger').get();
-const Compare = require('../helpers/compare');
+const log = require('../plugins/logger');
 const processor = require('../helpers/dataProcessor');
 const handler = require('../exports/handler');
 const jsv = require('../plugins/json.schema');
 const jmv = require('../plugins/json.match');
+const jlv = require('../plugins/json.like');
 
 class Expect {
   constructor() {
@@ -19,7 +20,7 @@ class Expect {
     this.body = null;
     this.bodyContains = [];
     this.cookies = [];
-    this.strictCookies = [];
+    this.cookiesLike = [];
     this.json = [];
     this.jsonQuery = [];
     this.jsonLike = [];
@@ -44,7 +45,7 @@ class Expect {
     this._validateHeaderContains(response);
     this._validateBody(response);
     this._validateCookies(response);
-    this._validateStrictCookies(response);
+    this._validateCookiesLike(response);
     this._validateBodyContains(response);
     this._validateJson(response);
     this._validateJsonLike(response);
@@ -98,48 +99,28 @@ class Expect {
 
   _validateCookies(response) {
     this.cookies = processor.processData(this.cookies);
-    const expectedCookie = this.cookies[0];
-    if (expectedCookie !== undefined) {
-        if (response.headers['set-cookie'] !== undefined) {
-          // fetched cookie from actual response
-          const actualCookie = response.headers['set-cookie'][0];
-          if (expectedCookie instanceof RegExp) {
-            if (!expectedCookie.test(actualCookie) && !actualCookie.test(expectedCookie)) {
-              this.fail(`Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`);
-            }
-          } else {
-            if (
-              !actualCookie.toLowerCase().includes(expectedCookie.toLowerCase()) &&
-              !expectedCookie.toLowerCase().includes(actualCookie.toLowerCase())
-            ) {
-              this.fail(`Cookie value '${expectedCookie}' did not match for response cookie '${actualCookie}'`);
-            }
-          }
-        } else {
-          this.fail(`set-cookie key not found in response header'`);
-       }
+    for (let i = 0; i < this.cookies.length; i++) {
+      const expectedCookie = this.cookies[i];
+      let actualCookie = response.headers['set-cookie'];
+      if (!actualCookie) {
+        this.fail(`'set-cookie' key not found in response headers`);
+      }
+      actualCookie = lc.parse(actualCookie);
+      assert.deepStrictEqual(actualCookie, expectedCookie);
     }
   }
 
-  _validateStrictCookies(response) {
-    this.strictCookies = processor.processData(this.strictCookies);
-    const expectedCookie = this.strictCookies[0];
-    if (expectedCookie !== undefined) {
-        if (response.headers['set-cookie'] !== undefined) {
-          // fetched cookie from actual response
-          const actualCookie = response.headers['set-cookie'][0];
-          if (expectedCookie instanceof RegExp) {
-            if (!expectedCookie.test(actualCookie)) {
-              this.fail(`Cookie regex (${expectedCookie}) did not match for cookie '${actualCookie}'`);
-            }
-          } else {
-            if (expectedCookie.toLowerCase() !== actualCookie.toLowerCase()) {
-              this.fail(`Cookie value '${expectedCookie}' did not match for cookie '${actualCookie}'`);
-            }
-          }
-        } else {
-          this.fail(`set-cookie key not found in response header'`);
-        }
+  _validateCookiesLike(response) {
+    this.cookiesLike = processor.processData(this.cookiesLike);
+    for (let i = 0; i < this.cookiesLike.length; i++) {
+      const expectedCookie = this.cookiesLike[i];
+      let actualCookie = response.headers['set-cookie'];
+      if (!actualCookie) {
+        this.fail(`'set-cookie' key not found in response headers`);
+      }
+      actualCookie = lc.parse(actualCookie);
+      const msg = jlv.validate(actualCookie, expectedCookie, { target: 'Cookie' });
+      if (msg) this.fail(msg);
     }
   }
 
@@ -234,11 +215,8 @@ class Expect {
     this.jsonLike = processor.processData(this.jsonLike);
     for (let i = 0; i < this.jsonLike.length; i++) {
       const expectedJSON = this.jsonLike[i];
-      const compare = new Compare();
-      const res = compare.jsonLike(response.json, expectedJSON);
-      if (!res.equal) {
-        this.fail(res.message);
-      }
+      const msg = jlv.validate(response.json, expectedJSON);
+      if (msg) this.fail(msg);
     }
   }
 
@@ -260,11 +238,8 @@ class Expect {
     for (let i = 0; i < this.jsonQueryLike.length; i++) {
       const jQ = this.jsonQueryLike[i];
       const value = jqy(jQ.path, { data: response.json }).value;
-      const compare = new Compare();
-      const res = compare.jsonLike(value, jQ.value);
-      if (!res.equal) {
-        this.fail(res.message);
-      }
+      const msg = jlv.validate(value, jQ.value);
+      if (msg) this.fail(msg);
     }
   }
 
@@ -273,7 +248,7 @@ class Expect {
     for (let i = 0; i < this.jsonSchema.length; i++) {
       const errors = jsv.validate(this.jsonSchema[i], response.json);
       if (errors) {
-        this.fail(`Response doesn't match with JSON schema: \n ${JSON.stringify(errors, null, 2)}`);
+        this.fail(`Response doesn't match with JSON schema - ${errors}`);
       }
     }
   }

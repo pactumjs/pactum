@@ -31,6 +31,9 @@ describe('BDD', () => {
       },
       response: {
         status: 200,
+        headers: {
+          'set-cookie': 'name=snow'
+        },
         body: {
           name: 'snow'
         }
@@ -53,6 +56,11 @@ describe('BDD', () => {
   it('should return a header', () => {
     expect(response).to.have.header('connection', 'close');
     expect(response).to.have.headerContains('connection', 'cl');
+  });
+
+  it('should return cookies', () => {
+    expect(response).to.have.cookiesLike('name', 'snow');
+    expect(response).to.have.cookies('name', 'snow');
   });
 
   it('should return a valid user', async () => {

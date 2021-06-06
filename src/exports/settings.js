@@ -1,14 +1,14 @@
 const config = require('../config');
-const logger = require('./logger');
+const logger = require('../plugins/logger');
 
 const settings = {
 
   setLogLevel(level) {
-    logger.get().setLevel(level);
+    logger.setLevel(level);
   },
 
   setLogger(lgr) {
-    logger.set(lgr);
+    logger.setAdapter(lgr);
   },
 
   setAssertHandlerStrategy(strategy) {
@@ -31,12 +31,12 @@ const settings = {
     config.reporter.autoRun = val;
   },
 
-  setDefaultRetryCount(count) {
-    config.retry.count = count;
+  setRequestDefaultRetryCount(count) {
+    config.request.retry.count = count;
   },
 
-  setDefaultRetryDelay(delay) {
-    config.retry.delay = delay;
+  setRequestDefaultRetryDelay(delay) {
+    config.request.retry.delay = delay;
   }
 
 };

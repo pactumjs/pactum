@@ -450,7 +450,7 @@ declare class Spec {
   expectJson(json: object): Spec;
 
   /**
-   * expects a cookie in the response
+   * expects exact match on cookie in the response
    * @example
    * await pactum.spec()
    *  .get('https://jsonplaceholder.typicode.com/posts/1')
@@ -470,24 +470,24 @@ declare class Spec {
   expectCookies(raw: string): Spec;
 
   /**
-   * expects exact match on cookie in the response
+   * expects a partial cookie in the response
    * @example
    * await pactum.spec()
    *  .get('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectCookies('name', 'snow')
-   *  .expectCookies({
+   *  .expectCookiesLike('name', 'snow')
+   *  .expectCookiesLike({
    *    name: 'snow',
    *    httpOnly: null
    *  })
-   *  .expectCookies('name=snow')
+   *  .expectCookiesLike('name=snow')
    *  .expectJson({
    *    userId: 1,
    *    user: 'frank'
    *  });
    */
-  expectStrictCookies(key: string, value: any): Spec;
-  expectStrictCookies(json: object): Spec;
-  expectStrictCookies(raw: string): Spec;
+  expectCookiesLike(key: string, value: any): Spec;
+  expectCookiesLike(json: object): Spec;
+  expectCookiesLike(raw: string): Spec;
 
   /**
    * expects a partial json object in the response

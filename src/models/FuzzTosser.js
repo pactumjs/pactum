@@ -1,6 +1,6 @@
 const phin = require('phin');
 const fuzzCore = require('openapi-fuzzer-core');
-const log = require('../exports/logger').get();
+const log = require('../plugins/logger');
 const rp = require('../helpers/requestProcessor');
 const helper = require('../helpers/helper');
 const mock = require('../exports/mock');
