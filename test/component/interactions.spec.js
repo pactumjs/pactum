@@ -488,7 +488,7 @@ describe('Mock', () => {
   it('POST - invalid interaction', async () => {
     await pactum.spec()
       .post('http://localhost:9393/api/projects')
-      .__setLogLevel('DEBUG')
+      .useLogLevel('DEBUG')
       .withRequestTimeout(1000)
       .withJson({
         parent: {

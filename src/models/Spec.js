@@ -297,7 +297,7 @@ class Spec {
     return this;
   }
 
-  __setLogLevel(level) {
+  useLogLevel(level) {
     this.previousLogLevel = log.level;
     log.setLevel(level);
     return this;

@@ -24,20 +24,23 @@ class Tosser {
   }
 
   async toss() {
-    this.spec.start = Date.now().toString();
-    this.request = requestProcessor.process(this.request);
-    await this.setState();
-    await this.addInteractionsToServer();
-    await this.setResponse();
-    this.inspect();
-    await this.wait();
-    this.setPreviousLogLevel();
-    await this.getInteractionsFromServer();
-    await this.removeInteractionsFromServer();
-    this.recordData();
-    th.storeSpecData(this.spec, this.spec._stores);
-    await this.validate();
-    return th.getOutput(this.spec, this.spec._returns);
+    try {
+      this.spec.start = Date.now().toString();
+      this.request = requestProcessor.process(this.request);
+      await this.setState();
+      await this.addInteractionsToServer();
+      await this.setResponse();
+      this.inspect();
+      await this.wait();
+      await this.getInteractionsFromServer();
+      this.recordData();
+      th.storeSpecData(this.spec, this.spec._stores);
+      await this.validate();
+      return th.getOutput(this.spec, this.spec._returns);
+    } finally {
+      await this.removeInteractionsFromServer();
+      this.setPreviousLogLevel();
+    }
   }
 
   setState() {
