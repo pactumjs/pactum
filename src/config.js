@@ -7,7 +7,11 @@ const config = {
     baseUrl: process.env.PACTUM_REQUEST_BASE_URL || '',
     timeout: process.env.PACTUM_REQUEST_TIMEOUT ? parseInt(process.env.PACTUM_REQUEST_TIMEOUT) : 3000,
     headers: {},
-    followRedirects: false
+    followRedirects: false,
+    retry: {
+      count: 1,
+      delay: 1000
+    }
   },
   response: {
     time: process.env.PACTUM_RESPONSE_TIME ? parseInt(process.env.PACTUM_RESPONSE_TIME) : null,
@@ -53,10 +57,6 @@ const config = {
   },
   reporter : {
     autoRun: true
-  },
-  retry: {
-    count: 1,
-    delay: 1000
   }
 };
 

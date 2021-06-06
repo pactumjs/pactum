@@ -62,8 +62,8 @@ class Tosser {
     this.response = await getResponse(this);
     const options = this.request.retryOptions;
     if (options) {
-      const count = typeof options.count === 'number' ? options.count : config.retry.count;
-      const delay = typeof options.delay === 'number' ? options.delay : config.retry.delay;
+      const count = typeof options.count === 'number' ? options.count : config.request.retry.count;
+      const delay = typeof options.delay === 'number' ? options.delay : config.request.retry.delay;
       const strategy = options.strategy;
       for (let i = 0; i < count; i++) {
         let noRetry = true;

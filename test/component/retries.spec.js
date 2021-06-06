@@ -5,8 +5,8 @@ const { settings } = pactum;
 describe('Retries', () => {
 
   before(() => {
-    settings.setDefaultRetryCount(1);
-    settings.setDefaultRetryDelay(1);
+    settings.setRequestDefaultRetryCount(1);
+    settings.setRequestDefaultRetryDelay(1);
   });
 
   it('default retry', async () => {
@@ -214,8 +214,8 @@ describe('Retries', () => {
   });
 
   after(() => {
-    settings.setDefaultRetryCount(1);
-    settings.setDefaultRetryDelay(1000);
+    settings.setRequestDefaultRetryCount(1);
+    settings.setRequestDefaultRetryDelay(1000);
   });
 
 });

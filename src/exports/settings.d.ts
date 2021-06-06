@@ -27,5 +27,5 @@ export function setAssertExpressionStrategy(strategy: Strategy): void;
 export function setCaptureHandlerStrategy(strategy: Strategy): void;
 export function setSnapshotDirectoryPath(path: string): void;
 export function setReporterAutoRun(auto: boolean): void;
-export function setDefaultRetryCount(count: number): void;
-export function setDefaultRetryDelay(delay: number): void;
+export function setRequestDefaultRetryCount(count: number): void;
+export function setRequestDefaultRetryDelay(delay: number): void;
