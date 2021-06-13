@@ -1,7 +1,7 @@
 import { RequestOptions } from 'http';
 import FormData from 'form-data';
 import { Interaction } from '../exports/mock';
-import { ExpectHandlerFunction, RetryHandlerFunction, ReturnHandlerFunction } from '../exports/handler';
+import { ExpectHandlerFunction, RetryHandlerFunction, CaptureHandlerFunction } from '../exports/handler';
 import { LogLevel } from '../exports/settings';
 import { Expect } from '../exports/expect';
 
@@ -72,197 +72,100 @@ declare class Spec {
 
   /**
    * The GET method requests a representation of the specified resource.
-   * @example
-   * await pactum.spec()
-   *  .get('https://jsonplaceholder.typicode.com/posts')
-   *  .withQueryParam('postId', 1)
-   *  .expectStatus(200)
-   *  .expectJsonLike({
-   *    userId: 1,
-   *    id: 1
-   *   });
+   * @see https://pactumjs.github.io/#/request-making?id=request-method
    */
   get(url: string): Spec;
 
   /**
    * The HEAD method asks for a response identical to that of a GET request, but without the response body.
+   * @see https://pactumjs.github.io/#/request-making?id=request-method
    */
   head(url: string): Spec;
 
   /**
    * The PATCH method is used to apply partial modifications to a resource.
-   * @example
-   * await pactum.spec()
-   *  .patch('https://jsonplaceholder.typicode.com/posts/1')
-   *  .withJson({
-   *    title: 'foo'
-   *  })
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/request-making?id=request-method
    */
   patch(url: string): Spec;
 
   /**
    * The POST method is used to submit an entity to the specified resource, often causing a change in state or side effects on the server.
-   * @example
-   * await pactum.spec()
-   *  .post('https://jsonplaceholder.typicode.com/posts')
-   *  .withJson({
-   *    title: 'foo',
-   *    body: 'bar',
-   *    userId: 1
-   *  })
-   *  .expectStatus(201);
+   * @see https://pactumjs.github.io/#/request-making?id=request-method
    */
   post(url: string): Spec;
 
   /**
    * The PUT method replaces all current representations of the target resource with the request payload.
-   * @example
-   * await pactum.spec()
-   *  .put('https://jsonplaceholder.typicode.com/posts/1')
-   *  .withJson({
-   *    id: 1,
-   *    title: 'foo',
-   *    body: 'bar',
-   *    userId: 1
-   *  })
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/request-making?id=request-method
    */
   put(url: string): Spec;
 
   /**
    * The DELETE method deletes the specified resource.
-   * @example
-   * await pactum.spec()
-   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/request-making?id=request-method
    */
   delete(url: string): Spec;
 
   /**
    * The OPTIONS method asks for request-methods supported by the request.
-   * @example
-   * await pactum.spec()
-   *  .options('https://jsonplaceholder.typicode.com/posts')
-   *  .expectStatus(204)
-   *  .expectHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+   * @see https://pactumjs.github.io/#/request-making?id=request-method
    */
   options(url: string): Spec;
 
   /**
    * The TRACE method echos the contents of an HTTP Request back to the requester
-   * @example
-   * await pactum.spec()
-   *  .trace('http://localhost:9393/projects/1')
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/request-making?id=request-method
    */
   trace(url: string): Spec;
 
   /**
-   * The `withMethod` method extends the support for the request-methods apart from 
-   * (GET, POST, DELETE, PATCH, PUT, HEAD)
-   * 
-   * The `withPath` method triggers the request passed through withMethod()
-   * @example
-   * await pactum.spec()
-   *  .withMethod('HEAD')
-   *  .withPath('https://jsonplaceholder.typicode.com/posts')
-   *  .expectStatus(200);
+   * The `withMethod` method extends the support for the request-methods apart from GET, POST, DELETE, PATCH, PUT, HEAD
+   * @see https://pactumjs.github.io/#/request-making?id=non-crud-methods
    */
   withMethod(method: string): Spec;
+
+  /**
+   * The `withPath` method triggers the request passed through withMethod()
+   * @see https://pactumjs.github.io/#/request-making?id=non-crud-methods
+   */
   withPath(url: string): Spec;
 
   /**
-   * replaces path params in the request url - /api/users/mike
-   * @example
-   * await pactum.spec()
-   *  .get('/api/users/{username}')
-   *  .withPathParams('username', 'mike')
-   *  .expectStatus(200);
+   * replaces path params in the request url 
+   * @see https://pactumjs.github.io/#/request-making?id=path-params
    */
   withPathParams(key: string, value: any): Spec;
   withPathParams(params: object): Spec;
 
   /**
-   * adds query params to the request url - /comments?id=1&user=snow&sort=asc
-   * @example
-   * await pactum.spec()
-   *  .get('/api/users')
-   *  .withQueryParams('sort', 'asc')
-   *  .withQueryParams({ 'id': '1', 'user': 'snow' })
-   *  .expectStatus(200);
+   * adds query params to the request url - /comments?user=snow&sort=asc
+   * @see https://pactumjs.github.io/#/request-making?id=query-params
    */
   withQueryParams(key: string, value: any): Spec;
   withQueryParams(params: object): Spec;
 
   /**
-   * appends graphQL query to the request body
-   * @example
-   * await pactum.spec()
-   *  .post('http://www.graph.com/graphql')
-   *  .withGraphQLQuery(`{ hello }`)
-   *  .expectStatus(200);
+   * appends graphQL query to the request body or query params
+   * @see https://pactumjs.github.io/#/request-making?id=graphql
    */
   withGraphQLQuery(query: string): Spec;
 
   /**
    * appends graphQL variables to the request body
-   * @example
-   * await pactum.spec()
-   *  .post('http://www.graph.com/graphql')
-   *  .withGraphQLQuery(`
-   *    hero(episode: $episode) {
-   *      name
-   *    }`
-   *  )
-   *  .withGraphQLVariables({
-   *    "episode": "JEDI"
-   *  })
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/request-making?id=graphql
    */
   withGraphQLVariables(variables: object): Spec;
 
   /**
-   * attaches json object to the request body
-   * @example
-   * await pactum.spec()
-   *  .post('https://jsonplaceholder.typicode.com/posts')
-   *  .withJson({
-   *    title: 'foo',
-   *    body: 'bar',
-   *    userId: 1
-   *  })
-   *  .expectStatus(201);
-   */
-  withJson(json: object): Spec;
-  withJson(filePath: string): Spec;
-
-  /**
    * attaches headers to the request
-   * @example
-   * await pactum.spec()
-   *  .get('/api/posts')
-   *  .withHeaders('Authorization', 'Basic xxx')
-   *  .withHeaders({
-   *    'content-type': 'application/json'
-   *  })
-   *  .expectStatus(201);
+   * @see https://pactumjs.github.io/#/request-making?id=headers
    */
   withHeaders(key: string, value: any): Spec;
   withHeaders(headers: object): Spec;
 
-    /**
+  /**
    * attaches cookies to the request
-   * @example
-   * await pactum.spec()
-   *  .get('/api/posts')
-   *  .withCookies('name', 'snow')
-   *  .withCookies({
-   *    name: 'snow',
-   *    httpOnly: null
-   *  })
-   *  .withCookies('name=snow')
-   *  .expectStatus(201);
+   * @see https://pactumjs.github.io/#/request-making?id=cookies
    */
   withCookies(key: string, value: any): Spec;
   withCookies(json: object): Spec;
@@ -270,83 +173,54 @@ declare class Spec {
 
   /**
    * attaches body to the request
-   * @example
-   * await pactum.spec()
-   *  .post('https://jsonplaceholder.typicode.com/posts')
-   *  .withBody(JSON.stringify({
-   *    title: 'foo',
-   *  }))
-   *  .expectStatus(201);
+   * @see https://pactumjs.github.io/#/request-making?id=body
    */
   withBody(body: any): Spec;
 
   /**
+   * attaches json object to the request body
+   * @see https://pactumjs.github.io/#/request-making?id=body
+   */
+   withJson(json: object): Spec;
+   withJson(filePath: string): Spec;
+
+  /**
    * appends file to the form-data
-   * @example
-   * await pactum.spec()
-   *  .post('url')
-   *  .withFile('./file/path')
-   * 
-   * await pactum.spec()
-   *  .post('url')
-   *  .withFile('key', './file/path', { contentType: 'text/plain' })
+   * @see https://pactumjs.github.io/#/request-making?id=file-uploads
    */
   withFile(path: string, options?: FormData.AppendOptions): Spec;
   withFile(key: string, path: string, options?: FormData.AppendOptions): Spec;
 
   /**
    * attaches form data to the request with header - "application/x-www-form-urlencoded"
-   * @example
-   * await pactum.spec()
-   *   .post('https://jsonplaceholder.typicode.com/posts')
-   *   .withForm({
-   *     'user': 'drake'
-   *   })
-   *   .expectStatus(200);
+   * @see https://pactumjs.github.io/#/request-making?id=form-data
    */
   withForm(form: any): Spec;
 
   /**
    * attaches multi part form data to the request with header - "multipart/form-data"
    * @see https://www.npmjs.com/package/form-data
-   * @example
-   * const form = new pactum.request.FormData();
-   * form.append('my_file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' });
-   * await pactum.spec()
-   *  .post('https://jsonplaceholder.typicode.com/upload')
-   *  .withMultiPartFormData(form)
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/request-making?id=form-data
    */
   withMultiPartFormData(form: FormData): Spec;
 
   /**
    * attaches multi part form data to the request with header - "multipart/form-data"
    * @see https://www.npmjs.com/package/form-data
-   * @example
-   *  await pactum.spec()
-   *   .post('https://jsonplaceholder.typicode.com/upload')
-   *   .withMultiPartFormData('file', fs.readFileSync(path), { contentType: 'application/xml', filename: 'jUnit.xml' })
-   *   .withMultiPartFormData('user', 'drake')
-   *   .expectStatus(200);
+   * @see https://pactumjs.github.io/#/request-making?id=form-data
    */
   withMultiPartFormData(key: string, value: string | Buffer | Array | ArrayBuffer, options?: FormData.AppendOptions): Spec;
 
   /**
    * with http core options
    * @see https://nodejs.org/api/http.html#http_http_request_url_options_callback
-   * 
-   * @example
-   * await pactum.spec().spec()
-   *  .get('some-url')
-   *  .withCore({
-   *    agent: myAgent
-   *  })
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/request-making?id=core-options
    */
   withCore(options: RequestOptions): Spec;
 
   /**
    * basic auth
+   * @see https://pactumjs.github.io/#/request-making?id=authentication
    */
   withAuth(username: string, password: string): Spec;
 
@@ -354,300 +228,176 @@ declare class Spec {
 
   /**
    * retry request on specific conditions
-   * @example
-   * // retry once on failure
-   * await pactum.spec().get('/some/url').retry().expectStatus(200);
-   * // retry twice on failure
-   * await pactum.spec().get('/some/url').retry(2).expectStatus(200);
-   * // retry once on failure with custom delay of 2 seconds
-   * await pactum.spec().get('/some/url').retry(1, 2000).expectStatus(200);
-   * // retry with custom strategy
-   * await pactum.spec().get('/some/url')
-   *  .retry({
-   *     strategy: (req, res) => res.statusCode !== 200
-   *   })
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/integration-testing?id=retry-mechanism
    */
   retry(count?: number, delay?: number): Spec;
   retry(options: RetryOptions): Spec;
 
   /**
    * overrides default log level for current spec
+   * @see https://pactumjs.github.io/#/api-settings?id=setloglevel
    */
   useLogLevel(level: LogLevel): Spec;
 
   /**
    * overrides default timeout for current request in ms
+   * @see https://pactumjs.github.io/#/request-making?id=request-timeout
    */
   withRequestTimeout(timeout: number): Spec;
 
   /**
    * runs specified custom expect handler
-   * @example
-   * handler.addExpectHandler('hasAddress', (req, res, data) => {
-   *   const json = res.json;
-   *   assert.strictEqual(json.type, data);
-   * });
-   * await pactum.spec()
-   *  .get('https://jsonplaceholder.typicode.com/users/1')
-   *  .expect('isUser')
-   *  .expect('hasAddress', 'home');
+   * @see https://pactumjs.github.io/#/response-validation?id=custom-validations
    */
   expect(handlerName: string, data?: any): Spec;
-
-  /**
-   * runs specified custom expect handler
-   * @example
-   * await pactum.spec()
-   *  .get('https://jsonplaceholder.typicode.com/users/1')
-   *  .expect('isUser')
-   *  .expect((req, res, data) => { -- assertion code -- });
-   */
   expect(handler: ExpectHandlerFunction): Spec;
 
   /**
    * expects a status code on the response
-   * @example
-   * await pactum.spec()
-   *  .delete('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/response-validation?id=status-amp-headers-amp-response-time
    */
   expectStatus(code: number): Spec;
 
   /**
    * expects a header on the response
-   * @example
-   * await pactum.spec()
-   *  .get('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectHeader('content-type', 'application/json; charset=utf-8')
-   *  .expectHeader('connection', /\w+/);
+   * @see https://pactumjs.github.io/#/response-validation?id=status-amp-headers-amp-response-time
    */
   expectHeader(header: string, value: any): Spec
 
   /**
    * expects a header in the response
-   * @example
-   * await pactum.spec()
-   *  .get('https://jsonplaceholder.typicode.com/comments')
-   *  .expectHeaderContains('content-type', 'application/json');
+   * @see https://pactumjs.github.io/#/response-validation?id=status-amp-headers-amp-response-time
    */
   expectHeaderContains(header: string, value: any): Spec
 
-  expectBody(body: any): Spec;
-
-  expectBodyContains(value: any): Spec;
-
-  /**
-   * expects a exact json object in the response
-   * @example
-   * await pactum.spec()
-   *  .get('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectJson({
-   *    userId: 1,
-   *    user: 'frank'
-   *  });
-   */
-  expectJson(json: object): Spec;
-
   /**
    * expects exact match on cookie in the response
-   * @example
-   * await pactum.spec()
-   *  .get('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectCookies('name', 'snow')
-   *  .expectCookies({
-   *    name: 'snow',
-   *    httpOnly: null
-   *  })
-   *  .expectCookies('name=snow')
-   *  .expectJson({
-   *    userId: 1,
-   *    user: 'frank'
-   *  });
+   * @see https://pactumjs.github.io/#/response-validation?id=expectcookies
    */
-  expectCookies(key: string, value: any): Spec;
-  expectCookies(json: object): Spec;
-  expectCookies(raw: string): Spec;
+   expectCookies(key: string, value: any): Spec;
+   expectCookies(json: object): Spec;
+   expectCookies(raw: string): Spec;
 
-  /**
+   /**
    * expects a partial cookie in the response
-   * @example
-   * await pactum.spec()
-   *  .get('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectCookiesLike('name', 'snow')
-   *  .expectCookiesLike({
-   *    name: 'snow',
-   *    httpOnly: null
-   *  })
-   *  .expectCookiesLike('name=snow')
-   *  .expectJson({
-   *    userId: 1,
-   *    user: 'frank'
-   *  });
+   * @see https://pactumjs.github.io/#/response-validation?id=expectcookieslike
    */
   expectCookiesLike(key: string, value: any): Spec;
   expectCookiesLike(json: object): Spec;
   expectCookiesLike(raw: string): Spec;
 
   /**
+   * performs strict equal on body text.
+   * @see https://pactumjs.github.io/#/response-validation?id=expectbody
+   */
+  expectBody(body: any): Spec;
+
+  /**
+   * performs strict equal on body text.
+   * @see https://pactumjs.github.io/#/response-validation?id=expectbodycontains
+   */
+  expectBodyContains(value: any): Spec;
+
+  /**
+   * expects a exact json object in the response
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjson
+   */
+  expectJson(json: object): Spec;
+
+  /**
+   * expects the json at path equals to the value
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjson
+   */
+   expectJsonAt(path: string, value: any): Spec;
+
+  /**
    * expects a partial json object in the response
-   * @example
-   * await pactum.spec()
-   *  .get('https://jsonplaceholder.typicode.com/comments')
-   *  .expectJsonLike([{
-   *    postId: 1,
-   *    id: 1,
-   *    name: /\w+/g
-   *  }]);
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonlike
    */
   expectJsonLike(json: object): Spec;
 
   /**
+   * expects a partial json object at given path
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonlike
+   */
+   expectJsonLikeAt(path: string, value: any): Spec;
+
+  /**
    * expects the response to match with json schema
-   * @see https://json-schema.org/learn/
-   * @example
-   * await pactum.spec()
-   *  .get('https://jsonplaceholder.typicode.com/posts/1')
-   *  .expectJsonSchema({
-   *    "properties": {
-   *      "userId": {
-   *        "type": "number"
-   *      }
-   *    },
-   *    "required": ["userId", "id"]
-   *  });
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonschema
    */
   expectJsonSchema(schema: object): Spec;
 
   /**
-   * expects the json at path equals to the value
-   * @see https://www.npmjs.com/package/json-query
-   * @example
-   * await pactum.spec()
-   *  .get('some-url')
-   *  .expectJsonAt('[0].name', 'Matt')
-   *  .expectJsonAt('[*].name', ['Matt', 'Pet', 'Don']);
-   */
-  expectJsonAt(path: string, query: any): Spec;
-
-  /**
-   * expects the json at path to be like the value (uses expectJsonLike internally)
-   * @see https://www.npmjs.com/package/json-query
-   * @example
-   * await pactum.spec()
-   *  .get('some-url')
-   *  .expectJsonLikeAt('[*].name', ['Matt', 'Pet', 'Don']);
-   */
-  expectJsonLikeAt(path: string, value: any): Spec;
-
-  /**
    * expects the response to match with json schema
-   * @see https://json-schema.org/learn/
-   * @example
-   * await pactum.spec()
-   *  .get('/api/users/1')
-   *  .expectJsonSchemaAt('user.address', {
-   *    "type": "object",
-   *    "properties": {
-   *      "city": {
-   *        "type": "string"
-   *      }
-   *    }
-   *  });
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonschema
    */
   expectJsonSchemaAt(path: string, schema: object): Spec;
 
   /**
    * expects the json to match with value
-   * @example
-   * const { like } = require('pactum-matchers');
-   * 
-   * await pactum.spec()
-   *  .get('/api/users')
-   *  .expectJsonMatch({
-   *    id: like(1),
-   *    name: 'jon'
-   *  });
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonmatch
    */
   expectJsonMatch(value: object): Spec;
 
   /**
    * expects the json at path to match with value
-   * @see https://www.npmjs.com/package/json-query
-   * @example
-   * const { like } = require('pactum-matchers');
-   * 
-   * await pactum.spec()
-   *  .get('/api/users')
-   *  .expectJsonMatchAt('people[0]', {
-   *    id: like(1),
-   *    name: 'jon'
-   *  });
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonmatch
    */
   expectJsonMatchAt(path: string, value: object): Spec;
 
   /**
    * expects the json to strictly match with value
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonmatch
    */
   expectJsonMatchStrict(value: object): Spec;
 
   /**
    * expects the json at path to strictly match with value
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonmatch
    */
   expectJsonMatchStrictAt(value: object): Spec;
 
+  /**
+   * expect network errors
+   * @see https://pactumjs.github.io/#/response-validation?id=expecterror
+   */
   expectError(): Spec;
   expectError(error: string): Spec;
   expectError(error: object): Spec;
 
   /**
    * expects the json to match with stored snapshots
-   * @example
-   * const { like } = require('pactum-matchers');
-   * 
-   * await pactum.spec()
-   *  .get('/api/users')
-   *  .expectJsonSnapshot({
-   *    id: like(1),
-   *    name: 'jon'
-   *  });
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonsnapshot
    */
   expectJsonSnapshot(value?: object): Spec;
 
   /**
    * updates the reference snapshot file
+   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonsnapshot
    */
   updateSnapshot(): Spec;
 
   /**
    * expects request completes within a specified duration (ms)
+   * @see https://pactumjs.github.io/#/response-validation?id=status-amp-headers-amp-response-time
    */
   expectResponseTime(value: number): Spec;
 
   /**
-   * stores spec request & response data 
+   * stores spec request & response data
+   * @see https://pactumjs.github.io/#/integration-testing?id=stores
    */
   stores(name: string, path: string): Spec;
-
-  /**
-   * stores spec request & response data 
-   */
   stores(name: string, handlerName: string): Spec;
 
   /**
    * returns custom response from json response using custom handler
+   * @see https://pactumjs.github.io/#/integration-testing?id=returns
    */
   returns(handlerName: string): Spec;
-
-  /**
-   * returns custom response from json response using json-query
-   */
   returns(path: string): Spec;
-
-  /**
-   * returns custom response from json response using custom function
-   */
-  returns(handler: ReturnHandlerFunction): Spec;
+  returns(handler: CaptureHandlerFunction): Spec;
 
   /**
    * records data that will be available in reports
@@ -656,12 +406,7 @@ declare class Spec {
 
   /**
    * waits after performing a request & before response validation
-   * @example
-   * await pactum.spec()
-   *  .useMockInteraction('some background operation')
-   *  .post('/url/)
-   *  .wait(1000)
-   *  .expectStatus(200)
+   * @see https://pactumjs.github.io/#/component-testing?id=non-crud-endpoints
    */
   wait(milliseconds: number): Spec;
   wait(spec: Spec): Spec;
@@ -673,24 +418,26 @@ declare class Spec {
 
   /**
    * executes the test case
+   * @see https://pactumjs.github.io/#/api-testing
    */
   toss(): Promise<T>;
 
   /**
    * returns chai like assertions
+   * @see https://pactumjs.github.io/#/api-testing?id=testing-style
    * @requires .toss() should be called beforehand.
    */
   response(): Expect;
 
   /**
-   * _should be used with pactum.e2e()_
-   * 
-   * returns new instance of cleanup spec
+   * cleanup spec for e2e testing
+   * @see https://pactumjs.github.io/#/e2e-testing
    */
   clean(name?: string, data?: any): Spec;
 
   /**
    * runs registered reporters
+   * @see https://pactumjs.github.io/#/api-reporter?id=reporting-for-bdd
    */
   end(): Spec;
 }
