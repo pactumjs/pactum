@@ -308,7 +308,7 @@ describe('Expects', () => {
           }
         })
         .get('http://localhost:9393/api/users/1')
-        .expectJsonSchemaAt('id', {
+        .expectJsonSchema('id', {
           "type": "string"
         });
     } catch (error) {
@@ -459,8 +459,8 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .expectJsonAt('people[country=NZ].name', 'Matt')
-      .expectJsonAt('people[*].name', ['Matt', 'Pete', 'Mike']);
+      .expectJson('people[country=NZ].name', 'Matt')
+      .expectJson('people[*].name', ['Matt', 'Pete', 'Mike']);
   });
 
   it('json query - on root array', () => {
@@ -481,9 +481,9 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .expectJsonAt('[1].country', 'AU')
-      .expectJsonAt('[country=NZ].name', 'Matt')
-      .expectJsonAt('[*].name', ['Matt', 'Pete', 'Mike']);
+      .expectJson('[1].country', 'AU')
+      .expectJson('[country=NZ].name', 'Matt')
+      .expectJson('[*].name', ['Matt', 'Pete', 'Mike']);
   });
 
   it('json query - on root object - fails', async () => {
@@ -508,8 +508,8 @@ describe('Expects', () => {
         })
         .get('http://localhost:9393/api/users')
         .expectStatus(200)
-        .expectJsonAt('people[country=NZ].name', 'Matt')
-        .expectJsonAt('people[*].name', ['Matt', 'Pete']);
+        .expectJson('people[country=NZ].name', 'Matt')
+        .expectJson('people[*].name', ['Matt', 'Pete']);
     } catch (error) {
       err = error;
     }
@@ -536,7 +536,7 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .expectJsonLikeAt('people[*].name', ['Matt', 'Pete']);
+      .expectJsonLike('people[*].name', ['Matt', 'Pete']);
   });
 
   it('json query like - fails', async () => {
@@ -561,7 +561,7 @@ describe('Expects', () => {
         })
         .get('http://localhost:9393/api/users')
         .expectStatus(200)
-        .expectJsonLikeAt('people[*].name', ['Matt', 'Pet']);
+        .expectJsonLike('people[*].name', ['Matt', 'Pet']);
     } catch (error) {
       err = error;
     }
@@ -600,7 +600,7 @@ describe('Expects', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .expectJsonMatchAt('people[*].name', eachLike('Matt'));
+      .expectJsonMatch('people[*].name', eachLike('Matt'));
   });
 
   it('json match at - fails', async () => {
@@ -625,7 +625,7 @@ describe('Expects', () => {
         })
         .get('http://localhost:9393/api/users')
         .expectStatus(200)
-        .expectJsonMatchAt('people[*].name', eachLike(12));
+        .expectJsonMatch('people[*].name', eachLike(12));
     } catch (error) {
       err = error;
     }
@@ -637,7 +637,7 @@ describe('Expects', () => {
       .useInteraction('get people')
       .get('http://localhost:9393/api/people')
       .expectStatus(200)
-      .expectJsonMatchStrictAt('people[*].name', eachLike('Matt'));
+      .expectJsonMatchStrict('people[*].name', eachLike('Matt'));
   });
 
   it('json match strict at - fails', async () => {
@@ -647,7 +647,7 @@ describe('Expects', () => {
         .useInteraction('get people')
         .get('http://localhost:9393/api/people')
         .expectStatus(200)
-        .expectJsonMatchStrictAt('people[*].name', eachLike(12));
+        .expectJsonMatchStrict('people[*].name', eachLike(12));
     } catch (error) {
       err = error;
     }

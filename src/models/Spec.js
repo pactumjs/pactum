@@ -337,26 +337,6 @@ class Spec {
     return this;
   }
 
-  expectBody(body) {
-    this._expect.body = body;
-    return this;
-  }
-
-  expectBodyContains(value) {
-    this._expect.bodyContains.push(value);
-    return this;
-  }
-
-  expectJson(json) {
-    this._expect.json.push(json);
-    return this;
-  }
-
-  expectJsonLike(json) {
-    this._expect.jsonLike.push(json);
-    return this;
-  }
-
   expectCookies(key, value) {
     this._expect.cookies.push(utils.createCookieObject(key, value));
     return this;
@@ -367,43 +347,38 @@ class Spec {
     return this;
   }
 
-  expectJsonSchema(schema) {
-    this._expect.jsonSchema.push(schema);
+  expectBody(body) {
+    this._expect.body = body;
     return this;
   }
 
-  expectJsonSchemaAt(path, value) {
-    this._expect.jsonSchemaQuery.push({ path, value });
+  expectBodyContains(value) {
+    this._expect.bodyContains.push(value);
     return this;
   }
 
-  expectJsonAt(path, value) {
-    this._expect.jsonQuery.push({ path, value });
+  expectJson(path, value) {
+    typeof value === 'undefined' ? this._expect.json.push(path) : this._expect.jsonQuery.push({ path, value });
     return this;
   }
 
-  expectJsonLikeAt(path, value) {
-    this._expect.jsonQueryLike.push({ path, value });
+  expectJsonLike(path, value) {
+    typeof value === 'undefined' ? this._expect.jsonLike.push(path) : this._expect.jsonQueryLike.push({ path, value });
     return this;
   }
 
-  expectJsonMatch(value) {
-    this._expect.jsonMatch.push(value);
+  expectJsonSchema(path, value) {
+    typeof value === 'undefined' ? this._expect.jsonSchema.push(path) : this._expect.jsonSchemaQuery.push({ path, value });
     return this;
   }
 
-  expectJsonMatchAt(path, value) {
-    this._expect.jsonMatchQuery.push({ path, value });
+  expectJsonMatch(path, value) {
+    typeof value === 'undefined' ? this._expect.jsonMatch.push(path) : this._expect.jsonMatchQuery.push({ path, value });
     return this;
   }
 
-  expectJsonMatchStrict(value) {
-    this._expect.jsonMatchStrict.push(value);
-    return this;
-  }
-
-  expectJsonMatchStrictAt(path, value) {
-    this._expect.jsonMatchStrictQuery.push({ path, value });
+  expectJsonMatchStrict(path, value) {
+    typeof value === 'undefined' ? this._expect.jsonMatchStrict.push(path) : this._expect.jsonMatchStrictQuery.push({ path, value });
     return this;
   }
 

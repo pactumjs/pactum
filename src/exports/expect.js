@@ -44,53 +44,28 @@ class Have {
     this._validate();
   }
 
-  json(value) {
-    this.expect.json.push(value);
+  json(path, value) {
+    typeof value === 'undefined' ? this.expect.json.push(path) : this.expect.jsonQuery.push({ path, value });
     this._validate();
   }
 
-  jsonLike(value) {
-    this.expect.jsonLike.push(value);
+  jsonLike(path, value) {
+    typeof value === 'undefined' ? this.expect.jsonLike.push(path) : this.expect.jsonQueryLike.push({ path, value });
     this._validate();
   }
 
-  jsonAt(path, value) {
-    this.expect.jsonQuery.push({ path, value });
+  jsonSchema(path, value) {
+    typeof value === 'undefined' ? this.expect.jsonSchema.push(path) : this.expect.jsonSchemaQuery.push({ path, value });
     this._validate();
   }
 
-  jsonLikeAt(path, value) {
-    this.expect.jsonQueryLike.push({ path, value });
+  jsonMatch(path, value) {
+    typeof value === 'undefined' ? this.expect.jsonMatch.push(path) : this.expect.jsonMatchQuery.push({ path, value });
     this._validate();
   }
 
-  jsonSchema(schema) {
-    this.expect.jsonSchema.push(schema);
-    this._validate();
-  }
-
-  jsonSchemaAt(path, value) {
-    this.expect.jsonSchemaQuery.push({ path, value });
-    this._validate();
-  }
-
-  jsonMatch(value) {
-    this.expect.jsonMatch.push(value);
-    this._validate();
-  }
-
-  jsonMatchAt(path, value) {
-    this.expect.jsonMatchQuery.push({ path, value });
-    this._validate();
-  }
-
-  jsonMatchStrict(value) {
-    this.expect.jsonMatchStrict.push(value);
-    this._validate();
-  }
-
-  jsonMatchStrictAt(path, value) {
-    this.expect.jsonMatchStrictQuery.push({ path, value });
+  jsonMatchStrict(path, value) {
+    typeof value === 'undefined' ? this.expect.jsonMatchStrict.push(path) : this.expect.jsonMatchStrictQuery.push({ path, value });
     this._validate();
   }
 

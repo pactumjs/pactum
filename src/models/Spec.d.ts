@@ -303,60 +303,35 @@ declare class Spec {
    * @see https://pactumjs.github.io/#/response-validation?id=expectjson
    */
   expectJson(json: object): Spec;
-
-  /**
-   * expects the json at path equals to the value
-   * @see https://pactumjs.github.io/#/response-validation?id=expectjson
-   */
-   expectJsonAt(path: string, value: any): Spec;
+  expectJson(path: string, value: any): Spec;
 
   /**
    * expects a partial json object in the response
    * @see https://pactumjs.github.io/#/response-validation?id=expectjsonlike
    */
   expectJsonLike(json: object): Spec;
-
-  /**
-   * expects a partial json object at given path
-   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonlike
-   */
-   expectJsonLikeAt(path: string, value: any): Spec;
+  expectJsonLike(path: string, value: any): Spec;
 
   /**
    * expects the response to match with json schema
    * @see https://pactumjs.github.io/#/response-validation?id=expectjsonschema
    */
   expectJsonSchema(schema: object): Spec;
-
-  /**
-   * expects the response to match with json schema
-   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonschema
-   */
-  expectJsonSchemaAt(path: string, schema: object): Spec;
+  expectJsonSchema(path: string, schema: object): Spec;
 
   /**
    * expects the json to match with value
    * @see https://pactumjs.github.io/#/response-validation?id=expectjsonmatch
    */
   expectJsonMatch(value: object): Spec;
-
-  /**
-   * expects the json at path to match with value
-   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonmatch
-   */
-  expectJsonMatchAt(path: string, value: object): Spec;
+  expectJsonMatch(path: string, value: object): Spec;
 
   /**
    * expects the json to strictly match with value
    * @see https://pactumjs.github.io/#/response-validation?id=expectjsonmatch
    */
   expectJsonMatchStrict(value: object): Spec;
-
-  /**
-   * expects the json at path to strictly match with value
-   * @see https://pactumjs.github.io/#/response-validation?id=expectjsonmatch
-   */
-  expectJsonMatchStrictAt(value: object): Spec;
+  expectJsonMatchStrict(path: string, value: object): Spec;
 
   /**
    * expect network errors

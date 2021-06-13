@@ -38,10 +38,10 @@ describe('Mock', () => {
         },
         "required": ["name", "id"]
       })
-      .expectJsonSchemaAt('id', {
+      .expectJsonSchema('id', {
         "type": "number"
       })
-      .expectJsonAt('id', 1)
+      .expectJson('id', 1)
       .toss();
   });
 
@@ -263,7 +263,7 @@ describe('Mock', () => {
         },
         "required": ["name", "id"]
       })
-      .expectJsonAt('id', 1)
+      .expectJson('id', 1)
       .toss();
   });
 
@@ -306,7 +306,7 @@ describe('Mock', () => {
         },
         "required": ["name", "id"]
       })
-      .expectJsonAt('id', 1)
+      .expectJson('id', 1)
       .toss();
   });
 
