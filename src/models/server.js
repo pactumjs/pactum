@@ -207,9 +207,7 @@ function registerPactumRemoteRoutes(server) {
   app.all('/api/pactum/*', (req, res) => {
     switch (req.path) {
       case '/api/pactum/health':
-        res.writeHead(200, { "Content-Type": "text/plain" });
-        res.write("OK");
-        res.end();
+        handleRemoteHealth(res);
         break;
       case '/api/pactum/handlers':
         handleRemoteHandler(req, res, server);
@@ -220,13 +218,40 @@ function registerPactumRemoteRoutes(server) {
       case '/api/pactum/reporter/end':
         handlerRemoteReporterEnd(res);
         break;
+      case '/api/pactum/state':
+        handleRemoteState(req, res);
+        break;
       default:
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.write("404 Not Found\n");
-        res.end();
+        handleRemoteDefault(res);
         break;
     }
   });
+}
+
+function handleRemoteHealth(res) {
+  res.writeHead(200, { "Content-Type": "text/plain" });
+  res.write("OK");
+  res.end();
+}
+
+function handleRemoteDefault(res) {
+  res.writeHead(404, { "Content-Type": "text/plain" });
+  res.write("404 Not Found\n");
+  res.end();
+}
+
+async function handleRemoteState(req, res) {
+  try {
+    for (let i = 0; i < req.body.length; i++) {
+      const { name, data } = req.body[i];
+      await hr.state(name, data);
+    }
+    handleRemoteHealth(res);
+  } catch (error) {
+    log.error(`Unable to run remote state handlers - ${error}`);
+    handleRemoteError(error, res);
+  }
+
 }
 
 function handleRemoteHandler(req, res, server) {
@@ -244,10 +269,14 @@ function handleRemoteHandler(req, res, server) {
     res.end();
   } catch (error) {
     log.error(`Error running handlers - ${error}`);
-    res.writeHead(400, { "Content-Type": "application/json" });
-    res.write(JSON.stringify({ error: error.message }));
-    res.end();
+    handleRemoteError(error, res);
   }
+}
+
+function handleRemoteError(error, res) {
+  res.writeHead(400, { "Content-Type": "application/json" });
+  res.write(JSON.stringify({ error: error.message }));
+  res.end();
 }
 
 function handleRemoteInteractions(req, res, server) {

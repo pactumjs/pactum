@@ -47,6 +47,10 @@ const hr = {
       log.info(`Running Cleaner - ${keys[i]}`);
       await handlers[keys[i]]();
     }
+  },
+
+  state(name, data) {
+    return handler.getStateHandler(name)({ data });
   }
 
 };

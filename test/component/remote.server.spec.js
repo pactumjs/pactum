@@ -1,8 +1,7 @@
 const config = require('../../src/config');
 const pactum = require('../../src/index');
 const { expect } = require('chai');
-const mock = pactum.mock;
-const handler = pactum.handler;
+const { mock, handler } = pactum;
 
 describe('Remote Server - use with spec', () => {
 
