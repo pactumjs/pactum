@@ -9,8 +9,6 @@ const stateHandlers =  {};
 const dataHandlers = {};
 const interactionHandlers = {};
 const assertHandlers = {};
-const initializeHandlers = {};
-const cleanupHandlers = {};
 
 const handler = {
 
@@ -93,25 +91,7 @@ const handler = {
   getAssertHandler(name) {
     if (assertHandlers[name]) return assertHandlers[name];
     throw new PactumHandlerError(`Assert Handler Not Found - '${name}'`);
-  },
-
-  addInitializeHandler(name, func) {
-    isValidHandler(name, func);
-    initializeHandlers[name] = func;
-  },
-
-  getInitializeHandlers() {
-    return initializeHandlers;
-  },
-
-  addCleanupHandler(name, func) {
-    isValidHandler(name, func);
-    cleanupHandlers[name] = func;
-  },
-
-  getCleanupHandlers() {
-    return cleanupHandlers;
-  },
+  }
 
 };
 
