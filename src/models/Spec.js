@@ -361,26 +361,31 @@ class Spec {
     typeof value === 'undefined' ? this._expect.json.push(path) : this._expect.jsonQuery.push({ path, value });
     return this;
   }
+  expectJsonAt(...args) { return this.expectJson(...args); }
 
   expectJsonLike(path, value) {
     typeof value === 'undefined' ? this._expect.jsonLike.push(path) : this._expect.jsonQueryLike.push({ path, value });
     return this;
   }
+  expectJsonLikeAt(...args) { return this.expectJsonLike(...args); }
 
   expectJsonSchema(path, value) {
     typeof value === 'undefined' ? this._expect.jsonSchema.push(path) : this._expect.jsonSchemaQuery.push({ path, value });
     return this;
   }
+  expectJsonSchemaAt(...args) { return this.expectJsonSchema(...args); }
 
   expectJsonMatch(path, value) {
     typeof value === 'undefined' ? this._expect.jsonMatch.push(path) : this._expect.jsonMatchQuery.push({ path, value });
     return this;
   }
+  expectJsonMatchAt(...args) { return this.expectJsonMatch(...args); }
 
   expectJsonMatchStrict(path, value) {
     typeof value === 'undefined' ? this._expect.jsonMatchStrict.push(path) : this._expect.jsonMatchStrictQuery.push({ path, value });
     return this;
   }
+  expectJsonMatchStrictAt(...args) { return this.expectJsonMatchStrict(...args); }
 
   expectJsonSnapshot(matchers) {
     this._expect.jsonSnapshot.push(matchers);

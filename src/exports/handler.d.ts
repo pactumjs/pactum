@@ -68,21 +68,25 @@ export type AssertHandlerFunction = (ctx: AssertionContext) => boolean;
 
 /**
  * adds a custom spec handler
+ * @see https://pactumjs.github.io/#/api-handlers?id=addspechandler
  */
 export function addSpecHandler(name: string, func: SpecHandlerFunction): void;
 
 /**
  * adds a custom expect handler
+ * @see https://pactumjs.github.io/#/api-handlers?id=addexpecthandler
  */
 export function addExpectHandler(name: string, func: ExpectHandlerFunction): void;
 
 /**
  * adds a custom retry handler
+ * @see https://pactumjs.github.io/#/api-handlers?id=addretryhandler
  */
 export function addRetryHandler(name: string, func: RetryHandlerFunction): void;
 
 /**
  * adds a custom return handler
+ * @see https://pactumjs.github.io/#/api-handlers?id=addcapturehandler
  */
 export function addCaptureHandler(name: string, func: CaptureHandlerFunction): void;
 
@@ -93,15 +97,18 @@ export function addStateHandler(name: string, func: StateHandlerFunction): void;
 
 /**
  * adds a custom data handler
+ * @see https://pactumjs.github.io/#/api-handlers?id=adddatahandler
  */
 export function addDataFuncHandler(name: string, func: DataHandlerFunction): void;
 
 /**
  * adds a custom interaction handler
+ * @see https://pactumjs.github.io/#/api-handlers?id=addinteractionhandler
  */
 export function addInteractionHandler(name: string, func: InteractionHandlerFunction): void;
 
 /**
  * adds a custom assert handler
+ * @see https://pactumjs.github.io/#/api-handlers?id=addasserthandler
  */
 export function addAssertHandler(name: string, func: AssertHandlerFunction): void;

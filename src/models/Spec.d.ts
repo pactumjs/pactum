@@ -40,32 +40,13 @@ declare class Spec {
 
   /**
    * runs custom spec handler
-   * @example
-   * await pactum.spec()
-   *  .use('spec handler name', { optional: 'data' })
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/api-handlers?id=addspechandler
    */
   use(name: string, data?: any): Spec
 
   /**
    * adds a interaction to the server & auto removed after execution
-   * @example
-   * await pactum.spec()
-   *  .useInteraction({
-   *    request: {
-   *      method: 'GET',
-   *      path: '/api/projects/1'
-   *    },
-   *    response: {
-   *      status: 200,
-   *      body: {
-   *        id: 1,
-   *        name: 'fake'
-   *      }
-   *    }
-   *  })
-   *  .get('http://localhost:9393/projects/1')
-   *  .expectStatus(200);
+   * @see https://pactumjs.github.io/#/component-testing?id=simple-component-tests
    */
   useInteraction(interaction: Interaction): Spec;
   useInteraction(handler: string, data?: any): Spec;
