@@ -2,6 +2,7 @@ const pactum = require('../../src/index');
 const mock = require('../../src/exports/mock');
 const helper = require('../../src/helpers/helper');
 const sandbox = require('sinon').createSandbox();
+const { handler } = pactum;
 
 describe('Remote- post single mock interaction', () => {
 
@@ -224,6 +225,55 @@ describe('Remote - Reporter', () => {
       .post('http://localhost:9393/api/pactum/reporter/end')
       .expectStatus(500);
     pactum.reporter.get().length = 0;
+  });
+
+});
+
+describe('Remote - State', () => {
+
+  before(() => {
+    handler.addStateHandler('abc', () => { });
+    handler.addStateHandler('fail', ({ data }) => { if (data) throw 'abc'; });
+  });
+
+  it('post empty data', async () => {
+    await pactum.spec()
+      .post('http://localhost:9393/api/pactum/state')
+      .expectStatus(200);
+  });
+
+  it('post with one invalid handler name should fail', async () => {
+    await pactum.spec()
+      .post('http://localhost:9393/api/pactum/state')
+      .withJson([
+        {
+          name: 'xyz'
+        }
+      ])
+      .expectStatus(400);
+  });
+
+  it('post with one handler name should pass', async () => {
+    await pactum.spec()
+      .post('http://localhost:9393/api/pactum/state')
+      .withJson([
+        {
+          name: 'abc'
+        }
+      ])
+      .expectStatus(200);
+  });
+
+  it('post with one handler name fails to run', async () => {
+    await pactum.spec()
+      .post('http://localhost:9393/api/pactum/state')
+      .withJson([
+        {
+          name: 'fail',
+          data: true
+        }
+      ])
+      .expectStatus(400);
   });
 
 });

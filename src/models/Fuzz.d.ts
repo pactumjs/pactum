@@ -1,44 +1,30 @@
-import { MockInteraction } from '../exports/mock';
+import { Interaction } from '../exports/mock';
 
 declare class Fuzz {
   /**
    * run fuzz testing on swagger url
-   * @example
-   * await pactum.fuzz()
-   *  .onSwagger('/api/swagger.json');
+   * @see https://pactumjs.github.io/#/fuzz-testing
    */
   onSwagger(url: string): Fuzz;
 
   /**
    * attaches headers to all the requests
-   * @example
-   * await pactum.fuzz()
-   *  .onSwagger('/api/swagger.json')
-   *  .withHeaders('Authorization', 'Basic xxx')
-   *  .withHeaders({
-   *    'content-type': 'application/json'
-   *  });
+   * @see https://pactumjs.github.io/#/fuzz-testing
    */
   withHeaders(key: string, value: any): Fuzz;
   withHeaders(headers: object): Fuzz;
 
   /**
    * adds a mock interaction to the server & auto removed after execution
-   * @example
-   * await pactum.fuzz()
-   *  .useMockInteraction('handler name')
-   *  .onSwagger('/api/swagger.json');
+   * @see https://pactumjs.github.io/#/fuzz-testing
    */
-  useMockInteraction(interaction: MockInteraction): Fuzz;
-  useMockInteraction(handler: string, data?: any): Fuzz;
+  useInteraction(interaction: Interaction): Fuzz;
+  useInteraction(handler: string, data?: any): Fuzz;
 
   /**
    * number of requests to sent in each batch
    * @default 10
-   * @example
-   * await pactum.fuzz()
-   *  .onSwagger('/api/swagger.json') 
-   *  .withBatchSize(15);
+   * @see https://pactumjs.github.io/#/fuzz-testing
    */
   withBatchSize(size: number): Fuzz;
 

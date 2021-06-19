@@ -66,36 +66,21 @@ export interface Handler {
 }
 
 /**
- * starts the mock server on port 9393
+ * starts the mock server
+ * @see https://pactumjs.github.io/#/mock-server
  */
 export function start(): Promise<void>;
-
-/**
- * starts the mock server on specified port
- * @example
- * await mock.start(3000);
- */
 export function start(port: number): Promise<void>;
 
 /**
  * stops the mock server
+ * @see https://pactumjs.github.io/#/mock-server
  */
 export function stop(): Promise<void>;
 
 /**
  * adds a interaction
- * @returns interaction id
- * @example
- * mock.addInteraction({
- *  request: {
- *   method: 'GET',
- *   path: '/api/orders'
- *  },
- *  response: {
- *   status: 200,
- *   body: 'your orders'
- *  }
- * });
+ * @see https://pactumjs.github.io/#/mock-server
  */
 export function addInteraction(interaction: Interaction): string | Promise<string>;
 export function addInteraction(interactions: Interaction[]): string[] | Promise<string[]>;
@@ -106,24 +91,27 @@ export function addInteraction(handlers: Handler[], data?: any): string[] | Prom
 
 /**
  * returns interaction details
+ * @see https://pactumjs.github.io/#/mock-server
  */
 export function getInteraction(id: string): InteractionDetails | Promise<InteractionDetails>;
 export function getInteraction(ids: string[]): InteractionDetails[] | Promise<InteractionDetails[]>;
 
 /**
  * removes specified interaction from the mock server
- * @param id interaction id
+ * @see https://pactumjs.github.io/#/mock-server
  */
 export function removeInteraction(id: string): void | Promise<void>;
 export function removeInteraction(ids: string[]): void | Promise<void>;
 
 /**
  * clears all interactions from the server
+ * @see https://pactumjs.github.io/#/mock-server
  */
 export function clearInteractions(): void;
 
 /**
  * use remote pactum server
  * all methods in mock will return promises
+ * @see https://pactumjs.github.io/#/mock-server
  */
 export function useRemoteServer(url: string): void;

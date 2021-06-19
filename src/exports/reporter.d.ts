@@ -48,9 +48,14 @@ export interface Reporter {
   end(): void | Promise<void>
 }
 
+/**
+ * adds custom reporters
+ * @see https://pactumjs.github.io/#/api-reporter
+ */
 export function add(reporter: Reporter): void;
 
 /**
  * runs end function of all added reporters
+ * @see https://pactumjs.github.io/#/api-reporter
  */
 export function end(): Promise<void>;

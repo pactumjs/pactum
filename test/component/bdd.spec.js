@@ -66,8 +66,8 @@ describe('BDD', () => {
   it('should return a valid user', async () => {
     expect(response).to.have.json({ name: 'snow' });
     expect(response).should.have.jsonLike({ name: 'snow' });
-    expect(response).to.have.jsonAt('name', 'snow');
-    expect(response).to.have.jsonLikeAt('name', 'snow');
+    expect(response).to.have.json('name', 'snow');
+    expect(response).to.have.jsonLike('name', 'snow');
     expect(response).to.have.body({ name: 'snow' });
     spec.response().to.have.bodyContains(`snow`);
   });
@@ -77,7 +77,7 @@ describe('BDD', () => {
   });
 
   it('should return a valid schema at', async () => {
-    expect(response).to.have.jsonSchemaAt('.', { properties: { name: { type: 'string' } } });
+    expect(response).to.have.jsonSchema('.', { properties: { name: { type: 'string' } } });
   });
 
   it('should return a match', async () => {
@@ -85,7 +85,7 @@ describe('BDD', () => {
   });
 
   it('should return a match at', async () => {
-    expect(response).to.have.jsonMatchAt('.', like({ name: 'snow' }));
+    expect(response).to.have.jsonMatch('.', like({ name: 'snow' }));
   });
 
   it('should return a strict match', async () => {
@@ -93,7 +93,7 @@ describe('BDD', () => {
   });
 
   it('should return a strict match at', async () => {
-    expect(response).to.have.jsonMatchStrictAt('.', like({ name: 'snow' }));
+    expect(response).to.have.jsonMatchStrict('.', like({ name: 'snow' }));
   });
 
   it('should return a response within 500 ms', async () => {

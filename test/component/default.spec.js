@@ -75,7 +75,7 @@ describe('Mock - Default Mock Interaction', () => {
     expect(mock.getInteraction('GET_FIRST_PROJECT').exercised).equals(true, 'interaction should be exercised');
     await pactum.spec()
       .get('http://localhost:9393/api/projects/1')
-      .expectStatus(200)
+      .expectStatus(200);
     expect(mock.getInteraction('GET_FIRST_PROJECT').callCount).equals(2, 'interaction should be called twice');
     expect(mock.getInteraction('GET_FIRST_PROJECT').exercised).equals(true, 'interaction should be exercised');
 
