@@ -298,7 +298,9 @@ declare class Spec {
    * @see https://pactumjs.github.io/#/response-validation?id=expectjsonschema
    */
   expectJsonSchema(schema: object): Spec;
+  expectJsonSchema(schema: object, options: object): Spec;
   expectJsonSchema(path: string, schema: object): Spec;
+  expectJsonSchema(path: string, schema: object, options: object): Spec;
 
   /**
    * expects the json to match with value

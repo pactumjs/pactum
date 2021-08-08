@@ -16,6 +16,29 @@ export interface Logger {
 }
 export function setLogger(logger: Logger): void;
 
+export type JsonLikeValidateFunction = (actual: any, expected: any, options?: any) => any;
+export interface JsonLikeAdapter {
+  validate: JsonLikeValidateFunction;
+}
+export function setJsonLikeAdapter(adapter: JsonLikeAdapter): void;
+
+export type GetMatchingRulesFunction = (data: any, path: any, rules: any) => any;
+export type GetRawValueFunction = (data: any) => any;
+export type JsonMatchValidateFunction = (actual: any, expected: any, rules: any, path: any, strict: any) => any;
+export interface JsonMatchAdapter {
+  getMatchingRules: GetMatchingRulesFunction;
+  getRawValue: GetRawValueFunction;
+  validate: JsonMatchValidateFunction;
+}
+export function setJsonMatchAdapter(adapter: JsonMatchAdapter): void;
+
+export type JsonSchemaValidateFunction = (schema: any, target: any, options?: any) => any;
+export interface JsonSchemaAdapter {
+  validate: JsonSchemaValidateFunction;
+}
+export function setJsonSchemaAdapter(adapter: JsonSchemaAdapter): void;
+
+
 export interface Strategy {
   starts?: string;
   ends?: string;

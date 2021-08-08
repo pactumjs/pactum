@@ -246,7 +246,7 @@ class Expect {
   _validateJsonSchema(response) {
     this.jsonSchema = processor.processData(this.jsonSchema);
     for (let i = 0; i < this.jsonSchema.length; i++) {
-      const errors = jsv.validate(this.jsonSchema[i], response.json);
+      const errors = jsv.validate(this.jsonSchema[i].value, response.json, this.jsonSchema[i].options);
       if (errors) {
         this.fail(`Response doesn't match with JSON schema - ${errors}`);
       }
@@ -258,7 +258,7 @@ class Expect {
     for (let i = 0; i < this.jsonSchemaQuery.length; i++) {
       const jQ = this.jsonSchemaQuery[i];
       const value = jqy(jQ.path, { data: response.json }).value;
-      const errors = jsv.validate(jQ.value, value);
+      const errors = jsv.validate(jQ.value, value, jQ.options);
       if (errors) {
         this.fail(`Response doesn't match with JSON schema at ${jQ.path}: \n ${JSON.stringify(errors, null, 2)}`);
       }

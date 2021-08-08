@@ -1,7 +1,8 @@
 const { validator } = require('@exodus/schemasafe');
 
-function validate(schema, target) {
-  const validate = validator(schema, { includeErrors: true });
+function validate(schema, target, options = {}) {
+  options.includeErrors = true;
+  const validate = validator(schema, options);
   validate(target);
   if (validate.errors) {
     return JSON.stringify(validate.errors, null, 2);

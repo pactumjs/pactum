@@ -76,8 +76,37 @@ describe('BDD', () => {
     expect(response).to.have.jsonSchema({ properties: { name: { type: 'string' } } });
   });
 
+  it('should return a valid schema with options', async () => {
+    expect(response).to.have.jsonSchema(
+      {
+        properties: {
+          name: {
+            type: 'string',
+            format: 'only-snow'
+          }
+        }
+      },
+      {
+        formats: {
+          'only-snow': /^snow$/
+        }
+      }
+    );
+  });
+
   it('should return a valid schema at', async () => {
     expect(response).to.have.jsonSchema('.', { properties: { name: { type: 'string' } } });
+  });
+
+  it('should return a valid schema at with options', async () => {
+    expect(response).to.have.jsonSchema('.',
+      { properties: { name: { type: 'string', format: 'only-snow' } } },
+      {
+        formats: {
+          'only-snow': /^snow$/
+        }
+      }
+    );
   });
 
   it('should return a match', async () => {

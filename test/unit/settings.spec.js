@@ -15,6 +15,18 @@ describe('Settings', () => {
     settings.setLogger(logger);
   });
 
+  it('setJsonLikeAdapter', () => {
+    settings.setJsonLikeAdapter(require('../../src/adapters/json.like'));
+  });
+
+  it('setJsonMatchAdapter', () => {
+    settings.setJsonMatchAdapter(require('../../src/adapters/json.match'));
+  });
+
+  it('setJsonSchemaAdapter', () => {
+    settings.setJsonSchemaAdapter(require('../../src/adapters/json.schema'));
+  });
+
   after(() => {
     settings.setSnapshotDirectoryPath('.pactum/snapshots');
   });
