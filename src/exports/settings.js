@@ -1,5 +1,8 @@
 const config = require('../config');
 const logger = require('../plugins/logger');
+const jsonLike = require('../plugins/json.like');
+const jsonMatch = require('../plugins/json.match');
+const jsonSchema = require('../plugins/json.schema');
 
 const settings = {
 
@@ -9,6 +12,18 @@ const settings = {
 
   setLogger(lgr) {
     logger.setAdapter(lgr);
+  },
+
+  setJsonLikeAdapter(adapter) {
+    jsonLike.setAdapter(adapter);
+  },
+
+  setJsonMatchAdapter(adapter) {
+    jsonMatch.setAdapter(adapter);
+  },
+
+  setJsonSchemaAdapter(adapter) {
+    jsonSchema.setAdapter(adapter);
   },
 
   setAssertHandlerStrategy(strategy) {
