@@ -1,8 +1,8 @@
 const BasePlugin = require('./plugin.base');
 
 class JsonSchemaValidator extends BasePlugin {
-  validate(schema, target) {
-    return this.adapter.validate(schema, target);
+  validate(schema, target, options) {
+    return this.adapter.validate(schema, target, options);
   }
 }
 

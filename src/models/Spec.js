@@ -369,8 +369,20 @@ class Spec {
   }
   expectJsonLikeAt(...args) { return this.expectJsonLike(...args); }
 
-  expectJsonSchema(path, value) {
-    typeof value === 'undefined' ? this._expect.jsonSchema.push(path) : this._expect.jsonSchemaQuery.push({ path, value });
+  expectJsonSchema(path, value, options) {
+    if (typeof options === 'object') {
+      this._expect.jsonSchemaQuery.push({ path, value, options });
+    } else {
+      if (typeof value === 'undefined') {
+        this._expect.jsonSchema.push({ value: path });
+      } else {
+        if (typeof path === 'object' && typeof value === 'object') {
+          this._expect.jsonSchema.push({ value: path, options: value });
+        } else {
+          this._expect.jsonSchemaQuery.push({ path, value });
+        }
+      }
+    }
     return this;
   }
   expectJsonSchemaAt(...args) { return this.expectJsonSchema(...args); }

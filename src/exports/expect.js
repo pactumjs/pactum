@@ -54,8 +54,20 @@ class Have {
     this._validate();
   }
 
-  jsonSchema(path, value) {
-    typeof value === 'undefined' ? this.expect.jsonSchema.push(path) : this.expect.jsonSchemaQuery.push({ path, value });
+  jsonSchema(path, value, options) {
+    if (typeof options === 'object') {
+      this.expect.jsonSchemaQuery.push({ path, value, options });
+    } else {
+      if (typeof value === 'undefined') {
+        this.expect.jsonSchema.push({ value: path });
+      } else {
+        if (typeof path === 'object' && typeof value === 'object') {
+          this.expect.jsonSchema.push({ value: path, options: value });
+        } else {
+          this.expect.jsonSchemaQuery.push({ path, value });
+        }
+      }
+    }
     this._validate();
   }
 

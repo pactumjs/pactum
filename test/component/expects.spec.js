@@ -1028,4 +1028,37 @@ describe('Expects', () => {
     expect(err).not.undefined;
   });
 
+  it('json schema with options', async () => {
+    await pactum.spec()
+      .useInteraction('default get')
+      .get('http://localhost:9393/default/get')
+      .expectJsonSchema({
+        type: 'object',
+        properties: {
+          method: {
+            type: 'string',
+            format: 'only-get'
+          }
+        }
+      }, {
+        formats: {
+          'only-get': /^GET$/
+        }
+      });
+  });
+
+  it('json schema at with options', async () => {
+    await pactum.spec()
+      .useInteraction('default get')
+      .get('http://localhost:9393/default/get')
+      .expectJsonSchema('method', {
+        type: 'string',
+        format: 'only-get'
+      }, {
+        formats: {
+          'only-get': /^GET$/
+        }
+      });
+  });
+
 });

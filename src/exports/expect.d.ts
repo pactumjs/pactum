@@ -11,7 +11,9 @@ export interface Have {
   jsonLike(value: any): void;
   jsonLike(path: string, value: any): void;
   jsonSchema(schema: object): void;
+  jsonSchema(schema: object, options: object): void;
   jsonSchema(path: string, schema: object): void;
+  jsonSchema(path: string, schema: object, options: object): void;
   jsonMatch(value: object): void;
   jsonMatch(path: string, value: object): void;
   jsonMatchStrict(value: object): void;
