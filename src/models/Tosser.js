@@ -1,4 +1,5 @@
 const phin = require('phin');
+const _ = require("underscore");
 const helper = require('../helpers/helper');
 const log = require('../plugins/logger');
 const rlc = require('../helpers/reporter.lifeCycle');
@@ -68,11 +69,14 @@ class Tosser {
       const count = typeof options.count === 'number' ? options.count : config.request.retry.count;
       const delay = typeof options.delay === 'number' ? options.delay : config.request.retry.delay;
       const strategy = options.strategy;
+      const status = options.status;
       for (let i = 0; i < count; i++) {
         let noRetry = true;
+        let noRetryStatus = true;
         const ctx = { req: this.request, res: this.response };
         if (typeof strategy === 'function') {
           noRetry = strategy(ctx);
+          console.log("strategy: "+noRetry)
         } else if (typeof strategy === 'string') {
           const handlerFun = handler.getRetryHandler(strategy);
           noRetry = handlerFun(ctx);
@@ -83,8 +87,25 @@ class Tosser {
             noRetry = false;
           }
         }
-        if (!noRetry) {
+
+        if (status) {
+          console.log(_.map(status, Number).includes(parseInt(ctx.res.statusCode)));
+          if (Array.isArray(status)) {
+            noRetryStatus = _.map(status, Number).includes(parseInt(ctx.res.statusCode));
+          } else {
+            noRetryStatus = (status == ctx.res.statusCode);
+          }
+        } else {
+          try {
+            await this.validateResponse();
+          } catch (error) {
+            noRetryStatus = false;
+          }
+        }
+        console.log("noRetryStatus: "+noRetryStatus)
+        if (!(noRetry && noRetryStatus)) {
           const scale = delay === 1000 ? 'second' : 'seconds';
+          console.log("delay")
           log.debug(`Retrying request in ${delay / 1000} ${scale}`);
           await helper.sleep(delay);
           this.response = await getResponse(this);
@@ -95,22 +116,6 @@ class Tosser {
     }
     delete this.spec._request.data;
     this.spec._response = this.response;
-  }
-
-  inspect() {
-    if (this.spec._inspect) {
-      log.warn('Inspecting Request & Response');
-      utils.printReqAndRes(this.request, this.response);
-    }
-  }
-
-  async wait() {
-    const _wait = this.spec._wait;
-    if (typeof _wait === 'number') {
-      await helper.sleep(_wait);
-    } else if (_wait && typeof _wait === 'object') {
-      await _wait;
-    }
   }
 
   setPreviousLogLevel() {
