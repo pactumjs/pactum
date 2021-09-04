@@ -27,6 +27,7 @@ class Server {
         registerAllRoutes(this, this.app);
         this.app.listen(config.mock.port, () => {
           log.info(`Mock server is listening on port ${config.mock.port}`);
+          this._registerEvents();
           resolve();
         });
       } else {
@@ -76,6 +77,15 @@ class Server {
       log.warn(`Interaction Not Found - ${id}`);
       return null;
     }
+  }
+
+  _registerEvents() {
+    process.on('SIGTERM', () => {
+      if (this.app) {
+        log.warn('Termination Signal Received - SIGTERM');
+        this.stop();
+      }
+    });
   }
 
 }
