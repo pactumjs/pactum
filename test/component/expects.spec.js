@@ -65,7 +65,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expect('isAddress');
+        .expect('isAddress')
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -89,7 +90,8 @@ describe('Expects', () => {
           }
         })
         .get('http://localhost:9393/api/address/1')
-        .expect('hasAddress', 'HOME');
+        .expect('hasAddress', 'HOME')
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -114,7 +116,8 @@ describe('Expects', () => {
         })
         .get('http://localhost:9393/api/users/1')
         .expect((res) => { expect(res.json).deep.equals({ id: 2 }); })
-        .expectStatus(200);
+        .expectStatus(200)
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -126,7 +129,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectStatus(200);
+        .expectStatus(200)
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -138,7 +142,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectHeader('x-header', 'value');
+        .expectHeader('x-header', 'value')
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -150,7 +155,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectHeader('connection', 'value');
+        .expectHeader('connection', 'value')
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -162,7 +168,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectHeader('connection', /value/);
+        .expectHeader('connection', /value/)
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -174,7 +181,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectHeaderContains('x-header', 'value');
+        .expectHeaderContains('x-header', 'value')
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -186,7 +194,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectHeaderContains('connection', 'value');
+        .expectHeaderContains('connection', 'value')
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -198,7 +207,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectHeaderContains('connection', /value/);
+        .expectHeaderContains('connection', /value/)
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -210,7 +220,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectBody('Hello World');
+        .expectBody('Hello World')
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -222,7 +233,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectBodyContains('Hello World');
+        .expectBodyContains('Hello World')
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -234,7 +246,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectBodyContains({ msg: 'Hello World' });
+        .expectBodyContains({ msg: 'Hello World' })
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -246,7 +259,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectBodyContains(/Hello World/);
+        .expectBodyContains(/Hello World/)
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -258,7 +272,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectJsonLike({ id: 1 });
+        .expectJsonLike({ id: 1 })
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -284,7 +299,8 @@ describe('Expects', () => {
         .get('http://localhost:9393/api/users/1')
         .expectJsonSchema({
           "required": ["userId", "id"]
-        });
+        })
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -310,7 +326,8 @@ describe('Expects', () => {
         .get('http://localhost:9393/api/users/1')
         .expectJsonSchema('id', {
           "type": "string"
-        });
+        })
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -322,7 +339,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectJsonMatch(like({ id: 1 }));
+        .expectJsonMatch(like({ id: 1 }))
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -336,7 +354,8 @@ describe('Expects', () => {
         .get('http://localhost:9394/api/users/1')
         .expectJsonSchema({
           "required": ["userId", "id"]
-        });
+        })
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -357,7 +376,8 @@ describe('Expects', () => {
           }
         })
         .get('http://localhost:9393/api/users/1')
-        .expectStatus(200);
+        .expectStatus(200)
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -384,7 +404,8 @@ describe('Expects', () => {
           }
         })
         .get('http://localhost:9393/api/users/1')
-        .expectStatus(200);
+        .expectStatus(200)
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -408,7 +429,8 @@ describe('Expects', () => {
           }
         })
         .get('http://localhost:9393/api')
-        .expectStatus(200);
+        .expectStatus(200)
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -432,7 +454,8 @@ describe('Expects', () => {
           }
         })
         .get('http://localhost:9393/api')
-        .expectStatus(200);
+        .expectStatus(200)
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -509,7 +532,8 @@ describe('Expects', () => {
         .get('http://localhost:9393/api/users')
         .expectStatus(200)
         .expectJson('people[country=NZ].name', 'Matt')
-        .expectJson('people[*].name', ['Matt', 'Pete']);
+        .expectJson('people[*].name', ['Matt', 'Pete'])
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -561,7 +585,8 @@ describe('Expects', () => {
         })
         .get('http://localhost:9393/api/users')
         .expectStatus(200)
-        .expectJsonLike('people[*].name', ['Matt', 'Pet']);
+        .expectJsonLike('people[*].name', ['Matt', 'Pet'])
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -573,7 +598,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9393/api/users/1')
-        .expectResponseTime(-1);
+        .expectResponseTime(-1)
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -625,7 +651,8 @@ describe('Expects', () => {
         })
         .get('http://localhost:9393/api/users')
         .expectStatus(200)
-        .expectJsonMatch('people[*].name', eachLike(12));
+        .expectJsonMatch('people[*].name', eachLike(12))
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -647,7 +674,8 @@ describe('Expects', () => {
         .useInteraction('get people')
         .get('http://localhost:9393/api/people')
         .expectStatus(200)
-        .expectJsonMatchStrict('people[*].name', eachLike(12));
+        .expectJsonMatchStrict('people[*].name', eachLike(12))
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -675,7 +703,8 @@ describe('Expects', () => {
         .useInteraction('get people')
         .get('http://localhost:9393/api/people')
         .expectStatus(200)
-        .expectJsonMatchStrict({});
+        .expectJsonMatchStrict({})
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -736,7 +765,8 @@ describe('Expects', () => {
         .name('json snapshot - deep equal')
         .get('http://localhost:9393/api/users/1')
         .expectStatus(200)
-        .expectJsonSnapshot();
+        .expectJsonSnapshot()
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -859,7 +889,8 @@ describe('Expects', () => {
         .expectStatus(200)
         .expectJsonSnapshot({
           id: like('id')
-        });
+        })
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -897,7 +928,8 @@ describe('Expects', () => {
         .expectStatus(200)
         .expectJsonSnapshot({
           id: like('id')
-        });
+        })
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -935,7 +967,8 @@ describe('Expects', () => {
         .expectStatus(200)
         .expectJsonSnapshot({
           id: like('id')
-        });
+        })
+        .useLogLevel('ERROR');
     } catch (error) {
       err1 = error;
     }
@@ -947,7 +980,8 @@ describe('Expects', () => {
         .expectStatus(200)
         .expectJsonSnapshot({
           id: like(1)
-        });
+        })
+        .useLogLevel('ERROR');
     } catch (error) {
       err2 = error;
     }
@@ -997,7 +1031,8 @@ describe('Expects', () => {
       await pactum.spec()
         .useInteraction('default get')
         .get('http://localhost:9393/default/get')
-        .expectError();
+        .expectError()
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -1009,7 +1044,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9392')
-        .expectError('ECONNRESET');
+        .expectError('ECONNRESET')
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -1021,7 +1057,8 @@ describe('Expects', () => {
     try {
       await pactum.spec()
         .get('http://localhost:9392')
-        .expectError({ code: 'ECONNRESET' });
+        .expectError({ code: 'ECONNRESET' })
+        .useLogLevel('ERROR');
     } catch (error) {
       err = error;
     }
@@ -1059,6 +1096,76 @@ describe('Expects', () => {
           'only-get': /^GET$/
         }
       });
+  });
+
+  it('json length', async () => {
+    await pactum.spec()
+      .useInteraction('default users')
+      .get('http://localhost:9393/default/users')
+      .expectJsonLength(3);
+  });
+
+  it('json length - fail', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useInteraction('default users')
+        .get('http://localhost:9393/default/users')
+        .expectJsonLength(2)
+        .useLogLevel('ERROR');
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+  it('json length - fail - invalid', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useInteraction('default get')
+        .get('http://localhost:9393/default/get')
+        .expectJsonLength(2)
+        .useLogLevel('ERROR');
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+  it('json length query', async () => {
+    await pactum.spec()
+      .useInteraction('get people')
+      .get('http://localhost:9393/api/people')
+      .expectJsonLength('people', 3);
+  });
+
+  it('json length - fail', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useInteraction('get people')
+        .get('http://localhost:9393/api/people')
+        .expectJsonLength('people', 2)
+        .useLogLevel('ERROR');
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
+  });
+
+  it('json length - fail - invalid', async () => {
+    let err;
+    try {
+      await pactum.spec()
+        .useInteraction('get people')
+        .get('http://localhost:9393/api/people')
+        .expectJsonLength('people[0]', 2)
+        .useLogLevel('ERROR');
+    } catch (error) {
+      err = error;
+    }
+    expect(err).not.undefined;
   });
 
 });

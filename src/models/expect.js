@@ -32,6 +32,8 @@ class Expect {
     this.jsonMatchStrict = [];
     this.jsonMatchStrictQuery = [];
     this.jsonSnapshot = [];
+    this.jsonLength = [];
+    this.jsonLengthQuery = [];
     this.headers = [];
     this.headerContains = [];
     this.responseTime = null;
@@ -57,6 +59,8 @@ class Expect {
     this._validateJsonMatchQuery(response);
     this._validateJsonMatchStrict(response);
     this._validateJsonMatchStrictQuery(response);
+    this._validateJsonLength(response);
+    this._validateJsonLengthQuery(response);
     this._validateJsonSnapshot(response);
     this._validateResponseTime(response);
     this._validateErrors(response);
@@ -350,6 +354,33 @@ class Expect {
         }
       } else {
         assert.deepStrictEqual(actual, expected);
+      }
+    }
+  }
+
+  _validateJsonLength(response) {
+    this.jsonLength = processor.processData(this.jsonLength);
+    for (let i = 0; i < this.jsonLength.length; i++) {
+      const expected = this.jsonLength[i];
+      if (response.json && Array.isArray(response.json)) {
+        const actual = response.json.length;
+        assert.strictEqual(actual, expected, `JSON Length ${actual} !== ${expected}`);
+      } else {
+        this.fail('Response does not contain a json array');
+      }
+    }
+  }
+
+  _validateJsonLengthQuery(response) {
+    this.jsonLengthQuery = processor.processData(this.jsonLengthQuery);
+    for (let i = 0; i < this.jsonLengthQuery.length; i++) {
+      const { path, value: expected } = this.jsonLengthQuery[i];
+      const actualValue = jqy(path, { data: response.json }).value;
+      if (actualValue && Array.isArray(actualValue)) {
+        const actual = actualValue.length;
+        assert.strictEqual(actual, expected, `JSON Length ${actual} !== ${expected}`);
+      } else {
+        this.fail(`Response does not contain a json array at '${path}'`);
       }
     }
   }

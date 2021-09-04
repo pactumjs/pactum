@@ -404,6 +404,11 @@ class Spec {
     return this;
   }
 
+  expectJsonLength(path, value) {
+    typeof value === 'undefined' ? this._expect.jsonLength.push(path) : this._expect.jsonLengthQuery.push({ path, value });
+    return this;
+  }
+
   expectError(error) {
     this._expect.errors.push(error);
     return this;
