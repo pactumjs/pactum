@@ -317,6 +317,12 @@ declare class Spec {
   expectJsonMatchStrict(path: string, value: object): Spec;
 
   /**
+   * expects the json to an array with length
+   */
+   expectJsonLength(value: number): Spec;
+   expectJsonLength(path: string, value: number): Spec;
+
+  /**
    * expect network errors
    * @see https://pactumjs.github.io/#/response-validation?id=expecterror
    */

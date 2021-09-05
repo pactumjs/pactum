@@ -82,6 +82,22 @@ function addDefaultMockHandlers() {
       }
     };
   });
+  handler.addInteractionHandler('default users', () => {
+    return {
+      request: {
+        method: 'GET',
+        path: '/default/users'
+      },
+      response: {
+        status: 200,
+        body: [
+          { name: 'Matt', country: 'NZ' },
+          { name: 'Pete', country: 'AU' },
+          { name: 'Mike', country: 'NZ' }
+        ]
+      }
+    };
+  });
 }
 
 before(async () => {

@@ -81,6 +81,11 @@ class Have {
     this._validate();
   }
 
+  jsonLength(path, value) {
+    typeof value === 'undefined' ? this.expect.jsonLike.push(path) : this.expect.jsonLengthQuery.push({ path, value });
+    this._validate();
+  }
+
   responseTimeLessThan(ms) {
     this.expect.responseTime = ms;
     this._validate();
