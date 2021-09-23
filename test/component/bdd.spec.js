@@ -158,6 +158,26 @@ describe('BDD', () => {
     ce(spec.returns('name')).equals('snow');
   });
 
+  it('should not have a json with length', async () => {
+    let err;
+    try {
+      await expect(response).to.have.jsonLength(1);
+    } catch (error) {
+      err = error;
+    }
+    ce(err).not.undefined;
+  });
+
+  it('should not have a json with length at some path', async () => {
+    let err;
+    try {
+      await expect(response).to.have.jsonLength('path', 1);
+    } catch (error) {
+      err = error;
+    }
+    ce(err).not.undefined;
+  });
+
 });
 
 describe('BDD - AutoReportRunner Disabled', () => {

@@ -18,6 +18,8 @@ export interface Have {
   jsonMatch(path: string, value: object): void;
   jsonMatchStrict(value: object): void;
   jsonMatchStrict(path: string, value: object): void;
+  jsonLength(value: number): void;
+  jsonLength(path: string, value: number): void;
   responseTimeLessThan(ms: number): void;
   error(err?: string | object): void;
   _(handler: string, data: any): Promise<void>;
