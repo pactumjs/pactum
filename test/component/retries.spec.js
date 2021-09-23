@@ -93,6 +93,37 @@ describe('Retries', () => {
       .toss();
   });
 
+  it('retry statuscode', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        response: {
+          onCall: {
+            0: {
+              status: 202
+            },
+            1: {
+              status: 200
+            }
+          }
+        },
+        expects: {
+          callCount: 2
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .retry({
+        delay: 1,
+        count: 1,
+        status: [200, 201],
+      })
+      .expectStatus(200)
+      .toss();
+  });
+
   it('retry strategy', async () => {
     await pactum.spec()
       .useInteraction({
