@@ -48,7 +48,8 @@ export interface Interaction {
   provider?: string;
   /** flow of the provider */
   flow?: string;
-  strict: boolean;
+  strict?: boolean;
+  background?: boolean;
   request: InteractionRequest;
   response: InteractionResponse;
   expects?: InteractionExpectations;

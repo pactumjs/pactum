@@ -374,6 +374,8 @@ declare class Spec {
    */
   wait(milliseconds: number): Spec;
   wait(spec: Spec): Spec;
+  wait(): Spec;
+  wait(duration: number, pollingInterval: number): Spec;
 
   /**
    * prints request & response

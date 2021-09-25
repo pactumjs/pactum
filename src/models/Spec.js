@@ -451,8 +451,8 @@ class Spec {
     return this;
   }
 
-  wait(ms) {
-    this._wait = ms;
+  wait(a1, a2) {
+    this._wait = { a1, a2 };
     return this;
   }
 

@@ -199,6 +199,7 @@ class Interaction {
       provider,
       flow,
       strict,
+      background,
       request,
       response,
       expects,
@@ -207,6 +208,7 @@ class Interaction {
     this.id = id || helper.getRandomId();
     if (flow) this.flow = flow;
     if (provider) this.provider = provider;
+    if (background) this.background = background;
     this.strict = strict;
     this.request = new InteractionRequest(request);
     this.response = setResponse(response);
