@@ -11,6 +11,7 @@ declare interface RetryOptions {
   /** delay between retries - defaults to 3 */
   delay?: number;
   strategy?: string | RetryHandlerFunction;
+  status?: number | number[];
 }
 
 export = Spec;
