@@ -149,7 +149,7 @@ describe('Retries', () => {
       .retry({
         delay: 1,
         count: 1,
-        status: 200,
+        status: 202,
       })
       .expectStatus(200)
       .toss();
