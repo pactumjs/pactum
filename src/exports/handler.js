@@ -9,6 +9,7 @@ const stateHandlers =  {};
 const dataHandlers = {};
 const interactionHandlers = {};
 const assertHandlers = {};
+const waitHandlers = {};
 
 const handler = {
 
@@ -91,6 +92,16 @@ const handler = {
   getAssertHandler(name) {
     if (assertHandlers[name]) return assertHandlers[name];
     throw new PactumHandlerError(`Assert Handler Not Found - '${name}'`);
+  },
+
+  addWaitHandler(name, func) {
+    isValidHandler(name, func);
+    waitHandlers[name] = func;
+  },
+
+  getWaitHandler(name) {
+    if (waitHandlers[name]) return waitHandlers[name];
+    throw new PactumHandlerError(`Wait Handler Not Found - '${name}'`);
   }
 
 };

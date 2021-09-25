@@ -9,6 +9,7 @@ const mock = require('../exports/mock');
 const handler = require('../exports/handler');
 const request = require('../exports/request');
 const config = require('../config');
+const hr = require('../helpers/handler.runner');
 
 class Tosser {
 
@@ -40,7 +41,7 @@ class Tosser {
       this.recordData();
       th.storeSpecData(this.spec, this.spec._stores);
       await this.validate();
-      if (hasBackgroundInteractions(this.interactions)) {
+      if (hasBackgroundInteractions(this.interactions) || (this.spec._wait && typeof this.spec._wait.a1 === 'string')) {
         await this.dynamicWait();
         this.validateBackgroundInteractions();
       }
@@ -126,23 +127,27 @@ class Tosser {
   async dynamicWait() {
     const _wait = this.spec._wait;
     if (_wait) {
-      let duration = config.response.wait.duration;
-      let polling = config.response.wait.polling;
-      let waited = 0;
-      if (typeof _wait.a1 === 'number') {
-        duration = _wait.a1;
-        polling = _wait.a2 && _wait.a2 > 0 ? _wait.a2 : 100;
-      }
-      while (waited < duration) {
-        waited = waited + polling;
-        await this.getInteractionsFromServer();
-        try {
-          this.validateBackgroundInteractions();
-          break;
-        } catch (error) {
-          if (waited > duration) throw error;
+      if (typeof _wait.a1 === 'undefined' || typeof _wait.a1 === 'number') {
+        let duration = config.response.wait.duration;
+        let polling = config.response.wait.polling;
+        let waited = 0;
+        if (typeof _wait.a1 === 'number') {
+          duration = _wait.a1;
+          polling = _wait.a2 && _wait.a2 > 0 ? _wait.a2 : 100;
         }
-        await helper.sleep(polling);
+        while (waited < duration) {
+          waited = waited + polling;
+          await this.getInteractionsFromServer();
+          try {
+            this.validateBackgroundInteractions();
+            break;
+          } catch (error) {
+            if (waited > duration) throw error;
+          }
+          await helper.sleep(polling);
+        }
+      } else {
+        await hr.wait(_wait.a1, { req: this.request, res: this.response, data: _wait.a2, rootData: this.spec._specHandlerData });
       }
     }
   }

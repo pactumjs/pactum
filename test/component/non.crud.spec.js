@@ -1,9 +1,9 @@
 const config = require('../../src/config');
 const pactum = require('../../src/index');
-const { addInteractionHandler } = pactum.handler;
+const { addInteractionHandler, addWaitHandler } = pactum.handler;
 const { expect } = require('chai');
 
-describe('Non CRUD Requests', () => {
+describe('Non CRUD Requests - Numbered Waits', () => {
 
   before(() => {
     addInteractionHandler('get bg', () => {
@@ -108,6 +108,60 @@ describe('Non CRUD Requests', () => {
       err = error
     }
     expect(err.message).equals('Interaction not exercised: GET - /api/bg');
+  });
+
+});
+
+describe('Non CRUD Requests - Wait Handlers', () => {
+
+  before(() => {
+    addInteractionHandler('get bg', () => {
+      return {
+        background: true,
+        request: {
+          method: 'GET',
+          path: '/api/bg'
+        },
+        response: {
+          status: 200
+        }
+      }
+    });
+    addWaitHandler('send request to /api/bg', async (ctx) => {
+      await pactum.spec()
+        .get('http://localhost:9393/api/bg')
+        .expectStatus(ctx.data || 200);
+    });
+    config.response.wait.duration = 10;
+    config.response.wait.polling = 1;
+  });
+
+  it('should exercise bg interaction with wait handler', async () => {
+    await pactum.spec()
+      .useInteraction('get bg')
+      .get('http://localhost:9393/api/bg/1')
+      .expectStatus(404)
+      .wait('send request to /api/bg');
+  });
+
+  it('should wait without background interactions', async () => {
+    await pactum.spec()
+      .get('http://localhost:9393/api/bg/1')
+      .expectStatus(404)
+      .wait('send request to /api/bg', 404);
+  });
+
+  it('should fail when wait handler fails', async () => {
+    let err;
+    try {
+      await pactum.spec()
+      .get('http://localhost:9393/api/bg/1')
+      .expectStatus(404)
+      .wait('send request to /api/bg', 500);
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals('HTTP status 404 !== 500');
   });
 
 });

@@ -376,6 +376,7 @@ declare class Spec {
   wait(spec: Spec): Spec;
   wait(): Spec;
   wait(duration: number, pollingInterval: number): Spec;
+  wait(handlerName: string, data?: any): Spec;
 
   /**
    * prints request & response
