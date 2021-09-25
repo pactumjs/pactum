@@ -79,11 +79,9 @@ class Tosser {
           noRetry = handlerFun(ctx);
         } else if (status) {
           if (Array.isArray(status)) {
-            noRetry = status.toString().split(",").includes(ctx.res.statusCode.toString());
-            console.log("if:"+noRetry)
+            noRetry = !(status.toString().split(",").includes(ctx.res.statusCode.toString()));
           } else {
-            noRetry = (status == ctx.res.statusCode);
-            console.log("else:"+noRetry)
+            noRetry = !(status === ctx.res.statusCode);
           }
         }
         else {
