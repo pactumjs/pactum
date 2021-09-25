@@ -36,6 +36,10 @@ const hr = {
 
   wait(name, ctx) {
     return handler.getWaitHandler(name)(ctx);
+  },
+
+  retry(name, ctx) {
+    return handler.getRetryHandler(name)(ctx);
   }
 
 };

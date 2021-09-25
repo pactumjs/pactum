@@ -6,7 +6,6 @@ const requestProcessor = require('../helpers/requestProcessor');
 const th = require('../helpers/toss.helper');
 const utils = require('../helpers/utils');
 const mock = require('../exports/mock');
-const handler = require('../exports/handler');
 const request = require('../exports/request');
 const config = require('../config');
 const hr = require('../helpers/handler.runner');
@@ -83,8 +82,7 @@ class Tosser {
         if (typeof strategy === 'function') {
           noRetry = strategy(ctx);
         } else if (typeof strategy === 'string') {
-          const handlerFun = handler.getRetryHandler(strategy);
-          noRetry = handlerFun(ctx);
+          noRetry = hr.retry(strategy, ctx);
         } else {
           try {
             await this.validateResponse();
