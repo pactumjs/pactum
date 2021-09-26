@@ -40,7 +40,7 @@ class Tosser {
       this.recordData();
       th.storeSpecData(this.spec, this.spec._stores);
       await this.validate();
-      if (hasBackgroundInteractions(this.interactions) || (this.spec._wait && typeof this.spec._wait.a1 === 'string')) {
+      if (hasBackgroundInteractions(this.interactions) || (this.spec._wait && typeof this.spec._wait.arg1 === 'string')) {
         await this.dynamicWait();
         this.validateBackgroundInteractions();
       }
@@ -121,11 +121,11 @@ class Tosser {
 
   async staticWait() {
     const _wait = this.spec._wait;
-    if (_wait && _wait.a1) {
-      if (typeof _wait.a1 === 'number') {
-        await helper.sleep(_wait.a1);
+    if (_wait && _wait.arg1) {
+      if (typeof _wait.arg1 === 'number') {
+        await helper.sleep(_wait.arg1);
       } else {
-        await _wait.a1;
+        await _wait.arg1;
       }
     }
   }
@@ -133,13 +133,13 @@ class Tosser {
   async dynamicWait() {
     const _wait = this.spec._wait;
     if (_wait) {
-      if (typeof _wait.a1 === 'undefined' || typeof _wait.a1 === 'number') {
+      if (typeof _wait.arg1 === 'undefined' || typeof _wait.arg1 === 'number') {
         let duration = config.response.wait.duration;
         let polling = config.response.wait.polling;
         let waited = 0;
-        if (typeof _wait.a1 === 'number') {
-          duration = _wait.a1;
-          polling = _wait.a2 && _wait.a2 > 0 ? _wait.a2 : 100;
+        if (typeof _wait.arg1 === 'number') {
+          duration = _wait.arg1;
+          polling = _wait.arg2 && _wait.arg2 > 0 ? _wait.arg2 : 100;
         }
         while (waited < duration) {
           waited = waited + polling;
@@ -153,7 +153,7 @@ class Tosser {
           await helper.sleep(polling);
         }
       } else {
-        await hr.wait(_wait.a1, { req: this.request, res: this.response, data: _wait.a2, rootData: this.spec._specHandlerData });
+        await hr.wait(_wait.arg1, { req: this.request, res: this.response, data: _wait.arg2, rootData: this.spec._specHandlerData });
       }
     }
   }

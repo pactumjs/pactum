@@ -453,8 +453,8 @@ class Spec {
     return this;
   }
 
-  wait(a1, a2) {
-    this._wait = { a1, a2 };
+  wait(arg1, arg2) {
+    this._wait = { arg1, arg2 };
     return this;
   }
 
