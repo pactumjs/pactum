@@ -76,6 +76,7 @@ class Tosser {
       const count = typeof options.count === 'number' ? options.count : config.request.retry.count;
       const delay = typeof options.delay === 'number' ? options.delay : config.request.retry.delay;
       const strategy = options.strategy;
+      const status = options.status;
       for (let i = 0; i < count; i++) {
         let noRetry = true;
         const ctx = { req: this.request, res: this.response };
@@ -83,7 +84,14 @@ class Tosser {
           noRetry = strategy(ctx);
         } else if (typeof strategy === 'string') {
           noRetry = hr.retry(strategy, ctx);
-        } else {
+        } else if (status) {
+          if (Array.isArray(status)) {
+            noRetry = !(status.includes(this.response.statusCode));
+          } else {
+            noRetry = !(status === ctx.res.statusCode);
+          }
+        }
+        else {
           try {
             await this.validateResponse();
           } catch (error) {
