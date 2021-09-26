@@ -6,9 +6,9 @@ const requestProcessor = require('../helpers/requestProcessor');
 const th = require('../helpers/toss.helper');
 const utils = require('../helpers/utils');
 const mock = require('../exports/mock');
-const handler = require('../exports/handler');
 const request = require('../exports/request');
 const config = require('../config');
+const hr = require('../helpers/handler.runner');
 
 class Tosser {
 
@@ -29,13 +29,21 @@ class Tosser {
       this.request = requestProcessor.process(this.request);
       await this.setState();
       await this.addInteractionsToServer();
+      // get interactions to check for background property
+      await this.getInteractionsFromServer();
       await this.setResponse();
       this.inspect();
-      await this.wait();
+      if (!hasBackgroundInteractions(this.interactions)) {
+        await this.staticWait();
+      }
       await this.getInteractionsFromServer();
       this.recordData();
       th.storeSpecData(this.spec, this.spec._stores);
       await this.validate();
+      if (hasBackgroundInteractions(this.interactions) || (this.spec._wait && typeof this.spec._wait.arg1 === 'string')) {
+        await this.dynamicWait();
+        this.validateBackgroundInteractions();
+      }
       return th.getOutput(this.spec, this.spec._returns);
     } finally {
       await this.removeInteractionsFromServer();
@@ -75,8 +83,7 @@ class Tosser {
         if (typeof strategy === 'function') {
           noRetry = strategy(ctx);
         } else if (typeof strategy === 'string') {
-          const handlerFun = handler.getRetryHandler(strategy);
-          noRetry = handlerFun(ctx);
+          noRetry = hr.retry(strategy, ctx);
         } else if (status) {
           if (Array.isArray(status)) {
             noRetry = !(status.includes(this.response.statusCode));
@@ -112,12 +119,42 @@ class Tosser {
     }
   }
 
-  async wait() {
+  async staticWait() {
     const _wait = this.spec._wait;
-    if (typeof _wait === 'number') {
-      await helper.sleep(_wait);
-    } else if (_wait && typeof _wait === 'object') {
-      await _wait;
+    if (_wait && _wait.arg1) {
+      if (typeof _wait.arg1 === 'number') {
+        await helper.sleep(_wait.arg1);
+      } else {
+        await _wait.arg1;
+      }
+    }
+  }
+
+  async dynamicWait() {
+    const _wait = this.spec._wait;
+    if (_wait) {
+      if (typeof _wait.arg1 === 'undefined' || typeof _wait.arg1 === 'number') {
+        let duration = config.response.wait.duration;
+        let polling = config.response.wait.polling;
+        let waited = 0;
+        if (typeof _wait.arg1 === 'number') {
+          duration = _wait.arg1;
+          polling = _wait.arg2 && _wait.arg2 > 0 ? _wait.arg2 : 100;
+        }
+        while (waited < duration) {
+          waited = waited + polling;
+          await this.getInteractionsFromServer();
+          try {
+            this.validateBackgroundInteractions();
+            break;
+          } catch (error) {
+            if (waited > duration) throw error;
+          }
+          await helper.sleep(polling);
+        }
+      } else {
+        await hr.wait(_wait.arg1, { req: this.request, res: this.response, data: _wait.arg2, rootData: this.spec._specHandlerData });
+      }
     }
   }
 
@@ -150,7 +187,7 @@ class Tosser {
   async validate() {
     this.validateError();
     try {
-      this.validateInteractions();
+      this.validateNonBackgroundInteractions();
       await this.validateResponse();
       this.spec.status = 'PASSED';
       this.runReport();
@@ -173,8 +210,14 @@ class Tosser {
     }
   }
 
-  validateInteractions() {
-    this.expect.validateInteractions(this.interactions);
+  validateNonBackgroundInteractions() {
+    const nonBgInteractions = this.interactions.filter(interaction => !interaction.background);
+    this.expect.validateInteractions(nonBgInteractions);
+  }
+
+  validateBackgroundInteractions() {
+    const bgInteractions = this.interactions.filter(interaction => interaction.background);
+    this.expect.validateInteractions(bgInteractions);
   }
 
   async validateResponse() {
@@ -211,6 +254,10 @@ async function getResponse(tosser) {
   }
   res.responseTime = Date.now() - requestStartTime;
   return res;
+}
+
+function hasBackgroundInteractions(interactions) {
+  return interactions.some(interaction => interaction.background);
 }
 
 module.exports = Tosser;

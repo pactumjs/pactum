@@ -57,6 +57,11 @@ interface ParentHandler {
   data?: any;
 }
 
+interface WaitHandlerContext extends RequestResponseContext {
+  data?: any;
+  rootData?: any;
+}
+
 export type SpecHandlerFunction = (ctx: SpecHandlerContext) => void;
 export type ExpectHandlerFunction = (ctx: ExpectHandlerContext) => void;
 export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
@@ -65,6 +70,7 @@ export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
 export type DataHandlerFunction = (ctx: DataHandlerContext) => any;
 export type InteractionHandlerFunction = (ctx: InteractionContext) => Interaction | ParentHandler | Interaction[] | ParentHandler[];
 export type AssertHandlerFunction = (ctx: AssertionContext) => boolean;
+export type WaitHandlerFunction = (ctx: WaitHandlerContext) => any | Promise<any>;
 
 /**
  * adds a custom spec handler
@@ -112,3 +118,9 @@ export function addInteractionHandler(name: string, func: InteractionHandlerFunc
  * @see https://pactumjs.github.io/#/api-handlers?id=addasserthandler
  */
 export function addAssertHandler(name: string, func: AssertHandlerFunction): void;
+
+/**
+ * adds a custom wait handler
+ * @see https://pactumjs.github.io/#/api-handlers?id=addwaithandler
+ */
+export function addWaitHandler(name: string, func: WaitHandlerFunction): void;

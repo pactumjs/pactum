@@ -197,8 +197,8 @@ function sendInteractionNotFoundResponse(req, res) {
     path: req.path,
     headers: req.headers,
   };
-  if (req.query && typeof req.query === 'object' && Object.keys(req.query) > 0) {
-    msg.queryParams = req.query;
+  if (req._parsedUrl && req._parsedUrl.query) {
+    msg.queryParams = req.query || req._parsedUrl.query;
   }
   if (req.body) {
     msg.body = req.body;
