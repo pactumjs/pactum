@@ -42,6 +42,7 @@ class Tosser {
       await this.validate();
       if (hasBackgroundInteractions(this.interactions) || (this.spec._wait && typeof this.spec._wait.arg1 === 'string')) {
         await this.dynamicWait();
+        await this.getInteractionsFromServer();
         this.validateBackgroundInteractions();
       }
       return th.getOutput(this.spec, this.spec._returns);
