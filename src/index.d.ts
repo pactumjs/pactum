@@ -44,4 +44,6 @@ export function e2e(name: string): E2E;
 
 export function sleep(ms: number): Promise<void>;
 
+export function clone<T>(input: T): T;
+
 export namespace pactum { }

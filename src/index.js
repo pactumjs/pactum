@@ -3,6 +3,8 @@ require('./plugins/json.schema').setAdapter(require('./adapters/json.schema'));
 require('./plugins/json.match').setAdapter(require('./adapters/json.match'));
 require('./plugins/json.like').setAdapter(require('./adapters/json.like'));
 
+const { klona } = require('klona')
+
 const Spec = require('./models/Spec');
 const Fuzz = require('./models/Fuzz');
 const E2E = require('./models/E2E');
@@ -52,6 +54,10 @@ const pactum = {
 
   sleep(ms) {
     return helper.sleep(ms);
+  },
+
+  clone(value) {
+    return klona(value);
   }
 
 };
