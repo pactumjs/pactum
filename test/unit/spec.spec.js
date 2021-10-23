@@ -164,18 +164,6 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: `headers` are required');
   });
 
-  it('withBody - duplicate', () => {
-    let err;
-    try {
-      const spec = new Spec();
-      spec.withBody('Hello');
-      spec.withBody();
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: Duplicate body in request - Hello');
-  });
-
   it('toss - without url', async () => {
     let err;
     try {

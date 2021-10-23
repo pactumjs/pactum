@@ -222,12 +222,11 @@ class Spec {
   }
 
   withBody(body) {
-    if (typeof this._request.data !== 'undefined') {
-      throw new PactumRequestError(
-        `Duplicate body in request - ${this._request.data}`
-      );
+    if (typeof body === 'object' && body && body.file) {
+      this._request.data = fs.readFileSync(body.file)
+    } else {
+      this._request.data = body;
     }
-    this._request.data = body;
     return this;
   }
 

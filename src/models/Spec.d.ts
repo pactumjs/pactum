@@ -14,6 +14,11 @@ declare interface RetryOptions {
   status?: number | number[];
 }
 
+declare interface BodyOptions {
+  /** path to the file  */
+  file?: string;
+}
+
 export = Spec;
 
 declare class Spec {
@@ -157,14 +162,16 @@ declare class Spec {
    * attaches body to the request
    * @see https://pactumjs.github.io/#/request-making?id=body
    */
+  withBody(body: BodyOptions): Spec;
   withBody(body: any): Spec;
+
 
   /**
    * attaches json object to the request body
    * @see https://pactumjs.github.io/#/request-making?id=body
    */
-   withJson(json: object): Spec;
-   withJson(filePath: string): Spec;
+  withJson(json: object): Spec;
+  withJson(filePath: string): Spec;
 
   /**
    * appends file to the form-data
@@ -256,14 +263,14 @@ declare class Spec {
    * expects exact match on cookie in the response
    * @see https://pactumjs.github.io/#/response-validation?id=expectcookies
    */
-   expectCookies(key: string, value: any): Spec;
-   expectCookies(json: object): Spec;
-   expectCookies(raw: string): Spec;
+  expectCookies(key: string, value: any): Spec;
+  expectCookies(json: object): Spec;
+  expectCookies(raw: string): Spec;
 
-   /**
-   * expects a partial cookie in the response
-   * @see https://pactumjs.github.io/#/response-validation?id=expectcookieslike
-   */
+  /**
+  * expects a partial cookie in the response
+  * @see https://pactumjs.github.io/#/response-validation?id=expectcookieslike
+  */
   expectCookiesLike(key: string, value: any): Spec;
   expectCookiesLike(json: object): Spec;
   expectCookiesLike(raw: string): Spec;
@@ -320,8 +327,8 @@ declare class Spec {
   /**
    * expects the json to an array with length
    */
-   expectJsonLength(value: number): Spec;
-   expectJsonLength(path: string, value: number): Spec;
+  expectJsonLength(value: number): Spec;
+  expectJsonLength(path: string, value: number): Spec;
 
   /**
    * expect network errors
