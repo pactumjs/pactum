@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "3.0.21",
+  "version": "3.1.0",
   "description": "REST API Testing Tool for all levels in a Test Pyramid",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -62,7 +62,7 @@
   "dependencies": {
     "@exodus/schemasafe": "^1.0.0-rc.4",
     "deep-override": "^1.0.2",
-    "form-data-lite": "^1.0.0",
+    "form-data-lite": "^1.0.1",
     "json-query": "^2.2.2",
     "klona": "^2.0.4",
     "lightcookie": "^1.0.25",
