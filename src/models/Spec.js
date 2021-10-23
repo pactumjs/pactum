@@ -1,4 +1,4 @@
-const FormData = require('form-data');
+const fd = require('../plugins/form.data')
 const fs = require('fs');
 const lc = require('lightcookie');
 
@@ -242,11 +242,12 @@ class Spec {
   }
 
   withMultiPartFormData(key, value, options) {
-    if (key instanceof FormData) {
+    const FD = fd.get();
+    if (key instanceof FD) {
       this._request._multiPartFormData = key;
     } else {
       if (this._request._multiPartFormData === undefined) {
-        this._request._multiPartFormData = new FormData();
+        this._request._multiPartFormData = new FD();
       }
       this._request._multiPartFormData.append(key, value, options);
     }

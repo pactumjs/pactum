@@ -1,5 +1,5 @@
 import { RequestOptions } from 'http';
-import FormData from 'form-data';
+import FormData from 'form-data-lite';
 import { Interaction } from '../exports/mock';
 import { ExpectHandlerFunction, RetryHandlerFunction, CaptureHandlerFunction } from '../exports/handler';
 import { LogLevel } from '../exports/settings';
@@ -188,14 +188,14 @@ declare class Spec {
 
   /**
    * attaches multi part form data to the request with header - "multipart/form-data"
-   * @see https://www.npmjs.com/package/form-data
+   * @see https://www.npmjs.com/package/form-data-lite
    * @see https://pactumjs.github.io/#/request-making?id=form-data
    */
   withMultiPartFormData(form: FormData): Spec;
 
   /**
    * attaches multi part form data to the request with header - "multipart/form-data"
-   * @see https://www.npmjs.com/package/form-data
+   * @see https://www.npmjs.com/package/form-data-lite
    * @see https://pactumjs.github.io/#/request-making?id=form-data
    */
   withMultiPartFormData(key: string, value: string | Buffer | Array | ArrayBuffer, options?: FormData.AppendOptions): Spec;

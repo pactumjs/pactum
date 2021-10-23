@@ -1,5 +1,6 @@
 const { like, eachLike, regex } = require('pactum-matchers');
 const pactum = require('../../src/index');
+const FormData = require('form-data-lite');
 
 describe('Mock', () => {
 
@@ -447,7 +448,7 @@ describe('Mock', () => {
   it('POST - one interaction - with multi part form data instance', async () => {
     const fs = require('fs');
     const path = require('path');
-    const form = new pactum.request.FormData();
+    const form = new FormData();
     form.append('file', fs.readFileSync(path.resolve('./test/component/base.spec.js')), { contentType: 'application/js', filename: 'interactions.spec.js' });
     await pactum.spec()
       .useInteraction({

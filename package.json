@@ -19,7 +19,8 @@
     "test": "npm run test:unit && npm run test:component",
     "test:unit": "mocha --timeout 10000 ./test/unit/",
     "test:component": "mocha --timeout 10000 ./test/component/",
-    "coverage": "nyc --reporter=lcov --reporter=text npm run test"
+    "coverage": "nyc --reporter=lcov --reporter=text npm run test",
+    "lint": "eslint src/**/*.js"
   },
   "keywords": [
     "api",
@@ -61,7 +62,7 @@
   "dependencies": {
     "@exodus/schemasafe": "^1.0.0-rc.4",
     "deep-override": "^1.0.2",
-    "form-data": "^4.0.0",
+    "form-data-lite": "^1.0.0",
     "json-query": "^2.2.2",
     "klona": "^2.0.4",
     "lightcookie": "^1.0.25",

@@ -41,6 +41,7 @@ const utils = {
       }
       const isValidBody = validateBody(req, interaction);
       if (isValidMethod && isValidPath.equal && isValidQuery.equal && isValidHeaders.equal && isValidBody.equal) {
+        log.debug(`Interaction matched with id "${interactionId}"`);
         return interaction;
       }
       log.debug(`Interaction with id "${interactionId}" failed to match - HTTP Body - ${isValidBody.message}`);

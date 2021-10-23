@@ -1,5 +1,3 @@
-export * as FormData from 'form-data';
-
 /**
  * adds default headers to all the requests
  */

@@ -1,5 +1,3 @@
-const form = require('form-data');
-
 const config = require('../config');
 const helper = require('../helpers/helper');
 const { PactumRequestError } = require('../helpers/errors');
@@ -7,8 +5,6 @@ const { PactumRequestError } = require('../helpers/errors');
 const records = [];
 
 const request = {
-
-  FormData: form,
 
   setDefaultHeaders(key, value) {
     if (!key) {
