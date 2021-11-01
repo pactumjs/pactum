@@ -71,7 +71,9 @@ const mock = {
     const interactions = [];
     ids.forEach(id => interactions.push(this._server.getInteraction(id)));
     interactions.forEach(interaction => {
-      interaction.exercised = interaction.callCount > 0;
+      if (interaction) {
+        interaction.exercised = interaction.callCount > 0;
+      }
     });
     return alone ? interactions[0] : interactions;
   },

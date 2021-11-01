@@ -135,6 +135,14 @@ describe('Mock', () => {
     expect(this.serverAddInteractionStub.callCount).equals(2, 'should add two default mock interactions');
   });
 
+  it('getInteraction - undefined', () => {
+    expect(mock.getInteraction()).to.be.null;
+  });
+
+  it('getInteraction - invalid id', () => {
+    expect(mock.getInteraction('abc')).to.be.null;
+  });
+
   afterEach(() => {
     sandbox.restore();
   });
