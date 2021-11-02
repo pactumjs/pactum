@@ -119,8 +119,11 @@ function sendInteractionFoundResponse(req, res, interaction) {
   if (interaction.stores) {
     th.storeInteractionData(req, interaction);
   }
-  interaction.response = processor.processData(interaction.response);
-  const interactionResponse = interaction.response;
+  let interactionResponse = interaction.response;
+  if (typeof interaction.response === 'object') {
+    interactionResponse = JSON.parse(JSON.stringify(interaction.response));
+  }
+  interactionResponse = processor.processData(interactionResponse);
   if (typeof interactionResponse === 'function') {
     interactionResponse(req, res);
   } else {

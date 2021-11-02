@@ -1,4 +1,6 @@
+const mock = require('../../src/exports/mock');
 const pactum = require('../../src/index');
+const { like } = require('pactum-matchers');
 
 describe('Interaction', () => {
 
@@ -150,6 +152,45 @@ describe('Interaction', () => {
         name: 'abc2',
         token: 'xyz2'
       });
+  });
+
+  it('Stores - Duplicates', async () => {
+    mock.addInteraction({
+      id: 'stores-duplicate',
+      request: {
+        method: 'POST',
+        path: '/api/stores/duplicate',
+        body: like({
+          id: 1
+        })
+      },
+      stores: {
+        id: 'req.body.id'
+      },
+      response: {
+        status: 200,
+        body: {
+          id: '$S{id}'
+        }
+      }
+    });
+    await pactum.spec()
+      .post('http://localhost:9393/api/stores/duplicate')
+      .withJson({
+        id: 10
+      })
+      .expectJson({
+        id: 10
+      });
+    await pactum.spec()
+      .post('http://localhost:9393/api/stores/duplicate')
+      .withJson({
+        id: 20
+      })
+      .expectJson({
+        id: 20
+      });
+    mock.removeInteraction('stores-duplicate');
   });
 
 });
