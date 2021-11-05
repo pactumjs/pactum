@@ -3,6 +3,7 @@ const logger = require('../plugins/logger');
 const jsonLike = require('../plugins/json.like');
 const jsonMatch = require('../plugins/json.match');
 const jsonSchema = require('../plugins/json.schema');
+const fd = require('../plugins/form.data');
 
 const settings = {
 
@@ -24,6 +25,10 @@ const settings = {
 
   setJsonSchemaAdapter(adapter) {
     jsonSchema.setAdapter(adapter);
+  },
+
+  setFormDataAdapter(adapter) {
+    fd.setAdapter(adapter);
   },
 
   setAssertHandlerStrategy(strategy) {

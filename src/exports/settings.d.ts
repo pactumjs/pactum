@@ -38,6 +38,7 @@ export interface JsonSchemaAdapter {
 }
 export function setJsonSchemaAdapter(adapter: JsonSchemaAdapter): void;
 
+export function setFormDataAdapter(adapter: any): void;
 
 export interface Strategy {
   starts?: string;

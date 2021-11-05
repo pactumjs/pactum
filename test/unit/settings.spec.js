@@ -27,6 +27,10 @@ describe('Settings', () => {
     settings.setJsonSchemaAdapter(require('../../src/adapters/json.schema'));
   });
 
+  it('setFormDataAdapter', () => {
+    settings.setFormDataAdapter(require('../../src/adapters/form.data'));
+  });
+
   after(() => {
     settings.setSnapshotDirectoryPath('.pactum/snapshots');
   });
