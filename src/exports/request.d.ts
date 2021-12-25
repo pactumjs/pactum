@@ -4,6 +4,9 @@
 export function setDefaultHeaders(key: string, value: string): void;
 export function setDefaultHeaders(headers: object): void;
 
+export function setBasicAuth(username: string, password: string): void;
+export function setBearerToken(token: string): void;
+
 /**
  * sets a default timeout to all the requests in ms
  * @default 3000 ms

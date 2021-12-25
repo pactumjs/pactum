@@ -47,7 +47,7 @@
 
 This readme offers an basic introduction to the library. Head over to the full documentation at https://pactumjs.github.io
 
-- [API Testing](https://pactumjs.github.io/#/api-testing)
+- [API Testing](https://pactumjs.github.io/#/request-making)
 - [Integration Testing](https://pactumjs.github.io/#/integration-testing)
 - [Component Testing](https://pactumjs.github.io/#/component-testing)
 - [Contract Testing](https://pactumjs.github.io/#/contract-testing)
