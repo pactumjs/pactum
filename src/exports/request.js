@@ -20,6 +20,14 @@ const request = {
     }
   },
 
+  setBasicAuth(username, password) {
+    config.request.headers['Authorization'] = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
+  },
+
+  setBearerToken(token) {
+    config.request.headers['Authorization'] = 'Bearer ' + token;
+  },
+
   setDefaultTimeout(timeout) {
     if (typeof timeout !== 'number') {
       throw new PactumRequestError(`Invalid timeout provided - ${timeout}`);

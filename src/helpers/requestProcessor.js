@@ -24,7 +24,7 @@ const requestProcessor = {
 };
 
 function setBaseUrl(request) {
-  if (config.request.baseUrl && !request.url.startsWith('http')) {
+  if (config.request.baseUrl && request.url && !request.url.startsWith('http')) {
     request.url = config.request.baseUrl + request.url;
   }
   const _url = url.parse(request.url);
