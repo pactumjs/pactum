@@ -1,6 +1,7 @@
 const { like, eachLike, regex } = require('pactum-matchers');
 const pactum = require('../../src/index');
 const FormData = require('form-data-lite');
+const { expect } = require('chai');
 
 describe('Mock', () => {
 
@@ -822,4 +823,116 @@ describe('Pact - VALID', () => {
       .toss();
   });
 
+});
+
+
+describe('Interactions - expects skip check', () => {
+
+  it('skip expects - defaults', async () => {
+    await pactum.spec()
+      .useInteraction([{
+        request: {
+          method: 'GET',
+          path: '/api/projects/{id}',
+          pathParams: {
+            id: '101'
+          }
+        },
+        response: {
+          status: 200,
+          body: {
+            id: '$S{ProjectId}'
+          }
+        },
+        stores: {
+          ProjectId: 'req.pathParams.id'
+        },
+        expects: {
+          disable: true,
+          exercised: true,
+          callCount: 1
+        }
+      },
+      {
+        request: {
+          method: 'GET',
+          path: '/api/users/{id}',
+          pathParams: {
+            id: '1'
+          }
+        },
+        response: {
+          status: 200,
+          body: {
+            id: '$S{UserId}'
+          }
+        },
+        stores: {
+          UserId: 'req.pathParams.id'
+        }
+      }])
+      .get('http://localhost:9393/api/users/1')
+      .expectStatus(200)
+      .expectJsonLike({
+        id: '1'
+      })
+      .toss();
+  });
+
+  it('skip expects (false) - failure', async () => {
+    try {
+      await pactum.spec()
+        .useInteraction([{
+          request: {
+            method: 'GET',
+            path: '/api/projects/{id}',
+            pathParams: {
+              id: '101'
+            }
+          },
+          response: {
+            status: 200,
+            body: {
+              id: '$S{ProjectId}'
+            }
+          },
+          stores: {
+            ProjectId: 'req.pathParams.id'
+          },
+          expects: {
+            disable: false
+          }
+        },
+        {
+          request: {
+            method: 'GET',
+            path: '/api/users/{id}',
+            pathParams: {
+              id: '1'
+            }
+          },
+          response: {
+            status: 200,
+            body: {
+              id: '$S{UserId}'
+            }
+          },
+          stores: {
+            UserId: 'req.pathParams.id'
+          },
+          expects: {
+            exercised: true,
+            callCount: 1
+          }
+        }])
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200)
+        .expectJsonLike({
+          id: '1'
+        })
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).contains('Interaction not exercised: GET - /api/projects/{id}');
+  });
 });

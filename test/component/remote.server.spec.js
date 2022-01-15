@@ -157,7 +157,7 @@ describe('Remote Server - before and after spec', () => {
       callCount: 0,
       "calls": [],
       "exercised": false,
-      expects: { exercised: true }
+      expects: { disable: false, exercised: true }
     });
   });
 
@@ -195,7 +195,7 @@ describe('Remote Server - before and after spec', () => {
         callCount: 0,
         "calls": [],
         "exercised": false,
-        expects: { exercised: true }
+        expects: { disable: false, exercised: true }
       },
       {
         id: 'id2',
@@ -205,7 +205,7 @@ describe('Remote Server - before and after spec', () => {
         callCount: 0,
         "calls": [],
         "exercised": false,
-        expects: { exercised: true }
+        expects: { disable: false, exercised: true }
       }
     ]);
   });
@@ -235,7 +235,7 @@ describe('Remote Server - before and after spec', () => {
         callCount: 0,
         "calls": [],
         "exercised": false,
-        expects: { exercised: true }
+        expects: { disable: false, exercised: true }
       },
       {
         id: 'id2',
@@ -245,7 +245,7 @@ describe('Remote Server - before and after spec', () => {
         callCount: 0,
         "calls": [],
         "exercised": false,
-        expects: { exercised: true }
+        expects: { disable: false, exercised: true }
       }
     ]);
   });

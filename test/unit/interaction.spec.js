@@ -54,6 +54,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -110,6 +111,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -174,6 +176,7 @@ describe('Interaction', () => {
         }
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -232,6 +235,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -298,6 +302,7 @@ describe('Interaction', () => {
         }
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -315,8 +320,6 @@ describe('Interaction', () => {
     };
     const interaction = new Interaction(raw, true);
     expect(interaction.request).deep.equals({
-
-
       "method": "GET",
       "path": "/api/projects/1",
       "queryParams": {},
@@ -374,6 +377,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -435,6 +439,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -495,6 +500,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -551,6 +557,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -599,6 +606,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -633,6 +641,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }

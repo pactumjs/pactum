@@ -78,16 +78,19 @@ class Expect {
         headers: interaction.request.headers,
         body: interaction.request.body
       };
-      if (expects.exercised && !interaction.exercised) {
+      if (expects.disable) {
+        log.debug('Interaction expect exercised is skipped', intReq);
+      }
+      if (expects.exercised && !interaction.exercised && !expects.disable) {
         log.warn('Interaction Not Exercised', intReq);
         this.fail(`Interaction not exercised: ${interaction.request.method} - ${interaction.request.path}`);
       }
-      if (!expects.exercised && interaction.exercised) {
+      if (!expects.exercised && interaction.exercised && !expects.disable) {
         log.warn('Interaction got Exercised', intReq);
         this.fail(`Interaction exercised: ${interaction.request.method} - ${interaction.request.path}`);
       }
       if (typeof expects.callCount !== 'undefined') {
-        if (expects.callCount !== interaction.callCount) {
+        if (expects.callCount !== interaction.callCount && !expects.disable) {
           this.fail(`Interaction call count ${interaction.callCount} !== ${expects.callCount} for ${interaction.request.method} - ${interaction.request.path}`);
         }
       }

@@ -31,10 +31,16 @@ function setRawDefaults(raw) {
       if (typeof raw.response.status === 'undefined') raw.response.status = 404;
     }
     if (!raw.expects) {
-      raw.expects = { exercised: true };
+      raw.expects = { disable: false, exercised: true };
     }
     if (typeof raw.expects.exercised === 'undefined') {
       raw.expects.exercised = true;
+    }
+    if (typeof raw.expects.disable === 'undefined') {
+      raw.expects.disable = false;
+    }
+    if (raw.expects.disable) {
+      raw.expects.exercised = false;
     }
   }
 }
@@ -173,6 +179,7 @@ class InteractionResponseDelay {
 
 class InteractionExpectations {
   constructor(expects) {
+    this.disable = expects.disable;
     this.exercised = expects.exercised;
     this.callCount = expects.callCount;
   }
@@ -203,7 +210,7 @@ class Interaction {
       request,
       response,
       expects,
-      stores,
+      stores
     } = raw;
     this.id = id || helper.getRandomId();
     if (flow) this.flow = flow;

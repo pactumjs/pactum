@@ -63,6 +63,7 @@ describe('Remote- post single mock interaction', () => {
             }
           },
           "expects": {
+            "disable": false,
             "exercised": true
           }
         }
@@ -99,6 +100,7 @@ describe('Remote- post single mock interaction', () => {
             }
           },
           "expects": {
+            "disable": false,
             "exercised": true
           }
         }
@@ -160,6 +162,7 @@ describe('Remote- post single mock interaction', () => {
             }
           },
           "expects": {
+            "disable": false,
             "exercised": true
           }
         }

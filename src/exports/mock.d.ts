@@ -37,6 +37,7 @@ export interface InteractionResponse {
 }
 
 export interface InteractionExpectations {
+  disable?: boolean;
   exercised?: boolean;
   callCount?: number;
 }
