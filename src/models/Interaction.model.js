@@ -24,12 +24,6 @@ function setRawDefaults(raw) {
     if (typeof raw.strict === 'undefined') {
       raw.strict = true;
     }
-    if (!raw.exceptions) {
-      raw.exceptions = { checkExercised: true };
-    }
-    if (typeof raw.exceptions.checkExercised === 'undefined') {
-      raw.exceptions.checkExercised = true;
-    }
     if (!raw.response) {
       raw.response = {};
     }
@@ -37,12 +31,15 @@ function setRawDefaults(raw) {
       if (typeof raw.response.status === 'undefined') raw.response.status = 404;
     }
     if (!raw.expects) {
-      raw.expects = { exercised: true };
+      raw.expects = { disable: false, exercised: true };
     }
     if (typeof raw.expects.exercised === 'undefined') {
       raw.expects.exercised = true;
     }
-    if (!raw.exceptions.checkExercised) {
+    if (typeof raw.expects.disable === 'undefined') {
+      raw.expects.disable = false;
+    }
+    if (raw.expects.disable) {
       raw.expects.exercised = false;
     }
   }
@@ -182,14 +179,9 @@ class InteractionResponseDelay {
 
 class InteractionExpectations {
   constructor(expects) {
+    this.disable = expects.disable;
     this.exercised = expects.exercised;
     this.callCount = expects.callCount;
-  }
-}
-
-class InteractionExceptions {
-  constructor(exceptions) {
-    this.checkExercised = exceptions.checkExercised;
   }
 }
 
@@ -218,8 +210,7 @@ class Interaction {
       request,
       response,
       expects,
-      stores,
-      exceptions
+      stores
     } = raw;
     this.id = id || helper.getRandomId();
     if (flow) this.flow = flow;
@@ -229,7 +220,6 @@ class Interaction {
     this.request = new InteractionRequest(request);
     this.response = setResponse(response);
     this.expects = new InteractionExpectations(expects);
-    this.exceptions = new InteractionExceptions(exceptions);
     if (stores && typeof stores === 'object') {
       this.stores = stores;
     }

@@ -826,9 +826,9 @@ describe('Pact - VALID', () => {
 });
 
 
-describe('Interactions - Exceptions check', () => {
+describe('Interactions - expects skip check', () => {
 
-  it('skip checkExercised - defaults', async () => {
+  it('skip expects - defaults', async () => {
     await pactum.spec()
       .useInteraction([{
         request: {
@@ -847,15 +847,13 @@ describe('Interactions - Exceptions check', () => {
         stores: {
           ProjectId: 'req.pathParams.id'
         },
-        exceptions: {
-          checkExercised: false
-        },
         expects: {
+          disable: true,
           exercised: true,
           callCount: 1
         }
-      }
-        , {
+      },
+      {
         request: {
           method: 'GET',
           path: '/api/users/{id}',
@@ -881,7 +879,7 @@ describe('Interactions - Exceptions check', () => {
       .toss();
   });
 
-  it('skip checkExercised (false) - failure', async () => {
+  it('skip expects (false) - failure', async () => {
     try {
       await pactum.spec()
         .useInteraction([{
@@ -901,8 +899,8 @@ describe('Interactions - Exceptions check', () => {
           stores: {
             ProjectId: 'req.pathParams.id'
           },
-          exceptions: {
-            checkExercised: true
+          expects: {
+            disable: false
           }
         },
         {
@@ -922,8 +920,9 @@ describe('Interactions - Exceptions check', () => {
           stores: {
             UserId: 'req.pathParams.id'
           },
-          exceptions: {
-            checkExercised: true
+          expects: {
+            exercised: true,
+            callCount: 1
           }
         }])
         .get('http://localhost:9393/api/users/1')

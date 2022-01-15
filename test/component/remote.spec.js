@@ -43,9 +43,6 @@ describe('Remote- post single mock interaction', () => {
           "callCount": 0,
           "exercised": false,
           "calls": [],
-          "exceptions": {
-            "checkExercised": true
-          },
           id,
           "strict": true,
           "request": {
@@ -66,6 +63,7 @@ describe('Remote- post single mock interaction', () => {
             }
           },
           "expects": {
+            "disable": false,
             "exercised": true
           }
         }
@@ -82,9 +80,6 @@ describe('Remote- post single mock interaction', () => {
           "callCount": 0,
           "exercised": false,
           "calls": [],
-          "exceptions": {
-            "checkExercised": true
-          },
           id,
           "strict": true,
           "request": {
@@ -105,6 +100,7 @@ describe('Remote- post single mock interaction', () => {
             }
           },
           "expects": {
+            "disable": false,
             "exercised": true
           }
         }
@@ -146,9 +142,6 @@ describe('Remote- post single mock interaction', () => {
               "exercisedAt": "123456"
             }
           ],
-          "exceptions": {
-            "checkExercised": true
-          },
           id,
           "strict": true,
           "request": {
@@ -169,6 +162,7 @@ describe('Remote- post single mock interaction', () => {
             }
           },
           "expects": {
+            "disable": false,
             "exercised": true
           }
         }

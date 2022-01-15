@@ -156,11 +156,8 @@ describe('Remote Server - before and after spec', () => {
       response: { status: 200, "matchingRules": {} },
       callCount: 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
-      expects: { exercised: true }
+      expects: { disable: false, exercised: true }
     });
   });
 
@@ -197,11 +194,8 @@ describe('Remote Server - before and after spec', () => {
         response: { status: 200, "matchingRules": {} },
         callCount: 0,
         "calls": [],
-        "exceptions": {
-          "checkExercised": true
-        },
         "exercised": false,
-        expects: { exercised: true }
+        expects: { disable: false, exercised: true }
       },
       {
         id: 'id2',
@@ -210,11 +204,8 @@ describe('Remote Server - before and after spec', () => {
         response: { status: 200, "matchingRules": {} },
         callCount: 0,
         "calls": [],
-        "exceptions": {
-          "checkExercised": true
-        },
         "exercised": false,
-        expects: { exercised: true }
+        expects: { disable: false, exercised: true }
       }
     ]);
   });
@@ -243,11 +234,8 @@ describe('Remote Server - before and after spec', () => {
         response: { status: 200, "matchingRules": {} },
         callCount: 0,
         "calls": [],
-        "exceptions": {
-          "checkExercised": true
-        },
         "exercised": false,
-        expects: { exercised: true }
+        expects: { disable: false, exercised: true }
       },
       {
         id: 'id2',
@@ -256,11 +244,8 @@ describe('Remote Server - before and after spec', () => {
         response: { status: 200, "matchingRules": {} },
         callCount: 0,
         "calls": [],
-        "exceptions": {
-          "checkExercised": true
-        },
         "exercised": false,
-        expects: { exercised: true }
+        expects: { disable: false, exercised: true }
       }
     ]);
   });

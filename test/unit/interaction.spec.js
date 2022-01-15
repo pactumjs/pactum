@@ -27,19 +27,13 @@ describe('Interaction', () => {
           id: 1,
           name: 'fake'
         }
-      },
-      exceptions: {
-        checkExercised: false
-      },
+      }
     };
     const interaction = new Interaction(raw, true);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": false
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -60,7 +54,8 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
-        "exercised": false,
+        "disable": false,
+        "exercised": true,
         "callCount": undefined
       }
     });
@@ -93,9 +88,6 @@ describe('Interaction', () => {
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -119,6 +111,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -152,9 +145,6 @@ describe('Interaction', () => {
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -186,6 +176,7 @@ describe('Interaction', () => {
         }
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -219,9 +210,6 @@ describe('Interaction', () => {
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -247,6 +235,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -280,9 +269,6 @@ describe('Interaction', () => {
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -316,6 +302,7 @@ describe('Interaction', () => {
         }
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -333,8 +320,6 @@ describe('Interaction', () => {
     };
     const interaction = new Interaction(raw, true);
     expect(interaction.request).deep.equals({
-
-
       "method": "GET",
       "path": "/api/projects/1",
       "queryParams": {},
@@ -366,9 +351,6 @@ describe('Interaction', () => {
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -395,6 +377,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -428,9 +411,6 @@ describe('Interaction', () => {
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -459,6 +439,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -493,9 +474,6 @@ describe('Interaction', () => {
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -522,6 +500,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -551,9 +530,6 @@ describe('Interaction', () => {
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -581,6 +557,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -609,9 +586,6 @@ describe('Interaction', () => {
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -632,6 +606,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
@@ -651,9 +626,6 @@ describe('Interaction', () => {
       "id": "random",
       "callCount": 0,
       "calls": [],
-      "exceptions": {
-        "checkExercised": true
-      },
       "exercised": false,
       "strict": true,
       "response": {
@@ -669,6 +641,7 @@ describe('Interaction', () => {
         "matchingRules": {}
       },
       "expects": {
+        "disable": false,
         "exercised": true,
         "callCount": undefined
       }
