@@ -41,6 +41,10 @@ export interface InteractionExpectations {
   callCount?: number;
 }
 
+export interface InteractionExceptions {
+  checkExercised?: boolean;
+}
+
 // TODO - accept function - (req, res)
 export interface Interaction {
   id?: string;
@@ -53,6 +57,7 @@ export interface Interaction {
   request: InteractionRequest;
   response: InteractionResponse;
   expects?: InteractionExpectations;
+  exceptions?: InteractionExceptions;
 }
 
 export interface InteractionDetails {

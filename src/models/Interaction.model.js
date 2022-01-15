@@ -24,6 +24,12 @@ function setRawDefaults(raw) {
     if (typeof raw.strict === 'undefined') {
       raw.strict = true;
     }
+    if (!raw.exceptions) {
+      raw.exceptions = { checkExercised: true };
+    }
+    if (typeof raw.exceptions.checkExercised === 'undefined') {
+      raw.exceptions.checkExercised = true;
+    }
     if (!raw.response) {
       raw.response = {};
     }
@@ -35,6 +41,9 @@ function setRawDefaults(raw) {
     }
     if (typeof raw.expects.exercised === 'undefined') {
       raw.expects.exercised = true;
+    }
+    if (!raw.exceptions.checkExercised) {
+      raw.expects.exercised = false;
     }
   }
 }
@@ -178,6 +187,12 @@ class InteractionExpectations {
   }
 }
 
+class InteractionExceptions {
+  constructor(exceptions) {
+    this.checkExercised = exceptions.checkExercised;
+  }
+}
+
 class Interaction {
   constructor(raw) {
     let unprocessedResponse;
@@ -204,6 +219,7 @@ class Interaction {
       response,
       expects,
       stores,
+      exceptions
     } = raw;
     this.id = id || helper.getRandomId();
     if (flow) this.flow = flow;
@@ -213,6 +229,7 @@ class Interaction {
     this.request = new InteractionRequest(request);
     this.response = setResponse(response);
     this.expects = new InteractionExpectations(expects);
+    this.exceptions = new InteractionExceptions(exceptions);
     if (stores && typeof stores === 'object') {
       this.stores = stores;
     }
