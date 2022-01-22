@@ -342,7 +342,12 @@ class Expect {
       for (let i = 0; i < this.jsonSnapshot.length; i++) {
         const data = this.jsonSnapshot[i];
         if (data) {
-          Object.assign(rules, jmv.getMatchingRules(data, '$.body'));
+          const current_rules = jmv.getMatchingRules(data, '$.body');
+          const errors = jmv.validate(actual,  jmv.getRawValue(data), current_rules, '$.body');
+          if (errors) {
+            this.fail(errors.replace('$.body', '$'));
+          }
+          Object.assign(rules, current_rules);
         }
       }
       if (Object.keys(rules).length > 0) {

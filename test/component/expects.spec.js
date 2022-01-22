@@ -1007,6 +1007,28 @@ describe('Expects', () => {
     expect(err2).not.undefined;
   });
 
+  it('json snapshot - with invalid matchers', async () => {
+    let e;
+    try {
+      await pactum.spec()
+      .useInteraction('get people')
+      .name('json snapshot - with invalid matchers')
+      .get('http://localhost:9393/api/people')
+      .expectStatus(200)
+      .useLogLevel('ERROR')
+      .expectJsonSnapshot({
+        id: like('id')
+      })
+      .expectJsonSnapshot({
+        createdAt: like('2020-02-02')
+      });
+    } catch (error) {
+      e = error;
+    }
+    expect(e).not.undefined;
+    fs.unlinkSync(`.pactum/snapshots/json snapshot - with invalid matchers.json`);
+  });
+
   it('error - empty', async () => {
     await pactum.spec()
       .get('http://localhost:9392')

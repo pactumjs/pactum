@@ -211,12 +211,21 @@ class Spec {
     if (!this._request.headers) {
       this._request.headers = {};
     }
-    const cookieObject = utils.createCookieObject(key, value);
+    let cookie;
+    if (typeof key === 'object') {
+      cookie = lc.serialize(key);
+    } else {
+      if (value) {
+        cookie = `${key}=${value}`;
+      } else {
+        cookie = key;
+      }
+    }
     const headers = this._request.headers;
     if (headers['cookie'] !== undefined) {
-      headers['cookie'] = headers['cookie'] + ';' + lc.serialize(cookieObject);
+      headers['cookie'] = headers['cookie'] + ';' + cookie;
     } else {
-      headers['cookie'] = lc.serialize(cookieObject);
+      headers['cookie'] = cookie;
     }
     return this;
   }
