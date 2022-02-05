@@ -31,6 +31,34 @@ describe('Mock', () => {
     expect(() => mock.start({})).throws('Invalid port number provided');
   });
 
+  it('start with port & host - 127.0.0.1', async () => {
+    await mock.start(3000, '127.0.0.1');
+    expect(this.serverStartStub.callCount).equals(1, 'should start the server');
+  });
+
+  it('start with port & host - 0.0.0.0', async () => {
+    await mock.start(3000, '0.0.0.0');
+    expect(this.serverStartStub.callCount).equals(1, 'should start the server');
+  });
+
+  it('start with port & host - localhost', async () => {
+    await mock.start(3000, 'localhost');
+    expect(this.serverStartStub.callCount).equals(1, 'should start the server');
+  });
+
+  it('start with port & host - localhost', async () => {
+    await mock.start(3000, 'localhost');
+    expect(this.serverStartStub.callCount).equals(1, 'should start the server');
+  });
+
+  it('start with port & invalid host', async () => {
+    expect(() => mock.start(3000, 100)).throws('Invalid host provided - 100');
+  });
+
+  it('start with invalid port & valid host', async () => {
+    expect(() => mock.start('3000', 'localhost')).throws('Invalid port number provided - 3000');
+  });
+
   it('stop', async () => {
     await mock.stop();
     expect(this.serverStopStub.callCount).equals(1, 'should stop the server');
