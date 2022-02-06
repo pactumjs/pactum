@@ -10,10 +10,8 @@ const mock = {
 
   _server: new Server(),
 
-  start(port) {
-    if (port) {
-      this.setDefaultPort(port);
-    }
+  start(port, host) {
+    this.setDefaults(port, host)
     return this._server.start();
   },
 
@@ -21,11 +19,19 @@ const mock = {
     return this._server.stop();
   },
 
-  setDefaultPort(port) {
-    if (typeof port !== 'number') {
+  setDefaults(port, host) {
+    if (port && typeof port !== 'number') {
       throw new PactumConfigurationError(`Invalid port number provided - ${port}`);
     }
-    config.mock.port = port;
+    if (host && typeof host !== 'string') {
+      throw new PactumConfigurationError(`Invalid host provided - ${host}`);
+    }
+    if (port) {
+      config.mock.port = port;
+    }
+    if (host) {
+      config.mock.host = host;
+    }
   },
 
   addInteraction(interactions, data) {

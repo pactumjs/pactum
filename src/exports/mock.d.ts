@@ -73,6 +73,7 @@ export interface Handler {
  */
 export function start(): Promise<void>;
 export function start(port: number): Promise<void>;
+export function start(port: number, host: string): Promise<void>;
 
 /**
  * stops the mock server
