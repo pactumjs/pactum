@@ -22,6 +22,14 @@ const stash = require('./exports/stash');
 const expect = require('./exports/expect');
 const reporter = require('./exports/reporter');
 
+const processor = require('./helpers/dataProcessor');
+
+function parse(data) {
+  processor.processMaps();
+  processor.processTemplates();
+  return processor.processData(data);
+}
+
 const pactum = {
 
   mock,
@@ -59,7 +67,9 @@ const pactum = {
 
   clone(value) {
     return klona(value);
-  }
+  },
+
+  parse
 
 };
 

@@ -46,4 +46,6 @@ export function sleep(ms: number): Promise<void>;
 
 export function clone<T>(input: T): T;
 
+export function parse(data: any): any;
+
 export namespace pactum { }
