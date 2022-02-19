@@ -30,7 +30,7 @@ describe('parse', () => {
 
   it('data template', () => {
     stash.addDataTemplate({ 'User': { name: 'guest' } });
-    const actual = parse({ '@DATA:TEMPLATE@': 'User'});
+    const actual = parse({ '@DATA:TEMPLATE@': 'User' });
     expect(actual).deep.equals({ name: 'guest' });
   });
 
