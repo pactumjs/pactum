@@ -1,4 +1,4 @@
-export interface Have {
+interface Have {
   status(code: number): void;
   header(key: string, value: any): void;
   headerContains(key: string, value: any): void;
@@ -25,11 +25,11 @@ export interface Have {
   _(handler: string, data: any): Promise<void>;
 }
 
-export interface To {
+interface To {
   have: Have;
 }
 
-export interface Expect {
+interface Expect {
   to: To;
   should: To;
 }

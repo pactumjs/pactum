@@ -2,9 +2,10 @@ import * as Spec from './models/Spec';
 import * as Fuzz from './models/Fuzz';
 import * as E2E from './models/E2E';
 
-export * as expect from './exports/expect';
+import expect from './exports/expect';
+export { expect };
+
 export * as handler from './exports/handler';
-export * as matchers from './exports/matcher';
 export * as mock from './exports/mock';
 export * as reporter from './exports/reporter';
 export * as request from './exports/request';
@@ -12,7 +13,6 @@ export * as response from './exports/response';
 export * as settings from './exports/settings';
 export * as stash from './exports/stash';
 export * as state from './exports/state';
-export * as logger from './exports/logger';
 
 /**
  * returns an instance of a spec
@@ -45,5 +45,7 @@ export function e2e(name: string): E2E;
 export function sleep(ms: number): Promise<void>;
 
 export function clone<T>(input: T): T;
+
+export function parse(data: any): any;
 
 export namespace pactum { }

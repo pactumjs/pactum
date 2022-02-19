@@ -198,7 +198,7 @@ declare class Spec {
    * @see https://www.npmjs.com/package/form-data-lite
    * @see https://pactumjs.github.io/#/request-making?id=form-data
    */
-  withMultiPartFormData(key: string, value: string | Buffer | Array | ArrayBuffer, options?: FormData.AppendOptions): Spec;
+  withMultiPartFormData(key: string, value: string | Buffer | Array<any> | ArrayBuffer, options?: FormData.AppendOptions): Spec;
 
   /**
    * with http core options
@@ -395,7 +395,7 @@ declare class Spec {
    * executes the test case
    * @see https://pactumjs.github.io/#/api-testing
    */
-  toss(): Promise<T>;
+  toss(): Promise<any>;
 
   /**
    * returns chai like assertions

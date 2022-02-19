@@ -2,6 +2,7 @@ const { setMatchingRules, getValue } = require('pactum-matchers').utils;
 const processor = require('../helpers/dataProcessor');
 const helper = require('../helpers/helper');
 const { PactumInteractionError } = require('../helpers/errors');
+const { klona: clone } = require('klona');
 const ALLOWED_REQUEST_METHODS = new Set([
   'GET',
   'POST',
@@ -188,6 +189,9 @@ class InteractionExpectations {
 class Interaction {
   constructor(raw) {
     let unprocessedResponse;
+    if (raw && raw.clone) {
+      raw = clone(raw);
+    }
     if (raw && raw.response) {
       unprocessedResponse = raw.response;
       delete raw.response;

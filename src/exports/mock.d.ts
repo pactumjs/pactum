@@ -51,6 +51,7 @@ export interface Interaction {
   flow?: string;
   strict?: boolean;
   background?: boolean;
+  clone?: boolean;
   request: InteractionRequest;
   response: InteractionResponse;
   expects?: InteractionExpectations;
