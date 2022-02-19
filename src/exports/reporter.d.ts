@@ -1,4 +1,4 @@
-import { InteractionRequest, InteractionResponse, Interaction } from './mock';
+import { InteractionRequest, Interaction } from './mock';
 
 export interface SpecRequest {
   method: string;
@@ -19,9 +19,7 @@ export interface InteractionCall {
   exercisedAt: string;
 }
 
-export interface Interaction {
-  request: InteractionRequest;
-  response: InteractionResponse;
+export interface ExercisedInteraction extends Interaction {
   calls: InteractionCall[];
 }
 
@@ -36,7 +34,7 @@ export interface SpecData {
   request: SpecRequest;
   response?: SpecResponse;
   recorded?: object;
-  interactions: Interaction[];
+  interactions: ExercisedInteraction[];
 }
 
 export interface Reporter {
@@ -44,7 +42,7 @@ export interface Reporter {
   afterSpec(data: SpecData): void;
   afterStep(data: object): void;
   afterTest(data: object): void;
-  afterInteraction(data: Interaction): void;
+  afterInteraction(data: ExercisedInteraction): void;
   end(): void | Promise<void>
 }
 
