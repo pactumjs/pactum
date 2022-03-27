@@ -373,8 +373,10 @@ declare class Spec {
 
   /**
    * records data that will be available in reports
+   * @see https://pactumjs.github.io/reference/records
    */
   records(name: string, path: string): Spec;
+  records(name: string, data: object): Spec;
 
   /**
    * waits after performing a request & before response validation

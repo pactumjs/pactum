@@ -44,6 +44,10 @@ describe('Default Recorder', () => {
 
 describe('Recorder', () => {
 
+  after(() => {
+    request.getDefaultRecorders().length = 0;
+  });
+
   it('res header data to recorder', async () => {
     await pactum.spec()
       .useInteraction('default get')
@@ -64,8 +68,12 @@ describe('Recorder', () => {
     spec.records('Path', 'res.body.path');
   });
 
-  after(() => {
-    request.getDefaultRecorders().length = 0;
+  it('mocha context', async function () {
+    await pactum.spec()
+      .useInteraction('default get')
+      .get('http://localhost:9393/default/get')
+      .records('context', this)
+      .expectStatus(200);
   });
 
 });
