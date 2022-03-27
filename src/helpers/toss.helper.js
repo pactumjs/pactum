@@ -55,11 +55,15 @@ function recordSpecData(spec, recorders) {
   const ctx = { req: spec._request, res: spec._response };
   recorders.forEach(recorder => {
     const { name, path } = recorder;
-    const captureHandler = getCaptureHandlerName(path);
-    if (captureHandler) {
-      spec.recorded[name] = hr.capture(captureHandler, ctx);
+    if (typeof path === 'object') {
+      spec.recorded[name] = path;
     } else {
-      spec.recorded[name] = getPathValueFromRequestResponse(path, spec._request, spec._response);
+      const captureHandler = getCaptureHandlerName(path);
+      if (captureHandler) {
+        spec.recorded[name] = hr.capture(captureHandler, ctx);
+      } else {
+        spec.recorded[name] = getPathValueFromRequestResponse(path, spec._request, spec._response);
+      }
     }
   });
 }
