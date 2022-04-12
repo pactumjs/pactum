@@ -69,7 +69,13 @@ const pactum = {
     return klona(value);
   },
 
-  parse
+  parse,
+
+  getStashKey: helper.getStashKey,
+  
+  getMapKey: helper.getMapKey,
+
+  getFunctionKey: helper.getFunctionKey
 
 };
 
