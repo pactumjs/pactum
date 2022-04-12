@@ -75,8 +75,12 @@ const pactum = {
   
   getMapKey: helper.getMapKey,
 
-  getFunctionKey: helper.getFunctionKey
+  getFunctionKey: helper.getFunctionKey,
 
+  constants: {
+    override: '@OVERRIDES@',
+    template: '@DATA:TEMPLATE@',
+  }
 };
 
 module.exports = pactum;
