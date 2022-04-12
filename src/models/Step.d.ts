@@ -7,7 +7,7 @@ declare class StepSpec extends Spec {
 }
 
 declare class Step {
-  spec(name?: string, data?: any): StepSpec;
+  spec<T = any>(name?: string, data?: T): StepSpec;
   clean(name?: string, data?: any): CleanStep;
   toss(): Promise<void>;
 }

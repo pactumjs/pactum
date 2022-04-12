@@ -30,7 +30,7 @@ export function spec(): Spec;
  *  .use('spec handler name', { optional: 'data' })
  *  .expectStatus(200);
  */
-export function spec(name: string, data?: any): Spec;
+export function spec<T = any>(name: string, data?: T): Spec;
 
 /**
  * returns an instance of spec
