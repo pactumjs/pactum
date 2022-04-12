@@ -1,4 +1,4 @@
-const url = require('url');
+const { URL } = require('url');
 const processor = require('./dataProcessor');
 const helper = require('./helper');
 const config = require('../config');
@@ -9,6 +9,7 @@ const requestProcessor = {
     processor.processMaps();
     processor.processTemplates();
     request = processor.processData(request);
+    config.request = processor.processData(config.request);
     setBaseUrl(request);
     setPathParams(request);
     setGraphQLParams(request);
@@ -27,8 +28,8 @@ function setBaseUrl(request) {
   if (config.request.baseUrl && request.url && !request.url.startsWith('http')) {
     request.url = config.request.baseUrl + request.url;
   }
-  const _url = url.parse(request.url);
-  request.path = unescape(_url.pathname);
+  const _url = new URL(request.url);
+  request.path = decodeURI(_url.pathname);
 }
 
 function setPathParams(request) {
