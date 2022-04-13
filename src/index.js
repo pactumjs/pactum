@@ -71,12 +71,6 @@ const pactum = {
 
   parse,
 
-  getStoreKey: stash.getStoreKey,
-  
-  getMapKey: stash.getMapKey,
-
-  getFunctionKey: stash.getFunctionKey,
-
   constants: {
     override: '@OVERRIDES@',
     template: '@DATA:TEMPLATE@',

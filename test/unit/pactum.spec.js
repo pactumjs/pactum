@@ -24,15 +24,15 @@ describe('pactum', () => {
   });
 
   it('getStoreKey - returns the key as a stash key', () => {
-    const { getStoreKey } = pactum;
+    const { getStoreKey } = pactum.stash;
     expect(getStoreKey('stash-key'), '$S{stash-key}');
   });
   it('getMapKey - returns the key as a map key', () => {
-    const { getMapKey } = pactum;
+    const { getMapKey } = pactum.stash;
     expect(getMapKey('map-key'), '$M{map-key}');
   });
   it('getFunctionKey - returns the key as a function key', () => {
-    const { getFunctionKey } = pactum;
+    const { getFunctionKey } = pactum.stash;
     expect(getFunctionKey('function-key'), '$S{function-key}');
   });
 

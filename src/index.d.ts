@@ -47,8 +47,5 @@ export function sleep(ms: number): Promise<void>;
 export function clone<T>(input: T): T;
 
 export function parse(data: any): any;
-export function getStoreKey(key: string): string;
-export function getMapKey(key: string): string;
-export function getFunctionKey(key: string): string;
 
 export namespace pactum { }
