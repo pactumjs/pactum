@@ -71,11 +71,11 @@ const pactum = {
 
   parse,
 
-  getStashKey: helper.getStashKey,
+  getStashKey: stash.getStashKey,
   
-  getMapKey: helper.getMapKey,
+  getMapKey: stash.getMapKey,
 
-  getFunctionKey: helper.getFunctionKey,
+  getFunctionKey: stash.getFunctionKey,
 
   constants: {
     override: '@OVERRIDES@',

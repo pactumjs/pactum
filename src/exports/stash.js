@@ -88,6 +88,18 @@ const stash = {
   clearDataStores() {
     dataStore = {};
     config.data.ref.spec.enabled = false;
+  },
+
+  getStashKey(key) {
+    return `$S{${key}}`;
+  },
+
+  getMapKey(key) {
+    return `$M{${key}}`;
+  },
+
+  getFunctionKey(key) {
+    return `$F{${key}}`;
   }
 
 };

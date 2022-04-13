@@ -69,18 +69,6 @@ const helper = {
   isContentJson(res) {
     const type = res && res.headers['content-type'];
     return type ? type.includes('application/json') : false;
-  },
-
-  getStashKey(key) {
-    return `$S{${key}}`;
-  },
-
-  getMapKey(key) {
-    return `$M{${key}}`;
-  },
-
-  getFunctionKey(key) {
-    return `$F{${key}}`;
   }
 
 };

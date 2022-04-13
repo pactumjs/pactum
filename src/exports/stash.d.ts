@@ -35,3 +35,6 @@ export function addDataTemplate(templates: object[]): void;
 export function getDataMap(): object;
 export function getDataTemplate(): object;
 export function getDataStore(): object;
+export function getStoreKey(key: string): string;
+export function getMapKey(key: string): string;
+export function getFunctionKey(key: string): string;
