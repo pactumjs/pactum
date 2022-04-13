@@ -71,7 +71,7 @@ const pactum = {
 
   parse,
 
-  getStashKey: stash.getStashKey,
+  getStoreKey: stash.getStoreKey,
   
   getMapKey: stash.getMapKey,
 

@@ -90,7 +90,7 @@ const stash = {
     config.data.ref.spec.enabled = false;
   },
 
-  getStashKey(key) {
+  getStoreKey(key) {
     return `$S{${key}}`;
   },
 
