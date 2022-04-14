@@ -69,8 +69,12 @@ const pactum = {
     return klona(value);
   },
 
-  parse
+  parse,
 
+  constants: {
+    override: '@OVERRIDES@',
+    template: '@DATA:TEMPLATE@',
+  }
 };
 
 module.exports = pactum;
