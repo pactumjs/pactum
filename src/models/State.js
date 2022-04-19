@@ -22,7 +22,6 @@ class State {
       await handlerFun(ctx);
     }
   }
-
 }
 
 module.exports = State;
