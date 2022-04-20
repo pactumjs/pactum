@@ -230,7 +230,6 @@ class Tosser {
       rlc.afterSpecReport(this.spec);
     }
   }
-
 }
 
 async function getResponse(tosser) {
