@@ -56,7 +56,7 @@ This readme offers an basic introduction to the library. Head over to the full d
 
 ## Need Help
 
-We use Github [Discussions](https://github.com/pactumjs/pactum/discussions) to receive feedback, discuss ideas & answer questions.
+We use Github [Discussions](https://github.com/pactumjs/pactum/discussions) to receive feedbacks, discuss ideas & answer questions.
 
 ## Installation
 
