@@ -1,6 +1,6 @@
 <span align="center">
 
-![logo](https://pactumjs.github.io/_media/logo-icon-small.svg)
+![logo](./assets/logo-icon-small.svg)
 
 # PactumJS
 
@@ -47,12 +47,12 @@
 
 This readme offers an basic introduction to the library. Head over to the full documentation at https://pactumjs.github.io
 
-- [API Testing](https://pactumjs.github.io/#/request-making)
-- [Integration Testing](https://pactumjs.github.io/#/integration-testing)
-- [Component Testing](https://pactumjs.github.io/#/component-testing)
-- [Contract Testing](https://pactumjs.github.io/#/contract-testing)
-- [E2E Testing](https://pactumjs.github.io/#/e2e-testing)
-- [Mock Server](https://pactumjs.github.io/#/mock-server)
+- [API Testing](https://pactumjs.github.io/guides/api-testing)
+- [Integration Testing](https://pactumjs.github.io/guides/integration-testing)
+- [Component Testing](https://pactumjs.github.io/guides/component-testing)
+- [Contract Testing](https://pactumjs.github.io/guides/contract-testing)
+- [E2E Testing](https://pactumjs.github.io/guides/e2e-testing)
+- [Mock Server](https://pactumjs.github.io/guides/mock-server)
 
 ## Need Help
 

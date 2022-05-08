@@ -16,19 +16,13 @@ export * as state from './exports/state';
 
 /**
  * returns an instance of a spec
- * @example
- * await pactum.spec()
- *  .get('/api/users')
- *  .expectStatus(200);
+ * @see https://pactumjs.github.io/api/requests/spec.html
  */
 export function spec(): Spec;
 
 /**
  * returns an instance of a spec & runs custom spec handler
- * @example
- * await pactum.spec()
- *  .use('spec handler name', { optional: 'data' })
- *  .expectStatus(200);
+ * @see https://pactumjs.github.io/api/requests/spec.html
  */
 export function spec<T = any>(name: string, data?: T): Spec;
 
@@ -42,10 +36,19 @@ export function fuzz(): Fuzz;
 
 export function e2e(name: string): E2E;
 
+/**
+ * @see https://pactumjs.github.io/api/utils/sleep.html
+ */
 export function sleep(ms: number): Promise<void>;
 
+/**
+ * @see https://pactumjs.github.io/api/utils/clone.html
+ */
 export function clone<T>(input: T): T;
 
+/**
+ * @see https://pactumjs.github.io/api/utils/parse.html
+ */
 export function parse(data: any): any;
 
 export namespace pactum { }
