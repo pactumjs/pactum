@@ -14,7 +14,7 @@ describe('E2E', () => {
         response: {
           status: 200,
           body: {
-            id: 1
+            id: 1,
           }
         }
       };
@@ -23,10 +23,10 @@ describe('E2E', () => {
       return {
         request: {
           method: 'POST',
-          path: '/api/users'
+          path: '/api/users',
         },
         response: {
-          status: 200
+          status: 200,
         }
       };
     });
@@ -34,10 +34,10 @@ describe('E2E', () => {
       return {
         request: {
           method: 'DELETE',
-          path: '/api/users/1'
+          path: '/api/users/1',
         },
         response: {
-          status: 200
+          status: 200,
         }
       };
     });
