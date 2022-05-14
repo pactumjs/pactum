@@ -74,53 +74,54 @@ export type WaitHandlerFunction = (ctx: WaitHandlerContext) => any | Promise<any
 
 /**
  * adds a custom spec handler
- * @see https://pactumjs.github.io/#/api-handlers?id=addspechandler
+ * @see https://pactumjs.github.io/api/handlers/addSpecHandler.html
  */
 export function addSpecHandler(name: string, func: SpecHandlerFunction): void;
 
 /**
  * adds a custom expect handler
- * @see https://pactumjs.github.io/#/api-handlers?id=addexpecthandler
+ * @see https://pactumjs.github.io/api/handlers/addExpectHandler.html
  */
 export function addExpectHandler(name: string, func: ExpectHandlerFunction): void;
 
 /**
  * adds a custom retry handler
- * @see https://pactumjs.github.io/#/api-handlers?id=addretryhandler
+ * @see https://pactumjs.github.io/api/handlers/addRetryHandler.html
  */
 export function addRetryHandler(name: string, func: RetryHandlerFunction): void;
 
 /**
  * adds a custom return handler
- * @see https://pactumjs.github.io/#/api-handlers?id=addcapturehandler
+ * @see https://pactumjs.github.io/api/handlers/addCaptureHandler.html
  */
 export function addCaptureHandler(name: string, func: CaptureHandlerFunction): void;
 
 /**
  * adds a custom state handler
+ * @see https://pactumjs.github.io/api/handlers/addStateHandler.html
  */
 export function addStateHandler(name: string, func: StateHandlerFunction): void;
 
 /**
  * adds a custom data handler
- * @see https://pactumjs.github.io/#/api-handlers?id=adddatahandler
+ * @see https://pactumjs.github.io/api/handlers/addDataFuncHandler.html
  */
 export function addDataFuncHandler(name: string, func: DataHandlerFunction): void;
 
 /**
  * adds a custom interaction handler
- * @see https://pactumjs.github.io/#/api-handlers?id=addinteractionhandler
+ * @see https://pactumjs.github.io/api/handlers/addInteractionHandler.html
  */
 export function addInteractionHandler(name: string, func: InteractionHandlerFunction): void;
 
 /**
  * adds a custom assert handler
- * @see https://pactumjs.github.io/#/api-handlers?id=addasserthandler
+ * @see https://pactumjs.github.io/api/handlers/addAssertHandler.html
  */
 export function addAssertHandler(name: string, func: AssertHandlerFunction): void;
 
 /**
  * adds a custom wait handler
- * @see https://pactumjs.github.io/#/api-handlers?id=addwaithandler
+ * @see https://pactumjs.github.io/api/handlers/addWaitHandler.html
  */
 export function addWaitHandler(name: string, func: WaitHandlerFunction): void;

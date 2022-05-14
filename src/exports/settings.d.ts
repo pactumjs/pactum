@@ -1,9 +1,8 @@
 export type LogLevel = 'VERBOSE' | 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'SILENT';
 
 /**
-  * sets log level
-  * @env PACTUM_LOG_LEVEL
-*/
+ * @see https://pactumjs.github.io/api/settings/setLogLevel.html
+ */
 export function setLogLevel(level: LogLevel): void;
 
 export type LogFunction = (messages: any[]) => void;
@@ -14,6 +13,9 @@ export interface Logger {
   warn: LogFunction;
   error: LogFunction;
 }
+/**
+ * @see https://pactumjs.github.io/api/settings/setLogger.html
+ */
 export function setLogger(logger: Logger): void;
 
 export type JsonLikeValidateFunction = (actual: any, expected: any, options?: any) => any;

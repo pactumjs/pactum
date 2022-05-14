@@ -28,7 +28,7 @@ export function spec<T = any>(name: string, data?: T): Spec;
 
 /**
  * returns an instance of spec
- * @param name - unique pactum flow name
+ * @see https://pactumjs.github.io/api/requests/flow.html
  */
 export function flow(name: string): Spec;
 

@@ -44,7 +44,7 @@ declare class Spec {
 
   /**
    * adds a interaction to the server & auto removed after execution
-   * @see https://pactumjs.github.io/api/requests/useInteraction.html
+   * @see https://pactumjs.github.io/api/mock/useInteraction.html
    */
   useInteraction(interaction: Interaction): Spec;
   useInteraction(handler: string, data?: any): Spec;
