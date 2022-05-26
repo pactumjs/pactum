@@ -2,7 +2,7 @@ export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD'
 
 export interface GraphQLRequest {
   query: string;
-  variables?: string;
+  variables?: object;
 }
 
 export interface InteractionRequest {
