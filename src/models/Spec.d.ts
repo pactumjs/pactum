@@ -1,4 +1,4 @@
-import { RequestOptions } from 'http';
+import { RequestOptions, IncomingMessage } from 'http';
 import FormData from 'form-data-lite';
 import { Interaction } from '../exports/mock';
 import { ExpectHandlerFunction, RetryHandlerFunction, CaptureHandlerFunction } from '../exports/handler';
@@ -386,10 +386,16 @@ declare class Spec {
   inspect(): Spec;
 
   /**
+   * saves response in file system
+   * @see https://pactumjs.github.io/api/requests/save.html
+   */
+  save(path: string): Spec;
+
+  /**
    * executes the test case
    * @see https://pactumjs.github.io/api/requests/toss.html
    */
-  toss(): Promise<any>;
+  toss(): Promise<IncomingMessage> | Promise<any>;
 
   /**
    * returns chai like assertions

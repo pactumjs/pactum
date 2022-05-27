@@ -33,6 +33,7 @@ class Spec {
     this.previousLogLevel = null;
     this.interactions = [];
     this._wait = null;
+    this._save = null;
     this._specHandlerData = data;
     hr.spec(name, data, this);
     this._expect.setDefaultResponseExpectations();
@@ -469,6 +470,11 @@ class Spec {
 
   inspect() {
     this._inspect = true;
+    return this;
+  }
+
+  save(path) {
+    this._save = path;
     return this;
   }
 
