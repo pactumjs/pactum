@@ -1,4 +1,5 @@
 const phin = require('phin');
+const fs = require('fs');
 const helper = require('../helpers/helper');
 const log = require('../plugins/logger');
 const rlc = require('../helpers/reporter.lifeCycle');
@@ -37,6 +38,7 @@ class Tosser {
         await this.staticWait();
       }
       await this.getInteractionsFromServer();
+      this.saveDataInFileSystem();
       this.recordData();
       th.storeSpecData(this.spec, this.spec._stores);
       await this.validate();
@@ -162,6 +164,12 @@ class Tosser {
   setPreviousLogLevel() {
     if (this.previousLogLevel) {
       log.setLevel(this.previousLogLevel);
+    }
+  }
+
+  saveDataInFileSystem() {
+    if (this.spec._save && this.response.buffer) {
+      fs.writeFileSync(this.spec._save, this.response.buffer);
     }
   }
 

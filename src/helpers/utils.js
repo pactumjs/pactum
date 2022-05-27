@@ -147,19 +147,30 @@ function validateHeaders(req, interaction) {
 
 function validateBody(req, interaction) {
   const { strict, request } = interaction;
+  const actual_request_body = request.form ? parseFormBody(req.body) : req.body;
+  const expected_request_body = request.form ? request.form : request.body;
   if (request.graphQL && req.method !== 'GET') {
-    return graphQL.compare(req.body, request.body, strict);
+    return graphQL.compare(actual_request_body, expected_request_body, strict);
   }
   if (strict) {
-    if (req.body || request.body) {
-      return compare(req.body, request.body, request.matchingRules, '$.body', strict);
+    if (actual_request_body || expected_request_body) {
+      return compare(actual_request_body, expected_request_body, request.matchingRules, '$.body', strict);
     }
   } else {
-    if (request.body) {
-      return compare(req.body, request.body, request.matchingRules, '$.body', strict);
+    if (expected_request_body) {
+      return compare(actual_request_body, expected_request_body, request.matchingRules, '$.body', strict);
     }
   }
   return { message: '', equal: true };
+}
+
+function parseFormBody(form_string) {
+  const form = {};
+  const params = new URLSearchParams(form_string);
+  for (const [name, value] of params) {
+    form[name] = value;
+  }
+  return form;
 }
 
 module.exports = utils;

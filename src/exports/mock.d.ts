@@ -13,6 +13,7 @@ export interface InteractionRequest {
   queryParams?: object;
   graphQL?: GraphQLRequest;
   body?: any;
+  form?: object;
 }
 
 export interface InteractionResponse {
@@ -70,7 +71,7 @@ export interface Handler {
 
 /**
  * starts the mock server
- * @see https://pactumjs.github.io/#/mock-server
+ * @see https://pactumjs.github.io/guides/mock-server.html
  */
 export function start(): Promise<void>;
 export function start(port: number): Promise<void>;
@@ -78,13 +79,14 @@ export function start(port: number, host: string): Promise<void>;
 
 /**
  * stops the mock server
- * @see https://pactumjs.github.io/#/mock-server
+ * @see https://pactumjs.github.io/guides/mock-server.html
  */
 export function stop(): Promise<void>;
 
 /**
  * adds a interaction
- * @see https://pactumjs.github.io/#/mock-server
+ * @see https://pactumjs.github.io/guides/mock-server.html
+ * @see https://pactumjs.github.io/api/mock/interaction.html
  */
 export function addInteraction(interaction: Interaction): string | Promise<string>;
 export function addInteraction(interactions: Interaction[]): string[] | Promise<string[]>;
@@ -95,27 +97,27 @@ export function addInteraction(handlers: Handler[], data?: any): string[] | Prom
 
 /**
  * returns interaction details
- * @see https://pactumjs.github.io/#/mock-server
+ * @see https://pactumjs.github.io/guides/mock-server.html
  */
 export function getInteraction(id: string): InteractionDetails | Promise<InteractionDetails>;
 export function getInteraction(ids: string[]): InteractionDetails[] | Promise<InteractionDetails[]>;
 
 /**
  * removes specified interaction from the mock server
- * @see https://pactumjs.github.io/#/mock-server
+ * @see https://pactumjs.github.io/guides/mock-server.html
  */
 export function removeInteraction(id: string): void | Promise<void>;
 export function removeInteraction(ids: string[]): void | Promise<void>;
 
 /**
  * clears all interactions from the server
- * @see https://pactumjs.github.io/#/mock-server
+ * @see https://pactumjs.github.io/guides/mock-server.html
  */
 export function clearInteractions(): void;
 
 /**
  * use remote pactum server
  * all methods in mock will return promises
- * @see https://pactumjs.github.io/#/mock-server
+ * @see https://pactumjs.github.io/guides/mock-server.html
  */
 export function useRemoteServer(url: string): void;
