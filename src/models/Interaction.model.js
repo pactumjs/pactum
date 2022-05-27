@@ -146,6 +146,10 @@ class InteractionRequest {
         };
       }
     }
+    if (request.form) {
+      setMatchingRules(this.matchingRules, request.form, '$.body');
+      this.form = getValue(request.form);
+    }
   }
 }
 

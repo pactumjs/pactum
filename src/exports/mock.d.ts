@@ -13,6 +13,7 @@ export interface InteractionRequest {
   queryParams?: object;
   graphQL?: GraphQLRequest;
   body?: any;
+  form?: object;
 }
 
 export interface InteractionResponse {
