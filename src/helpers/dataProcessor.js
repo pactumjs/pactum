@@ -54,6 +54,7 @@ const dataProcessor = {
     if (!data) return data;
     const templateName = data['@DATA:TEMPLATE@'];
     const overrides = data['@OVERRIDES@'];
+    const removes = data['@REMOVES@'] || [];
     if (templateName) {
       const templateValue = this.template[templateName];
       if (templateValue) {
@@ -63,6 +64,7 @@ const dataProcessor = {
           override(data, overrides);
           data = this.processDataTemplates(data);
         }
+        removes.forEach(_key => delete data[_key]);
       } else {
         log.warn(`Template Not Found - ${templateName}`);
       }

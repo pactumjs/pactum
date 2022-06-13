@@ -160,6 +160,95 @@ describe('Data Processing - Templates', () => {
     expect(config.data.template.processed).equals(true);
   });
 
+  it('processTemplates - removes single property', () => {
+    stash.addDataTemplate({
+      'User': {
+        'Name': 'Snow',
+        'Address': {
+          '@DATA:TEMPLATE@': 'Address',
+          '@REMOVES@': ['Zip']
+        }
+      },
+      'Address': {
+        'Street': 'Main',
+        'Zip': '524004'
+      }
+    });
+    dp.processTemplates();
+    expect(dp.template).deep.equals({
+      'User': {
+        'Name': 'Snow',
+        'Address': {
+          'Street': 'Main'
+        }
+      },
+      'Address': {
+        'Street': 'Main',
+        'Zip': '524004'
+      }
+    });
+    expect(config.data.template.enabled).equals(true);
+    expect(config.data.template.processed).equals(true);
+  });
+
+  it('processTemplates - removes multiple properties', () => {
+    stash.addDataTemplate({
+      'User': {
+        'Name': 'Snow',
+        'Address': {
+          '@DATA:TEMPLATE@': 'Address',
+          '@REMOVES@': ['Zip', 'Street']
+        }
+      },
+      'Address': {
+        'Street': 'Main',
+        'Zip': '524004'
+      }
+    });
+    dp.processTemplates();
+    expect(dp.template).deep.equals({
+      'User': {
+        'Name': 'Snow',
+        'Address': {}
+      },
+      'Address': {
+        'Street': 'Main',
+        'Zip': '524004'
+      }
+    });
+    expect(config.data.template.enabled).equals(true);
+    expect(config.data.template.processed).equals(true);
+  });
+
+  it('processTemplates - removes non existing properties', () => {
+    stash.addDataTemplate({
+      'User': {
+        'Name': 'Snow',
+        'Address': {
+          '@DATA:TEMPLATE@': 'Address',
+          '@REMOVES@': ['Zip', 'Street', 'Pin']
+        }
+      },
+      'Address': {
+        'Street': 'Main',
+        'Zip': '524004'
+      }
+    });
+    dp.processTemplates();
+    expect(dp.template).deep.equals({
+      'User': {
+        'Name': 'Snow',
+        'Address': {}
+      },
+      'Address': {
+        'Street': 'Main',
+        'Zip': '524004'
+      }
+    });
+    expect(config.data.template.enabled).equals(true);
+    expect(config.data.template.processed).equals(true);
+  });
+
   afterEach(() => {
     config.data.template.enabled = false;
     config.data.template.processed = false;
