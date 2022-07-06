@@ -90,7 +90,9 @@ function setMultiPartFormData(request) {
       request.headers = multiPartHeaders;
     } else {
       for (const prop in multiPartHeaders) {
-        request.headers[prop] = multiPartHeaders[prop];
+        if (request.headers[prop] === undefined) {
+          request.headers[prop] = multiPartHeaders[prop];
+        }
       }
     }
     delete request._multiPartFormData;
