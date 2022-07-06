@@ -825,7 +825,6 @@ describe('Pact - VALID', () => {
 
 });
 
-
 describe('Interactions - expects skip check', () => {
 
   it('skip expects - defaults', async () => {

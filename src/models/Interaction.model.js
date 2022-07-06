@@ -166,6 +166,9 @@ class InteractionResponse {
     } else if (response.randomDelay) {
       this.delay = new InteractionResponseDelay('RANDOM', response.randomDelay);
     }
+    if (response.file) {
+      this.file = getValue(response.file);
+    }
   }
 }
 

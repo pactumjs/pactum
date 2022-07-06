@@ -1,4 +1,7 @@
 const polka = require('polka');
+const fs = require('fs');
+const mime = require('mime-lite')
+const fs_path = require('path');
 
 const Interaction = require('./Interaction.model');
 const helper = require('../helpers/helper');
@@ -138,9 +141,9 @@ function sendInteractionFoundResponse(req, res, interaction) {
     res.status(_response.status);
     const delay = getDelay(_response);
     if (delay > 0) {
-      setTimeout(() => sendResponseBody(res, _response.body), delay);
+      setTimeout(() => sendResponse(res, _response), delay);
     } else {
-      sendResponseBody(res, _response.body);
+      sendResponse(res, _response);
     }
   }
   interaction.callCount += 1;
@@ -164,11 +167,13 @@ function updateCalls(req, interaction) {
 /**
  * sends response body
  * @param {ExpressResponse} res - HTTP response
- * @param {object} body - response body to be sent
+ * @param {object} interaction_response - response body to be sent
  */
-function sendResponseBody(res, body) {
-  if (body) {
-    res.send(body);
+function sendResponse(res, interaction_response) {
+  if (interaction_response.file) {
+    res.download(interaction_response);
+  } else if (interaction_response.body) {
+    res.send(interaction_response.body);
   } else {
     res.send();
   }
@@ -392,7 +397,10 @@ class ExpressResponse {
   send(data) {
     if (data) {
       if (typeof data === 'object') {
-        this.res.setHeader('Content-Type', 'application/json');
+        const header_keys = this.res.getHeaderNames();
+        if (!header_keys.includes('content-type')) {
+          this.res.setHeader('Content-Type', 'application/json');
+        }
         this.res.end(JSON.stringify(data));
       } else {
         this.res.end(data);
@@ -400,6 +408,20 @@ class ExpressResponse {
     } else {
       this.res.end();
     }
+  }
+
+  download(interaction_response) {
+    if (interaction_response.headers) {
+      const header_keys = Object.keys(interaction_response.headers).map(_ => _.toLowerCase());
+      if (!header_keys.includes('content-type')) {
+        const file_name = fs_path.basename(interaction_response.file)
+        this.res.setHeader('content-type', mime.getType(file_name));
+      }
+    } else {
+      const file_name = fs_path.basename(interaction_response.file)
+      this.res.setHeader('content-type', mime.getType(file_name));
+    }
+    fs.createReadStream(interaction_response.file).pipe(this.res);
   }
 }
 
