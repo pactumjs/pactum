@@ -20,6 +20,7 @@ export interface InteractionResponse {
   status: number;
   headers?: object;
   body?: object;
+  file?: string;
   fixedDelay?: number;
   randomDelay?: RandomDelay;
 }

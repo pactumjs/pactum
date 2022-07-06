@@ -624,3 +624,30 @@ describe('Interactions - Not Strict - Follow Redirects', () => {
   });
 
 });
+
+describe('Interactions - Response - Headers', () => {
+
+  it('with custom content-type headers', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/custom/header'
+        },
+        response: {
+          status: 200,
+          headers: {
+            'content-type': 'any'
+          },
+          body: {
+            message: 'hello'
+          }
+        }
+      })
+      .get('http://localhost:9393/custom/header')
+      .expectStatus(200)
+      .expectHeader('content-type', 'any')
+      .expectJson('message', 'hello');
+  });
+
+});

@@ -57,4 +57,13 @@ describe('Files', () => {
       .expectStatus(200);
   });
 
+  it('with file - custom content-type header', async () => {
+    await pactum.spec()
+      .useInteraction('post file')
+      .post('http://localhost:9393/api/file')
+      .withFile('./package.json')
+      .withHeaders('content-type', 'any')
+      .expectStatus(200);
+  });
+
 });
