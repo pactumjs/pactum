@@ -28,9 +28,8 @@ class Server {
         this.app.use(bodyParser);
         registerPactumRemoteRoutes(this);
         registerAllRoutes(this, this.app);
-        this.app.listen(config.mock.port, config.mock.host, () => {
-          const mockAddrInfo = this.app.server.address()
-          log.info(`Mock server is listening on http://${mockAddrInfo.address}:${mockAddrInfo.port}`);
+        this.app.listen(config.mock.port, () => {
+          log.info(`Mock server is listening on http://localhost:${config.mock.port}`);
           this._registerEvents();
           resolve();
         });
