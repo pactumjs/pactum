@@ -86,16 +86,16 @@ Tests in **pactum** are clear and comprehensive. It uses numerous descriptive me
 Running simple api test expectations.
 
 ```js
-const pactum = require('pactum');
+const { spec } = require('pactum');
 
 it('should be a teapot', async () => {
-  await pactum.spec()
+  await spec()
     .get('http://httpbin.org/status/418')
     .expectStatus(418);
 });
 
 it('should save a new user', async () => {
-  await pactum.spec()
+  await spec()
     .post('https://jsonplaceholder.typicode.com/users')
     .withHeaders('Authorization', 'Basic xxxx')
     .withJson({
