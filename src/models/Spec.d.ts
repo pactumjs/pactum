@@ -110,7 +110,7 @@ declare class Spec {
   withPath(url: string): Spec;
 
   /**
-   * replaces path params in the request url 
+   * replaces path params in the request url
    * @see https://pactumjs.github.io/api/requests/withPathParams.html
    */
   withPathParams(key: string, value: any): Spec;
@@ -358,9 +358,9 @@ declare class Spec {
    * returns custom response from json response using custom handler
    * @see https://pactumjs.github.io/api/requests/returns.html
    */
-  returns(handlerName: string): Spec;
-  returns(path: string): Spec;
-  returns(handler: CaptureHandlerFunction): Spec;
+  returns<T = Spec>(handlerName: string): T;
+  returns<T = Spec>(path: string): T;
+  returns<T = Spec>(handler: CaptureHandlerFunction): T;
 
   /**
    * records data that will be available in reports
