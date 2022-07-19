@@ -2,6 +2,7 @@ import { InteractionRequest, Interaction } from './mock';
 
 export interface SpecRequest {
   method: string;
+  url: string;
   path: string;
   headers?: object;
   body?: any;
