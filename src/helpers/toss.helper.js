@@ -116,5 +116,6 @@ module.exports = {
   storeSpecData,
   recordSpecData,
   getOutput,
-  storeInteractionData
+  storeInteractionData,
+  getPathValueFromRequestResponse
 };

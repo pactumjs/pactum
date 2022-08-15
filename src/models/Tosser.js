@@ -118,7 +118,14 @@ class Tosser {
   inspect() {
     if (this.spec._inspect) {
       log.warn('Inspecting Request & Response');
-      utils.printReqAndRes(this.request, this.response);
+      if (typeof this.spec._inspect === 'boolean') {
+        utils.printReqAndRes(this.request, this.response);
+      } else {
+        for (let i = 0; i < this.spec._inspect.length; i++) {
+          const inspect_path = this.spec._inspect[i];
+          log.warn(inspect_path, th.getPathValueFromRequestResponse(inspect_path, this.spec._request, this.spec._response));
+        }
+      }
     }
   }
 

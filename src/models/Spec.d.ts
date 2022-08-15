@@ -384,6 +384,7 @@ declare class Spec {
    * @see https://pactumjs.github.io/api/requests/inspect.html
    */
   inspect(): Spec;
+  inspect(path: string): Spec;
 
   /**
    * saves response in file system

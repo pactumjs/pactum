@@ -468,8 +468,19 @@ class Spec {
     return this;
   }
 
-  inspect() {
-    this._inspect = true;
+  inspect(inspect_path) {
+    if (this._inspect) {
+      if (typeof this._inspect === 'boolean') {
+        this._inspect = [];
+      }
+      this._inspect.push(inspect_path);
+    } else {
+      if (inspect_path) {
+        this._inspect = [inspect_path];
+      } else {
+        this._inspect = true;
+      }
+    }
     return this;
   }
 
