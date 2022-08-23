@@ -1,5 +1,4 @@
-const pactum = require('../../src/index');
-const handler = pactum.handler;
+const { handler, mock } = require('../../src/index');
 
 function addDefaultMockHandlers() {
   handler.addInteractionHandler('default get', () => {
@@ -102,9 +101,9 @@ function addDefaultMockHandlers() {
 
 before(async () => {
   addDefaultMockHandlers();
-  await pactum.mock.start();
+  await mock.start();
 });
 
 after(async () => {
-  await pactum.mock.stop();
+  await mock.stop();
 });

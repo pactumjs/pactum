@@ -219,33 +219,6 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: Duplicate request initiated. Existing request - GET /api');
   });
 
-  it('null form request', async () => {
-    let err;
-    try {
-      const spec = new Spec();
-      await spec
-        .post('/')
-        .withForm(null);
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: Invalid form provided - null');
-  });
-
-  it('duplicate form request', async () => {
-    let err;
-    try {
-      const spec = new Spec();
-      await spec
-        .post('/')
-        .withForm({})
-        .withForm({});
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: Duplicate form in request');
-  });
-
   it('invalid request timeout', async () => {
     let err;
     try {

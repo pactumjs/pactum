@@ -176,7 +176,8 @@ declare class Spec {
    * attaches form data to the request with header - "application/x-www-form-urlencoded"
    * @see https://pactumjs.github.io/api/requests/withForm.html
    */
-  withForm(form: any): Spec;
+  withForm(form: object): Spec;
+  withForm(key: string, value: string): Spec;
 
   /**
    * attaches multi part form data to the request with header - "multipart/form-data"
@@ -184,6 +185,7 @@ declare class Spec {
    * @see https://pactumjs.github.io/api/requests/withMultiPartFormData.html
    */
   withMultiPartFormData(form: FormData): Spec;
+  withMultiPartFormData(form: object): Spec;
   withMultiPartFormData(key: string, value: string | Buffer | Array<any> | ArrayBuffer, options?: FormData.AppendOptions): Spec;
 
   /**
