@@ -240,27 +240,15 @@ class Spec {
     return this;
   }
 
-  withForm(form) {
-    if (!helper.isValidObject(form)) {
-      throw new PactumRequestError(`Invalid form provided - ${form}`);
-    }
-    if (typeof this._request.form !== 'undefined') {
-      throw new PactumRequestError(`Duplicate form in request`);
-    }
-    this._request.form = form;
+  withForm(key, value) {
+    if (!this._request._forms) this._request._forms = [];
+    this._request._forms.push({ key, value });
     return this;
   }
 
   withMultiPartFormData(key, value, options) {
-    const FD = fd.get();
-    if (key instanceof FD) {
-      this._request._multiPartFormData = key;
-    } else {
-      if (this._request._multiPartFormData === undefined) {
-        this._request._multiPartFormData = new FD();
-      }
-      this._request._multiPartFormData.append(key, value, options);
-    }
+    if (!this._request._multi_parts) this._request._multi_parts = [];
+    this._request._multi_parts.push({ key, value, options });
     return this;
   }
 

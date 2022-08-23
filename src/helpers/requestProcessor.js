@@ -2,6 +2,7 @@ const { URL } = require('url');
 const processor = require('./dataProcessor');
 const helper = require('./helper');
 const config = require('../config');
+const fd = require('../plugins/form.data')
 
 const requestProcessor = {
 
@@ -15,6 +16,7 @@ const requestProcessor = {
     setGraphQLParams(request);
     setQueryParams(request);
     setBody(request);
+    setFormData(request);
     setMultiPartFormData(request);
     setFollowRedirects(request);
     setHeaders(request);
@@ -82,20 +84,57 @@ function setBody(request) {
   }
 }
 
-function setMultiPartFormData(request) {
-  if (request._multiPartFormData) {
-    request.data = request._multiPartFormData.getBuffer();
-    const multiPartHeaders = request._multiPartFormData.getHeaders();
-    if (!request.headers) {
-      request.headers = multiPartHeaders;
-    } else {
-      for (const prop in multiPartHeaders) {
-        if (request.headers[prop] === undefined) {
-          request.headers[prop] = multiPartHeaders[prop];
+function setFormData(request) {
+  if (request._forms) {
+    request.form = {};
+    for (let i = 0; i < request._forms.length; i++) {
+      const { key, value } = request._forms[i];
+      if (typeof key === 'string') {
+        request.form[key] = value;
+      } else {
+        for (const form_key of Object.keys(key)) {
+          request.form[form_key] = key[form_key];
         }
       }
     }
-    delete request._multiPartFormData;
+    delete request._forms;
+  }
+}
+
+function setMultiPartFormData(request) {
+  if (request._multi_parts) {
+    const FormData = fd.get();
+    let multi_part_form_data;
+    for (let i = 0; i < request._multi_parts.length; i++) {
+      const { key, value, options } = request._multi_parts[i];
+      if (key instanceof FormData) { 
+        multi_part_form_data = key;
+      } else {
+        if (typeof multi_part_form_data === 'undefined') {
+          multi_part_form_data = new FormData();
+        }
+        if (typeof key === 'string') {
+          multi_part_form_data.append(key, value, options);
+        } else {
+          for (const form_key of Object.keys(key)) {
+            multi_part_form_data.append(form_key, key[form_key], options);
+          }
+        }
+        
+      }
+    }
+    request.data = multi_part_form_data.getBuffer();
+    const multi_part_headers = multi_part_form_data.getHeaders();
+    if (!request.headers) {
+      request.headers = multi_part_headers;
+    } else {
+      for (const prop in multi_part_headers) {
+        if (request.headers[prop] === undefined) {
+          request.headers[prop] = multi_part_headers[prop];
+        }
+      }
+    }
+    delete request._multi_parts;
   }
 }
 
