@@ -69,6 +69,12 @@ npm install --save-dev pactum
 npm install --save-dev mocha
 ```
 
+or you can simply use
+
+```bash
+npx pactum-init
+```
+
 ![----------](https://raw.githubusercontent.com/pactumjs/pactum/master/assets/rainbow.png)
 
 # Usage
