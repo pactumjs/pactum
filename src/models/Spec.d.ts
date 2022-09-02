@@ -401,6 +401,14 @@ declare class Spec {
   toss(): Promise<IncomingMessage> | Promise<any>;
 
   /**
+   * supports promise chaining and await syntax
+   */
+  then(
+    onFulfilled: (value: any) => any,
+    onRejected: (reason: any) => any
+  ): Promise<any>;
+
+  /**
    * returns chai like assertions
    * @see https://pactumjs.github.io/api/assertions/response.html
    * @requires .toss() should be called beforehand.
