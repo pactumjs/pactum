@@ -103,7 +103,8 @@ const dataProcessor = {
         if (refType === 'F') {
           const [handlerName, ..._args] = refValue.split(':');
           const handlerFun = handler.getDataFuncHandler(handlerName);
-          values.push(handlerFun({ args: _args.length > 0 ? _args[0].split(',') : _args }));
+          const handler_data = handlerFun({ args: _args.length > 0 ? _args[0].split(',') : _args });
+          values.push(this.processDataRefs(handler_data));
         }
         if (refType === 'S') {
           const value = jq(refValue, { data: stash.getDataStore() }).value;

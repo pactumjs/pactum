@@ -2,6 +2,7 @@ const expect = require('chai').expect;
 
 const dp = require('../../src/helpers/dataProcessor');
 const stash = require('../../src/exports/stash');
+const handler = require('../../src/exports/handler');
 const config = require('../../src/config');
 
 describe('Data Processing - Templates', () => {
@@ -776,6 +777,53 @@ describe('Data Processing - Invalid Data', () => {
 
   after(() => {
     stash.clearDataTemplates();
+    stash.clearDataMaps();
+  });
+
+});
+
+
+describe('Data Processing - Functions', () => {
+
+  it('should return object data', () => {
+    handler.addDataFuncHandler('GetFirstName', () => {
+      return { user: 'jon' }
+    });
+    const data = dp.processData('$F{GetFirstName}');
+    expect(data).deep.equals({ user: 'jon' });
+  });
+
+  it('should return data with plane data map patterns', () => {
+    handler.addDataFuncHandler('GetFirstName', () => {
+      return '$M{User.FirstName}'
+    })
+    stash.addDataMap({
+      User: {
+        FirstName: 'Jon'
+      }
+    });
+    dp.processMaps();
+    const data = dp.processData('$F{GetFirstName}');
+    expect(data).deep.equals('Jon');
+  });
+
+  it('should return data with data map patterns inside object', () => {
+    handler.addDataFuncHandler('GetFirstName', () => {
+      return { name: '$M{User.FirstName}' }
+    })
+    stash.addDataMap({
+      User: {
+        FirstName: 'Jon'
+      }
+    });
+    dp.processMaps();
+    const data = dp.processData('$F{GetFirstName}');
+    expect(data).deep.equals({ name: 'Jon' });
+  });
+
+  afterEach(() => {
+    config.data.ref.map.enabled = false;
+    config.data.ref.map.processed = false;
     stash.clearDataMaps();
   });
 
