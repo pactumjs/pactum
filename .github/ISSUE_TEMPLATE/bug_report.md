@@ -24,6 +24,7 @@ If applicable, add screenshots to help explain your problem.
 **Software (please complete the following information):**
  - OS: [e.g. Windows]
  - NodeJS Version [e.g. 14]
+ - Test Runner [e.g mocha]
 
 
 **Additional context**

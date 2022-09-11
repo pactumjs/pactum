@@ -399,8 +399,8 @@ class Spec {
   }
   expectJsonMatchStrictAt(...args) { return this.expectJsonMatchStrict(...args); }
 
-  expectJsonSnapshot(matchers) {
-    this._expect.jsonSnapshot.push(matchers);
+  expectJsonSnapshot(name, value) {
+    typeof name === 'string' ? this._expect.jsonSnapshots.push({ name, value }): this._expect.jsonSnapshots.push({ value: name });
     return this;
   }
 

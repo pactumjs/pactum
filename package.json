@@ -1,20 +1,12 @@
 {
   "name": "pactum",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "REST API Testing Tool for all levels in a Test Pyramid",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "files": [
     "/src"
   ],
-  "exports": {
-    ".": "./src/index.js",
-    "./handler": "./src/exports/handler.js",
-    "./mock": "./src/exports/mock.js",
-    "./request": "./src/exports/request.js",
-    "./settings": "./src/exports/settings.js",
-    "./state": "./src/exports/state.js"
-  },
   "scripts": {
     "test": "npm run test:unit && npm run test:component",
     "test:unit": "mocha --timeout 10000 ./test/unit/",

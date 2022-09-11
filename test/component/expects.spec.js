@@ -711,89 +711,6 @@ describe('Expects', () => {
     expect(err).not.undefined;
   });
 
-  it('json snapshot - deep equal', async () => {
-    await pactum.spec()
-      .useInteraction('get people')
-      .name('json snapshot - deep equal')
-      .get('http://localhost:9393/api/people')
-      .expectStatus(200)
-      .expectJsonSnapshot();
-    await pactum.spec()
-      .useInteraction('get people')
-      .name('json snapshot - deep equal')
-      .get('http://localhost:9393/api/people')
-      .expectStatus(200)
-      .expectJsonSnapshot();
-    fs.unlinkSync(`.pactum/snapshots/json snapshot - deep equal.json`);
-  });
-
-  it('json snapshot - deep equal - fails', async () => {
-    await pactum.spec()
-      .useInteraction({
-        request: {
-          method: 'GET',
-          path: '/api/users/1'
-        },
-        response: {
-          status: 200,
-          body: {
-            id: 'random-id',
-            name: 'snow'
-          }
-        }
-      })
-      .name('json snapshot - deep equal')
-      .get('http://localhost:9393/api/users/1')
-      .expectStatus(200)
-      .expectJsonSnapshot();
-    let err;
-    try {
-      await pactum.spec()
-        .useInteraction({
-          request: {
-            method: 'GET',
-            path: '/api/users/1'
-          },
-          response: {
-            status: 200,
-            body: {
-              id: 'random-ids',
-              name: 'snow'
-            }
-          }
-        })
-        .name('json snapshot - deep equal')
-        .get('http://localhost:9393/api/users/1')
-        .expectStatus(200)
-        .expectJsonSnapshot()
-        .useLogLevel('ERROR');
-    } catch (error) {
-      err = error;
-    }
-    fs.unlinkSync(`.pactum/snapshots/json snapshot - deep equal.json`);
-    expect(err).not.undefined;
-  });
-
-  it('json snapshot - with matchers', async () => {
-    await pactum.spec()
-      .useInteraction('get user with id 1')
-      .name('json snapshot - with matchers')
-      .get('http://localhost:9393/api/users/1')
-      .expectStatus(200)
-      .expectJsonSnapshot({
-        id: like(1)
-      });
-    await pactum.spec()
-      .useInteraction('get user with id 1')
-      .name('json snapshot - with matchers')
-      .get('http://localhost:9393/api/users/1')
-      .expectStatus(200)
-      .expectJsonSnapshot({
-        id: like(1)
-      });
-    fs.unlinkSync(`.pactum/snapshots/json snapshot - with matchers.json`);
-  });
-
   it('json snapshot - with multiple matchers', async () => {
     await pactum.spec()
       .useInteraction({
@@ -1026,7 +943,6 @@ describe('Expects', () => {
       e = error;
     }
     expect(e).not.undefined;
-    fs.unlinkSync(`.pactum/snapshots/json snapshot - with invalid matchers.json`);
   });
 
   it('error - empty', async () => {

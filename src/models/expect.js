@@ -31,7 +31,7 @@ class Expect {
     this.jsonMatchQuery = [];
     this.jsonMatchStrict = [];
     this.jsonMatchStrictQuery = [];
-    this.jsonSnapshot = [];
+    this.jsonSnapshots = [];
     this.jsonLength = [];
     this.jsonLengthQuery = [];
     this.headers = [];
@@ -327,38 +327,37 @@ class Expect {
   }
 
   _validateJsonSnapshot(response) {
-    if (this.jsonSnapshot.length > 0) {
-      if (!this.name) {
-        this.fail('Snapshot name is required');
-      }
-      if (this.updateSnapshot) {
-        log.warn(`Update snapshot is enabled for "${this.name}"`);
-        file.saveSnapshot(this.name, response.json);
-      }
-      this.jsonSnapshot = processor.processData(this.jsonSnapshot);
-      const expected = file.getSnapshotFile(this.name, response.json);
+    if (this.jsonSnapshots.length > 0) {
+      this.jsonSnapshots = processor.processData(this.jsonSnapshots);
+      let snapshot_name = this.name;
       const actual = response.json;
-      const rules = {};
-      for (let i = 0; i < this.jsonSnapshot.length; i++) {
-        const data = this.jsonSnapshot[i];
-        if (data) {
-          const current_rules = jmv.getMatchingRules(data, '$.body');
-          const errors = jmv.validate(actual,  jmv.getRawValue(data), current_rules, '$.body');
+      const all_rules = {};
+
+      for (let i = 0; i < this.jsonSnapshots.length; i++) {
+        const { name, value } = this.jsonSnapshots[i];
+        snapshot_name = name || snapshot_name;
+        if (!snapshot_name) {
+          this.fail('Snapshot name is required');
+        }
+        if (this.updateSnapshot) {
+          log.warn(`Update snapshot is enabled for '${snapshot_name}'`);
+          file.saveSnapshot(snapshot_name, response.json);
+        }    
+        if (value) {
+          const current_rules = jmv.getMatchingRules(value, '$.body');
+          let errors = jmv.validate(actual,  jmv.getRawValue(value), current_rules, '$.body');
           if (errors) {
             this.fail(errors.replace('$.body', '$'));
           }
-          Object.assign(rules, current_rules);
+          Object.assign(all_rules, current_rules);
         }
       }
-      if (Object.keys(rules).length > 0) {
-        let errors = jmv.validate(actual, expected, rules, '$.body');
+      
+      const expected = file.getSnapshotFile(snapshot_name, response.json);
+      if (Object.keys(all_rules).length > 0) {
+        const errors = jmv.validate(actual, expected, all_rules, '$.body', true);
         if (errors) {
           this.fail(errors.replace('$.body', '$'));
-        } else {
-          errors = jmv.validate(expected, actual, rules, '$.body');
-          if (errors) {
-            this.fail(errors.replace('$.body', '$'));
-          }
         }
       } else {
         assert.deepStrictEqual(actual, expected);

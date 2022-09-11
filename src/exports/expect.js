@@ -86,6 +86,11 @@ class Have {
     this._validate();
   }
 
+  jsonSnapshot(name, value) {
+    typeof name === 'string' ? this.expect.jsonSnapshots.push({ name, value }): this.expect.jsonSnapshots.push({ value: name });
+    this._validate();
+  }
+
   responseTimeLessThan(ms) {
     this.expect.responseTime = ms;
     this._validate();
