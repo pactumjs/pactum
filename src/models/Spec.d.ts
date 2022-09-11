@@ -336,6 +336,7 @@ declare class Spec {
    * @see https://pactumjs.github.io/api/assertions/expectJsonSnapshot.html
    */
   expectJsonSnapshot(value?: object): Spec;
+  expectJsonSnapshot(name: string, value?: object): Spec;
 
   /**
    * updates the reference snapshot file

@@ -20,6 +20,8 @@ export interface Have {
   jsonMatchStrict(path: string, value: object): void;
   jsonLength(value: number): void;
   jsonLength(path: string, value: number): void;
+  jsonSnapshot(value?: any): void;
+  jsonSnapshot(name: string, value?: any): void;
   responseTimeLessThan(ms: number): void;
   error(err?: string | object): void;
   _(handler: string, data: any): Promise<void>;
