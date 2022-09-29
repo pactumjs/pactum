@@ -342,7 +342,7 @@ class Expect {
         if (this.updateSnapshot) {
           log.warn(`Update snapshot is enabled for '${snapshot_name}'`);
           file.saveSnapshot(snapshot_name, response.json);
-        }  
+        }
         if (value) {
           const key = Object.keys(value)[0];
           if(value[key].pactum_type == 'REGEX' && typeof(value[key].matcher) == 'string'){
