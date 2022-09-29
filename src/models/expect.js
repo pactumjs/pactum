@@ -342,8 +342,19 @@ class Expect {
         if (this.updateSnapshot) {
           log.warn(`Update snapshot is enabled for '${snapshot_name}'`);
           file.saveSnapshot(snapshot_name, response.json);
-        }    
+        }  
         if (value) {
+          const key = Object.keys(value)[0];
+          if(value[key].pactum_type == 'REGEX' && typeof(value[key].matcher) == 'string'){
+            if (value[key].matcher.includes('return')){
+              const expected = file.getSnapshotFile(snapshot_name, response.json);
+              const getValue = new Function('body',value[key].matcher);
+              if(getValue && expected){
+                value[key].matcher = getValue(expected);
+                value[key].value   = getValue(expected);
+              }
+            } 
+          }
           const current_rules = jmv.getMatchingRules(value, '$.body');
           let errors = jmv.validate(actual,  jmv.getRawValue(value), current_rules, '$.body');
           if (errors) {
