@@ -19,10 +19,11 @@ export interface InteractionRequest {
 export interface InteractionResponse {
   status: number;
   headers?: object;
-  body?: object;
+  body?: any;
   file?: string;
   fixedDelay?: number;
   randomDelay?: RandomDelay;
+  onCall?: OnCall
 }
 
 export interface RandomDelay {
@@ -32,10 +33,6 @@ export interface RandomDelay {
 
 export interface OnCall {
   [key: number]: InteractionResponse
-}
-
-export interface InteractionResponse {
-  onCall?: OnCall
 }
 
 export interface InteractionExpectations {
