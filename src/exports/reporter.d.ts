@@ -39,12 +39,12 @@ export interface SpecData {
 }
 
 export interface Reporter {
-  name: string;
-  afterSpec(data: SpecData): void;
-  afterStep(data: object): void;
-  afterTest(data: object): void;
-  afterInteraction(data: ExercisedInteraction): void;
-  end(): void | Promise<void>
+  name?: string;
+  afterSpec?(data: SpecData): void;
+  afterStep?(data: object): void;
+  afterTest?(data: object): void;
+  afterInteraction?(data: ExercisedInteraction): void;
+  end?(): void | Promise<void>
 }
 
 /**
