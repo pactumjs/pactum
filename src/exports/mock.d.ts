@@ -54,6 +54,7 @@ export interface Interaction {
   request: InteractionRequest;
   response: InteractionResponse;
   expects?: InteractionExpectations;
+  stores?: object;
 }
 
 export interface InteractionDetails {
