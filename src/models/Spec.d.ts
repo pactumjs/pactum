@@ -120,7 +120,7 @@ declare class Spec {
    * adds query params to the request url - /comments?user=snow&sort=asc
    * @see https://pactumjs.github.io/api/requests/withQueryParams.html
    */
-  withQueryParams(key: string, value: any): Spec;
+  withQueryParams(key: string, value?: any): Spec;
   withQueryParams(params: object): Spec;
 
   /**

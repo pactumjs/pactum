@@ -25,16 +25,21 @@ const helper = {
   },
 
   getPlainQuery(query) {
-    let plainQuery = '';
+    let plain_query = '';
     if (typeof query === 'object') {
-      for (const prop in query) {
-        if (plainQuery !== '') {
-          plainQuery = plainQuery + '&';
+      for (const key in query) {
+        if (plain_query !== '') {
+          plain_query = plain_query + '&';
         }
-        plainQuery = plainQuery + `${prop}=${query[prop]}`;
+        const value = query[key];
+        if (typeof value === 'undefined') {
+          plain_query = plain_query + `${key}`;
+        } else {
+          plain_query = plain_query + `${key}=${query[key]}`;
+        }
       }
     }
-    return plainQuery;
+    return plain_query;
   },
 
   isValidObject(value) {

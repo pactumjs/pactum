@@ -26,28 +26,6 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: `key` is required');
   });
 
-  it('withQueryParams - no value', () => {
-    let err;
-    try {
-      const spec = new Spec();
-      spec.withQueryParams('some');
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: `value` is required');
-  });
-
-  it('withQueryParams - no value', () => {
-    let err;
-    try {
-      const spec = new Spec();
-      spec.withQueryParams('some', null);
-    } catch (error) {
-      err = error;
-    }
-    expect(err.toString()).equals('Error: `value` is required');
-  });
-
   it('withQueryParams - null', async () => {
     let err;
     try {

@@ -148,9 +148,6 @@ class Spec {
       if (!helper.isValidString(key)) {
         throw new PactumRequestError('`key` is required');
       }
-      if (value === undefined || value === null) {
-        throw new PactumRequestError('`value` is required');
-      }
       this._request.queryParams[key] = value;
     } else {
       if (!helper.isValidObject(key) || Object.keys(key).length === 0) {
