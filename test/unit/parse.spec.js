@@ -34,5 +34,15 @@ describe('parse', () => {
     expect(actual).deep.equals({ name: 'guest' });
   });
 
+  it('data - environment variables', () => {
+    const actual = parse('$E{USER}');
+    expect(actual).not.equals('$E{USER_AGE_NUMBER}');
+  });
+
+  it('data - invalid environment variables', () => {
+    const actual = parse('$E{USER_AGE_NUMBER}');
+    expect(actual).equals('$E{USER_AGE_NUMBER}');
+  });
+
 });
 

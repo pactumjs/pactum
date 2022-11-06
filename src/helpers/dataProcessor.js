@@ -110,6 +110,10 @@ const dataProcessor = {
           const value = jq(refValue, { data: stash.getDataStore() }).value;
           values.push(typeof value === 'undefined' ? raw : value);
         }
+        if (refType === 'E') {
+          const value = process.env[refValue];
+          values.push(typeof value === 'undefined' ? raw : value);
+        }
       }
       if (values.length === 1 && raw.length === dataRefMatches[0].length) {
         return values[0];
