@@ -148,7 +148,14 @@ class Spec {
       if (!helper.isValidString(key)) {
         throw new PactumRequestError('`key` is required');
       }
-      this._request.queryParams[key] = value;
+      if (Object.keys(this._request.queryParams).includes(key)) {
+       if (!Array.isArray(this._request.queryParams[key])) {
+        this._request.queryParams[key] = [this._request.queryParams[key]];
+       }
+       this._request.queryParams[key].push(value);
+      } else {
+        this._request.queryParams[key] = value;
+      }
     } else {
       if (!helper.isValidObject(key) || Object.keys(key).length === 0) {
         throw new PactumRequestError('`params` are required');
