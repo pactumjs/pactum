@@ -24,22 +24,21 @@ const helper = {
     return (typeof value === 'string' && value);
   },
 
-  getPlainQuery(query) {
-    let plain_query = '';
-    if (typeof query === 'object') {
-      for (const key in query) {
-        if (plain_query !== '') {
-          plain_query = plain_query + '&';
+  getPlainQuery(query = {}) {
+    const values = [];
+    for (const key in query) {
+      const value = query[key];
+      if (typeof value === 'undefined') {
+        values.push(key);
+      } else if (Array.isArray(value)) {
+        for (const current_value of value) {
+          values.push(`${key}=${current_value}`);
         }
-        const value = query[key];
-        if (typeof value === 'undefined') {
-          plain_query = plain_query + `${key}`;
-        } else {
-          plain_query = plain_query + `${key}=${query[key]}`;
-        }
+      } else {
+        values.push(`${key}=${value}`);
       }
     }
-    return plain_query;
+    return values.join('&');
   },
 
   isValidObject(value) {

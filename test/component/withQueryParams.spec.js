@@ -64,6 +64,24 @@ describe('withQueryParams', () => {
         .withQueryParams('id', '1')
         .expectStatus(200);
     });
+
+    it('with duplicate query params', async () => {
+      await pactum.spec()
+        .useInteraction({
+          strict: false,
+          request: {
+            method: 'GET',
+            path: '/api/query'
+          },
+          response: {
+            status: 200
+          }
+        })
+        .get('http://localhost:9393/api/query')
+        .withQueryParams('filters', 'name=test')
+        .withQueryParams('filters', 'total>10')
+        .expectStatus(200);
+    });
   
   });
   
