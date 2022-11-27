@@ -293,6 +293,11 @@ class Spec {
     return this;
   }
 
+  withCompression() {
+    this._request.compression = true;
+    return this;
+  }
+
   retry(options, delay) {
     if (typeof options === 'undefined' || typeof options === 'number') {
       options = { count: options, delay: delay };
