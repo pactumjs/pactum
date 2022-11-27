@@ -2,14 +2,14 @@ import * as Spec from '../models/Spec';
 import { Interaction } from './mock';
 import { IncomingMessage } from 'http';
 
-interface Request {
+interface PactumRequest {
   url: string;
   method: string;
   timeout: number;
   data?: any;
 }
 
-interface Response extends IncomingMessage {
+interface PactumResponse extends IncomingMessage {
   json?: object;
   body?: any;
   text?: string;
@@ -27,8 +27,8 @@ interface SpecHandlerContext {
 }
 
 interface RequestResponseContext {
-  req: Request;
-  res: Response;
+  req: PactumRequest;
+  res: PactumResponse;
 }
 
 interface CaptureContext extends RequestResponseContext {

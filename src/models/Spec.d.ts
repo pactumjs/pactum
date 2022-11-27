@@ -208,6 +208,12 @@ declare class Spec {
   withFollowRedirects(follow: boolean): Spec;
 
   /**
+   * enables compression
+   * @see https://pactumjs.github.io/api/requests/withCompression.html
+   */
+  withCompression(): Spec;
+
+  /**
    * retry request on specific conditions
    * @see https://pactumjs.github.io/api/requests/retry.html
    */
