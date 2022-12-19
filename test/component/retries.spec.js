@@ -1,3 +1,4 @@
+const { includes } = require('pactum-matchers');
 const pactum = require('../../src/index');
 const expect = require('chai').expect;
 const { settings } = pactum;
@@ -273,6 +274,34 @@ describe('Retries', () => {
       err = error;
     }
     expect(err.message).contains(`Retry Handler Not Found - 'RetryTill400'`);
+  });
+
+  it('retry with json match', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/projects/1'
+        },
+        response: {
+          onCall: {
+            0: {
+              status: 200,
+              body: 'hello'
+            },
+            1: {
+              status: 200,
+              body: 'world'
+            }
+          }
+        },
+        expects: {
+          callCount: 2
+        }
+      })
+      .get('http://localhost:9393/api/projects/1')
+      .retry()
+      .expectJsonMatch(includes('world'));
   });
 
   after(() => {

@@ -1,6 +1,7 @@
 const assert = require('assert');
 const jqy = require('json-query');
 const lc = require('lightcookie');
+const { klona: clone } = require('klona');
 
 const config = require('../config');
 const utils = require('../helpers/utils');
@@ -275,7 +276,7 @@ class Expect {
   _validateJsonMatch(response) {
     this.jsonMatch = processor.processData(this.jsonMatch);
     for (let i = 0; i < this.jsonMatch.length; i++) {
-      const data = this.jsonMatch[i];
+      const data = clone(this.jsonMatch[i]);
       const rules = jmv.getMatchingRules(data, '$.body');
       const value = jmv.getRawValue(data);
       const errors = jmv.validate(response.json, value, rules, '$.body');
@@ -288,7 +289,7 @@ class Expect {
   _validateJsonMatchQuery(response) {
     this.jsonMatchQuery = processor.processData(this.jsonMatchQuery);
     for (let i = 0; i < this.jsonMatchQuery.length; i++) {
-      const jQ = this.jsonMatchQuery[i];
+      const jQ = clone(this.jsonMatchQuery[i]);
       const actualValue = jqy(jQ.path, { data: response.json }).value;
       const rules = jmv.getMatchingRules(jQ.value, jQ.path);
       const expectedValue = jmv.getRawValue(jQ.value);
@@ -302,7 +303,7 @@ class Expect {
   _validateJsonMatchStrict(response) {
     this.jsonMatchStrict = processor.processData(this.jsonMatchStrict);
     for (let i = 0; i < this.jsonMatchStrict.length; i++) {
-      const data = this.jsonMatchStrict[i];
+      const data = clone(this.jsonMatchStrict[i]);
       const rules = jmv.getMatchingRules(data, '$.body');
       const value = jmv.getRawValue(data);
       const errors = jmv.validate(response.json, value, rules, '$.body', true);
@@ -315,7 +316,7 @@ class Expect {
   _validateJsonMatchStrictQuery(response) {
     this.jsonMatchStrictQuery = processor.processData(this.jsonMatchStrictQuery);
     for (let i = 0; i < this.jsonMatchStrictQuery.length; i++) {
-      const jQ = this.jsonMatchStrictQuery[i];
+      const jQ = clone(this.jsonMatchStrictQuery[i]);
       const actualValue = jqy(jQ.path, { data: response.json }).value;
       const rules = jmv.getMatchingRules(jQ.value, jQ.path);
       const expectedValue = jmv.getRawValue(jQ.value);
