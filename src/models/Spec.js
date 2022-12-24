@@ -288,6 +288,14 @@ class Spec {
     return this;
   }
 
+  withBearerToken(token) {
+    if (!this._request.headers) {
+      this._request.headers = {};
+    }
+    this._request.headers["Authorization"] = "Bearer " + token;
+    return this;
+  }
+
   withFollowRedirects(follow) {
     this._request.followRedirects = follow;
     return this;

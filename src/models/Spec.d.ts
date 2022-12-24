@@ -202,6 +202,12 @@ declare class Spec {
   withAuth(username: string, password: string): Spec;
 
   /**
+   * bearer token
+   * @see https://pactumjs.github.io/api/requests/withBearerToken.html
+   */
+  withBearerToken(token: string): Spec;
+
+  /**
    * basic auth
    * @see https://pactumjs.github.io/api/requests/withFollowRedirects.html
    */
