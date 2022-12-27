@@ -142,6 +142,28 @@ describe('Spec', () => {
     expect(err.toString()).equals('Error: `headers` are required');
   });
 
+  it('withBearerToken - invalid', () => {
+    let err;
+    try {
+      const spec = new Spec();
+      spec.withBearerToken();
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: `token` is required');
+  });
+
+  it('withBearerToken - null', () => {
+    let err;
+    try {
+      const spec = new Spec();
+      spec.withBearerToken(null);
+    } catch (error) {
+      err = error;
+    }
+    expect(err.toString()).equals('Error: `token` is required');
+  });
+
   it('toss - without url', async () => {
     let err;
     try {
