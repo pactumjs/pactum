@@ -289,7 +289,7 @@ class Spec {
   }
 
   withBearerToken(token) {
-    if (typeof key !== 'string') {
+    if (typeof token !== 'string') {
       throw new PactumRequestError('`token` is required');
     }
     if (!this._request.headers) {
