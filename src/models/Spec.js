@@ -288,6 +288,17 @@ class Spec {
     return this;
   }
 
+  withBearerToken(token) {
+    if (typeof token !== 'string') {
+      throw new PactumRequestError('`token` is required');
+    }
+    if (!this._request.headers) {
+      this._request.headers = {};
+    }
+    this._request.headers["Authorization"] = "Bearer " + token;
+    return this;
+  }
+
   withFollowRedirects(follow) {
     this._request.followRedirects = follow;
     return this;
