@@ -41,6 +41,19 @@ export interface InteractionExpectations {
   callCount?: number;
 }
 
+export interface InteractionCallRequest {
+  method?: string;
+  path?: string;
+  query?: object;
+  headers?: object;
+  body?: object;
+}
+
+export interface InteractionCall {
+  request?: InteractionCallRequest;
+  exercisedAt: number;
+}
+
 // TODO - accept function - (req, res)
 export interface Interaction {
   id?: string;
@@ -55,12 +68,12 @@ export interface Interaction {
   response: InteractionResponse;
   expects?: InteractionExpectations;
   stores?: object;
+  calls?: InteractionCall[];
 }
 
-export interface InteractionDetails {
-  id: string;
-  exercised: boolean;
-  callCount: number;
+export interface InteractionDetails extends Interaction {
+  exercised?: boolean;
+  callCount?: number;
 }
 
 export interface Handler {
