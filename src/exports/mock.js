@@ -57,7 +57,7 @@ const mock = {
         alone = false;
       }
       for (let j = 0; j < raw.length; j++) {
-        const interaction = new Interaction(raw[j], true);
+        const interaction = new Interaction(raw[j]);
         this._server.addInteraction(interaction.id, interaction);
         ids.push(interaction.id);
       }

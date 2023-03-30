@@ -29,7 +29,7 @@ describe('Interaction', () => {
         }
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -83,7 +83,7 @@ describe('Interaction', () => {
         }
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -140,7 +140,7 @@ describe('Interaction', () => {
         }
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -205,7 +205,7 @@ describe('Interaction', () => {
         }
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -264,7 +264,7 @@ describe('Interaction', () => {
         }
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -318,7 +318,7 @@ describe('Interaction', () => {
       },
       response: function () { }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction.request).deep.equals({
       "method": "GET",
       "path": "/api/projects/1",
@@ -346,7 +346,7 @@ describe('Interaction', () => {
         fixedDelay: 10
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -406,7 +406,7 @@ describe('Interaction', () => {
         }
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -469,7 +469,7 @@ describe('Interaction', () => {
         }
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -525,7 +525,7 @@ describe('Interaction', () => {
         }
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -581,7 +581,7 @@ describe('Interaction', () => {
         }
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -621,7 +621,7 @@ describe('Interaction', () => {
         path: '/api/projects/1'
       }
     };
-    const interaction = new Interaction(raw, true);
+    const interaction = new Interaction(raw);
     expect(interaction).to.deep.equals({
       "id": "random",
       "callCount": 0,
@@ -664,7 +664,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function () { new Interaction(raw, true); }).to.throws('`request.method` is required');
+    expect(function () { new Interaction(raw); }).to.throws('`request.method` is required');
   });
 
   it('invalid mock interaction - no request method', () => {
@@ -684,7 +684,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function () { new Interaction(raw, true); }).to.throws('`request.method` is invalid');
+    expect(function () { new Interaction(raw); }).to.throws('`request.method` is invalid');
   });
 
   it('invalid mock interaction - no request path', () => {
@@ -703,7 +703,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function () { new Interaction(raw, true); }).to.throws('`request.path` is required');
+    expect(function () { new Interaction(raw); }).to.throws('`request.path` is required');
   });
 
   it('invalid mock interaction - query as null', () => {
@@ -724,7 +724,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function () { new Interaction(raw, true); }).to.throws('`request.queryParams` should be object');
+    expect(function () { new Interaction(raw); }).to.throws('`request.queryParams` should be object');
   });
 
   it('invalid mock interaction - query as string', () => {
@@ -745,7 +745,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function () { new Interaction(raw, true); }).to.throws('`request.queryParams` should be object');
+    expect(function () { new Interaction(raw); }).to.throws('`request.queryParams` should be object');
   });
 
   it('invalid mock interaction - query as empty string', () => {
@@ -766,7 +766,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function () { new Interaction(raw, true); }).to.throws('`request.queryParams` should be object');
+    expect(function () { new Interaction(raw); }).to.throws('`request.queryParams` should be object');
   });
 
   it('invalid mock interaction - query as array', () => {
@@ -787,7 +787,7 @@ describe('Interaction', () => {
         }
       }
     };
-    expect(function () { new Interaction(raw, true); }).to.throws('`request.queryParams` should be object');
+    expect(function () { new Interaction(raw); }).to.throws('`request.queryParams` should be object');
   });
 
   it('invalid mock interaction - null', () => {
