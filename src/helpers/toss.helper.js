@@ -40,6 +40,11 @@ function storeSpecData(spec, stores) {
   const ctx = { req: spec._request, res: spec._response, store: stash.getDataStore() };
   for (let i = 0; i < stores.length; i++) {
     const store = stores[i];
+    if (typeof store === 'function') {
+      const specData = store(spec._request, spec._response);
+      stash.addDataStore(specData);
+      continue;
+    }
     const specData = {};
     const captureHandler = getCaptureHandlerName(store.path);
     if (captureHandler) {
