@@ -453,11 +453,21 @@ class Spec {
     return this;
   }
 
-  stores(name, path) {
-    if (this._response) {
-      th.storeSpecData(this, [{ name, path }]);
-    } else {
-      this._stores.push({ name, path });
+  stores(...args) {
+    if (args.length === 1 && typeof args[0] === 'function') {
+      const fn = args[0];
+      if (this._response) {
+        th.storeSpecData(this, [fn]);
+      } else {
+        this._stores.push(fn);
+      }
+    } else if (args.length === 2) {
+      const [name, path] = args;
+      if (this._response) {
+        th.storeSpecData(this, [{ name, path }]);
+      } else {
+        this._stores.push({ name, path });
+      }
     }
     return this;
   }

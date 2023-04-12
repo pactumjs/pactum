@@ -169,6 +169,92 @@ describe('Stores', () => {
       .expectStatus(200);
   });
 
+  it ('store single value by custom function', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/stores'
+        },
+        response: {
+          status: 200,
+          body: {
+            id: 1
+          }
+        }
+      })
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200)
+      .stores((request, response) => {
+        return {
+            custom_func_id: response.body.id
+        };
+      });
+      await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'POST',
+          path: '/api/stores',
+          body: {
+            UserId: 1
+          }
+        },
+        response: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/stores')
+      .withJson({
+        UserId: '$S{custom_func_id}'
+      })
+      .expectStatus(200);
+  });
+
+  it ('store multiple value by custom function', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/stores'
+        },
+        response: {
+          status: 200,
+          body: {
+            id: 1,
+            email: 'test@gmail.com'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200)
+      .stores((request, response) => {
+        return {
+            custom_func_id: response.body.id,
+            custom_func_email: response.body.email
+        };
+      });
+      await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'POST',
+          path: '/api/stores',
+          body: {
+            UserId: 1,
+            UserEmail: 'test@gmail.com'
+          }
+        },
+        response: {
+          status: 200
+        }
+      })
+      .post('http://localhost:9393/api/stores')
+      .withJson({
+        UserId: '$S{custom_func_id}',
+        UserEmail: '$S{custom_func_email}'
+      })
+      .expectStatus(200);
+  });
+
   it('store single value after response', async () => {
     const spec = pactum.spec();
     await spec
@@ -176,6 +262,30 @@ describe('Stores', () => {
       .get('http://localhost:9393/api/stores')
       .expectStatus(200);
     spec.stores('UserId', 'id');
+    await pactum.spec()
+      .useInteraction('post stores')
+      .post('http://localhost:9393/api/stores')
+      .withJson({
+        UserId: '$S{UserId}'
+      })
+      .expectStatus(200);
+    await pactum.spec()
+      .useInteraction('post stores with id')
+      .post('http://localhost:9393/api/stores/$S{UserId}')
+      .expectStatus(200);
+  });
+
+  it('store single value after response by custom function', async () => {
+    const spec = pactum.spec();
+    await spec
+      .useInteraction('get stores')
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200);
+    spec.stores((request, response) => {
+        return {
+            UserId: response.body.id
+        };
+    });
     await pactum.spec()
       .useInteraction('post stores')
       .post('http://localhost:9393/api/stores')
