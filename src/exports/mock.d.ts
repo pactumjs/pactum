@@ -44,9 +44,9 @@ export interface InteractionExpectations {
 export interface InteractionCallRequest {
   method?: string;
   path?: string;
-  query?: object;
-  headers?: object;
-  body?: object;
+  query?: { [key: string]: unknown };
+  headers?: { [key: string]: unknown };
+  body?: { [key: string]: unknown } | string;
 }
 
 export interface InteractionCall {
