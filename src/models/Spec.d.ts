@@ -368,7 +368,7 @@ declare class Spec {
    */
   stores(name: string, path: string): Spec;
   stores(name: string, handlerName: string): Spec;
-  stores<T extends Record<string, any>>(fn: (request: Request, response: IncomingMessage) => T): Spec;
+  stores<T>(cb: (request: Request, response: IncomingMessage & {body: Record<string, any>, json: Record<string, any>}) => T): Spec;
 
   /**
    * returns custom response from json response using custom handler
