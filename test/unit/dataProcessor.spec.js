@@ -258,6 +258,149 @@ describe('Data Processing - Templates', () => {
 
 });
 
+describe('Data Processing - Templates - Direct Overrides', () => {
+
+  before(() => {
+    stash.setDirectOverride(true);
+  });
+
+  after(() => {
+    stash.setDirectOverride(false);
+  });
+
+  afterEach(() => {
+    config.data.template.enabled = false;
+    config.data.template.processed = false;
+    stash.clearDataTemplates();
+  });
+
+  it('processTemplates - simple with Overrides', () => {
+    stash.addDataTemplate({
+      'User': {
+        'Name': 'Snow',
+        'Address': {
+          '@DATA:TEMPLATE@': 'Address',
+          'Zip': '524003'
+        }
+      },
+      'Address': {
+        'Street': 'Main',
+        'Zip': '524004'
+      }
+    });
+    dp.processTemplates();
+    expect(dp.template).deep.equals({
+      'User': {
+        'Name': 'Snow',
+        'Address': {
+          'Street': 'Main',
+          'Zip': '524003'
+        }
+      },
+      'Address': {
+        'Street': 'Main',
+        'Zip': '524004'
+      }
+    });
+    expect(config.data.template.enabled).equals(true);
+    expect(config.data.template.processed).equals(true);
+  });
+
+  it('processTemplates - complex array of objects with Overrides', () => {
+    stash.addDataTemplate({
+      'User': {
+        'Name': 'Snow',
+        'Age': 12,
+        'Nation': 'The North',
+        'Address': []
+      },
+      'Address': {
+        'Castle': 'WinterFell',
+        'Region': 'North'
+      },
+      'User:Address': {
+        '@DATA:TEMPLATE@': 'User',
+        'Hostage': null,
+        'Address': [
+          {
+            '@DATA:TEMPLATE@': 'Address',
+            'Castle': 'The Wall'
+          },
+          {
+            '@DATA:TEMPLATE@': 'Address'
+          }
+        ]
+      }
+    });
+    dp.processTemplates();
+    expect(dp.template).deep.equals({
+      'User': {
+        'Name': 'Snow',
+        'Age': 12,
+        'Nation': 'The North',
+        'Address': []
+      },
+      'Address': {
+        'Castle': 'WinterFell',
+        'Region': 'North'
+      },
+      'User:Address': {
+        'Address': [
+          {
+            'Castle': 'The Wall',
+            'Region': 'North'
+          },
+          {
+            'Castle': 'WinterFell',
+            'Region': 'North'
+          }
+        ]
+        ,
+        'Age': 12,
+        'Name': 'Snow',
+        'Nation': 'The North',
+        'Hostage': null
+      }
+    });
+    expect(config.data.template.processed).equals(true);
+  });
+
+  it('processTemplates - removes and overrides properties', () => {
+    stash.addDataTemplate({
+      'User': {
+        'Name': 'Snow',
+        'Address': {
+          '@DATA:TEMPLATE@': 'Address',
+          '@REMOVES@': ['Zip'],
+          'Castle': 'The Wall',
+          'Street': 'O Street'
+        }
+      },
+      'Address': {
+        'Street': 'Main',
+        'Zip': '524004'
+      }
+    });
+    dp.processTemplates();
+    expect(dp.template).deep.equals({
+      'User': {
+        'Name': 'Snow',
+        'Address': {
+          'Castle': 'The Wall',
+          'Street': 'O Street'
+        }
+      },
+      'Address': {
+        'Street': 'Main',
+        'Zip': '524004'
+      }
+    });
+    expect(config.data.template.enabled).equals(true);
+    expect(config.data.template.processed).equals(true);
+  });  
+
+});
+
 describe('Data Processing - Maps', () => {
 
   it('processMaps - empty map', () => {

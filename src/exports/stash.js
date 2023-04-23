@@ -100,6 +100,10 @@ const stash = {
 
   getFunctionKey(key) {
     return `$F{${key}}`;
+  },
+
+  setDirectOverride(value) {
+    config.data.template.direct_override = value;
   }
 
 };

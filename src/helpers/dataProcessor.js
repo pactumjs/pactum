@@ -53,7 +53,7 @@ const dataProcessor = {
     if (typeof data !== 'object') return data;
     if (!data) return data;
     const templateName = data['@DATA:TEMPLATE@'];
-    const overrides = data['@OVERRIDES@'];
+    const overrides = this.getOverrides(data);
     const removes = data['@REMOVES@'] || [];
     if (templateName) {
       const templateValue = this.template[templateName];
@@ -123,6 +123,17 @@ const dataProcessor = {
       }
     }
     return raw;
+  },
+
+  getOverrides(data) {
+    if (config.data.template.direct_override) {
+      const cloned_data = klona(data);
+      delete cloned_data['@DATA:TEMPLATE@'];
+      delete cloned_data['@REMOVES@'];
+      return cloned_data;
+    } else {
+      return data['@OVERRIDES@'];
+    }
   }
 
 };
