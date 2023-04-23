@@ -39,7 +39,8 @@ const config = {
     },
     template: {
       enabled: false,
-      processed: false
+      processed: false,
+      direct_override: false,
     }
   },
   strategy: {

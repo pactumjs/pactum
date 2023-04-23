@@ -38,3 +38,4 @@ export function getDataStore(): object;
 export function getStoreKey(key: string): string;
 export function getMapKey(key: string): string;
 export function getFunctionKey(key: string): string;
+export function setDirectOverride(value: boolean): void;
