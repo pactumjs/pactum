@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "description": "REST API Testing Tool for all levels in a Test Pyramid",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -59,7 +59,7 @@
     "klona": "^2.0.5",
     "lightcookie": "^1.0.25",
     "openapi-fuzzer-core": "^1.0.6",
-    "pactum-matchers": "^1.1.4",
+    "pactum-matchers": "^1.1.5",
     "parse-graphql": "^1.0.0",
     "phin": "^3.7.0",
     "polka": "^0.5.2"

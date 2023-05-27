@@ -12,7 +12,8 @@ const config = {
     retry: {
       count: 1,
       delay: 1000
-    }
+    },
+    disable_use_interaction: process.env.PACTUM_DISABLE_USE_INTERACTION || false,
   },
   response: {
     time: process.env.PACTUM_RESPONSE_TIME ? parseInt(process.env.PACTUM_RESPONSE_TIME) : null,
