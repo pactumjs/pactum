@@ -1,4 +1,3 @@
-const fd = require('../plugins/form.data')
 const fs = require('fs');
 const lc = require('lightcookie');
 
@@ -14,6 +13,7 @@ const { PactumRequestError } = require('../helpers/errors');
 const responseExpect = require('../exports/expect');
 const hr = require('../helpers/handler.runner');
 const rlc = require('../helpers/reporter.lifeCycle');
+const config = require('../config');
 
 class Spec {
   constructor(name, data) {
@@ -57,6 +57,9 @@ class Spec {
   }
 
   useInteraction(interaction, data) {
+    if (config.request.disable_use_interaction) {
+      return this;
+    }
     this.interactions.push({ interaction, data });
     return this;
   }

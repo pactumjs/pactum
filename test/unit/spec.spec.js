@@ -1,4 +1,5 @@
 const expect = require('chai').expect;
+const config = require('../../src/config');
 
 const Spec = require('../../src/models/Spec');
 
@@ -250,5 +251,13 @@ describe('Spec', () => {
     spec.name('Custom Name');
     expect(spec._name).equals('Custom Name');
   });
+
+  it('disable use interaction', async () => {
+    config.request.disable_use_interaction = true;
+    const spec = new Spec();
+    spec.useInteraction('Custom Name');
+    expect(spec.interactions).deep.equals([]);
+    config.request.disable_use_interaction = false;
+  })
 
 });
