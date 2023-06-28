@@ -155,6 +155,39 @@ describe('Returns', () => {
     expect(response).equals('xyz');
   });
 
+  it('return response cookies', async () => {
+    const response = await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/users'
+        },
+        response: {
+          status: 200,
+          body: {
+            id: 1
+          },
+          cookies: {
+            token: 'xyz'
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .expectStatus(200)
+      .returns('res.cookies.token');
+    expect(response).equals('xyz');
+  });
+
+  it('return request cookies', async () => {
+    const response = await pactum.spec()
+      .useInteraction('default get')
+      .get('http://localhost:9393/default/get')
+      .withCookies('token', 'xyz')
+      .expectStatus(200)
+      .returns('req.cookies.token');
+    expect(response).equals('xyz');
+  });
+
   it('return request body', async () => {
     const response = await pactum.spec()
       .useInteraction('default post')
