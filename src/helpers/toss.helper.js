@@ -26,7 +26,10 @@ function getPathValueFromRequestResponse(path, request, response) {
     data = request.headers;
   } else if (path.startsWith('req.cookies')) {
     path = path.replace('req.cookies', '');
-    const cookies = lc.parse(request.headers?.['cookie']);
+    if (!request.headers) {
+      request.headers = {};
+    }
+    const cookies = lc.parse(request.headers['cookie']);
     data = cookies;
   } else if (path.startsWith('req.body')) {
     path = path.replace('req.body', '');
@@ -36,7 +39,10 @@ function getPathValueFromRequestResponse(path, request, response) {
     data = response.headers;
   } else if (path.startsWith('res.cookies')) {
     path = path.replace('res.cookies', '');
-    const cookies = lc.parse(response.headers?.['set-cookie']);
+    if (!response.headers) {
+      response.headers = {};
+    }
+    const cookies = lc.parse(response.headers['set-cookie']);
     data = cookies;
   } else {
     path = path.replace('res.body', '');
