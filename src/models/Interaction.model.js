@@ -1,3 +1,4 @@
+const lc = require('lightcookie');
 const { setMatchingRules, getValue } = require('pactum-matchers').utils;
 const processor = require('../helpers/dataProcessor');
 const helper = require('../helpers/helper');
@@ -119,6 +120,13 @@ class InteractionRequest {
       setMatchingRules(this.matchingRules, rawLowerCaseHeaders, '$.headers');
       this.headers = getValue(request.headers);
     }
+    if (request.cookies && typeof request.cookies === 'object') {
+      const cookie = lc.serialize(request.cookies);
+      if(!this.headers) {
+        this.headers = {};
+      }
+      this.headers['cookie'] = cookie;
+    }
     if (request.queryParams && typeof request.queryParams === 'object') {
       setMatchingRules(this.matchingRules, request.queryParams, '$.query');
       this.queryParams = getValue(request.queryParams);
@@ -161,6 +169,13 @@ class InteractionResponse {
     this.headers = getValue(response.headers);
     setMatchingRules(this.matchingRules, response.body, '$.body');
     this.body = getValue(response.body);
+    if(response.cookies) {
+      const cookie = lc.serialize(response.cookies);
+      if(!this.headers) {
+        this.headers = {};
+      }
+      this.headers['set-cookie'] = cookie;
+    }
     if (response.fixedDelay) {
       this.delay = new InteractionResponseDelay('FIXED', response.fixedDelay);
     } else if (response.randomDelay) {
