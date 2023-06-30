@@ -83,18 +83,25 @@ describe('Stores', () => {
               id: 2,
               name: 'Snow'
             }
-          ]
-        }
+          ],
+          cookies: {
+            token: 'xyz',
+          },
+        },
       })
       .get('http://localhost:9393/api/stores')
       .expectStatus(200)
       .stores('FirstUser', '[0]')
-      .stores('SecondUser', '[1]');
+      .stores('SecondUser', '[1]')
+      .stores('token', 'res.cookies.token');
     await pactum.spec()
       .useInteraction({
         request: {
           method: 'POST',
           path: '/api/stores',
+          cookies: {
+            token: 'xyz'
+          },
           body: {
             UserId: 1
           }
@@ -104,6 +111,7 @@ describe('Stores', () => {
         }
       })
       .post('http://localhost:9393/api/stores')
+      .withCookies('token','$S{token}')
       .withJson({
         UserId: '$S{FirstUser.id}'
       })

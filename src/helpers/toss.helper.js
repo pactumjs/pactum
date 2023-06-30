@@ -1,3 +1,4 @@
+const lc = require('lightcookie');
 const jqy = require('json-query');
 
 const config = require('../config');
@@ -23,12 +24,26 @@ function getPathValueFromRequestResponse(path, request, response) {
   } else if (path.startsWith('req.headers')) {
     path = path.replace('req.headers', '');
     data = request.headers;
+  } else if (path.startsWith('req.cookies')) {
+    path = path.replace('req.cookies', '');
+    if (!request.headers) {
+      request.headers = {};
+    }
+    const cookies = lc.parse(request.headers['cookie']);
+    data = cookies;
   } else if (path.startsWith('req.body')) {
     path = path.replace('req.body', '');
     data = request.body;
   } else if (path.startsWith('res.headers')) {
     path = path.replace('res.headers', '');
     data = response.headers;
+  } else if (path.startsWith('res.cookies')) {
+    path = path.replace('res.cookies', '');
+    if (!response.headers) {
+      response.headers = {};
+    }
+    const cookies = lc.parse(response.headers['set-cookie']);
+    data = cookies;
   } else {
     path = path.replace('res.body', '');
     data = response.json;

@@ -10,6 +10,7 @@ export interface InteractionRequest {
   path: string;
   pathParams?: object;
   headers?: object;
+  cookies?: object;
   queryParams?: object;
   graphQL?: GraphQLRequest;
   body?: any;
@@ -19,11 +20,12 @@ export interface InteractionRequest {
 export interface InteractionResponse {
   status: number;
   headers?: object;
+  cookies?: object;
   body?: any;
   file?: string;
   fixedDelay?: number;
   randomDelay?: RandomDelay;
-  onCall?: OnCall
+  onCall?: OnCall;
 }
 
 export interface RandomDelay {
