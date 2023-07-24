@@ -2,7 +2,12 @@ const config = {
   mock: {
     port: process.env.PACTUM_MOCK_PORT || 9393,
     host: process.env.PACTUM_MOCK_HOST || '0.0.0.0',
-    remote: ''
+    remote: '',
+    isHttps: false,
+    httpsOpts: {
+      key: '',
+      cert: ''
+    }
   },
   request: {
     baseUrl: process.env.PACTUM_REQUEST_BASE_URL || '',

@@ -1,4 +1,6 @@
 const polka = require('polka');
+const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const mime = require('mime-lite')
 const fs_path = require('path');
@@ -19,32 +21,41 @@ class Server {
   constructor() {
     this.app = null;
     this.interactions = new Map();
+    this.server = null;
   }
 
   start() {
     return new Promise((resolve) => {
-      if (!this.app) {
+      if (!this.app || !this.server) {
+        log.info("creating app")
         this.app = polka();
         this.app.use(bodyParser);
         registerPactumRemoteRoutes(this);
         registerAllRoutes(this, this.app);
-        this.app.listen(config.mock.port, () => {
-          log.info(`Mock server is listening on http://localhost:${config.mock.port}`);
+        if(config.mock.isHttps) {
+          const {key, cert} = config.mock.httpsOpts;
+          this.server = https.createServer({key: key, cert: cert}, this.app.handler);
+        } else {
+          this.server = http.createServer(this.app.handler);
+        }
+        this.server.listen(config.mock.port, () => {
+          log.info(`Mock server is listening on ${config.mock.isHttps ? " https" : "http"}://${config.mock.host}:${config.mock.port}`);
           this._registerEvents();
-          resolve();
+          resolve(this.server);
         });
       } else {
         log.warn(`Mock server is already running on port ${config.mock.port}`);
-        resolve();
+        resolve(this.server);
       }
     });
   }
 
   stop() {
     return new Promise((resolve) => {
-      if (this.app) {
-        this.app.server.close(() => {
+      if (this.server) {
+        this.server.close(() => {
           this.app = null;
+          this.server = null;
           log.info(`Mock server stopped on port ${config.mock.port}`);
           resolve();
         });
