@@ -4,6 +4,7 @@ const { PactumConfigurationError } = require('../helpers/errors');
 const hr = require('../helpers/handler.runner');
 const remote = require('../helpers/remoteServer');
 const helper = require('../helpers/helper');
+const fs = require('fs');
 
 const config = require('../config');
 
@@ -35,16 +36,16 @@ const mock = {
       config.mock.host = host;
     }
     if (httpsOpts && helper.isValidObject(httpsOpts)) {
-      if (httpsOpts.key && !helper.isValidObject(httpsOpts.key)) {
-        throw new PactumConfigurationError(`Invalid key provided - ${httpsOpts.key}`);
+      if (httpsOpts.key && !fs.existsSync(httpsOpts.key)) {
+        throw new PactumConfigurationError(`Invalid key provided or key doesn't exist - ${httpsOpts.key}`);
       }
-      if (httpsOpts.cert && !helper.isValidObject(httpsOpts.cert)) {
-        throw new PactumConfigurationError(`Invalid cert provided - ${httpsOpts.cert}`);
+      if (httpsOpts.cert && !fs.existsSync(httpsOpts.cert)) {
+        throw new PactumConfigurationError(`Invalid cert provided or cert doesn't exist - ${httpsOpts.cert}`);
       }
       if (httpsOpts.cert && httpsOpts.key) {
         config.mock.isHttps = true;
-        config.mock.httpsOpts.key = httpsOpts.key;
-        config.mock.httpsOpts.cert = httpsOpts.cert;
+        config.mock.httpsOpts.key = fs.readFileSync(httpsOpts.key);
+        config.mock.httpsOpts.cert = fs.readFileSync(httpsOpts.cert);
       }
     }
   },

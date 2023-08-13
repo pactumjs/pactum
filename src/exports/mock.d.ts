@@ -111,6 +111,7 @@ export function stop(): Promise<void>;
 /**
  * sets default configuration for mock server
  * @see https://pactumjs.github.io/guides/mock-server.html
+ * @see https://pactumjs.github.io/api/mock/setDefaults.html
  */
 export function setDefaults(options: MockServerOptions): Promise<void>;
 
