@@ -41,11 +41,11 @@ class Server {
         this.server.listen(config.mock.port, () => {
           log.info(`Mock server is listening on ${config.mock.isHttps ? " https" : "http"}://${config.mock.host}:${config.mock.port}`);
           this._registerEvents();
-          resolve(this.server);
+          resolve();
         });
       } else {
         log.warn(`Mock server is already running on port ${config.mock.port}`);
-        resolve(this.server);
+        resolve();
       }
     });
   }

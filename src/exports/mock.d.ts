@@ -91,7 +91,7 @@ export interface HttpsOpts {
 export interface MockServerOptions {
   port?: number;
   host?: string;
-  httpOpts?: object
+  httpOpts?: HttpsOpts;
 }
 
 /**
