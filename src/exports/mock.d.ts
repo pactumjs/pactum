@@ -83,6 +83,17 @@ export interface Handler {
   data?: any;
 }
 
+export interface HttpsOpts {
+  key?: string;
+  cert?: string;
+}
+
+export interface MockServerOptions {
+  port?: number;
+  host?: string;
+  httpOpts?: HttpsOpts;
+}
+
 /**
  * starts the mock server
  * @see https://pactumjs.github.io/guides/mock-server.html
@@ -96,6 +107,13 @@ export function start(port: number, host: string): Promise<void>;
  * @see https://pactumjs.github.io/guides/mock-server.html
  */
 export function stop(): Promise<void>;
+
+/**
+ * sets default configuration for mock server
+ * @see https://pactumjs.github.io/guides/mock-server.html
+ * @see https://pactumjs.github.io/api/mock/setDefaults.html
+ */
+export function setDefaults(options: MockServerOptions): Promise<void>;
 
 /**
  * adds a interaction

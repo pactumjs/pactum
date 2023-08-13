@@ -3,6 +3,8 @@ const Server = require('../models/server');
 const { PactumConfigurationError } = require('../helpers/errors');
 const hr = require('../helpers/handler.runner');
 const remote = require('../helpers/remoteServer');
+const helper = require('../helpers/helper');
+const fs = require('fs');
 
 const config = require('../config');
 
@@ -11,7 +13,7 @@ const mock = {
   _server: new Server(),
 
   start(port, host) {
-    this.setDefaults(port, host)
+    this.setDefaults({port, host})
     return this._server.start();
   },
 
@@ -19,7 +21,8 @@ const mock = {
     return this._server.stop();
   },
 
-  setDefaults(port, host) {
+  setDefaults(options) {
+    const {port, host, httpsOpts} = options;
     if (port && typeof port !== 'number') {
       throw new PactumConfigurationError(`Invalid port number provided - ${port}`);
     }
@@ -31,6 +34,19 @@ const mock = {
     }
     if (host) {
       config.mock.host = host;
+    }
+    if (httpsOpts && helper.isValidObject(httpsOpts)) {
+      if (httpsOpts.key && !fs.existsSync(httpsOpts.key)) {
+        throw new PactumConfigurationError(`Invalid key provided or key doesn't exist - ${httpsOpts.key}`);
+      }
+      if (httpsOpts.cert && !fs.existsSync(httpsOpts.cert)) {
+        throw new PactumConfigurationError(`Invalid cert provided or cert doesn't exist - ${httpsOpts.cert}`);
+      }
+      if (httpsOpts.cert && httpsOpts.key) {
+        config.mock.isHttps = true;
+        config.mock.httpsOpts.key = fs.readFileSync(httpsOpts.key);
+        config.mock.httpsOpts.cert = fs.readFileSync(httpsOpts.cert);
+      }
     }
   },
 
