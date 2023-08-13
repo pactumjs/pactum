@@ -27,7 +27,6 @@ class Server {
   start() {
     return new Promise((resolve) => {
       if (!this.app || !this.server) {
-        log.info("creating app")
         this.app = polka();
         this.app.use(bodyParser);
         registerPactumRemoteRoutes(this);
