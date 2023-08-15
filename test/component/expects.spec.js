@@ -1,4 +1,4 @@
-const { like, eachLike } = require('pactum-matchers');
+const { like, eachLike, string, oneOf } = require('pactum-matchers');
 const pactum = require('../../src/index');
 const expect = require('chai').expect;
 const fs = require('fs');
@@ -345,6 +345,58 @@ describe('Expects', () => {
       err = error;
     }
     expect(err.message).equals(`Json doesn't have type 'object' at '$' but found 'string'`);
+  });
+
+  it('failed json match by using oneOf', async () => {
+    let err;
+    try {
+      await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/users'
+        },
+        response: {
+          status: 200,
+          body: {
+            property: null,
+          }
+        }
+      })
+      .get('http://localhost:9393/api/users')
+      .expectStatus(200)
+      .expectJsonMatch({
+        property: oneOf(['']),
+      })
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals(`Json doesn't have one of the expected values at '$.property' but found 'null'`);
+  });
+
+  it('should match json by using oneOf', async () => {
+    await pactum.spec()
+    .useInteraction({
+      request: {
+        method: 'GET',
+        path: '/api/users'
+      },
+      response: {
+        status: 200,
+        body: {
+          property: 'test',
+          name: null,
+          gender: 'male',
+        }
+      }
+    })
+    .get('http://localhost:9393/api/users')
+    .expectStatus(200)
+    .expectJsonMatch({
+      property: oneOf([string(), null]),
+      name: oneOf([string(), null]),
+      gender: oneOf(['male', 'female']),
+    })
   });
 
   it('network error', async () => {
