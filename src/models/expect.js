@@ -5,6 +5,7 @@ const { klona: clone } = require('klona');
 
 const config = require('../config');
 const utils = require('../helpers/utils');
+const helper = require('../helpers/helper');
 const file = require('../helpers/file.utils');
 const log = require('../plugins/logger');
 const processor = require('../helpers/dataProcessor');
@@ -380,15 +381,23 @@ class Expect {
   }
 
   _validateJsonLengthQuery(response) {
+    const allowedRules = ['LTE', 'GTE', 'LT', 'GT', 'NOT_EQUALS']
     this.jsonLengthQuery = processor.processData(this.jsonLengthQuery);
     for (let i = 0; i < this.jsonLengthQuery.length; i++) {
-      const { path, value: expected } = this.jsonLengthQuery[i];
-      const actualValue = jqy(path, { data: response.json }).value;
-      if (actualValue && Array.isArray(actualValue)) {
-        const actual = actualValue.length;
-        assert.strictEqual(actual, expected, `JSON Length ${actual} !== ${expected}`);
-      } else {
-        this.fail(`Response does not contain a json array at '${path}'`);
+      const jQ = clone(this.jsonLengthQuery[i]);
+      const actualValue = jqy(jQ.path, { data: response.json }).value;
+      const rules = jmv.getMatchingRules(jQ.value, jQ.path);
+      const expectedValue = jmv.getRawValue(jQ.value);
+      if (!actualValue && !Array.isArray(actualValue)) {
+        this.fail(`Response does not contain a json array at '${jQ.path}'`);
+      }
+      if (helper.isValidObject(jQ.value) && !allowedRules.includes(jQ.value.pactum_type)) {
+        this.fail(`Invalid compare operation ${jQ.value.pactum_type}, allowed operations: ${allowedRules}`);
+      }
+      const errors = jmv.validate(actualValue.length, expectedValue, rules, jQ.path);
+      if (errors) {
+        const errCondition = jQ.value.pactum_type ? `not ${jQ.value.pactum_type}` : "!==";
+        this.fail(`JSON Length ${actualValue.length} ${errCondition} ${expectedValue}`);
       }
     }
   }
