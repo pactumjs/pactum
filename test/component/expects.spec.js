@@ -1,4 +1,4 @@
-const { like, eachLike } = require('pactum-matchers');
+const { like, eachLike, lte, lt, gt, gte, notEquals } = require('pactum-matchers');
 const pactum = require('../../src/index');
 const expect = require('chai').expect;
 const fs = require('fs');
@@ -1078,6 +1078,55 @@ describe('Expects', () => {
       .expectJsonLength('people', 3);
   });
 
+  it('json length query - LTE - EQ check', async () => {
+    await pactum.spec()
+      .useInteraction('get people')
+      .get('http://localhost:9393/api/people')
+      .expectJsonLength('people', lte(3));
+  });
+
+  it('json length query - LTE - LT check', async () => {
+    await pactum.spec()
+      .useInteraction('get people')
+      .get('http://localhost:9393/api/people')
+      .expectJsonLength('people', lte(5));
+  });
+
+  it('json length query - LT', async () => {
+    await pactum.spec()
+      .useInteraction('get people')
+      .get('http://localhost:9393/api/people')
+      .expectJsonLength('people', lt(4));
+  });
+
+  it('json length query - GT', async () => {
+    await pactum.spec()
+      .useInteraction('get people')
+      .get('http://localhost:9393/api/people')
+      .expectJsonLength('people', gt(2));
+  });
+
+  it('json length query - GTE - EQ check', async () => {
+    await pactum.spec()
+      .useInteraction('get people')
+      .get('http://localhost:9393/api/people')
+      .expectJsonLength('people', gte(3));
+  });
+
+  it('json length query - GTE - GT check', async () => {
+    await pactum.spec()
+      .useInteraction('get people')
+      .get('http://localhost:9393/api/people')
+      .expectJsonLength('people', gte(1));
+  });
+
+  it('json length query - NOT_EQUALS', async () => {
+    await pactum.spec()
+      .useInteraction('get people')
+      .get('http://localhost:9393/api/people')
+      .expectJsonLength('people', notEquals(4));
+  });
+
   it('json length - fail', async () => {
     let err;
     try {
@@ -1092,6 +1141,18 @@ describe('Expects', () => {
     expect(err).not.undefined;
   });
 
+  it('json length query - fail - invalid operation', async () => {
+    try {
+      await pactum.spec()
+        .useInteraction('get people')
+        .get('http://localhost:9393/api/people')
+        .expectJsonLength('people', like(2))
+        .useLogLevel('ERROR');
+    } catch (error) {
+      expect(error.message).equal("Invalid compare operation LIKE, allowed operations: LTE,GTE,LT,GT,NOT_EQUALS");
+    }
+  });
+
   it('json length - fail - invalid', async () => {
     let err;
     try {
@@ -1104,6 +1165,18 @@ describe('Expects', () => {
       err = error;
     }
     expect(err).not.undefined;
+  });
+
+  it('json length query - fail - LTE assertion error', async () => {
+    try {
+      await pactum.spec()
+        .useInteraction('get people')
+        .get('http://localhost:9393/api/people')
+        .expectJsonLength('people', lte(2))
+        .useLogLevel('ERROR');
+    } catch (error) {
+      expect(error.message).equal("JSON Length 3 not LTE 2");
+    }
   });
 
 });

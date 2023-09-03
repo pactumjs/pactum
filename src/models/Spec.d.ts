@@ -334,6 +334,7 @@ declare class Spec {
    */
   expectJsonLength(value: number): Spec;
   expectJsonLength(path: string, value: number): Spec;
+  expectJsonLength(path: string, matcher: object): Spec;
 
   /**
    * expect network errors
