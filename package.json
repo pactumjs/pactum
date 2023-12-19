@@ -59,7 +59,6 @@
     "klona": "^2.0.6",
     "lightcookie": "^1.0.25",
     "openapi-fuzzer-core": "^1.0.6",
-    "pactum-matchers": "^1.1.6",
     "parse-graphql": "^1.0.0",
     "phin": "^3.7.0",
     "polka": "^0.5.2"
@@ -69,6 +68,9 @@
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "sinon": "^15.2.0"
+  },
+  "peerDependencies": {
+    "pactum-matchers": "^1.1.6"
   },
   "engines": {
     "node": ">=10"
