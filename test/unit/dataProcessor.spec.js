@@ -963,6 +963,24 @@ describe('Data Processing - Functions', () => {
     expect(data).deep.equals({ name: 'Jon' });
   });
 
+  it('should return data passed in as parameter', () => {
+    handler.addDataFuncHandler('GetParam', (ctx) => {
+      return ctx.args[0]
+    });
+
+    const data = dp.processData('$F{GetParam:Jon}');
+    expect(data).equals('Jon');
+  });
+
+  it('should return data passed in as parameter with semicolon', () => {
+    handler.addDataFuncHandler('GetParam', (ctx) => {
+      return ctx.args[0]
+    });
+
+    const data = dp.processData('$F{GetParam:Jon:Doe}');
+    expect(data).equals('Jon:Doe');
+  });
+
   afterEach(() => {
     config.data.ref.map.enabled = false;
     config.data.ref.map.processed = false;

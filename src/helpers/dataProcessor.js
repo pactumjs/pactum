@@ -101,7 +101,7 @@ const dataProcessor = {
           values.push(typeof value === 'undefined' ? raw : value);
         }
         if (refType === 'F') {
-          const [handlerName, ..._args] = refValue.split(':');
+          const [handlerName, ..._args] = refValue.split(/:(.*)/);
           const handlerFun = handler.getDataFuncHandler(handlerName);
           const handler_data = handlerFun({ args: _args.length > 0 ? _args[0].split(',') : _args });
           values.push(this.processDataRefs(handler_data));
