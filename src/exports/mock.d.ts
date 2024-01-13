@@ -5,15 +5,20 @@ export interface GraphQLRequest {
   variables?: object;
 }
 
-export interface InteractionRequest {
+export interface CommonInteractionRequest {
+  method?: RequestMethod;
+  path?: string;
+  headers?: object;
+  body?: any;
+}
+
+export interface InteractionRequest extends CommonInteractionRequest {
   method: RequestMethod;
   path: string;
   pathParams?: object;
-  headers?: object;
   cookies?: object;
   queryParams?: object;
   graphQL?: GraphQLRequest;
-  body?: any;
   form?: object;
 }
 
@@ -43,16 +48,18 @@ export interface InteractionExpectations {
   callCount?: number;
 }
 
-export interface InteractionCallRequest {
-  method?: string;
-  path?: string;
+export interface InteractionCallRequest extends CommonInteractionRequest {
   query?: { [key: string]: unknown };
   headers?: { [key: string]: unknown };
   body?: { [key: string]: unknown } | string;
 }
 
-export interface InteractionCall {
-  request?: InteractionCallRequest;
+export interface CommonInteractionCall {
+  request?: CommonInteractionRequest;
+  exercisedAt: number | string;
+}
+
+export interface InteractionCall extends CommonInteractionCall {
   exercisedAt: number;
 }
 
@@ -70,7 +77,7 @@ export interface Interaction {
   response: InteractionResponse;
   expects?: InteractionExpectations;
   stores?: object;
-  calls?: InteractionCall[];
+  calls?: CommonInteractionCall[];
 }
 
 export interface InteractionDetails extends Interaction {

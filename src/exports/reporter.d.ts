@@ -1,4 +1,4 @@
-import { InteractionRequest, Interaction } from './mock';
+import { InteractionRequest, Interaction, CommonInteractionCall } from './mock';
 
 export interface SpecRequest {
   method: string;
@@ -15,13 +15,13 @@ export interface SpecResponse {
   responseTime: number;
 }
 
-export interface InteractionCall {
+export interface ExercisedInteractionCall extends CommonInteractionCall  {
   request: InteractionRequest;
   exercisedAt: string;
 }
 
 export interface ExercisedInteraction extends Interaction {
-  calls: InteractionCall[];
+  calls: ExercisedInteractionCall[];
 }
 
 export interface SpecData {
