@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "3.5.1",
+  "version": "3.6.0",
   "description": "REST API Testing Tool for all levels in a Test Pyramid",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -12,8 +12,7 @@
     "test:unit": "mocha --timeout 10000 ./test/unit/",
     "test:component": "mocha --timeout 10000 ./test/component/",
     "coverage": "nyc --reporter=lcov --reporter=text npm run test",
-    "lint": "eslint src/**/*.js",
-    "build": "tsc"
+    "lint": "eslint src/**/*.js"
   },
   "keywords": [
     "api",
@@ -67,12 +66,9 @@
   },
   "devDependencies": {
     "chai": "^4.3.7",
-    "eslint": "^8.48.0",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
-    "sinon": "^15.2.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "sinon": "^15.2.0"
   },
   "engines": {
     "node": ">=10"
