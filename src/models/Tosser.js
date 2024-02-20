@@ -103,7 +103,7 @@ class Tosser {
         }
         if (!noRetry) {
           const scale = delay === 1000 ? 'second' : 'seconds';
-          log.debug(`Retrying request in ${delay / 1000} ${scale}`);
+          log.info(`Request retry initiated, waiting ${delay / 1000} ${scale} for attempt ${i + 1} of ${count}`);
           await helper.sleep(delay);
           this.response = await getResponse(this);
         } else {
