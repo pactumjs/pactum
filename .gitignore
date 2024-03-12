@@ -5,3 +5,4 @@ node_modules
 pacts/
 coverage/
 reports/
+data.txt.br

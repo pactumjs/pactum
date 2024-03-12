@@ -1,10 +1,11 @@
-import * as Spec from './models/Spec';
-import * as Fuzz from './models/Fuzz';
 import * as E2E from './models/E2E';
+import * as Fuzz from './models/Fuzz';
+import * as Spec from './models/Spec';
 
 import expect from './exports/expect';
 export { expect };
 
+export * as events from './exports/events';
 export * as handler from './exports/handler';
 export * as mock from './exports/mock';
 export * as reporter from './exports/reporter';
