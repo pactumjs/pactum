@@ -21,6 +21,7 @@ const state = require('./exports/state');
 const stash = require('./exports/stash');
 const expect = require('./exports/expect');
 const reporter = require('./exports/reporter');
+const events = require('./exports/events');
 
 const processor = require('./helpers/dataProcessor');
 
@@ -41,6 +42,7 @@ const pactum = {
   stash,
   expect,
   reporter,
+  events,
 
   spec(name, data) {
     return new Spec(name, data);
