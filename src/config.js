@@ -47,7 +47,8 @@ const config = {
       enabled: false,
       processed: false,
       direct_override: false,
-    }
+    },
+    dir: 'data'
   },
   strategy: {
     assert: {
