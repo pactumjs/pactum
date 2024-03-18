@@ -14,6 +14,7 @@ const responseExpect = require('../exports/expect');
 const hr = require('../helpers/handler.runner');
 const rlc = require('../helpers/reporter.lifeCycle');
 const config = require('../config');
+const { findFile } = require('../helpers/file.utils');
 
 class Spec {
   constructor(name, data) {
@@ -192,7 +193,7 @@ class Spec {
 
   withJson(json) {
     if (typeof json === 'string') {
-      json = JSON.parse(fs.readFileSync(json));
+      json = JSON.parse(findFile(json));
     } else if (typeof json !== 'object') {
       throw new PactumRequestError(`Invalid json in request - ${json}`);
     }

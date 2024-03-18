@@ -57,6 +57,10 @@ const settings = {
 
   setRequestDefaultRetryDelay(delay) {
     config.request.retry.delay = delay;
+  },
+
+  setDataDirectory(path) {
+    config.data.dir = path;
   }
 
 };

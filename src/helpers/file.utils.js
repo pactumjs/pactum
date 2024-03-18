@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const config = require('../config');
 
 function getSnapshotDirAndName(name) {
@@ -27,7 +28,36 @@ function saveSnapshot(name, data) {
   fs.writeFileSync(`${snapshotDir}/${snapshotFile}`, JSON.stringify(data, null, 2));
 }
 
+/**
+ * 
+ * @param {string} name 
+ */
+function findFile(name, dir = config.data.dir) {
+  if (fs.existsSync(name)) {
+    return fs.readFileSync(name);
+  }
+  if (fs.existsSync(dir)) {
+    const exist = fs.existsSync(`${dir}/${name}`);
+    if (exist) {
+      return fs.readFileSync(`${dir}/${name}`);
+    }
+    // get folders in dir
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+      const dirPath = path.resolve(dir, file);
+      const stats = fs.statSync(dirPath);
+      if (stats.isDirectory()) {
+        const result = findFile(name, dirPath);
+        if (result) {
+          return result;
+        }
+      }
+    }
+  }
+}
+
 module.exports = {
   getSnapshotFile,
-  saveSnapshot
+  saveSnapshot,
+  findFile
 };
