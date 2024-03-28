@@ -33,6 +33,14 @@ function saveSnapshot(name, data) {
  * @param {string} name 
  */
 function findFile(name, dir = config.data.dir) {
+  const result = _findFile(name, dir);
+  if (result) {
+    return result;
+  }
+  throw new Error(`File Not Found - '${name}'`);
+}
+
+function _findFile(name, dir = config.data.dir) {
   if (fs.existsSync(name)) {
     return fs.readFileSync(name);
   }
@@ -47,7 +55,7 @@ function findFile(name, dir = config.data.dir) {
       const dirPath = path.resolve(dir, file);
       const stats = fs.statSync(dirPath);
       if (stats.isDirectory()) {
-        const result = findFile(name, dirPath);
+        const result = _findFile(name, dirPath);
         if (result) {
           return result;
         }
