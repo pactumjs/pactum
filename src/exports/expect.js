@@ -108,14 +108,18 @@ class Have {
 
   _validate() {
     try {
-      return this.expect.validate({}, this.response);
+      return this.expect.validate({}, this.response).catch((err) => { this._handle_validate_error(err) });
     } catch (error) {
-      if (this.spec && this.spec.status !== 'FAILED') {
-        this.spec.status = 'FAILED';
-        utils.printReqAndRes(this.spec._request, this.response);
-      }
-      throw error;
+      return this._handle_validate_error(error);
     }
+  }
+
+  _handle_validate_error(error) {
+    if (this.spec && this.spec.status !== 'FAILED') {
+      this.spec.status = 'FAILED';
+      utils.printReqAndRes(this.spec._request, this.response);
+    }
+    throw error;
   }
 
 }

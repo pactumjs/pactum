@@ -1,4 +1,5 @@
 const { spec, settings } = require('../../src/index');
+const expect = require('chai').expect;
 
 describe('withJson', () => {
 
@@ -47,5 +48,17 @@ describe('withJson', () => {
       .withJson('sample-2.json')
       .expectStatus(200);
   });
+
+  it('with invalid file', async () => {
+    let err;
+    try {
+      await spec()
+        .post('http://localhost:9393/file')
+        .withJson('invalid-file.json')
+    } catch(error) {
+      err = error;
+    }
+    expect(err.message).equals(`File Not Found - 'invalid-file.json'`);
+  })
   
 });
