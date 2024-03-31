@@ -382,13 +382,13 @@ class Spec {
   }
 
   expectJson(path, value) {
-    typeof value === 'undefined' ? this._expect.json.push(path) : this._expect.jsonQuery.push({ path, value });
+    typeof value === 'undefined' ? this._expect.json.push(getJson(path)) : this._expect.jsonQuery.push({ path, value });
     return this;
   }
   expectJsonAt(...args) { return this.expectJson(...args); }
 
   expectJsonLike(path, value) {
-    typeof value === 'undefined' ? this._expect.jsonLike.push(path) : this._expect.jsonQueryLike.push({ path, value });
+    typeof value === 'undefined' ? this._expect.jsonLike.push(getJson(path)) : this._expect.jsonQueryLike.push({ path, value });
     return this;
   }
   expectJsonLikeAt(...args) { return this.expectJsonLike(...args); }
@@ -398,7 +398,7 @@ class Spec {
       this._expect.jsonSchemaQuery.push({ path, value, options });
     } else {
       if (typeof value === 'undefined') {
-        this._expect.jsonSchema.push({ value: path });
+        this._expect.jsonSchema.push({ value: getJson(path) });
       } else {
         if (typeof path === 'object' && typeof value === 'object') {
           this._expect.jsonSchema.push({ value: path, options: value });
@@ -412,13 +412,13 @@ class Spec {
   expectJsonSchemaAt(...args) { return this.expectJsonSchema(...args); }
 
   expectJsonMatch(path, value) {
-    typeof value === 'undefined' ? this._expect.jsonMatch.push(path) : this._expect.jsonMatchQuery.push({ path, value });
+    typeof value === 'undefined' ? this._expect.jsonMatch.push(getJson(path)) : this._expect.jsonMatchQuery.push({ path, value });
     return this;
   }
   expectJsonMatchAt(...args) { return this.expectJsonMatch(...args); }
 
   expectJsonMatchStrict(path, value) {
-    typeof value === 'undefined' ? this._expect.jsonMatchStrict.push(path) : this._expect.jsonMatchStrictQuery.push({ path, value });
+    typeof value === 'undefined' ? this._expect.jsonMatchStrict.push(getJson(path)) : this._expect.jsonMatchStrictQuery.push({ path, value });
     return this;
   }
   expectJsonMatchStrictAt(...args) { return this.expectJsonMatchStrict(...args); }
@@ -546,6 +546,13 @@ function validateRequestUrl(request, url) {
   if (!helper.isValidString(url)) {
     throw new PactumRequestError(`Invalid request url - ${url}`);
   }
+}
+
+function getJson(path) {
+  if (typeof path === 'string') {
+    return JSON.parse(findFile(path));
+  }
+  return path;
 }
 
 module.exports = Spec;
