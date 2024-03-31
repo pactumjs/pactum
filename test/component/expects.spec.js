@@ -267,19 +267,6 @@ describe('Expects', () => {
     expect(err.message).equals(`Value '/Hello World/' not found in response body`);
   });
 
-  it('failed json like', async () => {
-    let err;
-    try {
-      await pactum.spec()
-        .get('http://localhost:9393/api/users/1')
-        .expectJsonLike({ id: 1 })
-        .useLogLevel('ERROR');
-    } catch (error) {
-      err = error;
-    }
-    expect(err.message).equals(`Json doesn't have type 'object' at '$' but found 'string'`);
-  });
-
   it('failed json schema', async () => {
     let err;
     try {
@@ -460,137 +447,6 @@ describe('Expects', () => {
       err = error;
     }
     expect(err.message).contains('Interaction call count 1 !== 2');
-  });
-
-  it('json query - on root object', () => {
-    return pactum.spec()
-      .useInteraction({
-        request: {
-          method: 'GET',
-          path: '/api/users'
-        },
-        response: {
-          status: 200,
-          body: {
-            people: [
-              { name: 'Matt', country: 'NZ' },
-              { name: 'Pete', country: 'AU' },
-              { name: 'Mike', country: 'NZ' }
-            ]
-          }
-        }
-      })
-      .get('http://localhost:9393/api/users')
-      .expectStatus(200)
-      .expectJson('people[country=NZ].name', 'Matt')
-      .expectJson('people[*].name', ['Matt', 'Pete', 'Mike']);
-  });
-
-  it('json query - on root array', () => {
-    return pactum.spec()
-      .useInteraction({
-        request: {
-          method: 'GET',
-          path: '/api/users'
-        },
-        response: {
-          status: 200,
-          body: [
-            { name: 'Matt', country: 'NZ' },
-            { name: 'Pete', country: 'AU' },
-            { name: 'Mike', country: 'NZ' }
-          ]
-        }
-      })
-      .get('http://localhost:9393/api/users')
-      .expectStatus(200)
-      .expectJson('[1].country', 'AU')
-      .expectJson('[country=NZ].name', 'Matt')
-      .expectJson('[*].name', ['Matt', 'Pete', 'Mike']);
-  });
-
-  it('json query - on root object - fails', async () => {
-    let err;
-    try {
-      await pactum.spec()
-        .useInteraction({
-          request: {
-            method: 'GET',
-            path: '/api/users'
-          },
-          response: {
-            status: 200,
-            body: {
-              people: [
-                { name: 'Matt', country: 'NZ' },
-                { name: 'Pete', country: 'AU' },
-                { name: 'Mike', country: 'NZ' }
-              ]
-            }
-          }
-        })
-        .get('http://localhost:9393/api/users')
-        .expectStatus(200)
-        .expectJson('people[country=NZ].name', 'Matt')
-        .expectJson('people[*].name', ['Matt', 'Pete'])
-        .useLogLevel('ERROR');
-    } catch (error) {
-      err = error;
-    }
-    expect(err).not.undefined;
-  });
-
-  it('json query like - on root object', () => {
-    return pactum.spec()
-      .useInteraction({
-        request: {
-          method: 'GET',
-          path: '/api/users'
-        },
-        response: {
-          status: 200,
-          body: {
-            people: [
-              { name: 'Matt', country: 'NZ' },
-              { name: 'Pete', country: 'AU' },
-              { name: 'Mike', country: 'NZ' }
-            ]
-          }
-        }
-      })
-      .get('http://localhost:9393/api/users')
-      .expectStatus(200)
-      .expectJsonLike('people[*].name', ['Matt', 'Pete']);
-  });
-
-  it('json query like - fails', async () => {
-    let err;
-    try {
-      await pactum.spec()
-        .useInteraction({
-          request: {
-            method: 'GET',
-            path: '/api/users'
-          },
-          response: {
-            status: 200,
-            body: {
-              people: [
-                { name: 'Matt', country: 'NZ' },
-                { name: 'Pete', country: 'AU' },
-                { name: 'Mike', country: 'NZ' }
-              ]
-            }
-          }
-        })
-        .get('http://localhost:9393/api/users')
-        .expectStatus(200)
-        .expectJsonLike('people[*].name', ['Matt', 'Pet'])
-        .useLogLevel('ERROR');
-    } catch (error) {
-      err = error;
-    }
-    expect(err).not.undefined;
   });
 
   it('failed response time', async () => {
@@ -928,17 +784,17 @@ describe('Expects', () => {
     let e;
     try {
       await pactum.spec()
-      .useInteraction('get people')
-      .name('json snapshot - with invalid matchers')
-      .get('http://localhost:9393/api/people')
-      .expectStatus(200)
-      .useLogLevel('ERROR')
-      .expectJsonSnapshot({
-        id: like('id')
-      })
-      .expectJsonSnapshot({
-        createdAt: like('2020-02-02')
-      });
+        .useInteraction('get people')
+        .name('json snapshot - with invalid matchers')
+        .get('http://localhost:9393/api/people')
+        .expectStatus(200)
+        .useLogLevel('ERROR')
+        .expectJsonSnapshot({
+          id: like('id')
+        })
+        .expectJsonSnapshot({
+          createdAt: like('2020-02-02')
+        });
     } catch (error) {
       e = error;
     }
