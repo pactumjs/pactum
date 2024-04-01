@@ -45,7 +45,7 @@ describe('Data Processing - Templates', () => {
 
   it('processTemplates - simple with Overrides', () => {
     stash.addDataTemplate({
-      'User': {
+      'User_New': {
         'Name': 'Snow',
         'Address': {
           '@DATA:TEMPLATE@': 'Address',
@@ -61,7 +61,7 @@ describe('Data Processing - Templates', () => {
     });
     dp.processTemplates();
     expect(dp.template).deep.equals({
-      'User': {
+      'User_New': {
         'Name': 'Snow',
         'Address': {
           'Street': 'Main',
@@ -75,6 +75,7 @@ describe('Data Processing - Templates', () => {
     });
     expect(config.data.template.enabled).equals(true);
     expect(config.data.template.processed).equals(true);
+    expect(stash.getDataTemplate('User_New.Name')).deep.equals('Snow');
   });
 
   it('processTemplates - template not found', () => {
@@ -443,6 +444,8 @@ describe('Data Processing - Maps', () => {
         }
       ]
     });
+    expect(stash.getDataMap('User.Name')).equals('$M{Users[0].Name}');
+    expect(stash.getDataMap('Users[0].Name')).equals('Snow');
     dp.processMaps();
     expect(dp.map).deep.equals({
       User: {
