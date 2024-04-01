@@ -3,6 +3,7 @@ const pt = require('path');
 const log = require('../plugins/logger');
 const { PactumConfigurationError } = require('../helpers/errors');
 const config = require('../config');
+const jq = require('json-query');
 
 let dataMap = {};
 let dataTemplate = {};
@@ -40,15 +41,22 @@ const stash = {
     });
   },
 
-  addDataMap(maps) {
-    if (!Array.isArray(maps)) {
-      maps = [maps];
+  addDataMap(key, value) {
+    if (value) {
+      Object.assign(dataMap, { [key]: value });
+    } else {
+      if (!Array.isArray(key)) {
+        key = [key];
+      }
+      key.forEach(map => Object.assign(dataMap, map));
     }
-    maps.forEach(map => Object.assign(dataMap, map));
     config.data.ref.map.processed = false;
   },
 
-  getDataMap() {
+  getDataMap(path) {
+    if (path) {
+      return jq(path, { data: dataMap }).value;
+    }
     return dataMap;
   },
 
@@ -58,15 +66,23 @@ const stash = {
     config.data.ref.map.enabled = false;
   },
 
-  addDataTemplate(templates) {
-    if (!Array.isArray(templates)) {
-      templates = [templates];
+  addDataTemplate(key, value) {
+    if (value) {
+      Object.assign(dataTemplate, { [key]: value });
+    } else {
+      if (!Array.isArray(key)) {
+        key = [key];
+      }
+      key.forEach(template => Object.assign(dataTemplate, template));
     }
-    templates.forEach(template => Object.assign(dataTemplate, template));
     config.data.template.processed = false;
   },
 
-  getDataTemplate() {
+  getDataTemplate(path) {
+    if (path) {
+      console.log(dataTemplate)
+      return jq(path, { data: dataTemplate }).value;
+    }
     return dataTemplate;
   },
 
@@ -76,12 +92,19 @@ const stash = {
     config.data.template.enabled = false;
   },
 
-  addDataStore(store) {
-    Object.assign(dataStore, store);
+  addDataStore(key, value) {
+    if (value) {
+      Object.assign(dataStore, { [key]: value });
+    } else {
+      Object.assign(dataStore, key);
+    }
     config.data.ref.spec.enabled = true;
   },
 
-  getDataStore() {
+  getDataStore(path) {
+    if (path) {
+      return jq(path, { data: dataStore }).value;
+    }
     return dataStore;
   },
 
