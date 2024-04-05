@@ -16,9 +16,10 @@ const rlc = require('../helpers/reporter.lifeCycle');
 const config = require('../config');
 const { findFile } = require('../helpers/file.utils');
 const stash = require('../exports/stash');
+const { memorize_spec, is_spec_memoized } = require('../helpers/memo');
 
 class Spec {
-  constructor(name, data) {
+  constructor(name, data, opts) {
     this.id = helper.getRandomId();
     this.flow = '';
     this._name = '';
@@ -38,6 +39,8 @@ class Spec {
     this._save = null;
     this._specHandlerData = data;
     hr.spec(name, data, this);
+    this._opts = opts || {};
+    this._opts.handler_name = name;
     this._expect.setDefaultResponseExpectations();
   }
 
@@ -513,6 +516,12 @@ class Spec {
   }
 
   async toss() {
+    if (this._opts.handler_name && typeof this._opts.memo !== 'undefined') {
+      if (is_spec_memoized(this._opts.handler_name, this._opts.memo)) {
+        return Promise.resolve();
+      }
+      memorize_spec(this._opts.handler_name, this._opts.memo);
+    }
     const tosser = new Tosser(this);
     return tosser.toss();
   }
