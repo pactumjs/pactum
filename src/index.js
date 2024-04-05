@@ -44,8 +44,8 @@ const pactum = {
   reporter,
   events,
 
-  spec(name, data) {
-    return new Spec(name, data);
+  spec(name, data, opts) {
+    return new Spec(name, data, opts);
   },
 
   flow(name) {

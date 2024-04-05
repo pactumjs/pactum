@@ -15,6 +15,10 @@ export * as settings from './exports/settings';
 export * as stash from './exports/stash';
 export * as state from './exports/state';
 
+export interface SpecOptions {
+  memo?: any
+}
+
 /**
  * returns an instance of a spec
  * @see https://pactumjs.github.io/api/requests/spec.html
@@ -25,7 +29,7 @@ export function spec(): Spec;
  * returns an instance of a spec & runs custom spec handler
  * @see https://pactumjs.github.io/api/requests/spec.html
  */
-export function spec<T = any>(name: string, data?: T): Spec;
+export function spec<T = any>(name: string, data?: T, opts?: SpecOptions): Spec;
 
 /**
  * returns an instance of spec
