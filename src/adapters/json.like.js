@@ -167,7 +167,12 @@ class LikeJson {
 }
 
 function validate(actual, expected, opts) {
-  return new LikeJson(opts).compare(actual, expected);
+  let actual_path = '$';
+  let expected_path = '$';
+  if (opts && opts.root_path) { 
+    expected_path = opts.root_path;
+  }
+  return new LikeJson(opts).compare(actual, expected, actual_path, expected_path);
 }
 
 module.exports = {
