@@ -15,6 +15,7 @@ const hr = require('../helpers/handler.runner');
 const rlc = require('../helpers/reporter.lifeCycle');
 const config = require('../config');
 const { findFile } = require('../helpers/file.utils');
+const stash = require('../exports/stash');
 
 class Spec {
   constructor(name, data) {
@@ -193,7 +194,7 @@ class Spec {
 
   withJson(json) {
     if (typeof json === 'string') {
-      json = JSON.parse(findFile(json));
+      json = get_json_from_template_or_file(json);
     } else if (typeof json !== 'object') {
       throw new PactumRequestError(`Invalid json in request - ${json}`);
     }
@@ -382,13 +383,13 @@ class Spec {
   }
 
   expectJson(path, value) {
-    typeof value === 'undefined' ? this._expect.json.push(getJson(path)) : this._expect.jsonQuery.push({ path, value });
+    typeof value === 'undefined' ? this._expect.json.push(get_json_from_template_or_file(path)) : this._expect.jsonQuery.push({ path, value });
     return this;
   }
   expectJsonAt(...args) { return this.expectJson(...args); }
 
   expectJsonLike(path, value) {
-    typeof value === 'undefined' ? this._expect.jsonLike.push(getJson(path)) : this._expect.jsonQueryLike.push({ path, value });
+    typeof value === 'undefined' ? this._expect.jsonLike.push(get_json_from_template_or_file(path)) : this._expect.jsonQueryLike.push({ path, value });
     return this;
   }
   expectJsonLikeAt(...args) { return this.expectJsonLike(...args); }
@@ -398,7 +399,7 @@ class Spec {
       this._expect.jsonSchemaQuery.push({ path, value, options });
     } else {
       if (typeof value === 'undefined') {
-        this._expect.jsonSchema.push({ value: getJson(path) });
+        this._expect.jsonSchema.push({ value: get_json_from_template_or_file(path) });
       } else {
         if (typeof path === 'object' && typeof value === 'object') {
           this._expect.jsonSchema.push({ value: path, options: value });
@@ -412,13 +413,13 @@ class Spec {
   expectJsonSchemaAt(...args) { return this.expectJsonSchema(...args); }
 
   expectJsonMatch(path, value) {
-    typeof value === 'undefined' ? this._expect.jsonMatch.push(getJson(path)) : this._expect.jsonMatchQuery.push({ path, value });
+    typeof value === 'undefined' ? this._expect.jsonMatch.push(get_json_from_template_or_file(path)) : this._expect.jsonMatchQuery.push({ path, value });
     return this;
   }
   expectJsonMatchAt(...args) { return this.expectJsonMatch(...args); }
 
   expectJsonMatchStrict(path, value) {
-    typeof value === 'undefined' ? this._expect.jsonMatchStrict.push(getJson(path)) : this._expect.jsonMatchStrictQuery.push({ path, value });
+    typeof value === 'undefined' ? this._expect.jsonMatchStrict.push(get_json_from_template_or_file(path)) : this._expect.jsonMatchStrictQuery.push({ path, value });
     return this;
   }
   expectJsonMatchStrictAt(...args) { return this.expectJsonMatchStrict(...args); }
@@ -548,9 +549,13 @@ function validateRequestUrl(request, url) {
   }
 }
 
-function getJson(path) {
+function get_json_from_template_or_file(path) {
   if (typeof path === 'string') {
-    return JSON.parse(findFile(path));
+    if (stash.getDataTemplate()[path]) {
+      return { '@DATA:TEMPLATE@': path };
+    } else {
+      return JSON.parse(findFile(path));
+    }
   }
   return path;
 }

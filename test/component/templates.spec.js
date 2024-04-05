@@ -34,6 +34,11 @@ describe('Templates & Maps', () => {
     pactum.handler.addDataFuncHandler('GetSum', (ctx) => parseInt(ctx.args[0]) + parseInt(ctx.args[1]));
   });
 
+  after(() => {
+    stash.clearDataTemplates();
+    stash.clearDataMaps();
+  });
+
   it('new user with pure template', async () => {
     await pactum.spec()
       .useInteraction({
@@ -266,11 +271,6 @@ describe('Templates & Maps', () => {
       .expectJsonSchema({
         '@DATA:TEMPLATE@': 'Schema:Army'
       });
-  });
-
-  after(() => {
-    stash.clearDataTemplates();
-    stash.clearDataMaps();
   });
 
 });

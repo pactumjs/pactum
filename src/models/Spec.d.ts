@@ -1,9 +1,9 @@
-import { RequestOptions, IncomingMessage } from 'http';
 import FormData from 'form-data-lite';
-import { Interaction } from '../exports/mock';
-import { ExpectHandlerFunction, RetryHandlerFunction, CaptureHandlerFunction } from '../exports/handler';
-import { LogLevel } from '../exports/settings';
+import { IncomingMessage, RequestOptions } from 'http';
 import { Expect } from '../exports/expect';
+import { CaptureHandlerFunction, ExpectHandlerFunction, RetryHandlerFunction } from '../exports/handler';
+import { Interaction } from '../exports/mock';
+import { LogLevel } from '../exports/settings';
 
 declare interface RetryOptions {
   /** maximum number of retries - defaults to 3 */
@@ -163,6 +163,7 @@ declare class Spec {
    * @see https://pactumjs.github.io/api/requests/withJson.html
    */
   withJson(json: object): Spec;
+  withJson(templateName: string): Spec;
   withJson(filePath: string): Spec;
 
   /**
@@ -296,14 +297,18 @@ declare class Spec {
    * @see https://pactumjs.github.io/api/assertions/expectJson.html
    */
   expectJson(json: object): Spec;
-  expectJson(path: string, value: any): Spec;
+  expectJson(templateName: string): Spec;
+  expectJson(filePath: string): Spec;
+  expectJson(jsonPath: string, value: any): Spec;
 
   /**
    * expects a partial json object in the response
    * @see https://pactumjs.github.io/api/assertions/expectJsonLike.html
    */
   expectJsonLike(json: object): Spec;
-  expectJsonLike(path: string, value: any): Spec;
+  expectJsonLike(templateName: string): Spec;
+  expectJsonLike(filePath: string): Spec;
+  expectJsonLike(jsonPath: string, value: any): Spec;
 
   /**
    * expects the response to match with json schema
@@ -311,22 +316,28 @@ declare class Spec {
    */
   expectJsonSchema(schema: object): Spec;
   expectJsonSchema(schema: object, options: object): Spec;
-  expectJsonSchema(path: string, schema: object): Spec;
-  expectJsonSchema(path: string, schema: object, options: object): Spec;
+  expectJsonSchema(templateName: string): Spec;
+  expectJsonSchema(filePath: string): Spec;
+  expectJsonSchema(jsonPath: string, schema: object): Spec;
+  expectJsonSchema(jsonPath: string, schema: object, options: object): Spec;
 
   /**
    * expects the json to match with value
    * @see https://pactumjs.github.io/api/assertions/expectJsonMatch.html
    */
   expectJsonMatch(value: object): Spec;
-  expectJsonMatch(path: string, value: object): Spec;
+  expectJsonMatch(templateName: string): Spec;
+  expectJsonMatch(filePath: string): Spec;
+  expectJsonMatch(jsonPath: string, value: object): Spec;
 
   /**
    * expects the json to strictly match with value
    * @see https://pactumjs.github.io/api/assertions/expectJsonMatchStrict.html
    */
   expectJsonMatchStrict(value: object): Spec;
-  expectJsonMatchStrict(path: string, value: object): Spec;
+  expectJsonMatchStrict(templateName: string): Spec;
+  expectJsonMatchStrict(filePath: string): Spec;
+  expectJsonMatchStrict(jsonPath: string, value: object): Spec;
 
   /**
    * expects the json to an array with length
