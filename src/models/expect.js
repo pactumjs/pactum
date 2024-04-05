@@ -247,7 +247,7 @@ class Expect {
     for (let i = 0; i < this.jsonQueryLike.length; i++) {
       const jQ = this.jsonQueryLike[i];
       const value = jqy(jQ.path, { data: response.json }).value;
-      const msg = jlv.validate(value, jQ.value);
+      const msg = jlv.validate(value, jQ.value, { root_path: jQ.path });
       if (msg) this.fail(msg);
     }
   }

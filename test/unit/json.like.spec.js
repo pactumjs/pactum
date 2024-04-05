@@ -959,6 +959,7 @@ describe('JSON Like Array of Objects', () => {
       }
     ];
     expect(jsl.validate(actual, expected)).equals(`Json doesn't have value '42' at '$[1].scores.languages[0].english' but found '43'`);
+    expect(jsl.validate(actual, expected, { root_path: 'data' })).equals(`Json doesn't have value '42' at 'data[1].scores.languages[0].english' but found '43'`);
   });
 
   it('equals - different order', () => {
@@ -1043,14 +1044,15 @@ describe('JSON Like - Assert Expressions', () => {
 
   it('object fulfil simple expression', () => {
     const actual = { id: 1 };
-    const expected = { id: '$V === 1'};
+    const expected = { id: '$V === 1' };
     expect(jsl.validate(actual, expected)).equals('');
   });
 
   it('object does not fulfil simple expression', () => {
     const actual = { id: 1 };
-    const expected = { id: '$V > 1'};
+    const expected = { id: '$V > 1' };
     expect(jsl.validate(actual, expected)).equals(`Json doesn't fulfil expression '$.id > 1'`);
+    expect(jsl.validate(actual, expected, { root_path: 'data' })).equals(`Json doesn't fulfil expression 'data.id > 1'`);
   });
 
   it('array fulfil simple expression', () => {
@@ -1063,6 +1065,7 @@ describe('JSON Like - Assert Expressions', () => {
     const actual = [{ id: 1 }];
     const expected = '$V.length > 1';
     expect(jsl.validate(actual, expected)).equals(`Json doesn't fulfil expression '$.length > 1'`);
+    expect(jsl.validate(actual, expected, { root_path: 'data.users' })).equals(`Json doesn't fulfil expression 'data.users.length > 1'`);
   });
 
   it('object fulfil complex expression', () => {
@@ -1080,7 +1083,7 @@ describe('JSON Like - Assert Expressions', () => {
   it('object fulfil simple custom includes expression', () => {
     settings.setAssertExpressionStrategy({ includes: '$' });
     const actual = { id: 1 };
-    const expected = { id: '$ === 1'};
+    const expected = { id: '$ === 1' };
     expect(jsl.validate(actual, expected)).equals('');
   });
 
@@ -1103,53 +1106,54 @@ describe('JSON Like - Assert Handlers', () => {
 
   it('object fulfil simple assert', () => {
     const actual = { id: 1 };
-    const expected = { id: '#number'};
+    const expected = { id: '#number' };
     expect(jsl.validate(actual, expected)).equals('');
   });
 
   it('object does not fulfil simple assert', () => {
     const actual = { id: '1' };
-    const expected = { id: '#number'};
+    const expected = { id: '#number' };
     expect(jsl.validate(actual, expected)).equals(`Json doesn't fulfil assertion '#number' at '$.id'`);
+    expect(jsl.validate(actual, expected, { root_path: 'data' })).equals(`Json doesn't fulfil assertion '#number' at 'data.id'`);
   });
 
   it('object fulfil simple assert with args', () => {
     const actual = { id: 1 };
-    const expected = { id: '#type:number'};
+    const expected = { id: '#type:number' };
     expect(jsl.validate(actual, expected)).equals('');
   });
 
   it('simple assert does not exist', () => {
     const actual = { id: '1' };
-    const expected = { id: '#number py'};
+    const expected = { id: '#number py' };
     expect(jsl.validate(actual, expected)).equals(`Json doesn't have value '#number py' at '$.id' but found '1'`);
   });
 
   it('object fulfil simple custom starts with assert', () => {
     settings.setAssertHandlerStrategy({ starts: '#$' });
     const actual = { id: 1 };
-    const expected = { id: '#$number'};
+    const expected = { id: '#$number' };
     expect(jsl.validate(actual, expected)).equals('');
   });
 
   it('object fulfil simple custom ends with assert', () => {
     settings.setAssertHandlerStrategy({ ends: '#$' });
     const actual = { id: 1 };
-    const expected = { id: 'number#$'};
+    const expected = { id: 'number#$' };
     expect(jsl.validate(actual, expected)).equals('');
   });
 
   it('object fulfil simple custom starts & ends with assert', () => {
     settings.setAssertHandlerStrategy({ starts: '#$', ends: '$#' });
     const actual = { id: 1 };
-    const expected = { id: '#$number$#'};
+    const expected = { id: '#$number$#' };
     expect(jsl.validate(actual, expected)).equals('');
   });
 
   it('simple assert satisfies only one strategy', () => {
     settings.setAssertHandlerStrategy({ starts: '#', ends: '$#' });
     const actual = { id: '1' };
-    const expected = { id: '#number'};
+    const expected = { id: '#number' };
     expect(jsl.validate(actual, expected)).equals(`Json doesn't have value '#number' at '$.id' but found '1'`);
   });
 
