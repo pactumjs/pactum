@@ -1,6 +1,6 @@
 const fs = require('fs');
 const lc = require('lightcookie');
-
+const override = require('deep-override');
 const path = require('path');
 const Tosser = require('./Tosser');
 const Expect = require('./expect');
@@ -284,7 +284,8 @@ class Spec {
   }
 
   withCore(options) {
-    this._request.core = options;
+    this._request.core = this._request.core || {};
+    override(this._request.core, options);
     return this;
   }
 

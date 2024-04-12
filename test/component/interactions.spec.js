@@ -604,6 +604,79 @@ describe('Mock', () => {
       .expectStatus(200);
   });
 
+  it('GET - with core options & auth - override with auth', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/core',
+          headers: {
+            'authorization': 'Basic dXNlcjpwYXNz'
+          }
+        },
+        response: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393')
+      .withCore({
+        path: '/api/core',
+        auth: 'user:invalid-pass'
+      })
+      .withAuth('user', 'pass')
+      .expectStatus(200);
+  });
+
+  it('GET - with core options & auth - override with core', async () => {
+    await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/core',
+          headers: {
+            'authorization': 'Basic dXNlcjpwYXNz'
+          }
+        },
+        response: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393')
+      .withAuth('user', 'invalid-pass')
+      .withCore({
+        path: '/api/core',
+        auth: 'user:pass'
+      })
+      .expectStatus(200);
+  });
+
+  it('GET - with core options & auth - override with core invalid auth', async () => {
+    try {
+      await pactum.spec()
+      .useInteraction({
+        request: {
+          method: 'GET',
+          path: '/api/core',
+          headers: {
+            'authorization': 'Basic dXNlcjpwYXNz'
+          }
+        },
+        response: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393')
+      .withAuth('user', 'pass')
+      .withCore({
+        path: '/api/core',
+        auth: 'user:invalid-pass'
+      })
+    } catch (error) {
+      err = error
+    }
+    expect(err.message).contains('Interaction not exercised: GET - /api/core');
+  });
+
   it('GET - with auth', async () => {
     await pactum.spec()
       .useInteraction({
