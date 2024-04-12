@@ -650,7 +650,7 @@ describe('Mock', () => {
       .expectStatus(200);
   });
 
-  it.only('GET - with core options & auth - override with core invalid auth', async () => {
+  it('GET - with core options & auth - override with core invalid auth', async () => {
     try {
       await pactum.spec()
       .useInteraction({
