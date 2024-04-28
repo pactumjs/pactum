@@ -250,7 +250,7 @@ declare class Spec {
    * expects a status code on the response
    * @see https://pactumjs.github.io/api/assertions/expectStatus.html
    */
-  expectStatus(code: number): Spec;
+  expectStatus(code: number, message?: string): Spec;
 
   /**
    * expects a header on the response

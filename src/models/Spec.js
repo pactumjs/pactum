@@ -345,8 +345,9 @@ class Spec {
     return this;
   }
 
-  expectStatus(statusCode) {
+  expectStatus(statusCode, message = '') {
     this._expect.statusCode = statusCode;
+    this._expect.customMessage = message;
     return this;
   }
 

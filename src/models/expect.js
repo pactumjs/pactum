@@ -102,7 +102,8 @@ class Expect {
   _validateStatus(response) {
     this.statusCode = processor.processData(this.statusCode);
     if (this.statusCode !== null) {
-      assert.strictEqual(response.statusCode, this.statusCode, `HTTP status ${response.statusCode} !== ${this.statusCode}`);
+      const message = this.customMessage ? `${this.customMessage}\n ` : '';
+      assert.strictEqual(response.statusCode, this.statusCode, `${message}HTTP status ${response.statusCode} !== ${this.statusCode}`);
     }
   }
 
