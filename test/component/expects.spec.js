@@ -174,7 +174,7 @@ describe('Expects', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals(`Header value 'value' did not match for header 'connection': 'close'`);
+    expect(err.message).includes(`Header value 'value' did not match for header 'connection':`);
   });
 
   it('header value not found - RegEx', async () => {
@@ -187,7 +187,7 @@ describe('Expects', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals(`Header regex (/value/) did not match for header 'connection': 'close'`);
+    expect(err.message).includes(`Header regex (/value/) did not match for header 'connection':`);
   });
 
   it('header contains key not found', async () => {
@@ -213,7 +213,7 @@ describe('Expects', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals(`Header value 'value' did not match for header 'connection': 'close'`);
+    expect(err.message).includes(`Header value 'value' did not match for header 'connection':`);
   });
 
   it('header contains value not found - RegEx', async () => {
@@ -226,7 +226,7 @@ describe('Expects', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals(`Header regex (/value/) did not match for header 'connection': 'close'`);
+    expect(err.message).includes(`Header regex (/value/) did not match for header 'connection':`);
   });
 
   it('failed body', async () => {

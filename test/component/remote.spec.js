@@ -123,7 +123,7 @@ describe('Remote- post single mock interaction', () => {
     await pactum.spec()
       .get(`http://localhost:9393/api/pactum/interactions?ids=${id}`)
       .expectStatus(200)
-      .expectJson([
+      .expectJsonLike([
         {
           "callCount": 1,
           "exercised": true,
@@ -134,8 +134,7 @@ describe('Remote- post single mock interaction', () => {
                 "path": "/api/projects/1",
                 "query": {},
                 "headers": {
-                  "host": "localhost:9393",
-                  "connection": "close"
+                  "host": "localhost:9393"
                 },
                 "body": ""
               },

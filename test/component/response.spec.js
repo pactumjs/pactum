@@ -60,14 +60,14 @@ describe('Response', () => {
   });
 
   it('with default expected response header', async () => {
-    response.setDefaultExpectHeaders('connection', 'close');
+    response.setDefaultExpectHeaders('content-type', 'application/json');
     await pactum.spec()
       .useInteraction('default get')
       .get('http://localhost:9393/default/get');
   });
 
   it('with default expected response header - failure', async () => {
-    response.setDefaultExpectHeaders('connection', 'open');
+    response.setDefaultExpectHeaders('content-type', 'application/xml');
     let err;
     try {
       await pactum.spec()
@@ -76,15 +76,15 @@ describe('Response', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals(`Header value 'open' did not match for header 'connection': 'close'`);
+    expect(err.message).equals(`Header value 'application/xml' did not match for header 'content-type': 'application/json'`);
   });
 
   it('with default expected response header - override value', async () => {
-    response.setDefaultExpectHeaders('connection', 'open');
+    response.setDefaultExpectHeaders('content-type', 'application/xml');
     await pactum.spec()
       .useInteraction('default get')
       .get('http://localhost:9393/default/get')
-      .expectHeader('connection', 'close');
+      .expectHeader('content-type', 'application/json');
   });
 
   it('with default expected response handler', async () => {

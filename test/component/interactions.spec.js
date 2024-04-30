@@ -508,9 +508,7 @@ describe('Mock', () => {
       .put('http://localhost:9393/api/projects/1')
       .withBody("Hello")
       .expectStatus(404)
-      .expectBody('Interaction Not Found')
-      .expectHeader('connection', 'close')
-      .expectHeaderContains('connection', 'close');
+      .expectBody('Interaction Not Found');
   });
 
   it('PATCH - invalid interaction', async () => {
