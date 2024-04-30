@@ -1,4 +1,5 @@
 const { URL } = require('url');
+const stash = require('../exports/stash');
 const processor = require('./dataProcessor');
 const helper = require('./helper');
 const config = require('../config');
@@ -6,7 +7,8 @@ const fd = require('../plugins/form.data')
 
 const requestProcessor = {
 
-  process(request) {
+  process(request, local_data_maps) {
+    process_local_data_maps(local_data_maps);
     processor.processMaps();
     processor.processTemplates();
     request = processor.processData(request);
@@ -25,6 +27,18 @@ const requestProcessor = {
   }
 
 };
+
+/**
+ *
+ * @param {any[]} local_data_maps
+ */
+function process_local_data_maps(local_data_maps) {
+  if (local_data_maps) {
+    for (const local_data_map of local_data_maps) {
+      stash.addDataMap(local_data_map.key, local_data_map.value);
+    }
+  }
+}
 
 function setBaseUrl(request) {
   if (config.request.baseUrl && request.url && !request.url.startsWith('http')) {
@@ -107,7 +121,7 @@ function setMultiPartFormData(request) {
     let multi_part_form_data;
     for (let i = 0; i < request._multi_parts.length; i++) {
       const { key, value, options } = request._multi_parts[i];
-      if (key instanceof FormData) { 
+      if (key instanceof FormData) {
         multi_part_form_data = key;
       } else {
         if (typeof multi_part_form_data === 'undefined') {
@@ -120,7 +134,7 @@ function setMultiPartFormData(request) {
             multi_part_form_data.append(form_key, key[form_key], options);
           }
         }
-        
+
       }
     }
     request.data = multi_part_form_data.getBuffer();
