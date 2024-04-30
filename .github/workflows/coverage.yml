@@ -15,9 +15,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
+    - uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '18.x'
     - run: npm install
     - name: Code Coverage
       uses: paambaati/codeclimate-action@v2.4.0
