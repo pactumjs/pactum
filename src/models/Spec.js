@@ -37,6 +37,7 @@ class Spec {
     this.interactions = [];
     this._wait = null;
     this._save = null;
+    this._data_maps = [];
     this._specHandlerData = data;
     hr.spec(name, data, this);
     this._opts = opts || {};
@@ -66,6 +67,11 @@ class Spec {
       return this;
     }
     this.interactions.push({ interaction, data });
+    return this;
+  }
+
+  useDataMap(key, value) {
+    this._data_maps.push({ key, value });
     return this;
   }
 
@@ -157,10 +163,10 @@ class Spec {
         throw new PactumRequestError('`key` is required');
       }
       if (Object.keys(this._request.queryParams).includes(key)) {
-       if (!Array.isArray(this._request.queryParams[key])) {
-        this._request.queryParams[key] = [this._request.queryParams[key]];
-       }
-       this._request.queryParams[key].push(value);
+        if (!Array.isArray(this._request.queryParams[key])) {
+          this._request.queryParams[key] = [this._request.queryParams[key]];
+        }
+        this._request.queryParams[key].push(value);
       } else {
         this._request.queryParams[key] = value;
       }
@@ -430,7 +436,7 @@ class Spec {
   expectJsonMatchStrictAt(...args) { return this.expectJsonMatchStrict(...args); }
 
   expectJsonSnapshot(name, value) {
-    typeof name === 'string' ? this._expect.jsonSnapshots.push({ name, value }): this._expect.jsonSnapshots.push({ value: name });
+    typeof name === 'string' ? this._expect.jsonSnapshots.push({ name, value }) : this._expect.jsonSnapshots.push({ value: name });
     return this;
   }
 

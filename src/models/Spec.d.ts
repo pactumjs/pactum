@@ -49,6 +49,10 @@ declare class Spec {
   useInteraction(interaction: Interaction): Spec;
   useInteraction(handler: string, data?: any): Spec;
 
+  useDataMap(map: object): Spec;
+  useDataMap(maps: object[]): Spec;
+  useDataMap(key: string, value: any): Spec;
+
   /**
    * The GET method requests a representation of the specified resource.
    * @see https://pactumjs.github.io/guides/api-testing.html

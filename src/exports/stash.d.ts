@@ -67,7 +67,7 @@ export function addDataTemplate(templates: object): void;
 export function addDataTemplate(templates: object[]): void;
 
 /**
- * 
+ *
  * @example
  * stash.addDataTemplate('USER:NEW', { name: 'john', age: 28 });
  */

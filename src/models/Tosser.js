@@ -28,7 +28,7 @@ class Tosser {
   async toss() {
     try {
       this.spec.start = Date.now().toString();
-      this.request = requestProcessor.process(this.request);
+      this.request = requestProcessor.process(this.request, this.spec._data_maps);
       await this.setState();
       await this.addInteractionsToServer();
       // get interactions to check for background property
