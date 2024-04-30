@@ -137,6 +137,20 @@ describe('Expects', () => {
     expect(err.message).equals('HTTP status 404 !== 200');
   });
 
+  it('failed status code with custom message', async () => {
+    const customMessage = 'An error occurred in the API call because it did not return the statusCode 200'
+    let err;
+    try {
+      await pactum.spec()
+        .get('http://localhost:9393/api/users/1')
+        .expectStatus(200, customMessage)
+        .useLogLevel('ERROR');
+    } catch (error) {
+      err = error;
+    }
+    expect(err.message).equals(`${customMessage}\n HTTP status 404 !== 200`);
+  });
+
   it('header key not found', async () => {
     let err;
     try {

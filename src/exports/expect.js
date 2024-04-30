@@ -9,8 +9,9 @@ class Have {
     this.spec = spec;
   }
 
-  status(code) {
+  status(code, message = '') {
     this.expect.statusCode = code;
+    this._expect.customMessage = message;
     this._validate();
   }
 

@@ -1,5 +1,5 @@
 export interface Have {
-  status(code: number): void;
+  status(code: number, message?: string): void;
   header(key: string, value: any): void;
   headerContains(key: string, value: any): void;
   cookiesLike(key: any, value?: any): void;
