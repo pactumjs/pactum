@@ -345,7 +345,7 @@ class Expect {
         if (this.updateSnapshot) {
           log.warn(`Update snapshot is enabled for '${snapshot_name}'`);
           file.saveSnapshot(snapshot_name, response.json);
-        }    
+        }
         if (value) {
           const current_rules = jmv.getMatchingRules(value, '$.body');
           let errors = jmv.validate(actual,  jmv.getRawValue(value), current_rules, '$.body');
@@ -355,7 +355,7 @@ class Expect {
           Object.assign(all_rules, current_rules);
         }
       }
-      
+
       const expected = file.getSnapshotFile(snapshot_name, response.json);
       if (Object.keys(all_rules).length > 0) {
         const errors = jmv.validate(actual, expected, all_rules, '$.body', true);
@@ -420,9 +420,16 @@ class Expect {
       for (let i = 0; i < this.errors.length; i++) {
         const expected = this.errors[i];
         if (typeof expected === 'string') {
-          const actual = response.toString();
-          if (!actual.includes(expected)) {
-            this.fail(`Error - "${actual}" doesn't include - ${expected}`);
+          if (response.errors && Array.isArray(response.errors) && response.errors.length > 0) {
+            const actual = response.errors[0].toString();
+            if (!actual.includes(expected)) {
+              this.fail(`Error - "${actual}" doesn't include - ${expected}`);
+            }
+          } else {
+            const actual = response.toString();
+            if (!actual.includes(expected)) {
+              this.fail(`Error - "${actual}" doesn't include - ${expected}`);
+            }
           }
         }
         if (typeof expected === 'object') {

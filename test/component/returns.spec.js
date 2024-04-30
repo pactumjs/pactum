@@ -141,8 +141,8 @@ describe('Returns', () => {
       })
       .get('http://localhost:9393/api/users')
       .expectStatus(200)
-      .returns('res.headers.connection');
-    expect(response).equals('close');
+      .returns('res.headers');
+    expect(response['content-type']).equals('application/json');
   });
 
   it('return request headers', async () => {
