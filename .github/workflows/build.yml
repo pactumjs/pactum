@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        node-version: [18.x]
+        node-version: [18.x, 20.x]
 
     steps:
     - uses: actions/checkout@v2
