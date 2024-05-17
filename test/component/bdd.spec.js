@@ -179,7 +179,8 @@ describe('BDD', () => {
   });
 
   it('Should sleep after spec', async () => {
-    await spec.get('http://localhost:9393/api/users').expectStatus(200).sleep(3000);
+    spec.useInteraction('default get');
+    await spec.get('http://localhost:9393/default/get').expectStatus(200).sleep(3000);
   });
 
 });
