@@ -179,8 +179,9 @@ describe('BDD', () => {
   });
 
   it('Should sleep after spec', async () => {
+    const spec = pactum.spec();
     spec.useInteraction('default get');
-    await spec.get('http://localhost:9393/default/get').expectStatus(200).sleep(3000);
+    await spec.get('http://localhost:9393/default/get').expectStatus(200).sleep(2000).toss();
   });
 
 });
