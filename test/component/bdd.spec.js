@@ -178,6 +178,12 @@ describe('BDD', () => {
     ce(err).not.undefined;
   });
 
+  it('Should sleep after spec', async () => {
+    const spec = pactum.spec();
+    spec.useInteraction('default get');
+    await spec.get('http://localhost:9393/default/get').expectStatus(200).sleep(10).toss();
+  });
+
 });
 
 describe('BDD - AutoReportRunner Disabled', () => {
