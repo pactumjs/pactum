@@ -456,6 +456,12 @@ declare class Spec {
    * @see https://pactumjs.github.io/api/requests/end.html
    */
   end(): Spec;
+
+  /** 
+   * sleep after spec execution
+   * @see https://pactumjs.github.io/api/utils/sleep.html
+   */
+  sleep(ms: number): Promise<void>;
 }
 
 declare namespace Spec { }

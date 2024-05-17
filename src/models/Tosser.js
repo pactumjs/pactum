@@ -19,6 +19,7 @@ class Tosser {
     this.request = spec._request;
     this.state = spec._state;
     this.expect = spec._expect;
+    this.sleep = spec._sleep;
     this.interactions = spec.interactions;
     this.previousLogLevel = spec.previousLogLevel;
     this.response = {};
@@ -50,6 +51,7 @@ class Tosser {
       }
       return th.getOutput(this.spec, this.spec._returns);
     } finally {
+      this.sleep !== "" && await helper.sleep(this.sleep);
       await this.removeInteractionsFromServer();
       this.setPreviousLogLevel();
     }

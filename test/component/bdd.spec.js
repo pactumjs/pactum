@@ -178,6 +178,10 @@ describe('BDD', () => {
     ce(err).not.undefined;
   });
 
+  it('Should sleep after spec', async () => {
+    await spec.get('http://localhost:9393/api/users').expectStatus(200).sleep(3000);
+  });
+
 });
 
 describe('BDD - AutoReportRunner Disabled', () => {

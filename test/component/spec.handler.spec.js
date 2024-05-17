@@ -82,4 +82,18 @@ describe('Spec Handler', () => {
       });
   });
 
+  it('sleep in spec handler', async () => {
+    await pactum
+      .spec('get users')
+      .expectStatus(200)
+      .expectJson([
+        {
+          id: 1
+        },
+        {
+          id: 2
+        }
+      ])
+      .sleep(3000);
+  });
 });

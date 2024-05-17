@@ -39,10 +39,16 @@ class Spec {
     this._save = null;
     this._data_maps = [];
     this._specHandlerData = data;
+    this._sleep = '';
     hr.spec(name, data, this);
     this._opts = opts || {};
     this._opts.handler_name = name;
     this._expect.setDefaultResponseExpectations();
+  }
+  
+  sleep(ms) {
+    this._sleep = ms;
+    return this;
   }
 
   name(value) {
