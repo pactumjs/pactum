@@ -461,7 +461,7 @@ declare class Spec {
    * sleep after spec execution
    * @see https://pactumjs.github.io/api/utils/sleep.html
    */
-  sleep(ms: number): Promise<void>;
+  sleep(ms: number): Spec;
 }
 
 declare namespace Spec { }

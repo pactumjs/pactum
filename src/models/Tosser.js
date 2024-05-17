@@ -51,7 +51,7 @@ class Tosser {
       }
       return th.getOutput(this.spec, this.spec._returns);
     } finally {
-      this.sleep !== "" && await helper.sleep(this.sleep);
+      this.sleep > 0 && await helper.sleep(this.sleep);
       await this.removeInteractionsFromServer();
       this.setPreviousLogLevel();
     }

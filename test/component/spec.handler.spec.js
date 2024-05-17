@@ -94,6 +94,6 @@ describe('Spec Handler', () => {
           id: 2
         }
       ])
-      .sleep(2000);
+      .sleep(10);
   });
 });
