@@ -34,7 +34,7 @@ class LikeJson {
         const expression = expected.replace(value, 'actual');
         const res = eval(expression);
         if (res !== true) {
-          return `${this.target} doesn't fulfil expression '${expression.replace('actual', expectedPath).trim()}'`;
+          return `${this.target} doesn't fulfil expression '${expression.replace('actual', expectedPath).trim()}'. Actual value found: ${actual}`;
         }
         return true;
       }
@@ -169,7 +169,7 @@ class LikeJson {
 function validate(actual, expected, opts) {
   let actual_path = '$';
   let expected_path = '$';
-  if (opts && opts.root_path) { 
+  if (opts && opts.root_path) {
     expected_path = opts.root_path;
   }
   return new LikeJson(opts).compare(actual, expected, actual_path, expected_path);

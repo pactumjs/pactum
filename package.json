@@ -1,6 +1,6 @@
 {
   "name": "pactum",
-  "version": "3.6.9",
+  "version": "3.7.0",
   "description": "REST API Testing Tool for all levels in a Test Pyramid",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
