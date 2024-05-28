@@ -1051,8 +1051,8 @@ describe('JSON Like - Assert Expressions', () => {
   it('object does not fulfil simple expression', () => {
     const actual = { id: 1 };
     const expected = { id: '$V > 1' };
-    expect(jsl.validate(actual, expected)).equals(`Json doesn't fulfil expression '$.id > 1'`);
-    expect(jsl.validate(actual, expected, { root_path: 'data' })).equals(`Json doesn't fulfil expression 'data.id > 1'`);
+    expect(jsl.validate(actual, expected)).equals(`Json doesn't fulfil expression '$.id > 1'. Actual value found: 1`);
+    expect(jsl.validate(actual, expected, { root_path: 'data' })).equals(`Json doesn't fulfil expression 'data.id > 1'. Actual value found: 1`);
   });
 
   it('array fulfil simple expression', () => {
@@ -1064,8 +1064,8 @@ describe('JSON Like - Assert Expressions', () => {
   it('array does not fulfil simple expression', () => {
     const actual = [{ id: 1 }];
     const expected = '$V.length > 1';
-    expect(jsl.validate(actual, expected)).equals(`Json doesn't fulfil expression '$.length > 1'`);
-    expect(jsl.validate(actual, expected, { root_path: 'data.users' })).equals(`Json doesn't fulfil expression 'data.users.length > 1'`);
+    expect(jsl.validate(actual, expected)).equals(`Json doesn't fulfil expression '$.length > 1'. Actual value found: [object Object]`);
+    expect(jsl.validate(actual, expected, { root_path: 'data.users' })).equals(`Json doesn't fulfil expression 'data.users.length > 1'. Actual value found: [object Object]`);
   });
 
   it('object fulfil complex expression', () => {
@@ -1077,7 +1077,7 @@ describe('JSON Like - Assert Expressions', () => {
   it('object does not fulfil complex expression', () => {
     const actual = { id: 1, marks: { maths: 70 } };
     const expected = { id: 1, marks: { maths: '$V > 80' } };
-    expect(jsl.validate(actual, expected)).equals(`Json doesn't fulfil expression '$.marks.maths > 80'`);
+    expect(jsl.validate(actual, expected)).equals(`Json doesn't fulfil expression '$.marks.maths > 80'. Actual value found: 70`);
   });
 
   it('object fulfil simple custom includes expression', () => {
