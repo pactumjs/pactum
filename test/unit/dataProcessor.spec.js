@@ -398,7 +398,7 @@ describe('Data Processing - Templates - Direct Overrides', () => {
     });
     expect(config.data.template.enabled).equals(true);
     expect(config.data.template.processed).equals(true);
-  });  
+  });
 
 });
 
@@ -783,6 +783,26 @@ describe('Data Processing - Actual Data - Only Maps', () => {
           'Castle': 'Castle Black'
         }
       ]
+    });
+  });
+
+  it('processData - should replace object key with string', () => {
+    let data = {
+      '$M{User.Name}': 'Name'
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals({
+      'Snow': 'Name'
+    });
+  });
+
+  it('processData - should not replace object key', () => {
+    let data = {
+      '$M{User}': 'Name'
+    };
+    data = dp.processData(data);
+    expect(data).deep.equals({
+      '$M{User}': 'Name'
     });
   });
 

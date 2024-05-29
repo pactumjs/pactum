@@ -80,7 +80,6 @@ const stash = {
 
   getDataTemplate(path) {
     if (path) {
-      console.log(dataTemplate)
       return jq(path, { data: dataTemplate }).value;
     }
     return dataTemplate;

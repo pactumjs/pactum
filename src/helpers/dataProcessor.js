@@ -82,7 +82,14 @@ const dataProcessor = {
     }
     if (typeof data === 'object') {
       for (const prop in data) {
-        data[prop] = this.processDataRefs(data[prop]);
+        const updated_prop = this.getDataRefValue(prop);
+        if (typeof updated_prop === 'string' && updated_prop !== prop) {
+          data[updated_prop] = data[prop];
+          delete data[prop];
+          data[updated_prop] = this.processDataRefs(data[updated_prop]);
+        } else {
+          data[prop] = this.processDataRefs(data[prop]);
+        }
       }
     }
     return data;
