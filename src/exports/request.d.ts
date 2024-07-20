@@ -26,14 +26,9 @@ export function setBaseUrl(url: string): void;
 export function setFollowRedirects(follow: boolean): void;
 
 /**
- * removes default header
+ * removes all or selective default headers
  */
-export function removeDefaultHeader(key: string): void;
-
-/**
- * removes all default headers
- */
-export function removeDefaultHeaders(): void;
+export function removeDefaultHeaders(key: string): void;
 
 /**
  * records data that will be available in reports

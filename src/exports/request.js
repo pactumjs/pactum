@@ -46,15 +46,12 @@ const request = {
     config.request.followRedirects = follow;
   },
 
-  removeDefaultHeader(key) {
-    if (!key) {
-      throw new PactumRequestError(`Invalid header key provided - ${key}`);
-    }
-    delete config.request.headers[key];
-  },
-
-  removeDefaultHeaders() {
-    config.request.headers = {};
+  removeDefaultHeaders(key) {
+    if(key) {
+      delete config.request.headers[key];
+    } else {
+      config.request.headers = {};
+    } 
   },
 
   setDefaultRecorders(name, path) {
