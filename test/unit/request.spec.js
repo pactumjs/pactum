@@ -21,12 +21,8 @@ describe('request', () => {
     expect(() => request.setDefaultHeaders()).throws('Invalid header key provided - undefined');
   });
 
-  it('removeDefaultHeader - undefined', () => {
-    expect(() => request.removeDefaultHeader()).throws('Invalid header key provided - undefined');
-  });
-
-  it('removeDefaultHeader - which is not present', () => {
-    request.removeDefaultHeader('present');
+  it('removeDefaultHeaders - which is not present', () => {
+    request.removeDefaultHeaders('present');
   });
 
   it('setDefaultHeader & setDefaultHeaders & remove', () => {
@@ -41,7 +37,7 @@ describe('request', () => {
       'no': 'space',
       'gta': 'v'
     });
-    request.removeDefaultHeader('no');
+    request.removeDefaultHeaders('no');
     expect(config.request.headers).deep.equals({
       'hello': 'space',
       'gta': 'v'
@@ -62,6 +58,35 @@ describe('request', () => {
     expect(() => request.setDefaultTimeout('100')).throws('Invalid timeout provided - 100');
   });
 
+  it('setting default headers and removing it', () => {
+    request.setDefaultHeaders({
+      'pactumjs': 'userfriendly',
+      'apitesting': 'pactumjs'
+    });
+    expect(config.request.headers).deep.equals({
+      'pactumjs': 'userfriendly',
+      'apitesting': 'pactumjs'
+    });
+    request.removeDefaultHeaders();
+    expect(config.request.headers).deep.equals({});
+  });
+
+  it('setting duplicate headers and removing it', () => {
+    request.setDefaultHeaders({
+      'pactumjs': 'lightweight',
+      'test': 'testing',
+      'test': 'tested'
+    });
+    expect(config.request.headers).deep.equals({
+      'pactumjs': 'lightweight',
+      'test': 'tested'
+    });
+    request.removeDefaultHeaders('test');
+    expect(config.request.headers).deep.equals({
+      'pactumjs': 'lightweight'
+    });
+  });
+  
   afterEach(() => {
    config.request.headers = {};
   });
