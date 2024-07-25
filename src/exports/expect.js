@@ -1,5 +1,6 @@
 const ExpectModel = require('../models/expect');
 const utils = require('../helpers/utils');
+const http = require('http');
 
 class Have {
 
@@ -143,7 +144,11 @@ class Expect {
 }
 
 function expect(response, spec) {
-  return new Expect(response, spec);
+  if (response instanceof http.IncomingMessage) {
+    return new Expect(response, spec);
+  }
+  const res = { json: response };
+  return new Expect(res, spec);
 }
 
 module.exports = expect;
