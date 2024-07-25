@@ -4,8 +4,6 @@ require('./plugins/json.match').setAdapter(require('./adapters/json.match'));
 require('./plugins/json.like').setAdapter(require('./adapters/json.like'));
 require('./plugins/form.data').setAdapter(require('./adapters/form.data'));
 
-const { klona } = require('klona')
-
 const Spec = require('./models/Spec');
 const Fuzz = require('./models/Fuzz');
 const E2E = require('./models/E2E');
@@ -22,6 +20,7 @@ const stash = require('./exports/stash');
 const expect = require('./exports/expect');
 const reporter = require('./exports/reporter');
 const events = require('./exports/events');
+const utils = require('./exports/utils');
 
 const processor = require('./helpers/dataProcessor');
 
@@ -43,6 +42,7 @@ const pactum = {
   expect,
   reporter,
   events,
+  utils,
 
   spec(name, data, opts) {
     return new Spec(name, data, opts);
@@ -68,7 +68,7 @@ const pactum = {
   },
 
   clone(value) {
-    return klona(value);
+    return utils.clone(value);
   },
 
   parse,

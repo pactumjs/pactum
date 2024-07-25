@@ -14,6 +14,7 @@ export * as response from './exports/response';
 export * as settings from './exports/settings';
 export * as stash from './exports/stash';
 export * as state from './exports/state';
+export * as utils from './exports/utils';
 
 export interface SpecOptions {
   memo?: any
