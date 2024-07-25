@@ -5,4 +5,9 @@ export const EVENT_TYPES: {
   AFTER_RESPONSE: 'AFTER_RESPONSE';
 };
 
+export const pactumEvents: EventEmitter;
+
+/**
+ * @deprecated
+ */
 export const events: EventEmitter;

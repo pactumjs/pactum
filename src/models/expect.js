@@ -1,7 +1,6 @@
 const assert = require('assert');
 const jqy = require('json-query');
 const lc = require('lightcookie');
-const { klona: clone } = require('klona');
 
 const config = require('../config');
 const utils = require('../helpers/utils');
@@ -10,6 +9,7 @@ const file = require('../helpers/file.utils');
 const log = require('../plugins/logger');
 const processor = require('../helpers/dataProcessor');
 const handler = require('../exports/handler');
+const { clone } = require('../exports/utils');
 const jsv = require('../plugins/json.schema');
 const jmv = require('../plugins/json.match');
 const jlv = require('../plugins/json.like');
@@ -348,7 +348,7 @@ class Expect {
         }
         if (value) {
           const current_rules = jmv.getMatchingRules(value, '$.body');
-          let errors = jmv.validate(actual,  jmv.getRawValue(value), current_rules, '$.body');
+          let errors = jmv.validate(actual, jmv.getRawValue(value), current_rules, '$.body');
           if (errors) {
             this.fail(errors.replace('$.body', '$'));
           }

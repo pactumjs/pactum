@@ -10,7 +10,7 @@ const mock = require('../exports/mock');
 const request = require('../exports/request');
 const config = require('../config');
 const hr = require('../helpers/handler.runner');
-const { events, EVENT_TYPES } = require('../exports/events');
+const { events, pactumEvents, EVENT_TYPES } = require('../exports/events');
 
 class Tosser {
 
@@ -257,6 +257,7 @@ async function getResponse(tosser) {
   const requestStartTime = Date.now();
   try {
     events.emit(EVENT_TYPES.BEFORE_REQUEST, request);
+    pactumEvents.emit(EVENT_TYPES.BEFORE_REQUEST, { request });
     log.debug(`${request.method} ${request.url}`);
     res = await phin(request);
     res.buffer = res.body;
@@ -274,6 +275,7 @@ async function getResponse(tosser) {
   } finally {
     res.responseTime = Date.now() - requestStartTime;
     events.emit(EVENT_TYPES.AFTER_RESPONSE, res);
+    pactumEvents.emit(EVENT_TYPES.AFTER_RESPONSE, { request, response: res });
   }
   return res;
 }

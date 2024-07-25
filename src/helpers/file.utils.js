@@ -28,19 +28,8 @@ function saveSnapshot(name, data) {
   fs.writeFileSync(`${snapshotDir}/${snapshotFile}`, JSON.stringify(data, null, 2));
 }
 
-/**
- * 
- * @param {string} name 
- */
-function findFile(name, dir = config.data.dir) {
-  const result = _findFile(name, dir);
-  if (result) {
-    return result;
-  }
-  throw new Error(`File Not Found - '${name}'`);
-}
 
-function _findFile(name, dir = config.data.dir) {
+function findFileRecursively(name, dir = config.data.dir) {
   if (fs.existsSync(name)) {
     return fs.readFileSync(name);
   }
@@ -55,7 +44,7 @@ function _findFile(name, dir = config.data.dir) {
       const dirPath = path.resolve(dir, file);
       const stats = fs.statSync(dirPath);
       if (stats.isDirectory()) {
-        const result = _findFile(name, dirPath);
+        const result = findFileRecursively(name, dirPath);
         if (result) {
           return result;
         }
@@ -67,5 +56,5 @@ function _findFile(name, dir = config.data.dir) {
 module.exports = {
   getSnapshotFile,
   saveSnapshot,
-  findFile
+  findFileRecursively
 };

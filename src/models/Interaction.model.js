@@ -3,7 +3,7 @@ const { setMatchingRules, getValue } = require('pactum-matchers').utils;
 const processor = require('../helpers/dataProcessor');
 const helper = require('../helpers/helper');
 const { PactumInteractionError } = require('../helpers/errors');
-const { klona: clone } = require('klona');
+const { clone } = require('../exports/utils');
 const ALLOWED_REQUEST_METHODS = new Set([
   'GET',
   'POST',
@@ -122,7 +122,7 @@ class InteractionRequest {
     }
     if (request.cookies && typeof request.cookies === 'object') {
       const cookie = lc.serialize(request.cookies);
-      if(!this.headers) {
+      if (!this.headers) {
         this.headers = {};
       }
       this.headers['cookie'] = cookie;
@@ -169,9 +169,9 @@ class InteractionResponse {
     this.headers = getValue(response.headers);
     setMatchingRules(this.matchingRules, response.body, '$.body');
     this.body = getValue(response.body);
-    if(response.cookies) {
+    if (response.cookies) {
       const cookie = lc.serialize(response.cookies);
-      if(!this.headers) {
+      if (!this.headers) {
         this.headers = {};
       }
       this.headers['set-cookie'] = cookie;

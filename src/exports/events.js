@@ -1,6 +1,11 @@
 const { EventEmitter } = require('events');
 
+/**
+ * @deprecated
+ */
 const events = new EventEmitter();
+
+const pactumEvents = new EventEmitter();
 
 const EVENT_TYPES = {
   BEFORE_REQUEST: "BEFORE_REQUEST",
@@ -9,5 +14,6 @@ const EVENT_TYPES = {
 
 module.exports = {
   events,
+  pactumEvents,
   EVENT_TYPES
 }

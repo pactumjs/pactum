@@ -1,19 +1,19 @@
 const { spec } = require('../../src');
-const { events, EVENT_TYPES } = require('../../src').events;
+const { pactumEvents, EVENT_TYPES } = require('../../src').events;
 
 describe('events', () => {
 
   before(() => {
-    events.on(EVENT_TYPES.BEFORE_REQUEST, (r) => {
+    pactumEvents.on(EVENT_TYPES.BEFORE_REQUEST, (r) => {
       console.log(r);
     });
-    events.on(EVENT_TYPES.AFTER_RESPONSE, (r) => {
-      console.log(r.body);
+    pactumEvents.on(EVENT_TYPES.AFTER_RESPONSE, (r) => {
+      console.log(r.response.body);
     });
   });
 
   after(() => {
-    events.removeAllListeners();
+    pactumEvents.removeAllListeners();
   });
 
   it('get', async () => {
