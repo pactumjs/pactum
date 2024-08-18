@@ -5,6 +5,7 @@ const { PactumRequestError } = require('../helpers/errors');
 
 const log = require('../plugins/logger');
 const helper = require('./helper');
+const config = require('../config');
 
 const utils = {
 
@@ -50,8 +51,8 @@ const utils = {
   },
 
   printReqAndRes(request, response) {
-    log.warn('Request', request);
-    log.warn('Response', helper.getTrimResponse(response));
+    log.warn('Request', this.redactHeaders(request));
+    log.warn('Response', this.redactHeaders(helper.getTrimResponse(response)));
   },
 
   upsertValues(jsonArray, item) {
@@ -78,6 +79,26 @@ const utils = {
       Object.assign(cookieObject, key);
     }
     return cookieObject;
+  },
+
+  /**
+ * Redacts sensitive or custom list of headers provided by user
+ * @param {Object} req_res 
+ * @returns {Object} 
+ */
+  redactHeaders(req_res) {
+    const is_disabled = config.disable_redact_headers;
+    if (is_disabled || !req_res || !req_res.headers) {
+      return req_res;
+    }
+    const sensitiveHeaders = config.redact_headers_list;
+    Object.keys(req_res.headers).forEach(header => {
+      const lowerCaseHeader = header.toLowerCase();
+      if (sensitiveHeaders.includes(lowerCaseHeader)) {
+        req_res.headers[header] = config.redact_headers_text;
+      }
+    });
+    return req_res;
   }
 
 };

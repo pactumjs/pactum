@@ -4,7 +4,7 @@ const jqy = require('json-query');
 const config = require('../config');
 const helper = require('./helper');
 const hr = require('./handler.runner');
-
+const utils = require('../helpers/utils');
 const stash = require('../exports/stash');
 
 function getCaptureHandlerName(name) {
@@ -23,7 +23,7 @@ function getPathValueFromRequestResponse(path, request, response) {
     data = request.query;
   } else if (path.startsWith('req.headers')) {
     path = path.replace('req.headers', '');
-    data = request.headers;
+    data = utils.redactHeaders(request.headers);
   } else if (path.startsWith('req.cookies')) {
     path = path.replace('req.cookies', '');
     if (!request.headers) {
@@ -36,7 +36,7 @@ function getPathValueFromRequestResponse(path, request, response) {
     data = request.body;
   } else if (path.startsWith('res.headers')) {
     path = path.replace('res.headers', '');
-    data = response.headers;
+    data = utils.redactHeaders(response.headers);
   } else if (path.startsWith('res.cookies')) {
     path = path.replace('res.cookies', '');
     if (!response.headers) {

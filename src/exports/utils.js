@@ -29,7 +29,18 @@ const utils = {
       return result;
     }
     throw new Error(`File Not Found - '${name}'`);
-  }
+  },
+
+  /**
+   * Adds header(s) to list of headers to redact
+   * @param {Array | String} headers 
+   */
+    addRedactHeaders(headers) {
+      if (!Array.isArray(headers)){
+        config.redact_headers_list.push(headers.trim());
+      }
+      config.redact_headers_list.concat(headers);
+    }
 }
 
 module.exports = utils;

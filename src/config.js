@@ -30,6 +30,9 @@ const config = {
       polling: 100
     }
   },
+  redact_headers_list: ['authorization', 'cookie', 'x-api-key'],
+  redact_headers_text: '[REDACTED]',
+  disable_redact_headers: false,
   data: {
     ref: {
       map: {

@@ -4,6 +4,7 @@ const log = require('../plugins/logger');
 const rp = require('../helpers/requestProcessor');
 const helper = require('../helpers/helper');
 const mock = require('../exports/mock');
+const utils = require('../helpers/utils')
 
 const BASE_URL_PATTERN = /^https?:\/\/[^\/]+/i;
 
@@ -111,8 +112,7 @@ class Tosser {
   }
 
   printReqAndRes(request, response) {
-    log.warn('Request', request);
-    log.warn('Response', response);
+    utils.printReqAndRes(request, response);
   }
 
 }

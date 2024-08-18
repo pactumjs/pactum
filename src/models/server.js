@@ -8,6 +8,7 @@ const fs_path = require('path');
 const Interaction = require('./Interaction.model');
 const helper = require('../helpers/helper');
 const utils = require('../helpers/utils');
+const export_utils = require('../exports/utils');
 const log = require('../plugins/logger');
 const hr = require('../helpers/handler.runner');
 const rlc = require('../helpers/reporter.lifeCycle');
@@ -210,10 +211,11 @@ function getDelay(response) {
  * @param {ExpressResponse} res - HTTP response
  */
 function sendInteractionNotFoundResponse(req, res) {
+  const redacted_req = utils.redactHeaders({headers: export_utils.clone(req.headers)})
   const msg = {
     method: req.method,
     path: req.path,
-    headers: req.headers,
+    headers: redacted_req.headers,
   };
   if (req._parsedUrl && req._parsedUrl.query) {
     msg.queryParams = req.query || req._parsedUrl.query;

@@ -56,3 +56,5 @@ export function setReporterAutoRun(auto: boolean): void;
 export function setRequestDefaultRetryCount(count: number): void;
 export function setRequestDefaultRetryDelay(delay: number): void;
 export function setDataDirectory(path: string): void;
+export function disableRedactHeaders(): void;
+export function setRedactHeadersText(text: string): void;

@@ -74,9 +74,11 @@ class Expect {
     for (let i = 0; i < interactions.length; i++) {
       const interaction = interactions[i];
       const expects = interaction.expects;
+      const redacted_int_req = utils.redactHeaders(interaction.request);
       const intReq = {
         method: interaction.request.method,
         path: interaction.request.path,
+        headers: redacted_int_req.headers,
         headers: interaction.request.headers,
         body: interaction.request.body
       };

@@ -61,6 +61,14 @@ const settings = {
 
   setDataDirectory(path) {
     config.data.dir = path;
+  },
+
+  disableRedactHeaders() {
+    config.disable_redact_headers = true;
+  },
+
+  setRedactHeadersText(text) {
+    config.redact_headers_text = text.trim();
   }
 
 };
