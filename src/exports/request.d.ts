@@ -23,7 +23,8 @@ export function setBaseUrl(url: string): void;
 /**
  * sets default value for follow redirects
  */
-export function setFollowRedirects(follow: boolean): void;
+export function setDefaultFollowRedirects(follow: boolean): void;
+export function setDefaultFollowRedirects(follow: number): void;
 
 /**
  * removes all or selective default headers

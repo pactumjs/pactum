@@ -62,7 +62,7 @@
     "openapi-fuzzer-core": "^1.0.6",
     "pactum-matchers": "^1.1.7",
     "parse-graphql": "^1.0.0",
-    "phin": "^3.7.0",
+    "phin": "^3.7.1",
     "polka": "^0.5.2"
   },
   "devDependencies": {

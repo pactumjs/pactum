@@ -153,8 +153,8 @@ function setMultiPartFormData(request) {
 }
 
 function setFollowRedirects(request) {
-  if (config.request.followRedirects && typeof request.followRedirects === 'undefined') {
-    request.followRedirects = config.request.followRedirects;
+  if (config.request.followRedirects.enabled && typeof request.followRedirects === 'undefined') {
+    request.followRedirects = config.request.followRedirects.count;
   }
 }
 
