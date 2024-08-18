@@ -498,7 +498,7 @@ describe('Interactions - Not Strict - Wait', () => {
 
 describe('Interactions - Not Strict - Follow Redirects', () => {
 
-  it('with Follow Redirects', async () => {
+  it('with Follow Redirects - boolean config', async () => {
     await pactum.spec()
       .useInteraction({
         strict: false,
@@ -525,6 +525,75 @@ describe('Interactions - Not Strict - Follow Redirects', () => {
       })
       .get('http://localhost:9393/mock/redirect')
       .withFollowRedirects(true)
+      .expectStatus(200);
+  });
+
+  it('with Follow Redirects - count config', async () => {
+    await pactum.spec()
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'GET',
+          path: '/mock/redirect'
+        },
+        response: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/intermediate/1'
+          }
+        }
+      })
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'GET',
+          path: '/mock/intermediate/1'
+        },
+        response: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/intermediate/2'
+          }
+        }
+      })
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'GET',
+          path: '/mock/intermediate/2'
+        },
+        response: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/intermediate/3'
+          }
+        }
+      })
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'GET',
+          path: '/mock/intermediate/3'
+        },
+        response: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/actual'
+          }
+        }
+      })
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'GET',
+          path: '/mock/actual'
+        },
+        response: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/mock/redirect')
+      .withFollowRedirects(4)
       .expectStatus(200);
   });
 
@@ -597,6 +666,36 @@ describe('Interactions - Not Strict - Follow Redirects', () => {
       .expectStatus(200);
   });
 
+  it('with default Follow Redirects - count config', async () => {
+    pactum.request.setDefaultFollowRedirects(1);
+    await pactum.spec()
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'GET',
+          path: '/mock/redirect'
+        },
+        response: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/actual'
+          }
+        }
+      })
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'GET',
+          path: '/mock/actual'
+        },
+        response: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/mock/redirect')
+      .expectStatus(200);
+  });
+
   it('with Follow Redirects as false & default as true', async () => {
     pactum.request.setDefaultFollowRedirects(true);
     await pactum.spec()
@@ -618,6 +717,57 @@ describe('Interactions - Not Strict - Follow Redirects', () => {
       .expectStatus(301);
   });
 
+  it('with Follow Redirects as 0 & default as 1', async () => {
+    pactum.request.setDefaultFollowRedirects(1);
+    await pactum.spec()
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'GET',
+          path: '/mock/redirect'
+        },
+        response: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/actual'
+          }
+        }
+      })
+      .get('http://localhost:9393/mock/redirect')
+      .withFollowRedirects(0)
+      .expectStatus(301);
+  });
+
+  it('with Follow Redirects as 1 & default as 0', async () => {
+    pactum.request.setDefaultFollowRedirects(0);
+    await pactum.spec()
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'GET',
+          path: '/mock/redirect'
+        },
+        response: {
+          status: 301,
+          headers: {
+            'location': 'http://localhost:9393/mock/actual'
+          }
+        }
+      })
+      .useInteraction({
+        strict: false,
+        request: {
+          method: 'GET',
+          path: '/mock/actual'
+        },
+        response: {
+          status: 200
+        }
+      })
+      .get('http://localhost:9393/mock/redirect')
+      .withFollowRedirects(1)
+      .expectStatus(200);
+  });
 
   afterEach(() => {
     pactum.request.setDefaultFollowRedirects(false);
