@@ -321,8 +321,15 @@ class Spec {
   }
 
   withFollowRedirects(follow) {
+    if (typeof follow !== 'number' && typeof follow !== 'boolean') {
+      throw new PactumRequestError('Follow redirects should be number or boolean');
+    }
+    if (typeof follow == 'number' && follow >=0 ) {
+      this._request.followRedirects = follow;
+      return this;
+    }
     this._request.followRedirects = follow;
-    return this;
+    return this;   
   }
 
   withCompression() {

@@ -43,7 +43,13 @@ const request = {
   },
 
   setDefaultFollowRedirects(follow) {
-    config.request.followRedirects = follow;
+    if (typeof follow !== 'number' && typeof follow !== 'boolean') {
+      throw new PactumRequestError(`Invalid follow redirect option - ${follow}, allowed boolean/number`);
+    }
+    if (typeof follow == 'number' && follow >=0 ) {
+      config.request.followRedirects.count = follow;
+    }
+    config.request.followRedirects.enabled = follow;
   },
 
   removeDefaultHeaders(key) {

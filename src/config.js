@@ -13,7 +13,10 @@ const config = {
     baseUrl: process.env.PACTUM_REQUEST_BASE_URL || '',
     timeout: process.env.PACTUM_REQUEST_TIMEOUT ? parseInt(process.env.PACTUM_REQUEST_TIMEOUT) : 3000,
     headers: {},
-    followRedirects: false,
+    followRedirects: {
+      enabled: false,
+      count: 20
+    },
     retry: {
       count: 1,
       delay: 1000
