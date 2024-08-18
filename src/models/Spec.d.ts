@@ -217,7 +217,7 @@ declare class Spec {
    * @see https://pactumjs.github.io/api/requests/withFollowRedirects.html
    */
   withFollowRedirects(follow: boolean): Spec;
-
+  withFollowRedirects(follow: number): Spec;
   /**
    * enables compression
    * @see https://pactumjs.github.io/api/requests/withCompression.html
