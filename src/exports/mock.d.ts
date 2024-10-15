@@ -29,6 +29,7 @@ export type InteractionResponse = (
 
 export interface InteractionResponseBase {
   headers?: object;
+  cookies?: object;
   body?: any;
   file?: string;
   fixedDelay?: number;
