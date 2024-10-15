@@ -36,11 +36,6 @@ export interface InteractionResponseBase {
   onCall?: OnCall;
 }
 
-export interface RandomDelay {
-  min: number;
-  max: number;
-}
-
 export interface OnCall {
   [key: number]: Omit<InteractionResponseBase, 'onCall'> & { status: number };
 }
