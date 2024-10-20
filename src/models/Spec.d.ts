@@ -416,6 +416,7 @@ declare class Spec {
    * @see https://pactumjs.github.io/api/requests/inspect.html
    */
   inspect(): Spec;
+  inspect(enable: boolean): Spec;
   inspect(path: string): Spec;
 
   /**
@@ -457,7 +458,7 @@ declare class Spec {
    */
   end(): Spec;
 
-  /** 
+  /**
    * sleep after spec execution
    * @see https://pactumjs.github.io/api/utils/sleep.html
    */

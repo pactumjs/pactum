@@ -329,7 +329,7 @@ class Spec {
       return this;
     }
     this._request.followRedirects = follow;
-    return this;   
+    return this;
   }
 
   withCompression() {
@@ -516,17 +516,15 @@ class Spec {
   }
 
   inspect(inspect_path) {
-    if (this._inspect) {
-      if (typeof this._inspect === 'boolean') {
+    if (typeof inspect_path === 'string') {
+      if (!Array.isArray(this._inspect)) {
         this._inspect = [];
       }
       this._inspect.push(inspect_path);
+    } else if (typeof inspect_path === 'boolean') {
+      this._inspect = inspect_path;
     } else {
-      if (inspect_path) {
-        this._inspect = [inspect_path];
-      } else {
-        this._inspect = true;
-      }
+      this._inspect = true;
     }
     return this;
   }
