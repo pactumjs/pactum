@@ -122,7 +122,7 @@ class Tosser {
     if (this.spec._inspect) {
       log.warn('Inspecting Request & Response');
       if (typeof this.spec._inspect === 'boolean') {
-        utils.printReqAndRes(this.request, this.response);
+        this.printRequestAndResponse();
       } else {
         for (let i = 0; i < this.spec._inspect.length; i++) {
           const inspect_path = this.spec._inspect[i];
@@ -214,7 +214,7 @@ class Tosser {
       this.spec.status = 'FAILED';
       this.spec.failure = error.toString();
       this.runReport();
-      utils.printReqAndRes(this.request, this.response);
+      this.printRequestAndResponse();
       throw error;
     }
   }
@@ -224,7 +224,7 @@ class Tosser {
       this.spec.status = 'ERROR';
       this.spec.failure = this.response.toString();
       this.runReport();
-      utils.printReqAndRes(this.request, this.response);
+      this.printRequestAndResponse();
       this.expect.fail(this.response);
     }
   }
@@ -246,6 +246,12 @@ class Tosser {
   runReport() {
     if (config.reporter.autoRun && this.expect.errors.length === 0) {
       rlc.afterSpecReport(this.spec);
+    }
+  }
+
+  printRequestAndResponse() {
+    if (this.spec._inspect !== false) {
+      utils.printReqAndRes(this.request, this.response);
     }
   }
 
