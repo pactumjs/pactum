@@ -483,20 +483,27 @@ class Spec {
   }
 
   stores(...args) {
-    if (args.length === 1 && typeof args[0] === 'function') {
-      const fn = args[0];
-      if (this._response) {
-        th.storeSpecData(this, [fn]);
-      } else {
-        this._stores.push(fn);
-      }
-    } else if (args.length === 2) {
-      const [name, path] = args;
-      if (this._response) {
-        th.storeSpecData(this, [{ name, path }]);
-      } else {
-        this._stores.push({ name, path });
-      }
+    if (args.length === 0) {
+      return this;
+    }
+
+    /**
+     * @type {import('../internal.types').ISpecStore}
+     */
+    const spec_store = {};
+
+    if (typeof args[0] === 'function') {
+      spec_store.cb = args[0];
+    } else {
+      spec_store.name = args[0];
+      spec_store.path = args[1];
+      spec_store.options = args[2];
+    }
+
+    if (this._response) {
+      th.storeSpecData(this, [spec_store]);
+    } else {
+      this._stores.push(spec_store);
     }
     return this;
   }

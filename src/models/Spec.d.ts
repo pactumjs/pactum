@@ -4,6 +4,7 @@ import { Expect } from '../exports/expect';
 import { CaptureHandlerFunction, ExpectHandlerFunction, RetryHandlerFunction } from '../exports/handler';
 import { Interaction } from '../exports/mock';
 import { LogLevel } from '../exports/settings';
+import { ISpecStoreOptions } from '../internal.types';
 
 declare interface RetryOptions {
   /** maximum number of retries - defaults to 3 */
@@ -382,8 +383,8 @@ declare class Spec {
    * stores spec request & response data
    * @see https://pactumjs.github.io/api/requests/stores.html
    */
-  stores(name: string, path: string): Spec;
-  stores(name: string, handlerName: string): Spec;
+  stores(name: string, path: string, options?: ISpecStoreOptions): Spec;
+  stores(name: string, handlerName: string, options?: ISpecStoreOptions): Spec;
   stores<T>(cb: (request: Request, response: IncomingMessage & {body: Record<string, any>, json: Record<string, any>}) => T): Spec;
 
   /**

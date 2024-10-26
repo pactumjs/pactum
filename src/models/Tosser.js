@@ -42,7 +42,7 @@ class Tosser {
       await this.getInteractionsFromServer();
       this.saveDataInFileSystem();
       this.recordData();
-      th.storeSpecData(this.spec, this.spec._stores);
+      this.storeSpecData();
       await this.validate();
       if (hasBackgroundInteractions(this.interactions) || (this.spec._wait && typeof this.spec._wait.arg1 === 'string')) {
         await this.dynamicWait();
@@ -209,9 +209,11 @@ class Tosser {
       this.validateNonBackgroundInteractions();
       await this.validateResponse();
       this.spec.status = 'PASSED';
+      this.storeSpecData();
       this.runReport();
     } catch (error) {
       this.spec.status = 'FAILED';
+      this.storeSpecData();
       this.spec.failure = error.toString();
       this.runReport();
       this.printRequestAndResponse();
@@ -252,6 +254,36 @@ class Tosser {
   printRequestAndResponse() {
     if (this.spec._inspect !== false) {
       utils.printReqAndRes(this.request, this.response);
+    }
+  }
+
+  storeSpecData() {
+    const stores = [];
+    switch (this.spec.status) {
+      case 'PASSED':
+        for (const store of this.spec._stores) {
+          if (store && store.options && store.options.status === 'PASSED') {
+            stores.push(store);
+          }
+        }
+        break;
+      case 'FAILED':
+        for (const store of this.spec._stores) {
+          if (store && store.options && store.options.status === 'FAILED') {
+            stores.push(store);
+          }
+        }
+        break;
+      default:
+        for (const store of this.spec._stores) {
+          if (store && (!store.options || !store.options.status)) {
+            stores.push(store);
+          }
+        }
+        break;
+    }
+    if (stores.length > 0) {
+      th.storeSpecData(this.spec, stores);
     }
   }
 
