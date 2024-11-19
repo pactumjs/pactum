@@ -40,6 +40,10 @@ const hr = {
 
   retry(name, ctx) {
     return handler.getRetryHandler(name)(ctx);
+  },
+
+  response(name, ctx) {
+    return handler.getResponseHandler(name)(ctx);
   }
 
 };

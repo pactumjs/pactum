@@ -54,6 +54,8 @@ declare class Spec {
   useDataMap(maps: object[]): Spec;
   useDataMap(key: string, value: any): Spec;
 
+  useResponseHandler(key: string): Spec;
+
   /**
    * The GET method requests a representation of the specified resource.
    * @see https://pactumjs.github.io/guides/api-testing.html

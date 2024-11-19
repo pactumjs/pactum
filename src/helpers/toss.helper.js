@@ -6,6 +6,7 @@ const helper = require('./helper');
 const hr = require('./handler.runner');
 
 const stash = require('../exports/stash');
+const logger = require('../plugins/logger');
 
 function getCaptureHandlerName(name) {
   if (helper.matchesStrategy(name, config.strategy.capture.handler)) {
@@ -144,10 +145,23 @@ function storeInteractionData(request, interaction) {
   stash.addDataStore(interactionData);
 }
 
+async function runResponseHandler(spec) {
+  try {
+    const ctx = { req: spec._request, res: spec._response };
+    const handlers = spec._response_handlers;
+    for (let i = 0; i < handlers.length; i++) {
+      await hr.response(handlers[i], ctx);
+    }
+  } catch (error) {
+    logger.warn(`Error running response handler: ${error}`);
+  }
+}
+
 module.exports = {
   storeSpecData,
   recordSpecData,
   getOutput,
   storeInteractionData,
-  getPathValueFromRequestResponse
+  getPathValueFromRequestResponse,
+  runResponseHandler
 };

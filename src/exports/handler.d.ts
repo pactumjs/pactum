@@ -1,6 +1,6 @@
+import { IncomingMessage } from 'http';
 import * as Spec from '../models/Spec';
 import { Interaction } from './mock';
-import { IncomingMessage } from 'http';
 
 interface PactumRequest {
   url: string;
@@ -125,3 +125,9 @@ export function addAssertHandler(name: string, func: AssertHandlerFunction): voi
  * @see https://pactumjs.github.io/api/handlers/addWaitHandler.html
  */
 export function addWaitHandler(name: string, func: WaitHandlerFunction): void;
+
+/**
+ * adds a response handler
+ * @see https://pactumjs.github.io/api/handlers/addResponseHandler.html
+ */
+export function addResponseHandler(name: string, func: RetryHandlerFunction): void;
