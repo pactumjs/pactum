@@ -38,6 +38,7 @@ class Spec {
     this._wait = null;
     this._save = null;
     this._data_maps = [];
+    this._response_handlers = [];
     this._specHandlerData = data;
     this._sleep = '';
     hr.spec(name, data, this);
@@ -78,6 +79,11 @@ class Spec {
 
   useDataMap(key, value) {
     this._data_maps.push({ key, value });
+    return this;
+  }
+
+  useResponseHandler(key) {
+    this._response_handlers.push(key);
     return this;
   }
 

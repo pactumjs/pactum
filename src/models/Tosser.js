@@ -77,6 +77,8 @@ class Tosser {
 
   async setResponse() {
     this.response = await getResponse(this);
+    this.spec._response = this.response;
+    await th.runResponseHandler(this.spec);
     const options = this.request.retryOptions;
     if (options) {
       const count = typeof options.count === 'number' ? options.count : config.request.retry.count;
