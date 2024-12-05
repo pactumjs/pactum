@@ -128,6 +128,9 @@ class Expect {
       if (!actualCookie) {
         this.fail(`'set-cookie' key not found in response headers`);
       }
+      if (Array.isArray(actualCookie) && actualCookie.length > 1) {
+        actualCookie = actualCookie.join('; ') + ';';
+      }
       actualCookie = lc.parse(actualCookie);
       const msg = jlv.validate(actualCookie, expectedCookie, { target: 'Cookie' });
       if (msg) this.fail(msg);
