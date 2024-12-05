@@ -36,4 +36,16 @@ describe('Inspect', () => {
       .inspect('people[country=AU]');
   });
 
+  it('do not inspect on failure', async () => {
+    try {
+      await spec()
+        .useInteraction('get people')
+        .get('http://localhost:9393/api/people')
+        .expectStatus(400)
+        .inspect(false);
+    } catch {
+
+    }
+  });
+
 });

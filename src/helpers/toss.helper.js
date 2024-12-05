@@ -6,6 +6,7 @@ const helper = require('./helper');
 const hr = require('./handler.runner');
 
 const stash = require('../exports/stash');
+const logger = require('../plugins/logger');
 
 function getCaptureHandlerName(name) {
   if (helper.matchesStrategy(name, config.strategy.capture.handler)) {
@@ -51,22 +52,34 @@ function getPathValueFromRequestResponse(path, request, response) {
   return jqy(path, { data }).value;
 }
 
+/**
+ *
+ * @param {*} spec
+ * @param {import('../internal.types').ISpecStore[]} stores
+ */
 function storeSpecData(spec, stores) {
   const ctx = { req: spec._request, res: spec._response, store: stash.getDataStore() };
   for (let i = 0; i < stores.length; i++) {
     const store = stores[i];
-    if (typeof store === 'function') {
-      const specData = store(spec._request, spec._response);
-      stash.addDataStore(specData);
+    if (store.cb) {
+      stash.addDataStore(store.cb(spec._request, spec._response));
+      continue;
+    }
+    let data_to_store;
+
+    const captureHandler = getCaptureHandlerName(store.path);
+    if (captureHandler) {
+      data_to_store = hr.capture(captureHandler, ctx);
+    } else {
+      data_to_store = getPathValueFromRequestResponse(store.path, spec._request, spec._response);
+    }
+    if(store.options && store.options.append) {
+      ctx.store[store.name] = ctx.store[store.name] || [];
+      ctx.store[store.name].push(data_to_store);
       continue;
     }
     const specData = {};
-    const captureHandler = getCaptureHandlerName(store.path);
-    if (captureHandler) {
-      specData[store.name] = hr.capture(captureHandler, ctx);
-    } else {
-      specData[store.name] = getPathValueFromRequestResponse(store.path, spec._request, spec._response);
-    }
+    specData[store.name] = data_to_store;
     stash.addDataStore(specData);
   }
 }
@@ -132,10 +145,23 @@ function storeInteractionData(request, interaction) {
   stash.addDataStore(interactionData);
 }
 
+async function runResponseHandler(spec) {
+  try {
+    const ctx = { req: spec._request, res: spec._response };
+    const handlers = spec._response_handlers;
+    for (let i = 0; i < handlers.length; i++) {
+      await hr.response(handlers[i], ctx);
+    }
+  } catch (error) {
+    logger.warn(`Error running response handler: ${error}`);
+  }
+}
+
 module.exports = {
   storeSpecData,
   recordSpecData,
   getOutput,
   storeInteractionData,
-  getPathValueFromRequestResponse
+  getPathValueFromRequestResponse,
+  runResponseHandler
 };

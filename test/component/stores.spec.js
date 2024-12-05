@@ -1,3 +1,4 @@
+const expect = require('chai').expect;
 const pactum = require('../../src/index');
 const stash = require('../../src/exports/stash');
 const { addInteractionHandler } = pactum.handler;
@@ -111,7 +112,7 @@ describe('Stores', () => {
         }
       })
       .post('http://localhost:9393/api/stores')
-      .withCookies('token','$S{token}')
+      .withCookies('token', '$S{token}')
       .withJson({
         UserId: '$S{FirstUser.id}'
       })
@@ -177,7 +178,7 @@ describe('Stores', () => {
       .expectStatus(200);
   });
 
-  it ('store single value by custom function', async () => {
+  it('store single value by custom function', async () => {
     await pactum.spec()
       .useInteraction({
         request: {
@@ -195,10 +196,10 @@ describe('Stores', () => {
       .expectStatus(200)
       .stores((request, response) => {
         return {
-            custom_func_id: response.body.id
+          custom_func_id: response.body.id
         };
       });
-      await pactum.spec()
+    await pactum.spec()
       .useInteraction({
         request: {
           method: 'POST',
@@ -218,7 +219,7 @@ describe('Stores', () => {
       .expectStatus(200);
   });
 
-  it ('store multiple value by custom function', async () => {
+  it('store multiple value by custom function', async () => {
     await pactum.spec()
       .useInteraction({
         request: {
@@ -237,11 +238,11 @@ describe('Stores', () => {
       .expectStatus(200)
       .stores((request, response) => {
         return {
-            custom_func_id: response.body.id,
-            custom_func_email: response.body.email
+          custom_func_id: response.body.id,
+          custom_func_email: response.body.email
         };
       });
-      await pactum.spec()
+    await pactum.spec()
       .useInteraction({
         request: {
           method: 'POST',
@@ -290,9 +291,9 @@ describe('Stores', () => {
       .get('http://localhost:9393/api/stores')
       .expectStatus(200);
     spec.stores((request, response) => {
-        return {
-            UserId: response.body.id
-        };
+      return {
+        UserId: response.body.id
+      };
     });
     await pactum.spec()
       .useInteraction('post stores')
@@ -306,6 +307,60 @@ describe('Stores', () => {
       .post('http://localhost:9393/api/stores/$S{UserId}')
       .expectStatus(200);
   });
+
+  it('store on failure', async () => {
+    await pactum.spec()
+      .useInteraction('get stores')
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200)
+      .stores('FailedUserId', 'id', { status: 'FAILED' });
+    expect(stash.getDataStore('FailedUserId')).to.be.undefined;
+    try {
+      await pactum.spec()
+        .useInteraction('get stores')
+        .get('http://localhost:9393/api/stores')
+        .expectStatus(500)
+        .stores('FailedUserId', 'id', { status: 'FAILED' })
+        .inspect(false);
+    } catch (error) {
+
+    }
+    expect(stash.getDataStore('FailedUserId')).equals(1);
+  });
+
+  it('store on success', async () => {
+    try {
+      await pactum.spec()
+        .useInteraction('get stores')
+        .get('http://localhost:9393/api/stores')
+        .expectStatus(500)
+        .stores('FailedUserId', 'id', { status: 'PASSED' })
+        .inspect(false);
+    } catch (error) {
+
+    }
+    expect(stash.getDataStore('FailedUserId')).to.be.undefined;
+    await pactum.spec()
+      .useInteraction('get stores')
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200)
+      .stores('FailedUserId', 'id', { status: 'PASSED' });
+    expect(stash.getDataStore('FailedUserId')).equals(1);
+  });
+
+  it('store append', async () => {
+    await pactum.spec()
+      .useInteraction('get stores')
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200)
+      .stores('UserId', 'id', { append: true });
+    await pactum.spec()
+      .useInteraction('get stores')
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200)
+      .stores('UserId', 'id', { append: true });
+    expect(stash.getDataStore('UserId')).deep.equals([1,1]);
+  })
 
   afterEach(() => {
     stash.clearDataStores();

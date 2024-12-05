@@ -4,6 +4,7 @@ import { Expect } from '../exports/expect';
 import { CaptureHandlerFunction, ExpectHandlerFunction, RetryHandlerFunction } from '../exports/handler';
 import { Interaction } from '../exports/mock';
 import { LogLevel } from '../exports/settings';
+import { ISpecStoreOptions } from '../internal.types';
 
 declare interface RetryOptions {
   /** maximum number of retries - defaults to 3 */
@@ -52,6 +53,8 @@ declare class Spec {
   useDataMap(map: object): Spec;
   useDataMap(maps: object[]): Spec;
   useDataMap(key: string, value: any): Spec;
+
+  useResponseHandler(key: string): Spec;
 
   /**
    * The GET method requests a representation of the specified resource.
@@ -382,8 +385,8 @@ declare class Spec {
    * stores spec request & response data
    * @see https://pactumjs.github.io/api/requests/stores.html
    */
-  stores(name: string, path: string): Spec;
-  stores(name: string, handlerName: string): Spec;
+  stores(name: string, path: string, options?: ISpecStoreOptions): Spec;
+  stores(name: string, handlerName: string, options?: ISpecStoreOptions): Spec;
   stores<T>(cb: (request: Request, response: IncomingMessage & {body: Record<string, any>, json: Record<string, any>}) => T): Spec;
 
   /**
@@ -416,6 +419,7 @@ declare class Spec {
    * @see https://pactumjs.github.io/api/requests/inspect.html
    */
   inspect(): Spec;
+  inspect(enable: boolean): Spec;
   inspect(path: string): Spec;
 
   /**
@@ -457,7 +461,7 @@ declare class Spec {
    */
   end(): Spec;
 
-  /** 
+  /**
    * sleep after spec execution
    * @see https://pactumjs.github.io/api/utils/sleep.html
    */

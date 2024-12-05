@@ -42,7 +42,7 @@ class Tosser {
       await this.getInteractionsFromServer();
       this.saveDataInFileSystem();
       this.recordData();
-      th.storeSpecData(this.spec, this.spec._stores);
+      this.storeSpecData();
       await this.validate();
       if (hasBackgroundInteractions(this.interactions) || (this.spec._wait && typeof this.spec._wait.arg1 === 'string')) {
         await this.dynamicWait();
@@ -77,6 +77,8 @@ class Tosser {
 
   async setResponse() {
     this.response = await getResponse(this);
+    this.spec._response = this.response;
+    await th.runResponseHandler(this.spec);
     const options = this.request.retryOptions;
     if (options) {
       const count = typeof options.count === 'number' ? options.count : config.request.retry.count;
@@ -122,7 +124,7 @@ class Tosser {
     if (this.spec._inspect) {
       log.warn('Inspecting Request & Response');
       if (typeof this.spec._inspect === 'boolean') {
-        utils.printReqAndRes(this.request, this.response);
+        this.printRequestAndResponse();
       } else {
         for (let i = 0; i < this.spec._inspect.length; i++) {
           const inspect_path = this.spec._inspect[i];
@@ -209,12 +211,14 @@ class Tosser {
       this.validateNonBackgroundInteractions();
       await this.validateResponse();
       this.spec.status = 'PASSED';
+      this.storeSpecData();
       this.runReport();
     } catch (error) {
       this.spec.status = 'FAILED';
+      this.storeSpecData();
       this.spec.failure = error.toString();
       this.runReport();
-      utils.printReqAndRes(this.request, this.response);
+      this.printRequestAndResponse();
       throw error;
     }
   }
@@ -224,7 +228,7 @@ class Tosser {
       this.spec.status = 'ERROR';
       this.spec.failure = this.response.toString();
       this.runReport();
-      utils.printReqAndRes(this.request, this.response);
+      this.printRequestAndResponse();
       this.expect.fail(this.response);
     }
   }
@@ -246,6 +250,42 @@ class Tosser {
   runReport() {
     if (config.reporter.autoRun && this.expect.errors.length === 0) {
       rlc.afterSpecReport(this.spec);
+    }
+  }
+
+  printRequestAndResponse() {
+    if (this.spec._inspect !== false) {
+      utils.printReqAndRes(this.request, this.response);
+    }
+  }
+
+  storeSpecData() {
+    const stores = [];
+    switch (this.spec.status) {
+      case 'PASSED':
+        for (const store of this.spec._stores) {
+          if (store && store.options && store.options.status === 'PASSED') {
+            stores.push(store);
+          }
+        }
+        break;
+      case 'FAILED':
+        for (const store of this.spec._stores) {
+          if (store && store.options && store.options.status === 'FAILED') {
+            stores.push(store);
+          }
+        }
+        break;
+      default:
+        for (const store of this.spec._stores) {
+          if (store && (!store.options || !store.options.status)) {
+            stores.push(store);
+          }
+        }
+        break;
+    }
+    if (stores.length > 0) {
+      th.storeSpecData(this.spec, stores);
     }
   }
 

@@ -38,6 +38,7 @@ class Spec {
     this._wait = null;
     this._save = null;
     this._data_maps = [];
+    this._response_handlers = [];
     this._specHandlerData = data;
     this._sleep = '';
     hr.spec(name, data, this);
@@ -78,6 +79,11 @@ class Spec {
 
   useDataMap(key, value) {
     this._data_maps.push({ key, value });
+    return this;
+  }
+
+  useResponseHandler(key) {
+    this._response_handlers.push(key);
     return this;
   }
 
@@ -329,7 +335,7 @@ class Spec {
       return this;
     }
     this._request.followRedirects = follow;
-    return this;   
+    return this;
   }
 
   withCompression() {
@@ -483,20 +489,27 @@ class Spec {
   }
 
   stores(...args) {
-    if (args.length === 1 && typeof args[0] === 'function') {
-      const fn = args[0];
-      if (this._response) {
-        th.storeSpecData(this, [fn]);
-      } else {
-        this._stores.push(fn);
-      }
-    } else if (args.length === 2) {
-      const [name, path] = args;
-      if (this._response) {
-        th.storeSpecData(this, [{ name, path }]);
-      } else {
-        this._stores.push({ name, path });
-      }
+    if (args.length === 0) {
+      return this;
+    }
+
+    /**
+     * @type {import('../internal.types').ISpecStore}
+     */
+    const spec_store = {};
+
+    if (typeof args[0] === 'function') {
+      spec_store.cb = args[0];
+    } else {
+      spec_store.name = args[0];
+      spec_store.path = args[1];
+      spec_store.options = args[2];
+    }
+
+    if (this._response) {
+      th.storeSpecData(this, [spec_store]);
+    } else {
+      this._stores.push(spec_store);
     }
     return this;
   }
@@ -516,17 +529,15 @@ class Spec {
   }
 
   inspect(inspect_path) {
-    if (this._inspect) {
-      if (typeof this._inspect === 'boolean') {
+    if (typeof inspect_path === 'string') {
+      if (!Array.isArray(this._inspect)) {
         this._inspect = [];
       }
       this._inspect.push(inspect_path);
+    } else if (typeof inspect_path === 'boolean') {
+      this._inspect = inspect_path;
     } else {
-      if (inspect_path) {
-        this._inspect = [inspect_path];
-      } else {
-        this._inspect = true;
-      }
+      this._inspect = true;
     }
     return this;
   }
