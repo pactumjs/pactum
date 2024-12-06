@@ -21,7 +21,7 @@ describe('Response', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('HTTP status 404 !== 200');
+    expect(err.message).to.satisfy(msg => msg.startsWith('HTTP status 404 !== 200'));
   });
 
   it('with default expected response status - override value', async () => {

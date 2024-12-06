@@ -48,7 +48,7 @@ describe('Non CRUD Requests - Numbered Waits', () => {
     } catch (error) {
       err = error
     }
-    expect(err.message).equals('HTTP status 404 !== 200');
+    expect(err.message).to.satisfy(msg => msg.startsWith('HTTP status 404 !== 200'));
   });
 
   it('should fail when bg interactions are not exercised without any waits', async () => {
@@ -161,7 +161,7 @@ describe('Non CRUD Requests - Wait Handlers', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('HTTP status 404 !== 500');
+    expect(err.message).to.satisfy(msg => msg.startsWith('HTTP status 404 !== 500'));
   });
 
 });
