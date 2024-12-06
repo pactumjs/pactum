@@ -22,8 +22,12 @@ export interface InteractionRequest extends CommonInteractionRequest {
   form?: object;
 }
 
-export interface InteractionResponse {
-  status: number;
+export type InteractionResponse = (
+  { onCall: OnCall; status?: number } // If onCall is present, status is optional
+  | (InteractionResponseBase & { status: number }) // If onCall is absent, status is required
+);
+
+export interface InteractionResponseBase {
   headers?: object;
   cookies?: object;
   body?: any;
@@ -33,13 +37,13 @@ export interface InteractionResponse {
   onCall?: OnCall;
 }
 
+export interface OnCall {
+  [key: number]: Omit<InteractionResponseBase, 'onCall'> & { status: number };
+}
+
 export interface RandomDelay {
   min: number;
   max: number;
-}
-
-export interface OnCall {
-  [key: number]: InteractionResponse
 }
 
 export interface InteractionExpectations {

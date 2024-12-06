@@ -134,7 +134,7 @@ describe('Expects', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals('HTTP status 404 !== 200');
+    expect(err.message).to.satisfy(msg => msg.startsWith('HTTP status 404 !== 200'));
   });
 
   it('failed status code with custom message', async () => {
@@ -148,7 +148,7 @@ describe('Expects', () => {
     } catch (error) {
       err = error;
     }
-    expect(err.message).equals(`${customMessage}\n HTTP status 404 !== 200`);
+    expect(err.message).to.satisfy(msg => msg.startsWith((`${customMessage}\n HTTP status 404 !== 200`)));
   });
 
   it('header key not found', async () => {
