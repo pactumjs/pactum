@@ -111,6 +111,8 @@ class Tosser {
           log.info(`Request retry initiated, waiting ${delay / 1000} ${scale} for attempt ${i + 1} of ${count}`);
           await helper.sleep(delay);
           this.response = await getResponse(this);
+          this.spec._response = this.response;
+          await th.runResponseHandler(this.spec);
         } else {
           break;
         }
