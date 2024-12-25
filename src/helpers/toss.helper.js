@@ -73,14 +73,19 @@ function storeSpecData(spec, stores) {
     } else {
       data_to_store = getPathValueFromRequestResponse(store.path, spec._request, spec._response);
     }
-    if(store.options && store.options.append) {
+    if (store.options && store.options.append) {
       ctx.store[store.name] = ctx.store[store.name] || [];
       ctx.store[store.name].push(data_to_store);
       continue;
     }
-    const specData = {};
-    specData[store.name] = data_to_store;
-    stash.addDataStore(specData);
+    if (store.options && store.options.merge) {
+      ctx.store[store.name] = ctx.store[store.name] || {};
+      Object.assign(ctx.store[store.name], data_to_store);
+    } else {
+      const specData = {};
+      specData[store.name] = data_to_store;
+      stash.addDataStore(specData);
+    }
   }
 }
 
@@ -147,7 +152,7 @@ function storeInteractionData(request, interaction) {
 
 async function runResponseHandler(spec) {
   try {
-    const ctx = { req: spec._request, res: spec._response };
+    const ctx = { req: spec._request, res: spec._response, spec };
     const handlers = spec._response_handlers;
     for (let i = 0; i < handlers.length; i++) {
       await hr.response(handlers[i], ctx);
