@@ -8,4 +8,5 @@ export type ISpecStore = {
 export type ISpecStoreOptions = {
   status?: 'PASSED' | 'FAILED'
   append?: boolean
+  merge?: boolean
 }

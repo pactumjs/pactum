@@ -6,7 +6,7 @@ const { addInteractionHandler } = pactum.handler;
 describe('Stores', () => {
 
   before(() => {
-    addInteractionHandler('get stores', () => {
+    addInteractionHandler('get stores', ({ data }) => {
       return {
         request: {
           method: 'GET',
@@ -14,9 +14,7 @@ describe('Stores', () => {
         },
         response: {
           status: 200,
-          body: {
-            id: 1
-          }
+          body: data ? data : { id: 1 }
         }
       };
     });
@@ -30,7 +28,10 @@ describe('Stores', () => {
           }
         },
         response: {
-          status: 200
+          status: 200,
+          body: {
+            name: 'Snow'
+          }
         }
       };
     });
@@ -359,7 +360,34 @@ describe('Stores', () => {
       .get('http://localhost:9393/api/stores')
       .expectStatus(200)
       .stores('UserId', 'id', { append: true });
-    expect(stash.getDataStore('UserId')).deep.equals([1,1]);
+    expect(stash.getDataStore('UserId')).deep.equals([1, 1]);
+  });
+
+  it('store merge', async () => {
+    await pactum.spec()
+      .useInteraction('get stores', { id: 1 })
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200)
+      .stores('User', '.');
+    await pactum.spec()
+      .useInteraction('get stores', { name: 'Snow' })
+      .get('http://localhost:9393/api/stores')
+      .expectStatus(200)
+      .stores('User', '.', { merge: true });
+    expect(stash.getDataStore()).deep.equals({ User: { id: 1, name: 'Snow' } });
+  });
+
+  it('store merge in same request', async () => {
+    await pactum.spec()
+      .useInteraction('post stores')
+      .post('http://localhost:9393/api/stores')
+      .withJson({
+        UserId: 1
+      })
+      .expectStatus(200)
+      .stores('User', '.', { merge: true })
+      .stores('User', 'req.body', { merge: true });
+    expect(stash.getDataStore()).deep.equals({ User: { UserId: 1, name: 'Snow' } });
   })
 
   afterEach(() => {

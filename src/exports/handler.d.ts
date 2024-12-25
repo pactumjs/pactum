@@ -62,9 +62,14 @@ interface WaitHandlerContext extends RequestResponseContext {
   rootData?: any;
 }
 
+interface ResponseHandlerContext extends RequestResponseContext {
+  spec: Spec
+}
+
 export type SpecHandlerFunction = (ctx: SpecHandlerContext) => void;
 export type ExpectHandlerFunction = (ctx: ExpectHandlerContext) => void;
 export type RetryHandlerFunction = (ctx: RequestResponseContext) => boolean;
+export type ResponseHandlerFunction = (ctx: ResponseHandlerContext) => void;
 export type CaptureHandlerFunction = (ctx: CaptureContext) => any;
 export type StateHandlerFunction = (ctx: StateHandlerContext) => any;
 export type DataHandlerFunction = (ctx: DataHandlerContext) => any;
@@ -130,4 +135,4 @@ export function addWaitHandler(name: string, func: WaitHandlerFunction): void;
  * adds a response handler
  * @see https://pactumjs.github.io/api/handlers/addResponseHandler.html
  */
-export function addResponseHandler(name: string, func: RetryHandlerFunction): void;
+export function addResponseHandler(name: string, func: ResponseHandlerFunction): void;
