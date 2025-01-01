@@ -1,0 +1,6 @@
+{
+  "House:New": {
+    "Name": "$M{House.Name}",
+    "Owner": "$M{House.Owner}"
+  }
+}

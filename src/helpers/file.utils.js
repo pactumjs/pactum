@@ -1,6 +1,8 @@
 const fs = require('fs');
-const path = require('path');
+const pt = require('path');
 const config = require('../config');
+const log = require('../plugins/logger');
+const { PactumConfigurationError } = require('./errors');
 
 function getSnapshotDirAndName(name) {
   return {
@@ -28,7 +30,6 @@ function saveSnapshot(name, data) {
   fs.writeFileSync(`${snapshotDir}/${snapshotFile}`, JSON.stringify(data, null, 2));
 }
 
-
 function findFileRecursively(name, dir = config.data.dir) {
   if (fs.existsSync(name)) {
     return fs.readFileSync(name);
@@ -41,7 +42,7 @@ function findFileRecursively(name, dir = config.data.dir) {
     // get folders in dir
     const files = fs.readdirSync(dir);
     for (const file of files) {
-      const dirPath = path.resolve(dir, file);
+      const dirPath = pt.resolve(dir, file);
       const stats = fs.statSync(dirPath);
       if (stats.isDirectory()) {
         const result = findFileRecursively(name, dirPath);
@@ -53,8 +54,52 @@ function findFileRecursively(name, dir = config.data.dir) {
   }
 }
 
+function loadDataManagement(path = './data') {
+  const templates = [];
+  const maps = [];
+  if (!fs.existsSync(path)) {
+    log.error(`path not found - ${path}`);
+    log.warn(`Current Working Dir: ${process.cwd()}`);
+    throw new PactumConfigurationError(`path not found to load data - '${path}'`);
+  }
+  const stats = fs.lstatSync(path);
+  if (!stats.isDirectory()) {
+    log.error(`path should be a directory - ${path}`);
+    throw new PactumConfigurationError(`path should be a directory to load data - '${path}'`);
+  }
+  const dir = fs.readdirSync(path);
+  for (const file of dir) {
+    if (file.endsWith('.template.json')) {
+      templates.push(JSON.parse(fs.readFileSync(pt.resolve(path, file))));
+    }
+    if (file.endsWith('.map.json')) {
+      maps.push(JSON.parse(fs.readFileSync(pt.resolve(path, file))));
+    }
+    if (file === 'maps') {
+      loadAllFilesRecursively(pt.resolve(path, file), maps);
+    }
+    if (file === 'templates') {
+      loadAllFilesRecursively(pt.resolve(path, file), templates);
+    }
+  }
+  return { templates, maps };
+}
+
+function loadAllFilesRecursively(dir, data = []) {
+  const files = fs.readdirSync(dir);
+  for (const file of files) {
+    if (fs.lstatSync(pt.resolve(dir, file)).isDirectory()) {
+      loadAllFilesRecursively(pt.resolve(dir, file), data);
+    } else {
+      const json = JSON.parse(fs.readFileSync(pt.resolve(dir, file)));
+      data.push(json);
+    }
+  }
+}
+
 module.exports = {
   getSnapshotFile,
   saveSnapshot,
-  findFileRecursively
+  findFileRecursively,
+  loadDataManagement
 };
