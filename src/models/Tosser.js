@@ -10,7 +10,7 @@ const mock = require('../exports/mock');
 const request = require('../exports/request');
 const config = require('../config');
 const hr = require('../helpers/handler.runner');
-const { events, pactumEvents, EVENT_TYPES } = require('../exports/events');
+const { pactumEvents, EVENT_TYPES } = require('../exports/events');
 
 class Tosser {
 
@@ -86,29 +86,34 @@ class Tosser {
       const strategy = options.strategy;
       const status = options.status;
       for (let i = 0; i < count; i++) {
-        let noRetry = true;
+        let err = null;
+        let shouldRetry = false;
         const ctx = { req: this.request, res: this.response };
         if (typeof strategy === 'function') {
-          noRetry = strategy(ctx);
+          shouldRetry = !strategy(ctx);
         } else if (typeof strategy === 'string') {
-          noRetry = hr.retry(strategy, ctx);
+          shouldRetry = !hr.retry(strategy, ctx);
         } else if (status) {
           if (Array.isArray(status)) {
-            noRetry = !(status.includes(this.response.statusCode));
+            shouldRetry = status.includes(this.response.statusCode);
           } else {
-            noRetry = !(status === ctx.res.statusCode);
+            shouldRetry = status === ctx.res.statusCode;
           }
-        }
-        else {
+        } else {
           try {
             await this.validateResponse();
           } catch (error) {
-            noRetry = false;
+            err = error;
+            shouldRetry = true;
           }
         }
-        if (!noRetry) {
+        if (shouldRetry) {
           const scale = delay === 1000 ? 'second' : 'seconds';
-          log.info(`Request retry initiated, waiting ${delay / 1000} ${scale} for attempt ${i + 1} of ${count}`);
+          if (err) {
+            log.info(`Request retry initiated, waiting ${delay / 1000} ${scale} for attempt ${i + 1} of ${count} due to error: ${err.message}`);
+          } else {
+            log.info(`Request retry initiated, waiting ${delay / 1000} ${scale} for attempt ${i + 1} of ${count}`);
+          }
           await helper.sleep(delay);
           this.response = await getResponse(this);
           this.spec._response = this.response;
@@ -221,6 +226,7 @@ class Tosser {
       this.spec.failure = error.toString();
       this.runReport();
       this.printRequestAndResponse();
+      pactumEvents.emit(EVENT_TYPES.AFTER_RESPONSE_ERROR, { request: this.request, response: this.response, error });
       throw error;
     }
   }
@@ -298,7 +304,6 @@ async function getResponse(tosser) {
   let res = {};
   const requestStartTime = Date.now();
   try {
-    events.emit(EVENT_TYPES.BEFORE_REQUEST, request);
     pactumEvents.emit(EVENT_TYPES.BEFORE_REQUEST, { request });
     log.debug(`${request.method} ${request.url}`);
     res = await phin(request);
@@ -316,7 +321,6 @@ async function getResponse(tosser) {
     res = error;
   } finally {
     res.responseTime = Date.now() - requestStartTime;
-    events.emit(EVENT_TYPES.AFTER_RESPONSE, res);
     pactumEvents.emit(EVENT_TYPES.AFTER_RESPONSE, { request, response: res });
   }
   return res;
