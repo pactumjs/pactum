@@ -1,7 +1,7 @@
 const { spec } = require('../../src');
 const { pactumEvents, EVENT_TYPES } = require('../../src').events;
 
-describe.only('events', () => {
+describe('events', () => {
 
   before(() => {
     pactumEvents.on(EVENT_TYPES.BEFORE_REQUEST, (r) => {
