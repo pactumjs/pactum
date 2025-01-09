@@ -1,6 +1,6 @@
 const assert = require('assert');
 const jqy = require('json-query');
-const lc = require('lightcookie');
+const cl = require('cookie-lite');
 
 const config = require('../config');
 const utils = require('../helpers/utils');
@@ -115,7 +115,7 @@ class Expect {
       if (!actualCookie) {
         this.fail(`'set-cookie' key not found in response headers`);
       }
-      actualCookie = lc.parse(actualCookie);
+      actualCookie = cl.parse(actualCookie);
       assert.deepStrictEqual(actualCookie, expectedCookie);
     }
   }
@@ -131,7 +131,7 @@ class Expect {
       if (Array.isArray(actualCookie) && actualCookie.length > 1) {
         actualCookie = actualCookie.join('; ') + ';';
       }
-      actualCookie = lc.parse(actualCookie);
+      actualCookie = cl.parse(actualCookie);
       const msg = jlv.validate(actualCookie, expectedCookie, { target: 'Cookie' });
       if (msg) this.fail(msg);
     }

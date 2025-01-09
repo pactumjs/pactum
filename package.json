@@ -58,7 +58,7 @@
     "form-data-lite": "^1.0.3",
     "json-query": "^2.2.2",
     "klona": "^2.0.6",
-    "lightcookie": "^1.0.25",
+    "cookie-lite": "^0.0.1",
     "openapi-fuzzer-core": "^1.0.6",
     "pactum-matchers": "^1.1.7",
     "parse-graphql": "^1.0.0",
