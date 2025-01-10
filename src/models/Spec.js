@@ -1,5 +1,5 @@
 const fs = require('fs');
-const lc = require('lightcookie');
+const cl = require('cookie-lite');
 const override = require('deep-override');
 const path = require('path');
 const Tosser = require('./Tosser');
@@ -244,7 +244,7 @@ class Spec {
     }
     let cookie;
     if (typeof key === 'object') {
-      cookie = lc.serialize(key);
+      cookie = cl.serialize(key);
     } else {
       if (value) {
         cookie = `${key}=${value}`;

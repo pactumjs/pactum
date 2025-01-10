@@ -1,4 +1,4 @@
-const lc = require('lightcookie');
+const cl = require('cookie-lite');
 const { setMatchingRules, getValue } = require('pactum-matchers').utils;
 const processor = require('../helpers/dataProcessor');
 const helper = require('../helpers/helper');
@@ -121,7 +121,7 @@ class InteractionRequest {
       this.headers = getValue(request.headers);
     }
     if (request.cookies && typeof request.cookies === 'object') {
-      const cookie = lc.serialize(request.cookies);
+      const cookie = cl.serialize(request.cookies);
       if (!this.headers) {
         this.headers = {};
       }
@@ -170,7 +170,7 @@ class InteractionResponse {
     setMatchingRules(this.matchingRules, response.body, '$.body');
     this.body = getValue(response.body);
     if (response.cookies) {
-      const cookie = lc.serialize(response.cookies);
+      const cookie = cl.serialize(response.cookies);
       if (!this.headers) {
         this.headers = {};
       }

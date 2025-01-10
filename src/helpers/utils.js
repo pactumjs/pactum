@@ -1,6 +1,6 @@
 const { compare } = require('pactum-matchers').utils;
 const graphQL = require('./graphQL');
-const lc = require('lightcookie');
+const cl = require('cookie-lite');
 const { PactumRequestError } = require('../helpers/errors');
 
 const log = require('../plugins/logger');
@@ -69,7 +69,7 @@ const utils = {
       if (value !== undefined) {
         cookieObject[key] = value;
       } else if (value === undefined) {
-        cookieObject = lc.parse(key);
+        cookieObject = cl.parse(key);
       }
     } else {
       if (!helper.isValidObject(key)) {
