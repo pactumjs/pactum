@@ -30,14 +30,14 @@ function saveSnapshot(name, data) {
   fs.writeFileSync(`${snapshotDir}/${snapshotFile}`, JSON.stringify(data, null, 2));
 }
 
-function findFileRecursively(name, dir = config.data.dir) {
+function findFileRecursively(name, dir = config.data.dir, encoding = null) {
   if (fs.existsSync(name)) {
-    return fs.readFileSync(name);
+    return fs.readFileSync(name, encoding);
   }
   if (fs.existsSync(dir)) {
     const exist = fs.existsSync(`${dir}/${name}`);
     if (exist) {
-      return fs.readFileSync(`${dir}/${name}`);
+      return fs.readFileSync(`${dir}/${name}`, encoding);
     }
     // get folders in dir
     const files = fs.readdirSync(dir);
@@ -45,7 +45,7 @@ function findFileRecursively(name, dir = config.data.dir) {
       const dirPath = pt.resolve(dir, file);
       const stats = fs.statSync(dirPath);
       if (stats.isDirectory()) {
-        const result = findFileRecursively(name, dirPath);
+        const result = findFileRecursively(name, dirPath, encoding);
         if (result) {
           return result;
         }
