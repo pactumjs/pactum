@@ -21,10 +21,11 @@ const utils = {
    * finds a file recursively in a directory
    * @param {string} name
    * @param {string} dir
-   * @returns
+   * @param {string|null} [encoding] - Optional encoding (e.g., 'utf8')
+   * @returns {Buffer|string}
    */
-  findFile(name, dir = config.data.dir) {
-    const result = findFileRecursively(name, dir);
+  findFile(name, dir = config.data.dir, encoding = null) {
+    const result = findFileRecursively(name, dir, encoding);
     if (result) {
       return result;
     }
