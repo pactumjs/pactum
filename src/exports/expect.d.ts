@@ -36,4 +36,4 @@ export interface Expect {
   should: To;
 }
 
-export default function expect(response: any, spec: any): Expect;
+export default function expect(response: any, spec?: any): Expect;

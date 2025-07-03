@@ -1,6 +1,7 @@
 const config = require('../config');
 const handler = require('../exports/handler');
 const helper = require('../helpers/helper');
+const type_check = require('component-type');
 
 class LikeJson {
 
@@ -77,8 +78,8 @@ class LikeJson {
     if (valueAssertRes) {
       return valueAssertRes === true ? '' : valueAssertRes;
     }
-    if (typeof expected !== typeof actual) {
-      return `${this.target} doesn't have type '${typeof expected}' at '${expectedPath}' but found '${typeof actual}'`;
+    if (type_check(expected) !== type_check(actual)) {
+      return `${this.target} doesn't have type '${type_check(expected)}' at '${expectedPath}' but found '${type_check(actual)}'`;
     }
     if (typeof expected !== 'object' && typeof actual !== 'object') {
       return `${this.target} doesn't have value '${expected}' at '${expectedPath}' but found '${actual}'`;

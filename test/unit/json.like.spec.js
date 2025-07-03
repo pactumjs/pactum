@@ -92,7 +92,7 @@ describe('JSON Like - Object - Equal Properties', () => {
     const expected = {
       id: null
     };
-    expect(jsl.validate(actual, expected)).contains(`Json doesn't have value 'null' at '$.id' but found`);
+    expect(jsl.validate(actual, expected)).contains(`Json doesn't have type 'null' at '$.id' but found 'object'`);
   });
 
   it('object not equals - one property - RegEx', () => {
