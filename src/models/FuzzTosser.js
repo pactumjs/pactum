@@ -1,4 +1,4 @@
-const phin = require('phin');
+const phinx = require('phinx');
 const fuzzCore = require('openapi-fuzzer-core');
 const log = require('../plugins/logger');
 const rp = require('../helpers/requestProcessor');
@@ -34,7 +34,7 @@ class Tosser {
   async getSwaggerJson() {
     const request = rp.process({ method: 'get', url: this.fuzz.swaggerUrl });
     request.parse = 'json';
-    const response = await phin(request);
+    const response = await phinx(request);
     return response.body;
   }
 
@@ -73,7 +73,7 @@ class Tosser {
       request.headers = this.fuzz.headers;
       spec.request = rp.process(request);
       specs.push(spec);
-      promises.push(phin(spec.request));
+      promises.push(phinx(spec.request));
       if ((i + 1) % this.fuzz.batchSize === 0) {
         responses = responses.concat(await Promise.all(promises));
         this.validate(specs, responses);

@@ -1,4 +1,4 @@
-const phin = require('phin');
+const phinx = require('phinx');
 const { PactumInteractionError } = require('./errors');
 const config = require('../config');
 
@@ -24,7 +24,7 @@ const remote = {
 };
 
 async function get(url) {
-  const res = await phin({
+  const res = await phinx({
     url,
     method: 'GET'
   });
@@ -35,7 +35,7 @@ async function get(url) {
 }
 
 async function post(url, body) {
-  const res = await phin({
+  const res = await phinx({
     url,
     method: 'POST',
     data: body
@@ -51,7 +51,7 @@ async function post(url, body) {
 }
 
 async function del(url) {
-  const res = await phin({
+  const res = await phinx({
     url,
     method: 'DELETE'
   });
