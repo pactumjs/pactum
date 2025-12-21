@@ -1,4 +1,4 @@
-const phin = require('phin');
+const phinx = require('phinx');
 const fs = require('fs');
 const helper = require('../helpers/helper');
 const log = require('../plugins/logger');
@@ -306,7 +306,7 @@ async function getResponse(tosser) {
   try {
     pactumEvents.emit(EVENT_TYPES.BEFORE_REQUEST, { request });
     log.debug(`${request.method} ${request.url}`);
-    res = await phin(request);
+    res = await phinx(request);
     res.buffer = res.body;
     res.text = helper.bufferToString(res.body) || '';
     res.body = helper.bufferToString(res.body);
