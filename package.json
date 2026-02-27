@@ -61,7 +61,7 @@
     "json-query": "^2.2.2",
     "klona": "^2.0.6",
     "openapi-fuzzer-core": "^1.0.6",
-    "pactum-matchers": "^1.1.7",
+    "pactum-matchers": "^1.2.0",
     "parse-graphql": "^1.0.0",
     "phinx": "1.1.0",
     "polka": "^0.5.2"
