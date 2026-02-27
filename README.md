@@ -4,11 +4,9 @@
 
 # PactumJS
 
-![Build](https://github.com/pactumjs/pactum/workflows/Build/badge.svg?branch=master)
-![Coverage](https://img.shields.io/codeclimate/coverage/ASaiAnudeep/pactum)
+![Build](https://img.shields.io/github/actions/workflow/status/pactumjs/pactum/build.yml)
 ![Downloads](https://img.shields.io/npm/dt/pactum)
-![Size](https://img.shields.io/bundlephobia/minzip/pactum)
-![Platform](https://img.shields.io/node/v/pactum)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/pactumjs/pactum)
 
 [![Stars](https://img.shields.io/github/stars/pactumjs/pactum?style=social)](https://github.com/pactumjs/pactum/stargazers)
 [![Twitter](https://img.shields.io/twitter/follow/pactumjs?label=Follow&style=social)](https://twitter.com/pactumjs)
@@ -83,7 +81,7 @@ npx pactum-init
 
 ## API Testing
 
-Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations. 
+Tests in **pactum** are clear and comprehensive. It uses numerous descriptive methods to build your requests and expectations.
 
 ### Simple Test Cases
 
