@@ -69,7 +69,7 @@
   "devDependencies": {
     "chai": "^4.4.1",
     "mocha": "^10.3.0",
-    "nyc": "^15.1.0",
+    "nyc": "^18.0.0",
     "sinon": "^15.2.0"
   },
   "engines": {
